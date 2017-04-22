@@ -11,7 +11,6 @@
 
 namespace Eloquent\Phony\Mock\Method;
 
-use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use PHPUnit_Framework_TestCase;

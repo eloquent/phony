@@ -183,7 +183,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable $callback The callback.
+     * @param callable $callback               The callback.
      * @param callable ...$additionalCallbacks Additional callbacks.
      *
      * @return $this This stub.
@@ -246,7 +246,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param int $index The argument index.
+     * @param int $index                The argument index.
      * @param int ...$additionalIndices Additional argument indices to call.
      *
      * @return $this This stub.
@@ -364,7 +364,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
     /**
      * Add a callback as an answer.
      *
-     * @param callable $callback The callback.
+     * @param callable $callback               The callback.
      * @param callable ...$additionalCallbacks Additional callbacks for subsequent invocations.
      *
      * @return $this This stub.
@@ -490,7 +490,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
     /**
      * Add an answer that returns a value.
      *
-     * @param mixed $value The return value.
+     * @param mixed $value               The return value.
      * @param mixed ...$additionalValues Additional return values for subsequent invocations.
      *
      * @return $this This stub.
@@ -598,7 +598,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
     /**
      * Add an answer that throws an exception.
      *
-     * @param Exception|Error|string|null $exception The exception, or message, or null to throw a generic exception.
+     * @param Exception|Error|string|null $exception               The exception, or message, or null to throw a generic exception.
      * @param Exception|Error|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
      *
      * @return $this This stub.
@@ -642,7 +642,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      * Add an answer that returns a generator, and return a builder for
      * customizing the generator's behavior.
      *
-     * @param mixed<mixed,mixed> $values A set of keys and values to yield.
+     * @param mixed<mixed,mixed> $values              A set of keys and values to yield.
      * @param mixed<mixed,mixed> ...$additionalValues Additional sets of keys and values to yield, for subsequent invocations.
      *
      * @return GeneratorAnswerBuilder The answer builder.

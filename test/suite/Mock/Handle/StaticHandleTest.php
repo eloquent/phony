@@ -22,7 +22,6 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Mock\Builder\MockBuilder;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
@@ -216,11 +215,11 @@ class StaticHandleTest extends PHPUnit_Framework_TestCase
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
         $className = $this->subject->className();
 
-        $this->assertTrue((boolean) $this->subject->checkNoInteraction());
+        $this->assertTrue((bool) $this->subject->checkNoInteraction());
 
         $className::testClassAStaticMethodA();
 
-        $this->assertFalse((boolean) $this->subject->checkNoInteraction());
+        $this->assertFalse((bool) $this->subject->checkNoInteraction());
     }
 
     public function testNoInteraction()

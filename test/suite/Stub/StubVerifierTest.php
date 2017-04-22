@@ -17,7 +17,6 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Test\TestClassA;

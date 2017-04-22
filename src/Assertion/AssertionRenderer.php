@@ -805,7 +805,7 @@ class AssertionRenderer
         }
 
         $renderedCriteria =
-            'behave like:' .  PHP_EOL .
+            'behave like:' . PHP_EOL .
             '    ' . $this->fail . ' Returned ' . $renderedValue;
 
         $minimum = $cardinality->minimum();
@@ -1100,7 +1100,7 @@ class AssertionRenderer
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
         $renderedCriteria =
-            'behave like:' .  PHP_EOL .
+            'behave like:' . PHP_EOL .
             '    ' . $this->fail . ' Returned Generator';
 
         $minimum = $cardinality->minimum();
@@ -1231,7 +1231,7 @@ class AssertionRenderer
 
         $renderedSubject = $this->bold . $renderedCallee . $this->reset;
         $renderedCriteria =
-            'behave like:' .  PHP_EOL .
+            'behave like:' . PHP_EOL .
             '    ' . $this->fail . ' Returned <iterable>';
 
         $minimum = $cardinality->minimum();
@@ -2234,7 +2234,7 @@ class AssertionRenderer
                         }
 
                         $renderedIterableEvents[] =
-                            '        ' . $eventResult .  ' Returned ' .
+                            '        ' . $eventResult . ' Returned ' .
                             $this->exporter->export($iterableValue);
                     } elseif ($endEvent instanceof ThrewEvent) {
                         $isMatch = true;
@@ -3413,7 +3413,7 @@ class AssertionRenderer
                         }
 
                         $renderedIterableEvents[] =
-                            '        ' . $eventResult .  ' Returned ' .
+                            '        ' . $eventResult . ' Returned ' .
                             $this->exporter->export($iterableValue);
                     } elseif ($endEvent instanceof ThrewEvent) {
                         $iterableException = $endEvent->exception();

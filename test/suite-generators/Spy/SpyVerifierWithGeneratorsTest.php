@@ -193,18 +193,18 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testCheckGenerated()
     {
-        $this->assertFalse((boolean) $this->subject->checkGenerated());
-        $this->assertTrue((boolean) $this->subject->never()->checkGenerated());
+        $this->assertFalse((bool) $this->subject->checkGenerated());
+        $this->assertTrue((bool) $this->subject->never()->checkGenerated());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->checkGenerated());
-        $this->assertTrue((boolean) $this->subject->never()->checkGenerated());
+        $this->assertFalse((bool) $this->subject->checkGenerated());
+        $this->assertTrue((bool) $this->subject->never()->checkGenerated());
 
         $this->subject->addCall($this->generatorCall);
 
-        $this->assertTrue((boolean) $this->subject->checkGenerated());
-        $this->assertTrue((boolean) $this->subject->once()->checkGenerated());
+        $this->assertTrue((bool) $this->subject->checkGenerated());
+        $this->assertTrue((bool) $this->subject->once()->checkGenerated());
     }
 
     public function testGenerated()
@@ -237,15 +237,15 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testCheckAlwaysGenerated()
     {
-        $this->assertFalse((boolean) $this->subject->always()->checkGenerated());
+        $this->assertFalse((bool) $this->subject->always()->checkGenerated());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->always()->checkGenerated());
+        $this->assertFalse((bool) $this->subject->always()->checkGenerated());
 
         $this->subject->setCalls(array($this->generatorCall, $this->generatorCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkGenerated());
+        $this->assertTrue((bool) $this->subject->always()->checkGenerated());
     }
 
     public function testAlwaysGenerated()

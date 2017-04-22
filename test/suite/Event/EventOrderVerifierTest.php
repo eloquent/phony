@@ -63,39 +63,39 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckInOrder()
     {
-        $this->assertTrue((boolean) $this->subject->checkInOrder($this->callA));
-        $this->assertTrue((boolean) $this->subject->checkInOrder($this->callA, $this->callB, $this->callC));
+        $this->assertTrue((bool) $this->subject->checkInOrder($this->callA));
+        $this->assertTrue((bool) $this->subject->checkInOrder($this->callA, $this->callB, $this->callC));
         $this->assertTrue(
-            (boolean) $this->subject->checkInOrder($this->callACalled, $this->callBCalled, $this->callCCalled)
+            (bool) $this->subject->checkInOrder($this->callACalled, $this->callBCalled, $this->callCCalled)
         );
         $this->assertTrue(
-            (boolean) $this->subject->checkInOrder($this->callAResponse, $this->callCResponse, $this->callBResponse)
+            (bool) $this->subject->checkInOrder($this->callAResponse, $this->callCResponse, $this->callBResponse)
         );
-        $this->assertTrue((boolean) $this->subject->checkInOrder($this->callACalled, $this->callAResponse));
+        $this->assertTrue((bool) $this->subject->checkInOrder($this->callACalled, $this->callAResponse));
         $this->assertTrue(
-            (boolean) $this->subject->checkInOrder(
+            (bool) $this->subject->checkInOrder(
                 new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory),
                 new EventSequence(array($this->callB), $this->callVerifierFactory)
             )
         );
         $this->assertTrue(
-            (boolean) $this->subject->checkInOrder(
+            (bool) $this->subject->checkInOrder(
                 new EventSequence(array($this->callB), $this->callVerifierFactory),
                 new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory)
             )
         );
-        $this->assertFalse((boolean) $this->subject->checkInOrder());
-        $this->assertFalse((boolean) $this->subject->checkInOrder($this->callB, $this->callA));
-        $this->assertFalse((boolean) $this->subject->checkInOrder($this->callC, $this->callB));
-        $this->assertFalse((boolean) $this->subject->checkInOrder($this->callA, $this->callA));
+        $this->assertFalse((bool) $this->subject->checkInOrder());
+        $this->assertFalse((bool) $this->subject->checkInOrder($this->callB, $this->callA));
+        $this->assertFalse((bool) $this->subject->checkInOrder($this->callC, $this->callB));
+        $this->assertFalse((bool) $this->subject->checkInOrder($this->callA, $this->callA));
         $this->assertFalse(
-            (boolean) $this->subject->checkInOrder(
+            (bool) $this->subject->checkInOrder(
                 new EventSequence(array($this->callB, $this->callC), $this->callVerifierFactory),
                 new EventSequence(array($this->callA), $this->callVerifierFactory)
             )
         );
         $this->assertFalse(
-            (boolean) $this->subject->checkInOrder(
+            (bool) $this->subject->checkInOrder(
                 new EventSequence(array($this->callC), $this->callVerifierFactory),
                 new EventSequence(array($this->callA, $this->callB), $this->callVerifierFactory)
             )
@@ -232,23 +232,23 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckInOrderSequence()
     {
-        $this->assertTrue((boolean) $this->subject->checkInOrderSequence(array($this->callA)));
+        $this->assertTrue((bool) $this->subject->checkInOrderSequence(array($this->callA)));
         $this->assertTrue(
-            (boolean) $this->subject->checkInOrderSequence(array($this->callA, $this->callB, $this->callC))
+            (bool) $this->subject->checkInOrderSequence(array($this->callA, $this->callB, $this->callC))
         );
         $this->assertTrue(
-            (boolean) $this->subject
+            (bool) $this->subject
                 ->checkInOrderSequence(array($this->callACalled, $this->callBCalled, $this->callCCalled))
         );
         $this->assertTrue(
-            (boolean) $this->subject
+            (bool) $this->subject
                 ->checkInOrderSequence(array($this->callAResponse, $this->callCResponse, $this->callBResponse))
         );
         $this->assertTrue(
-            (boolean) $this->subject->checkInOrderSequence(array($this->callACalled, $this->callAResponse))
+            (bool) $this->subject->checkInOrderSequence(array($this->callACalled, $this->callAResponse))
         );
         $this->assertTrue(
-            (boolean) $this->subject->checkInOrderSequence(
+            (bool) $this->subject->checkInOrderSequence(
                 array(
                     new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory),
                     new EventSequence(array($this->callB), $this->callVerifierFactory),
@@ -256,19 +256,19 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
             )
         );
         $this->assertTrue(
-            (boolean) $this->subject->checkInOrderSequence(
+            (bool) $this->subject->checkInOrderSequence(
                 array(
                     new EventSequence(array($this->callB), $this->callVerifierFactory),
                     new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory),
                 )
             )
         );
-        $this->assertFalse((boolean) $this->subject->checkInOrderSequence(array()));
-        $this->assertFalse((boolean) $this->subject->checkInOrderSequence(array($this->callB, $this->callA)));
-        $this->assertFalse((boolean) $this->subject->checkInOrderSequence(array($this->callC, $this->callB)));
-        $this->assertFalse((boolean) $this->subject->checkInOrderSequence(array($this->callA, $this->callA)));
+        $this->assertFalse((bool) $this->subject->checkInOrderSequence(array()));
+        $this->assertFalse((bool) $this->subject->checkInOrderSequence(array($this->callB, $this->callA)));
+        $this->assertFalse((bool) $this->subject->checkInOrderSequence(array($this->callC, $this->callB)));
+        $this->assertFalse((bool) $this->subject->checkInOrderSequence(array($this->callA, $this->callA)));
         $this->assertFalse(
-            (boolean) $this->subject->checkInOrderSequence(
+            (bool) $this->subject->checkInOrderSequence(
                 array(
                     new EventSequence(array($this->callB, $this->callC), $this->callVerifierFactory),
                     new EventSequence(array($this->callA), $this->callVerifierFactory),
@@ -276,7 +276,7 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
             )
         );
         $this->assertFalse(
-            (boolean) $this->subject->checkInOrderSequence(
+            (bool) $this->subject->checkInOrderSequence(
                 array(
                     new EventSequence(array($this->callC), $this->callVerifierFactory),
                     new EventSequence(array($this->callA, $this->callB), $this->callVerifierFactory),
@@ -433,10 +433,10 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckAnyOrder()
     {
-        $this->assertTrue((boolean) $this->subject->checkAnyOrder($this->callA));
-        $this->assertTrue((boolean) $this->subject->checkAnyOrder($this->callA, $this->callB, $this->callC));
-        $this->assertTrue((boolean) $this->subject->checkAnyOrder($this->callC, $this->callB, $this->callA));
-        $this->assertFalse((boolean) $this->subject->checkAnyOrder());
+        $this->assertTrue((bool) $this->subject->checkAnyOrder($this->callA));
+        $this->assertTrue((bool) $this->subject->checkAnyOrder($this->callA, $this->callB, $this->callC));
+        $this->assertTrue((bool) $this->subject->checkAnyOrder($this->callC, $this->callB, $this->callA));
+        $this->assertFalse((bool) $this->subject->checkAnyOrder());
     }
 
     public function testAnyOrder()
@@ -466,14 +466,14 @@ class EventOrderVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckAnyOrderSequence()
     {
-        $this->assertTrue((boolean) $this->subject->checkAnyOrderSequence(array($this->callA)));
+        $this->assertTrue((bool) $this->subject->checkAnyOrderSequence(array($this->callA)));
         $this->assertTrue(
-            (boolean) $this->subject->checkAnyOrderSequence(array($this->callA, $this->callB, $this->callC))
+            (bool) $this->subject->checkAnyOrderSequence(array($this->callA, $this->callB, $this->callC))
         );
         $this->assertTrue(
-            (boolean) $this->subject->checkAnyOrderSequence(array($this->callC, $this->callB, $this->callA))
+            (bool) $this->subject->checkAnyOrderSequence(array($this->callC, $this->callB, $this->callA))
         );
-        $this->assertFalse((boolean) $this->subject->checkAnyOrderSequence(array()));
+        $this->assertFalse((bool) $this->subject->checkAnyOrderSequence(array()));
     }
 
     public function testAnyOrderSequence()

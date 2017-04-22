@@ -356,29 +356,29 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertFalse((boolean) $this->subject->checkUsed());
-        $this->assertFalse((boolean) $this->subject->times(1)->checkUsed());
-        $this->assertFalse((boolean) $this->subject->once()->checkUsed());
-        $this->assertTrue((boolean) $this->subject->never()->checkUsed());
+        $this->assertFalse((bool) $this->subject->checkUsed());
+        $this->assertFalse((bool) $this->subject->times(1)->checkUsed());
+        $this->assertFalse((bool) $this->subject->once()->checkUsed());
+        $this->assertTrue((bool) $this->subject->never()->checkUsed());
 
         $this->setUpWith($this->nonGeneratorCalls);
 
-        $this->assertFalse((boolean) $this->subject->checkUsed());
-        $this->assertFalse((boolean) $this->subject->times(1)->checkUsed());
-        $this->assertFalse((boolean) $this->subject->once()->checkUsed());
-        $this->assertTrue((boolean) $this->subject->never()->checkUsed());
+        $this->assertFalse((bool) $this->subject->checkUsed());
+        $this->assertFalse((bool) $this->subject->times(1)->checkUsed());
+        $this->assertFalse((bool) $this->subject->once()->checkUsed());
+        $this->assertTrue((bool) $this->subject->never()->checkUsed());
 
         $this->setUpWith($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkUsed());
-        $this->assertTrue((boolean) $this->subject->times(1)->checkUsed());
-        $this->assertTrue((boolean) $this->subject->once()->checkUsed());
-        $this->assertFalse((boolean) $this->subject->never()->checkUsed());
-        $this->assertFalse((boolean) $this->subject->always()->checkUsed());
+        $this->assertTrue((bool) $this->subject->checkUsed());
+        $this->assertTrue((bool) $this->subject->times(1)->checkUsed());
+        $this->assertTrue((bool) $this->subject->once()->checkUsed());
+        $this->assertFalse((bool) $this->subject->never()->checkUsed());
+        $this->assertFalse((bool) $this->subject->always()->checkUsed());
 
         $this->setUpWith(array($this->generatorCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkUsed());
+        $this->assertTrue((bool) $this->subject->always()->checkUsed());
     }
 
     public function testUsed()
@@ -450,41 +450,41 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertFalse((boolean) $this->subject->checkProduced());
-        $this->assertFalse((boolean) $this->subject->checkProduced('n'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'n'));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkProduced());
-        $this->assertFalse((boolean) $this->subject->once()->checkProduced('n'));
-        $this->assertTrue((boolean) $this->subject->never()->checkProduced('m'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'o'));
+        $this->assertFalse((bool) $this->subject->checkProduced());
+        $this->assertFalse((bool) $this->subject->checkProduced('n'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m', 'n'));
+        $this->assertFalse((bool) $this->subject->times(1)->checkProduced());
+        $this->assertFalse((bool) $this->subject->once()->checkProduced('n'));
+        $this->assertTrue((bool) $this->subject->never()->checkProduced('m'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m', 'o'));
 
         $this->setUpWith($this->nonGeneratorCalls);
 
-        $this->assertFalse((boolean) $this->subject->checkProduced());
-        $this->assertFalse((boolean) $this->subject->checkProduced('n'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'n'));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkProduced());
-        $this->assertFalse((boolean) $this->subject->once()->checkProduced('n'));
-        $this->assertTrue((boolean) $this->subject->never()->checkProduced('m'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'o'));
+        $this->assertFalse((bool) $this->subject->checkProduced());
+        $this->assertFalse((bool) $this->subject->checkProduced('n'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m', 'n'));
+        $this->assertFalse((bool) $this->subject->times(1)->checkProduced());
+        $this->assertFalse((bool) $this->subject->once()->checkProduced('n'));
+        $this->assertTrue((bool) $this->subject->never()->checkProduced('m'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m', 'o'));
 
         $this->setUpWith($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkProduced());
-        $this->assertTrue((boolean) $this->subject->checkProduced('n'));
-        $this->assertTrue((boolean) $this->subject->checkProduced('m', 'n'));
-        $this->assertTrue((boolean) $this->subject->times(1)->checkProduced());
-        $this->assertTrue((boolean) $this->subject->once()->checkProduced('n'));
-        $this->assertTrue((boolean) $this->subject->never()->checkProduced('m'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'o'));
-        $this->assertFalse((boolean) $this->subject->always()->checkProduced());
+        $this->assertTrue((bool) $this->subject->checkProduced());
+        $this->assertTrue((bool) $this->subject->checkProduced('n'));
+        $this->assertTrue((bool) $this->subject->checkProduced('m', 'n'));
+        $this->assertTrue((bool) $this->subject->times(1)->checkProduced());
+        $this->assertTrue((bool) $this->subject->once()->checkProduced('n'));
+        $this->assertTrue((bool) $this->subject->never()->checkProduced('m'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m', 'o'));
+        $this->assertFalse((bool) $this->subject->always()->checkProduced());
 
         $this->setUpWith(array($this->generatorCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkProduced());
+        $this->assertTrue((bool) $this->subject->always()->checkProduced());
     }
 
     public function testProduced()
@@ -586,33 +586,33 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertFalse((boolean) $this->subject->checkReceived());
-        $this->assertFalse((boolean) $this->subject->checkReceived('o'));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkReceived());
-        $this->assertFalse((boolean) $this->subject->once()->checkReceived('o'));
-        $this->assertTrue((boolean) $this->subject->never()->checkReceived('x'));
-        $this->assertFalse((boolean) $this->subject->always()->checkReceived());
-        $this->assertFalse((boolean) $this->subject->checkReceived('x'));
+        $this->assertFalse((bool) $this->subject->checkReceived());
+        $this->assertFalse((bool) $this->subject->checkReceived('o'));
+        $this->assertFalse((bool) $this->subject->times(1)->checkReceived());
+        $this->assertFalse((bool) $this->subject->once()->checkReceived('o'));
+        $this->assertTrue((bool) $this->subject->never()->checkReceived('x'));
+        $this->assertFalse((bool) $this->subject->always()->checkReceived());
+        $this->assertFalse((bool) $this->subject->checkReceived('x'));
 
         $this->setUpWith($this->nonGeneratorCalls);
 
-        $this->assertFalse((boolean) $this->subject->checkReceived());
-        $this->assertFalse((boolean) $this->subject->checkReceived('o'));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkReceived());
-        $this->assertFalse((boolean) $this->subject->once()->checkReceived('o'));
-        $this->assertTrue((boolean) $this->subject->never()->checkReceived('x'));
-        $this->assertFalse((boolean) $this->subject->always()->checkReceived());
-        $this->assertFalse((boolean) $this->subject->checkReceived('x'));
+        $this->assertFalse((bool) $this->subject->checkReceived());
+        $this->assertFalse((bool) $this->subject->checkReceived('o'));
+        $this->assertFalse((bool) $this->subject->times(1)->checkReceived());
+        $this->assertFalse((bool) $this->subject->once()->checkReceived('o'));
+        $this->assertTrue((bool) $this->subject->never()->checkReceived('x'));
+        $this->assertFalse((bool) $this->subject->always()->checkReceived());
+        $this->assertFalse((bool) $this->subject->checkReceived('x'));
 
         $this->setUpWith($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkReceived());
-        $this->assertTrue((boolean) $this->subject->checkReceived('o'));
-        $this->assertTrue((boolean) $this->subject->times(1)->checkReceived());
-        $this->assertTrue((boolean) $this->subject->once()->checkReceived('o'));
-        $this->assertTrue((boolean) $this->subject->never()->checkReceived('x'));
-        $this->assertFalse((boolean) $this->subject->always()->checkReceived());
-        $this->assertFalse((boolean) $this->subject->checkReceived('x'));
+        $this->assertTrue((bool) $this->subject->checkReceived());
+        $this->assertTrue((bool) $this->subject->checkReceived('o'));
+        $this->assertTrue((bool) $this->subject->times(1)->checkReceived());
+        $this->assertTrue((bool) $this->subject->once()->checkReceived('o'));
+        $this->assertTrue((bool) $this->subject->never()->checkReceived('x'));
+        $this->assertFalse((bool) $this->subject->always()->checkReceived());
+        $this->assertFalse((bool) $this->subject->checkReceived('x'));
     }
 
     public function testReceived()
@@ -663,79 +663,79 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertFalse((boolean) $this->subject->checkReceivedException());
-        $this->assertFalse((boolean) $this->subject->checkReceivedException('Exception'));
-        $this->assertFalse((boolean) $this->subject->checkReceivedException('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->checkReceivedException($this->receivedExceptionA));
-        $this->assertFalse((boolean) $this->subject->checkReceivedException($this->receivedExceptionB));
+        $this->assertFalse((bool) $this->subject->checkReceivedException());
+        $this->assertFalse((bool) $this->subject->checkReceivedException('Exception'));
+        $this->assertFalse((bool) $this->subject->checkReceivedException('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->checkReceivedException($this->receivedExceptionA));
+        $this->assertFalse((bool) $this->subject->checkReceivedException($this->receivedExceptionB));
         $this->assertFalse(
-            (boolean) $this->subject->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
+            (bool) $this->subject->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
         );
-        $this->assertFalse((boolean) $this->subject->checkReceivedException('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->checkReceivedException(new Exception()));
-        $this->assertFalse((boolean) $this->subject->checkReceivedException(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->checkReceivedException('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->checkReceivedException(new Exception()));
+        $this->assertFalse((bool) $this->subject->checkReceivedException(new RuntimeException()));
         $this->assertFalse(
-            (boolean) $this->subject->checkReceivedException($this->matcherFactory->equalTo(new RuntimeException()))
+            (bool) $this->subject->checkReceivedException($this->matcherFactory->equalTo(new RuntimeException()))
         );
-        $this->assertFalse((boolean) $this->subject->checkReceivedException($this->matcherFactory->equalTo(null)));
-        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException());
-        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException('Exception'));
-        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException('RuntimeException'));
-        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException($this->receivedExceptionA));
+        $this->assertFalse((bool) $this->subject->checkReceivedException($this->matcherFactory->equalTo(null)));
+        $this->assertTrue((bool) $this->subject->never()->checkReceivedException());
+        $this->assertTrue((bool) $this->subject->never()->checkReceivedException('Exception'));
+        $this->assertTrue((bool) $this->subject->never()->checkReceivedException('RuntimeException'));
+        $this->assertTrue((bool) $this->subject->never()->checkReceivedException($this->receivedExceptionA));
         $this->assertTrue(
-            (boolean) $this->subject->never()
+            (bool) $this->subject->never()
                 ->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
         );
 
         $this->setUpWith($this->nonGeneratorCalls);
 
-        $this->assertFalse((boolean) $this->subject->checkReceivedException());
-        $this->assertFalse((boolean) $this->subject->checkReceivedException('Exception'));
-        $this->assertFalse((boolean) $this->subject->checkReceivedException('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->checkReceivedException($this->receivedExceptionA));
-        $this->assertFalse((boolean) $this->subject->checkReceivedException($this->receivedExceptionB));
+        $this->assertFalse((bool) $this->subject->checkReceivedException());
+        $this->assertFalse((bool) $this->subject->checkReceivedException('Exception'));
+        $this->assertFalse((bool) $this->subject->checkReceivedException('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->checkReceivedException($this->receivedExceptionA));
+        $this->assertFalse((bool) $this->subject->checkReceivedException($this->receivedExceptionB));
         $this->assertFalse(
-            (boolean) $this->subject->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
+            (bool) $this->subject->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
         );
-        $this->assertFalse((boolean) $this->subject->checkReceivedException('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->checkReceivedException(new Exception()));
-        $this->assertFalse((boolean) $this->subject->checkReceivedException(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->checkReceivedException('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->checkReceivedException(new Exception()));
+        $this->assertFalse((bool) $this->subject->checkReceivedException(new RuntimeException()));
         $this->assertFalse(
-            (boolean) $this->subject->checkReceivedException($this->matcherFactory->equalTo(new RuntimeException()))
+            (bool) $this->subject->checkReceivedException($this->matcherFactory->equalTo(new RuntimeException()))
         );
-        $this->assertFalse((boolean) $this->subject->checkReceivedException($this->matcherFactory->equalTo(null)));
-        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException());
-        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException('Exception'));
-        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException('RuntimeException'));
-        $this->assertTrue((boolean) $this->subject->never()->checkReceivedException($this->receivedExceptionA));
+        $this->assertFalse((bool) $this->subject->checkReceivedException($this->matcherFactory->equalTo(null)));
+        $this->assertTrue((bool) $this->subject->never()->checkReceivedException());
+        $this->assertTrue((bool) $this->subject->never()->checkReceivedException('Exception'));
+        $this->assertTrue((bool) $this->subject->never()->checkReceivedException('RuntimeException'));
+        $this->assertTrue((bool) $this->subject->never()->checkReceivedException($this->receivedExceptionA));
         $this->assertTrue(
-            (boolean) $this->subject->never()
+            (bool) $this->subject->never()
                 ->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
         );
 
         $this->setUpWith($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkReceivedException());
-        $this->assertTrue((boolean) $this->subject->checkReceivedException('Exception'));
-        $this->assertTrue((boolean) $this->subject->checkReceivedException('RuntimeException'));
-        $this->assertTrue((boolean) $this->subject->checkReceivedException($this->receivedExceptionA));
-        $this->assertTrue((boolean) $this->subject->checkReceivedException($this->receivedExceptionB));
+        $this->assertTrue((bool) $this->subject->checkReceivedException());
+        $this->assertTrue((bool) $this->subject->checkReceivedException('Exception'));
+        $this->assertTrue((bool) $this->subject->checkReceivedException('RuntimeException'));
+        $this->assertTrue((bool) $this->subject->checkReceivedException($this->receivedExceptionA));
+        $this->assertTrue((bool) $this->subject->checkReceivedException($this->receivedExceptionB));
         $this->assertTrue(
-            (boolean) $this->subject->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
+            (bool) $this->subject->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
         );
-        $this->assertFalse((boolean) $this->subject->checkReceivedException('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->checkReceivedException(new Exception()));
-        $this->assertFalse((boolean) $this->subject->checkReceivedException(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->checkReceivedException('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->checkReceivedException(new Exception()));
+        $this->assertFalse((bool) $this->subject->checkReceivedException(new RuntimeException()));
         $this->assertFalse(
-            (boolean) $this->subject->checkReceivedException($this->matcherFactory->equalTo(new RuntimeException()))
+            (bool) $this->subject->checkReceivedException($this->matcherFactory->equalTo(new RuntimeException()))
         );
-        $this->assertFalse((boolean) $this->subject->checkReceivedException($this->matcherFactory->equalTo(null)));
-        $this->assertFalse((boolean) $this->subject->never()->checkReceivedException());
-        $this->assertFalse((boolean) $this->subject->never()->checkReceivedException('Exception'));
-        $this->assertFalse((boolean) $this->subject->never()->checkReceivedException('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->never()->checkReceivedException($this->receivedExceptionA));
+        $this->assertFalse((bool) $this->subject->checkReceivedException($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subject->never()->checkReceivedException());
+        $this->assertFalse((bool) $this->subject->never()->checkReceivedException('Exception'));
+        $this->assertFalse((bool) $this->subject->never()->checkReceivedException('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->never()->checkReceivedException($this->receivedExceptionA));
         $this->assertFalse(
-            (boolean) $this->subject->never()
+            (bool) $this->subject->never()
                 ->checkReceivedException($this->matcherFactory->equalTo($this->receivedExceptionA))
         );
     }
@@ -791,8 +791,8 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         $this->setUpWith(array($call));
         $handle = Phony::on($exception);
 
-        $this->assertTrue((boolean) $this->subject->receivedException($handle));
-        $this->assertTrue((boolean) $this->subject->checkReceivedException($handle));
+        $this->assertTrue((bool) $this->subject->receivedException($handle));
+        $this->assertTrue((bool) $this->subject->checkReceivedException($handle));
     }
 
     public function testReceivedExceptionFailureExpectingNeverAny()
@@ -885,29 +885,29 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertFalse((boolean) $this->subject->checkConsumed());
-        $this->assertFalse((boolean) $this->subject->times(1)->checkConsumed());
-        $this->assertFalse((boolean) $this->subject->once()->checkConsumed());
-        $this->assertTrue((boolean) $this->subject->never()->checkConsumed());
+        $this->assertFalse((bool) $this->subject->checkConsumed());
+        $this->assertFalse((bool) $this->subject->times(1)->checkConsumed());
+        $this->assertFalse((bool) $this->subject->once()->checkConsumed());
+        $this->assertTrue((bool) $this->subject->never()->checkConsumed());
 
         $this->setUpWith($this->nonGeneratorCalls);
 
-        $this->assertFalse((boolean) $this->subject->checkConsumed());
-        $this->assertFalse((boolean) $this->subject->times(1)->checkConsumed());
-        $this->assertFalse((boolean) $this->subject->once()->checkConsumed());
-        $this->assertTrue((boolean) $this->subject->never()->checkConsumed());
+        $this->assertFalse((bool) $this->subject->checkConsumed());
+        $this->assertFalse((bool) $this->subject->times(1)->checkConsumed());
+        $this->assertFalse((bool) $this->subject->once()->checkConsumed());
+        $this->assertTrue((bool) $this->subject->never()->checkConsumed());
 
         $this->setUpWith($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkConsumed());
-        $this->assertTrue((boolean) $this->subject->times(1)->checkConsumed());
-        $this->assertTrue((boolean) $this->subject->once()->checkConsumed());
-        $this->assertFalse((boolean) $this->subject->never()->checkConsumed());
-        $this->assertFalse((boolean) $this->subject->always()->checkConsumed());
+        $this->assertTrue((bool) $this->subject->checkConsumed());
+        $this->assertTrue((bool) $this->subject->times(1)->checkConsumed());
+        $this->assertTrue((bool) $this->subject->once()->checkConsumed());
+        $this->assertFalse((bool) $this->subject->never()->checkConsumed());
+        $this->assertFalse((bool) $this->subject->always()->checkConsumed());
 
         $this->setUpWith(array($this->generatorCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkConsumed());
+        $this->assertTrue((bool) $this->subject->always()->checkConsumed());
     }
 
     public function testConsumed()
@@ -1000,22 +1000,22 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertFalse((boolean) $this->subject->checkReturned());
-        $this->assertFalse((boolean) $this->subject->checkReturned(null));
-        $this->assertFalse((boolean) $this->subject->checkReturned($this->returnValueA));
-        $this->assertFalse((boolean) $this->subject->checkReturned($this->returnValueB));
+        $this->assertFalse((bool) $this->subject->checkReturned());
+        $this->assertFalse((bool) $this->subject->checkReturned(null));
+        $this->assertFalse((bool) $this->subject->checkReturned($this->returnValueA));
+        $this->assertFalse((bool) $this->subject->checkReturned($this->returnValueB));
         $this->assertFalse(
-            (boolean) $this->subject->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
+            (bool) $this->subject->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
         );
-        $this->assertFalse((boolean) $this->subject->checkReturned('z'));
+        $this->assertFalse((bool) $this->subject->checkReturned('z'));
 
         $this->setUpWith($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkReturned());
-        $this->assertFalse((boolean) $this->subject->checkReturned(null));
-        $this->assertTrue((boolean) $this->subject->checkReturned('w'));
-        $this->assertTrue((boolean) $this->subject->checkReturned($this->matcherFactory->equalTo('w')));
-        $this->assertFalse((boolean) $this->subject->checkReturned('z'));
+        $this->assertTrue((bool) $this->subject->checkReturned());
+        $this->assertFalse((bool) $this->subject->checkReturned(null));
+        $this->assertTrue((bool) $this->subject->checkReturned('w'));
+        $this->assertTrue((bool) $this->subject->checkReturned($this->matcherFactory->equalTo('w')));
+        $this->assertFalse((bool) $this->subject->checkReturned('z'));
     }
 
     public function testReturned()
@@ -1056,27 +1056,27 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned());
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned(null));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned('w'));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned($this->matcherFactory->equalTo('w')));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned('z'));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned());
+        $this->assertFalse((bool) $this->subject->always()->checkReturned(null));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned('w'));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned($this->matcherFactory->equalTo('w')));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned('z'));
 
         $this->setUpWith($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned());
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned(null));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned('w'));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned($this->matcherFactory->equalTo('w')));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned('z'));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned());
+        $this->assertFalse((bool) $this->subject->always()->checkReturned(null));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned('w'));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned($this->matcherFactory->equalTo('w')));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned('z'));
 
         $this->setUpWith(array($this->generatorCall, $this->generatorCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkReturned());
-        $this->assertTrue((boolean) $this->subject->always()->checkReturned('w'));
-        $this->assertTrue((boolean) $this->subject->always()->checkReturned($this->matcherFactory->equalTo('w')));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned(null));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned('y'));
+        $this->assertTrue((bool) $this->subject->always()->checkReturned());
+        $this->assertTrue((bool) $this->subject->always()->checkReturned('w'));
+        $this->assertTrue((bool) $this->subject->always()->checkReturned($this->matcherFactory->equalTo('w')));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned(null));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned('y'));
     }
 
     public function testAlwaysReturned()
@@ -1110,27 +1110,27 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertFalse((boolean) $this->subject->checkThrew());
-        $this->assertFalse((boolean) $this->subject->checkThrew('Exception'));
-        $this->assertFalse((boolean) $this->subject->checkThrew('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->checkThrew($this->exceptionA));
-        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exceptionA)));
-        $this->assertFalse((boolean) $this->subject->checkThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subject->checkThrew());
+        $this->assertFalse((bool) $this->subject->checkThrew('Exception'));
+        $this->assertFalse((bool) $this->subject->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->checkThrew($this->exceptionA));
+        $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exceptionA)));
+        $this->assertFalse((bool) $this->subject->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->checkThrew(new Exception()));
+        $this->assertFalse((bool) $this->subject->checkThrew(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->setUpWith($this->callsWithThrow);
 
-        $this->assertTrue((boolean) $this->subject->checkThrew());
-        $this->assertTrue((boolean) $this->subject->checkThrew('Exception'));
-        $this->assertTrue((boolean) $this->subject->checkThrew('RuntimeException'));
-        $this->assertTrue((boolean) $this->subject->checkThrew($this->exceptionA));
-        $this->assertTrue((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exceptionA)));
-        $this->assertFalse((boolean) $this->subject->checkThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertTrue((bool) $this->subject->checkThrew());
+        $this->assertTrue((bool) $this->subject->checkThrew('Exception'));
+        $this->assertTrue((bool) $this->subject->checkThrew('RuntimeException'));
+        $this->assertTrue((bool) $this->subject->checkThrew($this->exceptionA));
+        $this->assertTrue((bool) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exceptionA)));
+        $this->assertFalse((bool) $this->subject->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->checkThrew(new Exception()));
+        $this->assertFalse((bool) $this->subject->checkThrew(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
     }
 
     public function testCheckThrewFailureInvalidInput()
@@ -1221,8 +1221,8 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
         $this->setUpWith($this->callsWithThrow);
         $handle = Phony::on($exception);
 
-        $this->assertTrue((boolean) $this->subject->threw($handle));
-        $this->assertTrue((boolean) $this->subject->checkThrew($handle));
+        $this->assertTrue((bool) $this->subject->threw($handle));
+        $this->assertTrue((bool) $this->subject->checkThrew($handle));
     }
 
     public function testThrewFailureExpectingAny()
@@ -1273,49 +1273,49 @@ class GeneratorVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew());
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('Exception'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->exceptionA));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew());
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('Exception'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->exceptionA));
         $this->assertFalse(
-            (boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
+            (bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
         );
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(new Exception()));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->setUpWith($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew());
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('Exception'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->exceptionA));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew());
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('Exception'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->exceptionA));
         $this->assertFalse(
-            (boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
+            (bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
         );
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(new Exception()));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->setUpWith(array($this->generatorThrowCall, $this->generatorThrowCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkThrew());
-        $this->assertTrue((boolean) $this->subject->always()->checkThrew('Exception'));
-        $this->assertTrue((boolean) $this->subject->always()->checkThrew('RuntimeException'));
-        $this->assertTrue((boolean) $this->subject->always()->checkThrew($this->exceptionA));
+        $this->assertTrue((bool) $this->subject->always()->checkThrew());
+        $this->assertTrue((bool) $this->subject->always()->checkThrew('Exception'));
+        $this->assertTrue((bool) $this->subject->always()->checkThrew('RuntimeException'));
+        $this->assertTrue((bool) $this->subject->always()->checkThrew($this->exceptionA));
         $this->assertTrue(
-            (boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
+            (bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
         );
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(new Exception()));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->setUpWith($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
     }
 
     public function testAlwaysThrew()

@@ -17,7 +17,6 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Phpunit\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Stub\Stub;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Test\TupleIterator;
 use Exception;

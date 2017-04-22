@@ -338,19 +338,19 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             $calledWith,
-            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
         );
         $this->assertSame(
             $calledWith,
-            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
         );
         $this->assertSame(
             !$calledWith,
-            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $arguments)
         );
         $this->assertSame(
             !$calledWith,
-            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $matchers)
         );
 
         $arguments[] = $this->matcherFactory->wildcard();
@@ -358,25 +358,25 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             $calledWithWildcard,
-            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
         );
         $this->assertSame(
             $calledWithWildcard,
-            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
         );
         $this->assertSame(
             !$calledWithWildcard,
-            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $arguments)
         );
         $this->assertSame(
             !$calledWithWildcard,
-            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $matchers)
         );
     }
 
     public function testCheckCalledWithWithWildcardOnly()
     {
-        $this->assertTrue((boolean) $this->subject->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertTrue((bool) $this->subject->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
     public function testCalledWith()
@@ -436,11 +436,11 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckResponded()
     {
-        $this->assertTrue((boolean) $this->subject->checkResponded());
-        $this->assertTrue((boolean) $this->subjectWithException->checkResponded());
-        $this->assertFalse((boolean) $this->subject->never()->checkResponded());
-        $this->assertFalse((boolean) $this->subjectWithNoResponse->checkResponded());
-        $this->assertTrue((boolean) $this->subjectWithNoResponse->never()->checkResponded());
+        $this->assertTrue((bool) $this->subject->checkResponded());
+        $this->assertTrue((bool) $this->subjectWithException->checkResponded());
+        $this->assertFalse((bool) $this->subject->never()->checkResponded());
+        $this->assertFalse((bool) $this->subjectWithNoResponse->checkResponded());
+        $this->assertTrue((bool) $this->subjectWithNoResponse->never()->checkResponded());
     }
 
     public function testResponded()
@@ -464,14 +464,14 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckCompleted()
     {
-        $this->assertTrue((boolean) $this->subject->checkCompleted());
-        $this->assertTrue((boolean) $this->subjectWithException->checkCompleted());
-        $this->assertTrue((boolean) $this->iterableSubject->checkCompleted());
-        $this->assertFalse((boolean) $this->subject->never()->checkCompleted());
-        $this->assertFalse((boolean) $this->subjectWithNoResponse->checkCompleted());
-        $this->assertTrue((boolean) $this->subjectWithNoResponse->never()->checkCompleted());
-        $this->assertFalse((boolean) $this->iterableSubjectWithNoEnd->checkCompleted());
-        $this->assertTrue((boolean) $this->iterableSubjectWithNoEnd->never()->checkCompleted());
+        $this->assertTrue((bool) $this->subject->checkCompleted());
+        $this->assertTrue((bool) $this->subjectWithException->checkCompleted());
+        $this->assertTrue((bool) $this->iterableSubject->checkCompleted());
+        $this->assertFalse((bool) $this->subject->never()->checkCompleted());
+        $this->assertFalse((bool) $this->subjectWithNoResponse->checkCompleted());
+        $this->assertTrue((bool) $this->subjectWithNoResponse->never()->checkCompleted());
+        $this->assertFalse((bool) $this->iterableSubjectWithNoEnd->checkCompleted());
+        $this->assertTrue((bool) $this->iterableSubjectWithNoEnd->never()->checkCompleted());
     }
 
     public function testCompleted()
@@ -499,19 +499,19 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckReturned()
     {
-        $this->assertTrue((boolean) $this->subject->checkReturned());
-        $this->assertTrue((boolean) $this->subject->checkReturned($this->returnValue));
-        $this->assertTrue((boolean) $this->subject->checkReturned($this->matcherFactory->adapt($this->returnValue)));
-        $this->assertTrue((boolean) $this->subject->never()->checkReturned(null));
-        $this->assertTrue((boolean) $this->subject->never()->checkReturned('y'));
-        $this->assertTrue((boolean) $this->subject->never()->checkReturned($this->matcherFactory->adapt('y')));
-        $this->assertTrue((boolean) $this->subjectWithException->never()->checkReturned());
-        $this->assertFalse((boolean) $this->subject->never()->checkReturned());
-        $this->assertFalse((boolean) $this->subject->checkReturned(null));
-        $this->assertFalse((boolean) $this->subject->checkReturned('y'));
-        $this->assertFalse((boolean) $this->subject->checkReturned($this->matcherFactory->adapt('y')));
-        $this->assertFalse((boolean) $this->subjectWithException->checkReturned());
-        $this->assertFalse((boolean) $this->subjectWithNoResponse->checkReturned());
+        $this->assertTrue((bool) $this->subject->checkReturned());
+        $this->assertTrue((bool) $this->subject->checkReturned($this->returnValue));
+        $this->assertTrue((bool) $this->subject->checkReturned($this->matcherFactory->adapt($this->returnValue)));
+        $this->assertTrue((bool) $this->subject->never()->checkReturned(null));
+        $this->assertTrue((bool) $this->subject->never()->checkReturned('y'));
+        $this->assertTrue((bool) $this->subject->never()->checkReturned($this->matcherFactory->adapt('y')));
+        $this->assertTrue((bool) $this->subjectWithException->never()->checkReturned());
+        $this->assertFalse((bool) $this->subject->never()->checkReturned());
+        $this->assertFalse((bool) $this->subject->checkReturned(null));
+        $this->assertFalse((bool) $this->subject->checkReturned('y'));
+        $this->assertFalse((bool) $this->subject->checkReturned($this->matcherFactory->adapt('y')));
+        $this->assertFalse((bool) $this->subjectWithException->checkReturned());
+        $this->assertFalse((bool) $this->subjectWithNoResponse->checkReturned());
     }
 
     public function testReturned()
@@ -575,40 +575,40 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckThrew()
     {
-        $this->assertTrue((boolean) $this->subject->never()->checkThrew());
-        $this->assertFalse((boolean) $this->subject->checkThrew());
-        $this->assertFalse((boolean) $this->subject->checkThrew('Exception'));
-        $this->assertFalse((boolean) $this->subject->checkThrew('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->checkThrew($this->exception));
-        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exception)));
-        $this->assertFalse((boolean) $this->subject->checkThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new RuntimeException()));
+        $this->assertTrue((bool) $this->subject->never()->checkThrew());
+        $this->assertFalse((bool) $this->subject->checkThrew());
+        $this->assertFalse((bool) $this->subject->checkThrew('Exception'));
+        $this->assertFalse((bool) $this->subject->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->checkThrew($this->exception));
+        $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exception)));
+        $this->assertFalse((bool) $this->subject->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->checkThrew(new Exception()));
+        $this->assertFalse((bool) $this->subject->checkThrew(new RuntimeException()));
         $this->assertFalse(
-            (boolean) $this->subject->checkThrew($this->matcherFactory->equalTo(new RuntimeException()))
+            (bool) $this->subject->checkThrew($this->matcherFactory->equalTo(new RuntimeException()))
         );
-        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
 
-        $this->assertTrue((boolean) $this->subjectWithException->checkThrew());
-        $this->assertTrue((boolean) $this->subjectWithException->checkThrew('Exception'));
-        $this->assertTrue((boolean) $this->subjectWithException->checkThrew('RuntimeException'));
-        $this->assertTrue((boolean) $this->subjectWithException->checkThrew($this->exception));
+        $this->assertTrue((bool) $this->subjectWithException->checkThrew());
+        $this->assertTrue((bool) $this->subjectWithException->checkThrew('Exception'));
+        $this->assertTrue((bool) $this->subjectWithException->checkThrew('RuntimeException'));
+        $this->assertTrue((bool) $this->subjectWithException->checkThrew($this->exception));
         $this->assertTrue(
-            (boolean) $this->subjectWithException->checkThrew($this->matcherFactory->equalTo($this->exception))
+            (bool) $this->subjectWithException->checkThrew($this->matcherFactory->equalTo($this->exception))
         );
-        $this->assertFalse((boolean) $this->subjectWithException->checkThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subjectWithException->checkThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subjectWithException->checkThrew(new RuntimeException()));
+        $this->assertFalse((bool) $this->subjectWithException->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subjectWithException->checkThrew(new Exception()));
+        $this->assertFalse((bool) $this->subjectWithException->checkThrew(new RuntimeException()));
         $this->assertFalse(
-            (boolean) $this->subjectWithException->checkThrew($this->matcherFactory->equalTo(new RuntimeException()))
+            (bool) $this->subjectWithException->checkThrew($this->matcherFactory->equalTo(new RuntimeException()))
         );
-        $this->assertFalse((boolean) $this->subjectWithException->checkThrew($this->matcherFactory->equalTo(null)));
-        $this->assertFalse((boolean) $this->subjectWithException->never()->checkThrew());
-        $this->assertFalse((boolean) $this->subjectWithException->never()->checkThrew('Exception'));
-        $this->assertFalse((boolean) $this->subjectWithException->never()->checkThrew('RuntimeException'));
-        $this->assertFalse((boolean) $this->subjectWithException->never()->checkThrew($this->exception));
+        $this->assertFalse((bool) $this->subjectWithException->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subjectWithException->never()->checkThrew());
+        $this->assertFalse((bool) $this->subjectWithException->never()->checkThrew('Exception'));
+        $this->assertFalse((bool) $this->subjectWithException->never()->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subjectWithException->never()->checkThrew($this->exception));
         $this->assertFalse(
-            (boolean) $this->subjectWithException->never()->checkThrew($this->matcherFactory->equalTo($this->exception))
+            (bool) $this->subjectWithException->never()->checkThrew($this->matcherFactory->equalTo($this->exception))
         );
     }
 
@@ -680,8 +680,8 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
         );
         $handle = Phony::on($exception);
 
-        $this->assertTrue((boolean) $subject->threw($handle));
-        $this->assertTrue((boolean) $subject->checkThrew($handle));
+        $this->assertTrue((bool) $subject->threw($handle));
+        $this->assertTrue((bool) $subject->checkThrew($handle));
     }
 
     public function testThrewFailureExpectingAnyNoneThrown()
@@ -779,12 +779,12 @@ class CallVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckIterated()
     {
-        $this->assertTrue((boolean) $this->iterableSubject->checkIterated());
-        $this->assertTrue((boolean) $this->iterableSubject->once()->checkIterated());
-        $this->assertFalse((boolean) $this->subject->checkIterated());
-        $this->assertTrue((boolean) $this->subject->never()->checkIterated());
-        $this->assertFalse((boolean) $this->subjectWithNoResponse->checkIterated());
-        $this->assertTrue((boolean) $this->subjectWithNoResponse->never()->checkIterated());
+        $this->assertTrue((bool) $this->iterableSubject->checkIterated());
+        $this->assertTrue((bool) $this->iterableSubject->once()->checkIterated());
+        $this->assertFalse((bool) $this->subject->checkIterated());
+        $this->assertTrue((bool) $this->subject->never()->checkIterated());
+        $this->assertFalse((bool) $this->subjectWithNoResponse->checkIterated());
+        $this->assertTrue((bool) $this->subjectWithNoResponse->never()->checkIterated());
     }
 
     public function testIterated()

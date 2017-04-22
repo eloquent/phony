@@ -330,29 +330,29 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertFalse((boolean) $this->subject->checkUsed());
-        $this->assertFalse((boolean) $this->subject->times(1)->checkUsed());
-        $this->assertFalse((boolean) $this->subject->once()->checkUsed());
-        $this->assertTrue((boolean) $this->subject->never()->checkUsed());
+        $this->assertFalse((bool) $this->subject->checkUsed());
+        $this->assertFalse((bool) $this->subject->times(1)->checkUsed());
+        $this->assertFalse((bool) $this->subject->once()->checkUsed());
+        $this->assertTrue((bool) $this->subject->never()->checkUsed());
 
         $this->setUpWith($this->nonIterableCalls);
 
-        $this->assertFalse((boolean) $this->subject->checkUsed());
-        $this->assertFalse((boolean) $this->subject->times(1)->checkUsed());
-        $this->assertFalse((boolean) $this->subject->once()->checkUsed());
-        $this->assertTrue((boolean) $this->subject->never()->checkUsed());
+        $this->assertFalse((bool) $this->subject->checkUsed());
+        $this->assertFalse((bool) $this->subject->times(1)->checkUsed());
+        $this->assertFalse((bool) $this->subject->once()->checkUsed());
+        $this->assertTrue((bool) $this->subject->never()->checkUsed());
 
         $this->setUpWith($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkUsed());
-        $this->assertTrue((boolean) $this->subject->times(1)->checkUsed());
-        $this->assertTrue((boolean) $this->subject->once()->checkUsed());
-        $this->assertFalse((boolean) $this->subject->never()->checkUsed());
-        $this->assertFalse((boolean) $this->subject->always()->checkUsed());
+        $this->assertTrue((bool) $this->subject->checkUsed());
+        $this->assertTrue((bool) $this->subject->times(1)->checkUsed());
+        $this->assertTrue((bool) $this->subject->once()->checkUsed());
+        $this->assertFalse((bool) $this->subject->never()->checkUsed());
+        $this->assertFalse((bool) $this->subject->always()->checkUsed());
 
         $this->setUpWith(array($this->iteratorCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkUsed());
+        $this->assertTrue((bool) $this->subject->always()->checkUsed());
     }
 
     public function testUsed()
@@ -428,41 +428,41 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertFalse((boolean) $this->subject->checkProduced());
-        $this->assertFalse((boolean) $this->subject->checkProduced('n'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'n'));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkProduced());
-        $this->assertFalse((boolean) $this->subject->once()->checkProduced('n'));
-        $this->assertTrue((boolean) $this->subject->never()->checkProduced('m'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'o'));
+        $this->assertFalse((bool) $this->subject->checkProduced());
+        $this->assertFalse((bool) $this->subject->checkProduced('n'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m', 'n'));
+        $this->assertFalse((bool) $this->subject->times(1)->checkProduced());
+        $this->assertFalse((bool) $this->subject->once()->checkProduced('n'));
+        $this->assertTrue((bool) $this->subject->never()->checkProduced('m'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m', 'o'));
 
         $this->setUpWith($this->nonIterableCalls);
 
-        $this->assertFalse((boolean) $this->subject->checkProduced());
-        $this->assertFalse((boolean) $this->subject->checkProduced('n'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'n'));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkProduced());
-        $this->assertFalse((boolean) $this->subject->once()->checkProduced('n'));
-        $this->assertTrue((boolean) $this->subject->never()->checkProduced('m'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'o'));
+        $this->assertFalse((bool) $this->subject->checkProduced());
+        $this->assertFalse((bool) $this->subject->checkProduced('n'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m', 'n'));
+        $this->assertFalse((bool) $this->subject->times(1)->checkProduced());
+        $this->assertFalse((bool) $this->subject->once()->checkProduced('n'));
+        $this->assertTrue((bool) $this->subject->never()->checkProduced('m'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m', 'o'));
 
         $this->setUpWith($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkProduced());
-        $this->assertTrue((boolean) $this->subject->checkProduced('n'));
-        $this->assertTrue((boolean) $this->subject->checkProduced('m', 'n'));
-        $this->assertTrue((boolean) $this->subject->times(1)->checkProduced());
-        $this->assertTrue((boolean) $this->subject->once()->checkProduced('n'));
-        $this->assertTrue((boolean) $this->subject->never()->checkProduced('m'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m'));
-        $this->assertFalse((boolean) $this->subject->checkProduced('m', 'o'));
-        $this->assertFalse((boolean) $this->subject->always()->checkProduced());
+        $this->assertTrue((bool) $this->subject->checkProduced());
+        $this->assertTrue((bool) $this->subject->checkProduced('n'));
+        $this->assertTrue((bool) $this->subject->checkProduced('m', 'n'));
+        $this->assertTrue((bool) $this->subject->times(1)->checkProduced());
+        $this->assertTrue((bool) $this->subject->once()->checkProduced('n'));
+        $this->assertTrue((bool) $this->subject->never()->checkProduced('m'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m'));
+        $this->assertFalse((bool) $this->subject->checkProduced('m', 'o'));
+        $this->assertFalse((bool) $this->subject->always()->checkProduced());
 
         $this->setUpWith(array($this->iteratorCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkProduced());
+        $this->assertTrue((bool) $this->subject->always()->checkProduced());
     }
 
     public function testProduced()
@@ -564,29 +564,29 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->assertFalse((boolean) $this->subject->checkConsumed());
-        $this->assertFalse((boolean) $this->subject->times(1)->checkConsumed());
-        $this->assertFalse((boolean) $this->subject->once()->checkConsumed());
-        $this->assertTrue((boolean) $this->subject->never()->checkConsumed());
+        $this->assertFalse((bool) $this->subject->checkConsumed());
+        $this->assertFalse((bool) $this->subject->times(1)->checkConsumed());
+        $this->assertFalse((bool) $this->subject->once()->checkConsumed());
+        $this->assertTrue((bool) $this->subject->never()->checkConsumed());
 
         $this->setUpWith($this->nonIterableCalls);
 
-        $this->assertFalse((boolean) $this->subject->checkConsumed());
-        $this->assertFalse((boolean) $this->subject->times(1)->checkConsumed());
-        $this->assertFalse((boolean) $this->subject->once()->checkConsumed());
-        $this->assertTrue((boolean) $this->subject->never()->checkConsumed());
+        $this->assertFalse((bool) $this->subject->checkConsumed());
+        $this->assertFalse((bool) $this->subject->times(1)->checkConsumed());
+        $this->assertFalse((bool) $this->subject->once()->checkConsumed());
+        $this->assertTrue((bool) $this->subject->never()->checkConsumed());
 
         $this->setUpWith($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkConsumed());
-        $this->assertTrue((boolean) $this->subject->times(1)->checkConsumed());
-        $this->assertTrue((boolean) $this->subject->once()->checkConsumed());
-        $this->assertFalse((boolean) $this->subject->never()->checkConsumed());
-        $this->assertFalse((boolean) $this->subject->always()->checkConsumed());
+        $this->assertTrue((bool) $this->subject->checkConsumed());
+        $this->assertTrue((bool) $this->subject->times(1)->checkConsumed());
+        $this->assertTrue((bool) $this->subject->once()->checkConsumed());
+        $this->assertFalse((bool) $this->subject->never()->checkConsumed());
+        $this->assertFalse((bool) $this->subject->always()->checkConsumed());
 
         $this->setUpWith(array($this->iteratorCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkConsumed());
+        $this->assertTrue((bool) $this->subject->always()->checkConsumed());
     }
 
     public function testConsumed()

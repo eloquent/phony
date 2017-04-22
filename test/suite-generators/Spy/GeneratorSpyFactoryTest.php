@@ -213,7 +213,7 @@ class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
             foreach ($spy as $value) {
             }
         } catch (RuntimeException $caughtException) {
-        };
+        }
         $this->callFactory->reset();
         $generatorEvents = array($this->callEventFactory->createUsed());
         foreach ($generatorEvents as $generatorEvent) {

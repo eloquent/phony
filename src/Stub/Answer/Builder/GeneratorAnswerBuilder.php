@@ -54,7 +54,7 @@ class GeneratorAnswerBuilder
     /**
      * Add a callback to be called as part of the answer.
      *
-     * @param callable $callback The callback.
+     * @param callable $callback               The callback.
      * @param callable ...$additionalCallbacks Additional callbacks.
      *
      * @return $this This builder.
@@ -115,7 +115,7 @@ class GeneratorAnswerBuilder
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param int $index The argument index.
+     * @param int $index                The argument index.
      * @param int ...$additionalIndices Additional argument indices to call.
      *
      * @return $this This builder.
@@ -302,7 +302,7 @@ class GeneratorAnswerBuilder
     /**
      * End the generator by returning a value.
      *
-     * @param mixed $value The return value.
+     * @param mixed $value               The return value.
      * @param mixed ...$additionalValues Additional return values for subsequent invocations.
      *
      * @return Stub             The stub.
@@ -392,7 +392,7 @@ class GeneratorAnswerBuilder
     /**
      * End the generator by throwing an exception.
      *
-     * @param Exception|Error|string|null $exception The exception, or message, or null to throw a generic exception.
+     * @param Exception|Error|string|null $exception               The exception, or message, or null to throw a generic exception.
      * @param Exception|Error|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
      *
      * @return Stub The stub.

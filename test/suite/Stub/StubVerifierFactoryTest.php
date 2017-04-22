@@ -23,7 +23,6 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\IterableSpyFactory;
-use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Test\TestCallFactory;

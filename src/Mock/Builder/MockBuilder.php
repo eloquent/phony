@@ -159,7 +159,7 @@ class MockBuilder
      * definition. If only a single type is being mocked, the class name or
      * definition can be passed without being wrapped in an array.
      *
-     * @param mixed $type A type, or types to add.
+     * @param mixed $type     A type, or types to add.
      * @param mixed ...$types Additional types to add.
      *
      * @return $this         This builder.

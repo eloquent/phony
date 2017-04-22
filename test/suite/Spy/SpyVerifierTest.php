@@ -617,11 +617,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckCalled()
     {
-        $this->assertFalse((boolean) $this->subject->checkCalled());
+        $this->assertFalse((bool) $this->subject->checkCalled());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkCalled());
+        $this->assertTrue((bool) $this->subject->checkCalled());
     }
 
     public function testCalled()
@@ -640,15 +640,15 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckCalledOnce()
     {
-        $this->assertFalse((boolean) $this->subject->once()->checkCalled());
+        $this->assertFalse((bool) $this->subject->once()->checkCalled());
 
         $this->subject->addCall($this->callA);
 
-        $this->assertTrue((boolean) $this->subject->once()->checkCalled());
+        $this->assertTrue((bool) $this->subject->once()->checkCalled());
 
         $this->subject->addCall($this->callB);
 
-        $this->assertFalse((boolean) $this->subject->once()->checkCalled());
+        $this->assertFalse((bool) $this->subject->once()->checkCalled());
     }
 
     public function testCalledOnce()
@@ -674,13 +674,13 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckCalledTimes()
     {
-        $this->assertTrue((boolean) $this->subject->times(0)->checkCalled());
-        $this->assertFalse((boolean) $this->subject->times(5)->checkCalled());
+        $this->assertTrue((bool) $this->subject->times(0)->checkCalled());
+        $this->assertFalse((bool) $this->subject->times(5)->checkCalled());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->times(0)->checkCalled());
-        $this->assertTrue((boolean) $this->subject->times(5)->checkCalled());
+        $this->assertFalse((bool) $this->subject->times(0)->checkCalled());
+        $this->assertTrue((bool) $this->subject->times(5)->checkCalled());
     }
 
     public function testCalledTimes()
@@ -724,11 +724,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             $calledWith,
-            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
         );
         $this->assertSame(
             $calledWith,
-            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
         );
 
         $arguments[] = $this->matcherFactory->wildcard();
@@ -736,11 +736,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             $calledWithWildcard,
-            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
         );
         $this->assertSame(
             $calledWithWildcard,
-            (boolean) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
         );
     }
 
@@ -748,12 +748,12 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertTrue((bool) $this->subject->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
     public function testCheckCalledWithWithWildcardOnlyWithNoCalls()
     {
-        $this->assertFalse((boolean) $this->subject->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertFalse((bool) $this->subject->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
     public function testCalledWith()
@@ -817,17 +817,17 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckCalledOnceWith()
     {
-        $this->assertFalse((boolean) $this->subject->once()->checkCalledWith());
+        $this->assertFalse((bool) $this->subject->once()->checkCalledWith());
 
         $this->subject->setCalls(array($this->callA, $this->callB));
 
-        $this->assertTrue((boolean) $this->subject->once()->checkCalledWith('a', 'b', 'c'));
+        $this->assertTrue((bool) $this->subject->once()->checkCalledWith('a', 'b', 'c'));
         $this->assertTrue(
-            (boolean) $this->subject->once()
+            (bool) $this->subject->once()
                 ->checkCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
-        $this->assertFalse((boolean) $this->subject->once()->checkCalledWith($this->matcherFactory->wildcard()));
-        $this->assertFalse((boolean) $this->subject->once()->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertFalse((bool) $this->subject->once()->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertFalse((bool) $this->subject->once()->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
     public function testCalledOnceWith()
@@ -859,25 +859,25 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->times(2)->checkCalledWith('a', 'b', 'c'));
+        $this->assertTrue((bool) $this->subject->times(2)->checkCalledWith('a', 'b', 'c'));
         $this->assertTrue(
-            (boolean) $this->subject->times(2)
+            (bool) $this->subject->times(2)
                 ->checkCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
-        $this->assertTrue((boolean) $this->subject->times(2)->checkCalledWith('a', $this->matcherFactory->wildcard()));
+        $this->assertTrue((bool) $this->subject->times(2)->checkCalledWith('a', $this->matcherFactory->wildcard()));
         $this->assertTrue(
-            (boolean) $this->subject->times(2)->checkCalledWith($this->matchers[0], $this->matcherFactory->wildcard())
+            (bool) $this->subject->times(2)->checkCalledWith($this->matchers[0], $this->matcherFactory->wildcard())
         );
-        $this->assertTrue((boolean) $this->subject->times(5)->checkCalledWith($this->matcherFactory->wildcard()));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith('a', 'b', 'c'));
+        $this->assertTrue((bool) $this->subject->times(5)->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertFalse((bool) $this->subject->times(1)->checkCalledWith('a', 'b', 'c'));
         $this->assertFalse(
-            (boolean) $this->subject->times(1)
+            (bool) $this->subject->times(1)
                 ->checkCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
         );
-        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith('a'));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith($this->matchers[0]));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith($this->matcherFactory->wildcard()));
-        $this->assertFalse((boolean) $this->subject->times(1)->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertFalse((bool) $this->subject->times(1)->checkCalledWith('a'));
+        $this->assertFalse((bool) $this->subject->times(1)->checkCalledWith($this->matchers[0]));
+        $this->assertFalse((bool) $this->subject->times(1)->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertFalse((bool) $this->subject->times(1)->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
     public function testCalledTimesWith()
@@ -932,11 +932,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             $calledWith,
-            (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $arguments)
         );
         $this->assertSame(
             $calledWith,
-            (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $matchers)
         );
 
         $arguments[] = $this->matcherFactory->wildcard();
@@ -944,11 +944,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             $calledWithWildcard,
-            (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $arguments)
         );
         $this->assertSame(
             $calledWithWildcard,
-            (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $matchers)
         );
     }
 
@@ -963,10 +963,10 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $matchers[] = $this->matcherFactory->wildcard();
 
         $this->assertFalse(
-            (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $arguments)
         );
         $this->assertFalse(
-            (boolean) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array(array($this->subject->always(), 'checkCalledWith'), $matchers)
         );
     }
 
@@ -974,12 +974,12 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->always()->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertTrue((bool) $this->subject->always()->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
     public function testCheckAlwaysCalledWithWithWildcardOnlyWithNoCalls()
     {
-        $this->assertFalse((boolean) $this->subject->always()->checkCalledWith($this->matcherFactory->wildcard()));
+        $this->assertFalse((bool) $this->subject->always()->checkCalledWith($this->matcherFactory->wildcard()));
     }
 
     public function testAlwaysCalledWith()
@@ -1041,11 +1041,11 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             !$calledWith,
-            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $arguments)
         );
         $this->assertSame(
             !$calledWith,
-            (boolean) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $matchers)
         );
     }
 
@@ -1053,12 +1053,12 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->never()->checkCalledWith());
+        $this->assertFalse((bool) $this->subject->never()->checkCalledWith());
     }
 
     public function testCheckNeverCalledWithWithNoCalls()
     {
-        $this->assertTrue((boolean) $this->subject->never()->checkCalledWith());
+        $this->assertTrue((bool) $this->subject->never()->checkCalledWith());
     }
 
     public function testNeverCalledWith()
@@ -1119,22 +1119,22 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckResponded()
     {
-        $this->assertFalse((boolean) $this->subject->checkResponded());
-        $this->assertTrue((boolean) $this->subject->never()->checkResponded());
+        $this->assertFalse((bool) $this->subject->checkResponded());
+        $this->assertTrue((bool) $this->subject->never()->checkResponded());
 
         $this->subject->addCall($this->callE);
 
-        $this->assertFalse((boolean) $this->subject->checkResponded());
-        $this->assertTrue((boolean) $this->subject->never()->checkResponded());
+        $this->assertFalse((bool) $this->subject->checkResponded());
+        $this->assertTrue((bool) $this->subject->never()->checkResponded());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkResponded());
-        $this->assertFalse((boolean) $this->subject->never()->checkResponded());
+        $this->assertTrue((bool) $this->subject->checkResponded());
+        $this->assertFalse((bool) $this->subject->never()->checkResponded());
 
         $this->subject->setCalls(array($this->iteratorCall));
 
-        $this->assertTrue((boolean) $this->subject->checkResponded());
+        $this->assertTrue((bool) $this->subject->checkResponded());
     }
 
     public function testResponded()
@@ -1182,15 +1182,15 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckAlwaysResponded()
     {
-        $this->assertFalse((boolean) $this->subject->always()->checkResponded());
+        $this->assertFalse((bool) $this->subject->always()->checkResponded());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->always()->checkResponded());
+        $this->assertFalse((bool) $this->subject->always()->checkResponded());
 
         $this->subject->setCalls(array($this->callA, $this->callB));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkResponded());
+        $this->assertTrue((bool) $this->subject->always()->checkResponded());
     }
 
     public function testAlwaysResponded()
@@ -1219,27 +1219,27 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckCompleted()
     {
-        $this->assertFalse((boolean) $this->subject->checkCompleted());
-        $this->assertTrue((boolean) $this->subject->never()->checkCompleted());
+        $this->assertFalse((bool) $this->subject->checkCompleted());
+        $this->assertTrue((bool) $this->subject->never()->checkCompleted());
 
         $this->subject->addCall($this->callE);
 
-        $this->assertFalse((boolean) $this->subject->checkCompleted());
-        $this->assertTrue((boolean) $this->subject->never()->checkCompleted());
+        $this->assertFalse((bool) $this->subject->checkCompleted());
+        $this->assertTrue((bool) $this->subject->never()->checkCompleted());
 
         $this->subject->addCall($this->iteratorCallWithNoEnd);
 
-        $this->assertFalse((boolean) $this->subject->checkCompleted());
-        $this->assertTrue((boolean) $this->subject->never()->checkCompleted());
+        $this->assertFalse((bool) $this->subject->checkCompleted());
+        $this->assertTrue((bool) $this->subject->never()->checkCompleted());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkCompleted());
-        $this->assertFalse((boolean) $this->subject->never()->checkCompleted());
+        $this->assertTrue((bool) $this->subject->checkCompleted());
+        $this->assertFalse((bool) $this->subject->never()->checkCompleted());
 
         $this->subject->setCalls(array($this->iteratorCall));
 
-        $this->assertTrue((boolean) $this->subject->checkCompleted());
+        $this->assertTrue((bool) $this->subject->checkCompleted());
     }
 
     public function testCompleted()
@@ -1287,15 +1287,15 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckAlwaysCompleted()
     {
-        $this->assertFalse((boolean) $this->subject->always()->checkCompleted());
+        $this->assertFalse((bool) $this->subject->always()->checkCompleted());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->always()->checkCompleted());
+        $this->assertFalse((bool) $this->subject->always()->checkCompleted());
 
         $this->subject->setCalls(array($this->callA, $this->iteratorCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkCompleted());
+        $this->assertTrue((bool) $this->subject->always()->checkCompleted());
     }
 
     public function testAlwaysCompleted()
@@ -1326,23 +1326,23 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckReturned()
     {
-        $this->assertFalse((boolean) $this->subject->checkReturned());
-        $this->assertFalse((boolean) $this->subject->checkReturned(null));
-        $this->assertFalse((boolean) $this->subject->checkReturned($this->returnValueA));
-        $this->assertFalse((boolean) $this->subject->checkReturned($this->returnValueB));
+        $this->assertFalse((bool) $this->subject->checkReturned());
+        $this->assertFalse((bool) $this->subject->checkReturned(null));
+        $this->assertFalse((bool) $this->subject->checkReturned($this->returnValueA));
+        $this->assertFalse((bool) $this->subject->checkReturned($this->returnValueB));
         $this->assertFalse(
-            (boolean) $this->subject->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
+            (bool) $this->subject->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
         );
-        $this->assertFalse((boolean) $this->subject->checkReturned('z'));
+        $this->assertFalse((bool) $this->subject->checkReturned('z'));
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkReturned());
-        $this->assertFalse((boolean) $this->subject->checkReturned(null));
-        $this->assertTrue((boolean) $this->subject->checkReturned($this->returnValueA));
-        $this->assertTrue((boolean) $this->subject->checkReturned($this->returnValueB));
-        $this->assertTrue((boolean) $this->subject->checkReturned($this->matcherFactory->equalTo($this->returnValueA)));
-        $this->assertFalse((boolean) $this->subject->checkReturned('z'));
+        $this->assertTrue((bool) $this->subject->checkReturned());
+        $this->assertFalse((bool) $this->subject->checkReturned(null));
+        $this->assertTrue((bool) $this->subject->checkReturned($this->returnValueA));
+        $this->assertTrue((bool) $this->subject->checkReturned($this->returnValueB));
+        $this->assertTrue((bool) $this->subject->checkReturned($this->matcherFactory->equalTo($this->returnValueA)));
+        $this->assertFalse((bool) $this->subject->checkReturned('z'));
     }
 
     public function testReturned()
@@ -1389,36 +1389,36 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckAlwaysReturned()
     {
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned());
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned(null));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned($this->returnValueA));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned($this->returnValueB));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned());
+        $this->assertFalse((bool) $this->subject->always()->checkReturned(null));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned($this->returnValueA));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned($this->returnValueB));
         $this->assertFalse(
-            (boolean) $this->subject->always()->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
+            (bool) $this->subject->always()->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
         );
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned('z'));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned('z'));
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned());
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned(null));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned($this->returnValueA));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned($this->returnValueB));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned());
+        $this->assertFalse((bool) $this->subject->always()->checkReturned(null));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned($this->returnValueA));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned($this->returnValueB));
         $this->assertFalse(
-            (boolean) $this->subject->always()->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
+            (bool) $this->subject->always()->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
         );
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned('z'));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned('z'));
 
         $this->subject->setCalls(array($this->callA, $this->callA));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkReturned());
-        $this->assertTrue((boolean) $this->subject->always()->checkReturned($this->returnValueA));
+        $this->assertTrue((bool) $this->subject->always()->checkReturned());
+        $this->assertTrue((bool) $this->subject->always()->checkReturned($this->returnValueA));
         $this->assertTrue(
-            (boolean) $this->subject->always()->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
+            (bool) $this->subject->always()->checkReturned($this->matcherFactory->equalTo($this->returnValueA))
         );
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned(null));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned($this->returnValueB));
-        $this->assertFalse((boolean) $this->subject->always()->checkReturned('y'));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned(null));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned($this->returnValueB));
+        $this->assertFalse((bool) $this->subject->always()->checkReturned('y'));
     }
 
     public function testAlwaysReturned()
@@ -1456,29 +1456,29 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckThrew()
     {
-        $this->assertFalse((boolean) $this->subject->checkThrew());
-        $this->assertFalse((boolean) $this->subject->checkThrew('Exception'));
-        $this->assertFalse((boolean) $this->subject->checkThrew('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->checkThrew($this->exceptionA));
-        $this->assertFalse((boolean) $this->subject->checkThrew($this->exceptionB));
-        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exceptionA)));
-        $this->assertFalse((boolean) $this->subject->checkThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subject->checkThrew());
+        $this->assertFalse((bool) $this->subject->checkThrew('Exception'));
+        $this->assertFalse((bool) $this->subject->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->checkThrew($this->exceptionA));
+        $this->assertFalse((bool) $this->subject->checkThrew($this->exceptionB));
+        $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exceptionA)));
+        $this->assertFalse((bool) $this->subject->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->checkThrew(new Exception()));
+        $this->assertFalse((bool) $this->subject->checkThrew(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertTrue((boolean) $this->subject->checkThrew());
-        $this->assertTrue((boolean) $this->subject->checkThrew('Exception'));
-        $this->assertTrue((boolean) $this->subject->checkThrew('RuntimeException'));
-        $this->assertTrue((boolean) $this->subject->checkThrew($this->exceptionA));
-        $this->assertTrue((boolean) $this->subject->checkThrew($this->exceptionB));
-        $this->assertTrue((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exceptionA)));
-        $this->assertFalse((boolean) $this->subject->checkThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertTrue((bool) $this->subject->checkThrew());
+        $this->assertTrue((bool) $this->subject->checkThrew('Exception'));
+        $this->assertTrue((bool) $this->subject->checkThrew('RuntimeException'));
+        $this->assertTrue((bool) $this->subject->checkThrew($this->exceptionA));
+        $this->assertTrue((bool) $this->subject->checkThrew($this->exceptionB));
+        $this->assertTrue((bool) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exceptionA)));
+        $this->assertFalse((bool) $this->subject->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->checkThrew(new Exception()));
+        $this->assertFalse((bool) $this->subject->checkThrew(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
     }
 
     public function testCheckThrewFailureInvalidInput()
@@ -1577,8 +1577,8 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
         $this->subject->setCalls(array($call));
         $handle = Phony::on($exception);
 
-        $this->assertTrue((boolean) $this->subject->threw($handle));
-        $this->assertTrue((boolean) $this->subject->checkThrew($handle));
+        $this->assertTrue((bool) $this->subject->threw($handle));
+        $this->assertTrue((bool) $this->subject->checkThrew($handle));
     }
 
     public function testThrewFailureExpectingAny()
@@ -1668,52 +1668,52 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckAlwaysThrew()
     {
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew());
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('Exception'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->exceptionA));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->exceptionB));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew());
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('Exception'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->exceptionA));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->exceptionB));
         $this->assertFalse(
-            (boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
+            (bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
         );
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(new Exception()));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew());
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('Exception'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('RuntimeException'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->exceptionA));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->exceptionB));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew());
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('Exception'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->exceptionA));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->exceptionB));
         $this->assertFalse(
-            (boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
+            (bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
         );
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(new Exception()));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->subject->setCalls(array($this->callC, $this->callC));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkThrew());
-        $this->assertTrue((boolean) $this->subject->always()->checkThrew('Exception'));
-        $this->assertTrue((boolean) $this->subject->always()->checkThrew('RuntimeException'));
-        $this->assertTrue((boolean) $this->subject->always()->checkThrew($this->exceptionA));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->exceptionB));
+        $this->assertTrue((bool) $this->subject->always()->checkThrew());
+        $this->assertTrue((bool) $this->subject->always()->checkThrew('Exception'));
+        $this->assertTrue((bool) $this->subject->always()->checkThrew('RuntimeException'));
+        $this->assertTrue((bool) $this->subject->always()->checkThrew($this->exceptionA));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->exceptionB));
         $this->assertTrue(
-            (boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
+            (bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
         );
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew('InvalidArgumentException'));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new Exception()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew(new RuntimeException()));
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(new Exception()));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(new RuntimeException()));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->subject->setCalls(array($this->callA, $this->callA));
 
-        $this->assertFalse((boolean) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
     }
 
     public function testAlwaysThrew()
@@ -1813,18 +1813,18 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckIterated()
     {
-        $this->assertFalse((boolean) $this->subject->checkIterated());
-        $this->assertTrue((boolean) $this->subject->never()->checkIterated());
+        $this->assertFalse((bool) $this->subject->checkIterated());
+        $this->assertTrue((bool) $this->subject->never()->checkIterated());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->checkIterated());
-        $this->assertTrue((boolean) $this->subject->never()->checkIterated());
+        $this->assertFalse((bool) $this->subject->checkIterated());
+        $this->assertTrue((bool) $this->subject->never()->checkIterated());
 
         $this->subject->addCall($this->iteratorCall);
 
-        $this->assertTrue((boolean) $this->subject->checkIterated());
-        $this->assertTrue((boolean) $this->subject->once()->checkIterated());
+        $this->assertTrue((bool) $this->subject->checkIterated());
+        $this->assertTrue((bool) $this->subject->once()->checkIterated());
     }
 
     public function testIterated()
@@ -1858,15 +1858,15 @@ class SpyVerifierTest extends PHPUnit_Framework_TestCase
 
     public function testCheckAlwaysIterated()
     {
-        $this->assertFalse((boolean) $this->subject->always()->checkIterated());
+        $this->assertFalse((bool) $this->subject->always()->checkIterated());
 
         $this->subject->setCalls($this->calls);
 
-        $this->assertFalse((boolean) $this->subject->always()->checkIterated());
+        $this->assertFalse((bool) $this->subject->always()->checkIterated());
 
         $this->subject->setCalls(array($this->iteratorCall, $this->iteratorCall));
 
-        $this->assertTrue((boolean) $this->subject->always()->checkIterated());
+        $this->assertTrue((bool) $this->subject->always()->checkIterated());
     }
 
     public function testAlwaysIterated()

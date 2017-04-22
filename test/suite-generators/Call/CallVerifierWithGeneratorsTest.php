@@ -285,12 +285,12 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testCheckGenerated()
     {
-        $this->assertTrue((boolean) $this->generatorSubject->checkGenerated());
-        $this->assertTrue((boolean) $this->generatorSubject->once()->checkGenerated());
-        $this->assertFalse((boolean) $this->subject->checkGenerated());
-        $this->assertTrue((boolean) $this->subject->never()->checkGenerated());
-        $this->assertFalse((boolean) $this->subjectWithNoResponse->checkGenerated());
-        $this->assertTrue((boolean) $this->subjectWithNoResponse->never()->checkGenerated());
+        $this->assertTrue((bool) $this->generatorSubject->checkGenerated());
+        $this->assertTrue((bool) $this->generatorSubject->once()->checkGenerated());
+        $this->assertFalse((bool) $this->subject->checkGenerated());
+        $this->assertTrue((bool) $this->subject->never()->checkGenerated());
+        $this->assertFalse((bool) $this->subjectWithNoResponse->checkGenerated());
+        $this->assertTrue((bool) $this->subjectWithNoResponse->never()->checkGenerated());
     }
 
     public function testGenerated()
