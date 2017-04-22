@@ -13,11 +13,7 @@ namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Integration\CounterpartMatcherDriver;
 use Eloquent\Phony\Integration\HamcrestMatcherDriver;
-use Eloquent\Phony\Integration\MockeryMatcherDriver;
-use Eloquent\Phony\Integration\PhakeMatcherDriver;
-use Eloquent\Phony\Integration\ProphecyMatcherDriver;
 use Eloquent\Phony\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Simpletest\SimpletestMatcherDriver;
 
@@ -88,12 +84,8 @@ class MatcherFactory
     public function addDefaultMatcherDrivers()
     {
         $this->addMatcherDriver(HamcrestMatcherDriver::instance());
-        $this->addMatcherDriver(CounterpartMatcherDriver::instance());
         $this->addMatcherDriver(PhpunitMatcherDriver::instance());
         $this->addMatcherDriver(SimpletestMatcherDriver::instance());
-        $this->addMatcherDriver(PhakeMatcherDriver::instance());
-        $this->addMatcherDriver(ProphecyMatcherDriver::instance());
-        $this->addMatcherDriver(MockeryMatcherDriver::instance());
     }
 
     /**

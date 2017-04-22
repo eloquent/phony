@@ -23,11 +23,7 @@ use Eloquent\Phony\Event\EventOrderVerifier;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Hook\FunctionHookGenerator;
 use Eloquent\Phony\Hook\FunctionHookManager;
-use Eloquent\Phony\Integration\CounterpartMatcherDriver;
 use Eloquent\Phony\Integration\HamcrestMatcherDriver;
-use Eloquent\Phony\Integration\MockeryMatcherDriver;
-use Eloquent\Phony\Integration\PhakeMatcherDriver;
-use Eloquent\Phony\Integration\ProphecyMatcherDriver;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\AnyMatcher;
@@ -128,14 +124,7 @@ class FacadeDriver
             $exporter
         );
         $matcherFactory->addMatcherDriver(new HamcrestMatcherDriver());
-        $matcherFactory->addMatcherDriver(new CounterpartMatcherDriver());
         $matcherFactory->addMatcherDriver(new PhpunitMatcherDriver());
-        $matcherFactory->addMatcherDriver(new SimpletestMatcherDriver());
-        $matcherFactory
-            ->addMatcherDriver(new PhakeMatcherDriver($wildcardMatcher));
-        $matcherFactory
-            ->addMatcherDriver(new ProphecyMatcherDriver($wildcardMatcher));
-        $matcherFactory->addMatcherDriver(new MockeryMatcherDriver());
         $emptyValueFactory = new EmptyValueFactory(
             $featureDetector
         );

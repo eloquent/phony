@@ -12,11 +12,7 @@
 namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Integration\CounterpartMatcherDriver;
 use Eloquent\Phony\Integration\HamcrestMatcherDriver;
-use Eloquent\Phony\Integration\MockeryMatcherDriver;
-use Eloquent\Phony\Integration\PhakeMatcherDriver;
-use Eloquent\Phony\Integration\ProphecyMatcherDriver;
 use Eloquent\Phony\Phpunit\Phony;
 use Eloquent\Phony\Phpunit\PhpunitMatcherDriver;
 use Eloquent\Phony\Reflection\FeatureDetector;
@@ -67,12 +63,8 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             array(
                 HamcrestMatcherDriver::instance(),
-                CounterpartMatcherDriver::instance(),
                 PhpunitMatcherDriver::instance(),
-                SimpletestMatcherDriver::instance(),
-                PhakeMatcherDriver::instance(),
-                ProphecyMatcherDriver::instance(),
-                MockeryMatcherDriver::instance(),
+                SimpletestMatcherDriver::instance()
             ),
             $this->subject->drivers()
         );
@@ -195,12 +187,8 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             array(
                 HamcrestMatcherDriver::instance(),
-                CounterpartMatcherDriver::instance(),
                 PhpunitMatcherDriver::instance(),
                 SimpletestMatcherDriver::instance(),
-                PhakeMatcherDriver::instance(),
-                ProphecyMatcherDriver::instance(),
-                MockeryMatcherDriver::instance(),
             ),
             $instance->drivers()
         );
