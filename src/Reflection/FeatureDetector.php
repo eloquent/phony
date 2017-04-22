@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Reflection;
 
+use Eloquent\Phony\Polyfill\Errors;
 use Eloquent\Phony\Reflection\Exception\UndefinedFeatureException;
 use Exception;
 use ReflectionClass;
@@ -184,6 +185,10 @@ class FeatureDetector
 
             'error.exception.engine' => function ($detector) {
                 return $detector->checkInternalClass('Error');
+            },
+
+            'error.clear.last' => function ($detector) {
+                return function_exists('error_clear_last');
             },
 
             'generator' => function ($detector) {
@@ -511,6 +516,14 @@ class FeatureDetector
             } catch (Exception $e) {
             }
             // @codeCoverageIgnoreEnd
+        }
+
+        if (false === $result && empty($e)) {
+            if ($this->isSupported('error.clear.last')) {
+                error_clear_last();
+            } else {
+                Errors::errorClearLast();
+            }
         }
 
         error_reporting($reporting);
