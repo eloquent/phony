@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 0.14.7 (2017-04-22)
 
 - **[FIXED]** The "last error" state is now cleared when using the feature
   detector ([#209], [#214]).
