@@ -150,11 +150,29 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->checkStatement(''));
         $this->assertTrue($this->subject->checkStatement('return'));
         $this->assertFalse($this->subject->checkStatement('{'));
+
+        $error = error_get_last();
+
+        if (function_exists('error_clear_last')) {
+            $this->assertNull($error);
+        } else {
+            $this->assertSame(E_USER_NOTICE, $error['type']);
+            $this->assertSame('', $error['message']);
+        }
     }
 
     public function testCheckStatementFailure()
     {
         $this->assertFalse($this->subject->checkStatement('throw new RuntimeException()', false));
+
+        $error = error_get_last();
+
+        if (function_exists('error_clear_last')) {
+            $this->assertNull($error);
+        } else {
+            $this->assertSame(E_USER_NOTICE, $error['type']);
+            $this->assertSame('', $error['message']);
+        }
     }
 
     public function testCheckInternalClass()

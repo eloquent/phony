@@ -1,5 +1,13 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** The "last error" state is now cleared when using the feature
+  detector ([#209], [#214]).
+
+[#209]: https://github.com/eloquent/phony/issues/209
+[#214]: https://github.com/eloquent/phony/pull/214
+
 ## 0.14.6 (2017-01-03)
 
 - **[FIXED]** Partial mocks of abstract functions with return types now work as
