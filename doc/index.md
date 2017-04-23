@@ -88,7 +88,6 @@
     - [Verifying spy input]
         - [Verifying that a call was made]
         - [Verifying that a spy was called with specific arguments]
-        - [Verifying spy closure binding]
     - [Verifying spy output]
         - [Verifying spy return values]
             - [Verifying generators returned by spies]
@@ -106,7 +105,6 @@
     - [Retrieving calls from a spy]
     - [Verifying call input]
         - [Verifying that a call was made with specific arguments]
-        - [Verifying call closure binding]
     - [Verifying call output]
         - [Verifying call return values]
             - [Verifying generators returned by calls]
@@ -147,12 +145,8 @@
     - [Using colored verification output]
 - [Matchers]
     - [Matcher integrations]
-        - [Counterpart matchers]
         - [Hamcrest matchers]
-        - [Mockery matchers]
-        - [Phake matchers]
         - [PHPUnit constraints]
-        - [Prophecy argument tokens]
         - [SimpleTest expectations]
     - [Shorthand matchers]
     - [The "any" matcher]
@@ -162,9 +156,6 @@
             - [Comparing exceptions]
             - [Comparing mocks]
     - [The "wildcard" matcher]
-        - [Third-party wildcard matcher integrations]
-            - [Phake wildcard matcher integration]
-            - [Prophecy wildcard matcher integration]
 - [The exporter]
     - [The export format]
         - [Export identifiers and references]
@@ -205,7 +196,19 @@
 
 ## Installation
 
-Available as [Composer] package [eloquent/phony].
+Available as various [Composer] packages, depending on the test framework in
+use:
+
+- For [PHPUnit], use [eloquent/phony-phpunit] and import
+  `Eloquent\Phony\Phpunit`.
+- For [Peridot], use [eloquent/phony-peridot] and import `Eloquent\Phony`.
+- For [Pho], use [eloquent/phony-pho] and import `Eloquent\Phony\Pho`.
+- For [SimpleTest], use [eloquent/phony-simpletest] and import
+  `Eloquent\Phony\Simpletest`.
+- For other frameworks, or standalone usage, use [eloquent/phony] and import
+  `Eloquent\Phony`.
+
+See [Integration with test frameworks].
 
 ## Help
 
@@ -234,6 +237,8 @@ See the [phony-examples] repository.
 
 ### Standalone usage
 
+Install the [eloquent/phony] package, then:
+
 ```php
 use function Eloquent\Phony\mock;
 
@@ -247,6 +252,8 @@ $handle->methodA->calledWith('argument');
 ```
 
 ### [Peridot] usage
+
+Install the [eloquent/phony-peridot] package, then:
 
 ```php
 use function Eloquent\Phony\mock;
@@ -264,7 +271,7 @@ describe('Phony', function () {
 });
 ```
 
-There is also a [Phony for Peridot] plugin that provides auto-wired mocks:
+The [eloquent/phony-peridot] package also provides auto-wired mocks:
 
 ```php
 use function Eloquent\Phony\on;
@@ -281,6 +288,8 @@ describe('Phony for Peridot', function () {
 ```
 
 ### [Pho] usage
+
+Install the [eloquent/phony-pho] package, then:
 
 ```php
 use function Eloquent\Phony\Pho\mock;
@@ -299,6 +308,8 @@ describe('Phony', function () {
 ```
 
 ### [PHPUnit] usage
+
+Install the [eloquent/phony-phpunit] package, then:
 
 ```php
 use Eloquent\Phony\Phpunit\Phony;
@@ -319,6 +330,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 ```
 
 ### [SimpleTest] usage
+
+Install the [eloquent/phony-simpletest] package, then:
 
 ```php
 use Eloquent\Phony\Simpletest\Phony;
@@ -342,12 +355,17 @@ class PhonyTest extends UnitTestCase
 
 In order to provide the easiest integration with test frameworks, *Phony*
 exposes the same [API] through multiple namespaces. Integration is as simple as
-importing the most appropriate namespace for the framework in use:
+picking the correct [Composer] package for the framework in use, and importing
+the relevant namespace:
 
-- For [Pho], use `Eloquent\Phony\Pho`.
-- For [PHPUnit], use `Eloquent\Phony\Phpunit`.
-- For [SimpleTest], use `Eloquent\Phony\Simpletest`.
-- For [Peridot], other frameworks, or standalone usage, use `Eloquent\Phony`.
+- For [PHPUnit], use [eloquent/phony-phpunit] and import
+  `Eloquent\Phony\Phpunit`.
+- For [Peridot], use [eloquent/phony-peridot] and import `Eloquent\Phony`.
+- For [Pho], use [eloquent/phony-pho] and import `Eloquent\Phony\Pho`.
+- For [SimpleTest], use [eloquent/phony-simpletest] and import
+  `Eloquent\Phony\Simpletest`.
+- For other frameworks, or standalone usage, use [eloquent/phony] and import
+  `Eloquent\Phony`.
 
 ### Importing
 
@@ -3506,7 +3524,6 @@ For information on specific verification methods, see these sections:
     - [Verifying spy input]
         - [Verifying that a call was made]
         - [Verifying that a spy was called with specific arguments]
-        - [Verifying spy closure binding]
     - [Verifying spy output]
         - [Verifying spy return values]
             - [Verifying generators returned by spies]
@@ -3520,7 +3537,6 @@ For information on specific verification methods, see these sections:
 - [Calls]
     - [Verifying call input]
         - [Verifying that a call was made with specific arguments]
-        - [Verifying call closure binding]
     - [Verifying call output]
         - [Verifying call return values]
             - [Verifying generators returned by calls]
@@ -4212,15 +4228,6 @@ for numerous third-party matcher libraries.
 
 ### Matcher integrations
 
-#### [Counterpart] matchers
-
-[Counterpart] is a stand-alone matcher library. Its matchers can be used in any
-*Phony* verification:
-
-```php
-$spy->calledWith(Counterpart\Matchers::isEqual('a'));
-```
-
 #### [Hamcrest] matchers
 
 [Hamcrest] is a popular stand-alone matcher library, that originated in Java,
@@ -4231,23 +4238,8 @@ matchers can be used in any *Phony* verification:
 $spy->calledWith(equalTo('a'));
 ```
 
-#### [Mockery] matchers
-
-[Mockery] is a mocking library, similar to *Phony*.
-[Mockery matchers][mockery-matchers] can be used in any *Phony* verification:
-
-```php
-$spy->calledWith(Mockery::mustBe('a'));
-```
-
-#### [Phake] matchers
-
-[Phake] is a mocking library, similar to *Phony*.
-[Phake matchers][phake-matchers] can be used in any *Phony* verification:
-
-```php
-$spy->calledWith(Phake::equalTo('a'));
-```
+Hamcrest matchers are supported regardless of [which Composer package] is in
+use.
 
 #### [PHPUnit] constraints
 
@@ -4259,14 +4251,8 @@ as "constraints") can be used in any *Phony* verification:
 $spy->calledWith($this->equalTo('a'));
 ```
 
-#### [Prophecy] argument tokens
-
-[Prophecy] is a mocking library, similar to *Phony*. [Prophecy matchers]
-\(referred to as "argument tokens") can be used in any *Phony* verification:
-
-```php
-$spy->calledWith(Prophecy\Argument::exact('a'));
-```
+PHPUnit constraints are supported when using the [eloquent/phony-phpunit]
+package.
 
 #### [SimpleTest] expectations
 
@@ -4276,6 +4262,9 @@ $spy->calledWith(Prophecy\Argument::exact('a'));
 ```php
 $spy->calledWith(new EqualExpectation('a'));
 ```
+
+SimpleTest expectations are supported when using the [eloquent/phony-simpletest]
+package.
 
 ### Shorthand matchers
 
@@ -4489,33 +4478,6 @@ $spy->calledWith('*');           // this is supported
 $spy->calledWith('a', 'b', '*'); // this is supported
 $spy->calledWith('*', 'b', 'c'); // this is not supported
 $spy->calledWith('a', '*', 'c'); // this is not supported
-```
-
-#### Third-party wildcard matcher integrations
-
-*Phony* also supports the use of "wildcard" style matchers from third-party
-matcher systems:
-
-##### Phake wildcard matcher integration
-
-[Phake wildcard matchers] \(`Phake::anyParameters()`) can be used in any *Phony*
-verification:
-
-```php
-$spy('a', 'b');
-
-$spy->calledWith(Phake::anyParameters()); // verification passes
-```
-
-##### Prophecy wildcard matcher integration
-
-[Prophecy wildcard matchers] \(`Argument::cetera()`) can be used in any *Phony*
-verification:
-
-```php
-$spy('a', 'b');
-
-$spy->calledWith(Prophecy\Argument::cetera()); // verification passes
 ```
 
 ## The exporter
@@ -8322,7 +8284,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [comparing exceptions]: #comparing-exceptions
 [comparing mocks]: #comparing-mocks
 [copying mock builders]: #copying-mock-builders
-[counterpart matchers]: #counterpart-matchers
 [creating mocks from a builder]: #creating-mocks-from-a-builder
 [customizing the mock class]: #customizing-the-mock-class
 [default values for return types]: #default-values-for-return-types
@@ -8372,7 +8333,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [mock builders]: #mock-builders
 [mock handle substitution]: #mock-handle-substitution
 [mock handles]: #mock-handles
-[mockery matchers]: #mockery-matchers
 [mocking and non-public methods]: #mocking-and-non-public-methods
 [mocking basics]: #mocking-basics
 [mocking multiple types]: #mocking-multiple-types
@@ -8388,13 +8348,9 @@ For the full copyright and license information, please view the [LICENSE file].
 [pausing mock recording]: #pausing-mock-recording
 [pausing spy recording]: #pausing-spy-recording
 [peridot usage]: #peridot-usage
-[phake matchers]: #phake-matchers
-[phake wildcard matcher integration]: #phake-wildcard-matcher-integration
 [pho usage]: #pho-usage
 [phpunit constraints]: #phpunit-constraints
 [phpunit usage]: #phpunit-usage
-[prophecy argument tokens]: #prophecy-argument-tokens
-[prophecy wildcard matcher integration]: #prophecy-wildcard-matcher-integration
 [proxy mocks]: #proxy-mocks
 [repeated iteration of iterable spies]: #repeated-iteration-of-iterable-spies
 [restoring global functions after spying]: #restoring-global-functions-after-spying
@@ -8465,7 +8421,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [using iterable spies changes the return value]: #using-iterable-spies-changes-the-return-value
 [using this documentation]: #using-this-documentation
 [verification]: #verification
-[verifying call closure binding]: #verifying-call-closure-binding
 [verifying call exceptions]: #verifying-call-exceptions
 [verifying call input]: #verifying-call-input
 [verifying call output]: #verifying-call-output
@@ -8485,7 +8440,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [verifying iterables returned by spies]: #verifying-iterables-returned-by-spies
 [verifying iteration]: #verifying-iteration
 [verifying produced values]: #verifying-produced-values
-[verifying spy closure binding]: #verifying-spy-closure-binding
 [verifying spy exceptions]: #verifying-spy-exceptions
 [verifying spy input]: #verifying-spy-input
 [verifying spy output]: #verifying-spy-output
@@ -8544,6 +8498,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [testing frameworks]: #integration-with-test-frameworks
 [verification result]: #the-verification-result-api
 [verification results]: #the-verification-result-api
+[which composer package]: #integration-with-test-frameworks
 
 <!-- API references -->
 
@@ -8563,7 +8518,6 @@ For the full copyright and license information, please view the [LICENSE file].
 
 <!-- Image references -->
 
-[call-called-on-image]: img/verification/called-on/call-binding-mismatch.svg
 [call-called-with-image]: img/verification/called-with/call-argument-mismatch.svg
 [call-completed-image]: img/verification/completed/call-none-completed.svg
 [call-generated-image]: img/verification/generated/call-no-generator.svg
@@ -8576,7 +8530,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [handle-no-interaction-image]: img/verification/no-interaction/parent-class.svg
 [mock-label-image]: img/verification/called-with/mock-label.svg
 [spy-called-image]: img/verification/called/no-calls.svg
-[spy-called-on-image]: img/verification/called-on/binding-mismatch.svg
 [spy-called-with-image]: img/verification/called-with/argument-mismatch.svg
 [spy-completed-image]: img/verification/completed/none-completed.svg
 [spy-generated-image]: img/verification/generated/no-generator.svg
@@ -8601,11 +8554,13 @@ For the full copyright and license information, please view the [LICENSE file].
 [`rewind()`]: http://php.net/iterator.rewind
 [ansi colored output]: https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 [arrayaccess]: http://php.net/arrayaccess
-[closure binding]: http://php.net/closure.bind
 [code smell]: https://en.wikipedia.org/wiki/Code_smell
 [composer]: http://getcomposer.org/
 [countable]: http://php.net/countable
-[counterpart]: http://docs.counterpartphp.org/
+[eloquent/phony-peridot]: https://packagist.org/packages/eloquent/phony-peridot
+[eloquent/phony-pho]: https://packagist.org/packages/eloquent/phony-pho
+[eloquent/phony-phpunit]: https://packagist.org/packages/eloquent/phony-phpunit
+[eloquent/phony-simpletest]: https://packagist.org/packages/eloquent/phony-simpletest
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
 [error]: http://php.net/class.error
 [exception]: http://php.net/class.exception
@@ -8619,20 +8574,11 @@ For the full copyright and license information, please view the [LICENSE file].
 [isolator]: https://github.com/IcecaveStudios/isolator
 [liberator]: https://github.com/eloquent/liberator
 [license file]: https://github.com/eloquent/phony/blob/HEAD/LICENSE
-[mockery-matchers]: http://docs.mockery.io/en/latest/reference/argument_validation.html
-[mockery]: http://docs.mockery.io/
 [peridot]: http://peridot-php.github.io/
-[phake wildcard matchers]: http://phake.readthedocs.org/en/latest/method-stubbing.html?highlight=anyparameters#stubbing-consecutive-calls
-[phake-matchers]: http://phake.readthedocs.org/en/latest/method-parameter-matchers.html
-[phake]: http://phake.readthedocs.org/
 [pho]: https://github.com/danielstjules/pho
-[phony for peridot]: https://github.com/eloquent/peridot-phony
 [phony-examples]: https://github.com/eloquent/phony-examples
 [phpunit matchers]: https://phpunit.de/manual/current/en/appendixes.assertions.html#appendixes.assertions.assertThat
 [phpunit]: https://phpunit.de/
-[prophecy matchers]: https://github.com/phpspec/prophecy#arguments-wildcarding
-[prophecy wildcard matchers]: https://github.com/phpspec/prophecy#arguments-wildcarding
-[prophecy]: https://github.com/phpspec/prophecy
 [reflectionclass]: http://php.net/reflectionclass
 [return type]: http://php.net/functions.returning-values#functions.returning-values.type-declaration
 [simpletest matchers]: http://www.simpletest.org/en/expectation_documentation.html

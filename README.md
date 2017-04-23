@@ -24,13 +24,28 @@
 [verification output video]: https://asciinema.org/a/79430
 [verification-video-thumbnail]: https://asciinema.org/a/79430.png "Example verification output"
 
-## Installation and documentation
+## Installation
 
-- Available as [Composer] package [eloquent/phony].
-- Read the [documentation].
+Available as various [Composer] packages, depending on the test framework in
+use:
+
+- For [PHPUnit], use [eloquent/phony-phpunit] and import
+  `Eloquent\Phony\Phpunit`.
+- For [Peridot], use [eloquent/phony-peridot] and import `Eloquent\Phony`.
+- For [Pho], use [eloquent/phony-pho] and import `Eloquent\Phony\Pho`.
+- For [SimpleTest], use [eloquent/phony-simpletest] and import
+  `Eloquent\Phony\Simpletest`.
+- For other frameworks, or standalone usage, use [eloquent/phony] and import
+  `Eloquent\Phony`.
+
+See the section on [Integration with test frameworks] in the [documentation].
 
 [composer]: http://getcomposer.org/
-[eloquent/phony]: https://packagist.org/packages/eloquent/phony
+[integration with test frameworks]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
+
+## Documentation
+
+Full [documentation] is available.
 
 ## What is *Phony*?
 
@@ -227,6 +242,8 @@ See the [phony-examples] repository.
 
 ### Standalone usage
 
+Install the [eloquent/phony] package, then:
+
 ```php
 use function Eloquent\Phony\mock;
 
@@ -240,6 +257,8 @@ $handle->methodA->calledWith('argument');
 ```
 
 ### [Peridot] usage
+
+Install the [eloquent/phony-peridot] package, then:
 
 ```php
 use function Eloquent\Phony\mock;
@@ -257,7 +276,7 @@ describe('Phony', function () {
 });
 ```
 
-There is also a [Phony for Peridot] plugin that provides auto-wired mocks:
+The [eloquent/phony-peridot] package also provides auto-wired mocks:
 
 ```php
 use function Eloquent\Phony\on;
@@ -273,10 +292,9 @@ describe('Phony for Peridot', function () {
 });
 ```
 
-[peridot]: http://peridot-php.github.io/
-[phony for peridot]: https://github.com/eloquent/peridot-phony
-
 ### [Pho] usage
+
+Install the [eloquent/phony-pho] package, then:
 
 ```php
 use function Eloquent\Phony\Pho\mock;
@@ -294,9 +312,9 @@ describe('Phony', function () {
 });
 ```
 
-[pho]: https://github.com/danielstjules/pho
-
 ### [PHPUnit] usage
+
+Install the [eloquent/phony-phpunit] package, then:
 
 ```php
 use Eloquent\Phony\Phpunit\Phony;
@@ -317,6 +335,8 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 ```
 
 ### [SimpleTest] usage
+
+Install the [eloquent/phony-simpletest] package, then:
 
 ```php
 use Eloquent\Phony\Simpletest\Phony;
@@ -475,10 +495,17 @@ For the full copyright and license information, please view the [LICENSE file].
 <!-- References -->
 
 [documentation]: http://eloquent-software.com/phony/latest/
+[eloquent/phony-peridot]: https://packagist.org/packages/eloquent/phony-peridot
+[eloquent/phony-pho]: https://packagist.org/packages/eloquent/phony-pho
+[eloquent/phony-phpunit]: https://packagist.org/packages/eloquent/phony-phpunit
+[eloquent/phony-simpletest]: https://packagist.org/packages/eloquent/phony-simpletest
+[eloquent/phony]: https://packagist.org/packages/eloquent/phony
 [github issue]: https://github.com/eloquent/phony/issues
 [hhvm]: http://hhvm.com/
 [mockito]: http://mockito.org/
+[peridot]: http://peridot-php.github.io/
 [phake]: http://phake.readthedocs.org/
+[pho]: https://github.com/danielstjules/pho
 [phpspec]: http://phpspec.readthedocs.org/
 [phpunit]: https://phpunit.de/
 [prophecy]: https://github.com/phpspec/prophecy
