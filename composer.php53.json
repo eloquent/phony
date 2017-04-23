@@ -2,7 +2,7 @@
     "name": "eloquent/phony",
     "description": "Mocks, stubs, and spies for PHP.",
     "keywords": ["mock", "mocking", "stub", "stubbing", "spy", "dummy", "double", "test", "fake"],
-    "homepage": "https://github.com/eloquent/phony",
+    "homepage": "http://eloquent-software.com/phony/",
     "license": "MIT",
     "authors": [
         {
