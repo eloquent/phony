@@ -57,13 +57,13 @@ deploy:
       script: make publish
       skip_cleanup: true
       on:
-          php: '7.0'
+          php: '7.1'
           branch: master
     - provider: script
       script: make publish
       skip_cleanup: true
       on:
-          php: '7.0'
+          php: '7.1'
           tags: true
 
 env:
