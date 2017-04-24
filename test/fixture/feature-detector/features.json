@@ -29,7 +29,7 @@
     "Can use a constant as a parameter default value":                              ["parameter.default.constant",                  "5.4.6.x", "999",   [], "3.13.x", "999", []],
     "Can override a method that uses self as a type hint":                          ["parameter.type.self.override",                "5.4.1.x", "999",   [], "0.x",    "999", []],
     "Can use variadic parameters":                                                  ["parameter.variadic",                          "5.6.x",   "999",   [], "3.3.x",  "999", []],
-    "Can use by-reference variadic parameters":                                     ["parameter.variadic.reference",                "5.6.x",   "999",   [], "999",    "0.x", []],
+    "Can use by-reference variadic parameters":                                     ["parameter.variadic.reference",                "5.6.x",   "999",   [], "3.17.x", "999", []],
     "Can use type hints with variadic parameters":                                  ["parameter.variadic.type",                     "5.6.x",   "999",   [], "999",    "0.x", []],
     "Can use scalar type hints":                                                    ["parameter.hint.scalar",                       "7.x",     "999",   [], "3.11.x", "999", []],
     "Language keywords can be used as method names":                                ["parser.relaxed-keywords",                     "7.x",     "999",   [], "999",    "0.x", []],

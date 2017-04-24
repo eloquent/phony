@@ -128,8 +128,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
     public function testVariadicParameterMockingWithType()
     {
-        if (!$this->featureDetector->isSupported('parameter.variadic')) {
-            $this->markTestSkipped('Requires variadic parameters.');
+        if (!$this->featureDetector->isSupported('parameter.variadic.type')) {
+            $this->markTestSkipped('Requires type-hinted variadic parameters.');
         }
         if ($this->featureDetector->isSupported('runtime.hhvm')) {
             $this->markTestSkipped('Broken because of https://github.com/facebook/hhvm/issues/5762');
