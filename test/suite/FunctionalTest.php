@@ -176,9 +176,9 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         }
 
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint');
-
         $handle->get()->method(123, 1.23, '<string>', true);
-        $handle->method->calledWith(123, 1.23, '<string>', true);
+
+        $this->assertTrue((bool) $handle->method->calledWith(123, 1.23, '<string>', true));
     }
 
     public function testReturnTypeMocking()
@@ -241,7 +241,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stub = x\stub(eval('return function (): Generator {};'))->returns();
         iterator_to_array($stub());
 
-        $stub->generated();
+        $this->assertTrue((bool) $stub->generated());
     }
 
     public function testReturnTypeMockingInvalidType()
@@ -266,18 +266,20 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy('a', 'b', 'c');
         $spy(111);
 
-        $spy->twice()->called();
-        $spy->calledWith('a', 'b', 'c');
-        $spy->calledWith('a', 'b', '~');
-        $spy->calledWith('a', '*');
-        $spy->calledWith('*');
-        $spy->calledWith(111);
-        $spy->callAt(0)->calledWith('a', 'b', 'c');
-        $spy->callAt(1)->calledWith(111);
+        $this->assertTrue((bool) $spy->twice()->called());
+        $this->assertTrue((bool) $spy->calledWith('a', 'b', 'c'));
+        $this->assertTrue((bool) $spy->calledWith('a', 'b', '~'));
+        $this->assertTrue((bool) $spy->calledWith('a', '*'));
+        $this->assertTrue((bool) $spy->calledWith('*'));
+        $this->assertTrue((bool) $spy->calledWith(111));
+        $this->assertTrue((bool) $spy->callAt(0)->calledWith('a', 'b', 'c'));
+        $this->assertTrue((bool) $spy->callAt(1)->calledWith(111));
 
-        Phony::inOrder(
-            $spy->calledWith('a', 'b', 'c'),
-            $spy->calledWith(111)
+        $this->assertTrue(
+            (bool) Phony::inOrder(
+                $spy->calledWith('a', 'b', 'c'),
+                $spy->calledWith(111)
+            )
         );
     }
 
@@ -287,18 +289,20 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy('a', 'b', 'c');
         $spy(111);
 
-        $spy->twice()->called();
-        $spy->calledWith('a', 'b', 'c');
-        $spy->calledWith('a', 'b', '~');
-        $spy->calledWith('a', '*');
-        $spy->calledWith('*');
-        $spy->calledWith(111);
-        $spy->callAt(0)->calledWith('a', 'b', 'c');
-        $spy->callAt(1)->calledWith(111);
+        $this->assertTrue((bool) $spy->twice()->called());
+        $this->assertTrue((bool) $spy->calledWith('a', 'b', 'c'));
+        $this->assertTrue((bool) $spy->calledWith('a', 'b', '~'));
+        $this->assertTrue((bool) $spy->calledWith('a', '*'));
+        $this->assertTrue((bool) $spy->calledWith('*'));
+        $this->assertTrue((bool) $spy->calledWith(111));
+        $this->assertTrue((bool) $spy->callAt(0)->calledWith('a', 'b', 'c'));
+        $this->assertTrue((bool) $spy->callAt(1)->calledWith(111));
 
-        x\inOrder(
-            $spy->calledWith('a', 'b', 'c'),
-            $spy->calledWith(111)
+        $this->assertTrue(
+            (bool) x\inOrder(
+                $spy->calledWith('a', 'b', 'c'),
+                $spy->calledWith(111)
+            )
         );
     }
 
@@ -321,12 +325,12 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $stubA = x\spyGlobal('vsprintf', 'Eloquent\Phony\Test');
 
         $this->assertSame('a, b', Test\vsprintf('%s, %s', array('a', 'b')));
-        $stubA->calledWith('%s, %s', array('a', 'b'));
+        $this->assertTrue((bool) $stubA->calledWith('%s, %s', array('a', 'b')));
 
         $stubB = x\spyGlobal('vsprintf', 'Eloquent\Phony\Test');
 
         $this->assertSame('a, b', Test\vsprintf('%s, %s', array('a', 'b')));
-        $stubB->calledWith('%s, %s', array('a', 'b'));
+        $this->assertTrue((bool) $stubB->calledWith('%s, %s', array('a', 'b')));
     }
 
     public function testStubStatic()
@@ -337,22 +341,24 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $stub('a', 'b', 'c'));
         $this->assertSame('y', $stub(111));
-        $stub->twice()->called();
-        $stub->calledWith('a', 'b', 'c');
-        $stub->calledWith('a', 'b', '~');
-        $stub->calledWith('a', '*');
-        $stub->calledWith('*');
-        $stub->calledWith(111);
-        $stub->callAt(0)->calledWith('a', 'b', 'c');
-        $stub->callAt(1)->calledWith(111);
-        $stub->returned('x');
-        $stub->returned('y');
+        $this->assertTrue((bool) $stub->twice()->called());
+        $this->assertTrue((bool) $stub->calledWith('a', 'b', 'c'));
+        $this->assertTrue((bool) $stub->calledWith('a', 'b', '~'));
+        $this->assertTrue((bool) $stub->calledWith('a', '*'));
+        $this->assertTrue((bool) $stub->calledWith('*'));
+        $this->assertTrue((bool) $stub->calledWith(111));
+        $this->assertTrue((bool) $stub->callAt(0)->calledWith('a', 'b', 'c'));
+        $this->assertTrue((bool) $stub->callAt(1)->calledWith(111));
+        $this->assertTrue((bool) $stub->returned('x'));
+        $this->assertTrue((bool) $stub->returned('y'));
 
-        Phony::inOrder(
-            $stub->calledWith('a', 'b', 'c'),
-            $stub->returned('x'),
-            $stub->calledWith(111),
-            $stub->returned('y')
+        $this->assertTrue(
+            (bool) Phony::inOrder(
+                $stub->calledWith('a', 'b', 'c'),
+                $stub->returned('x'),
+                $stub->calledWith(111),
+                $stub->returned('y')
+            )
         );
     }
 
@@ -364,22 +370,24 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('x', $stub('a', 'b', 'c'));
         $this->assertSame('y', $stub(111));
-        $stub->twice()->called();
-        $stub->calledWith('a', 'b', 'c');
-        $stub->calledWith('a', 'b', '~');
-        $stub->calledWith('a', '*');
-        $stub->calledWith('*');
-        $stub->calledWith(111);
-        $stub->callAt(0)->calledWith('a', 'b', 'c');
-        $stub->callAt(1)->calledWith(111);
-        $stub->returned('x');
-        $stub->returned('y');
+        $this->assertTrue((bool) $stub->twice()->called());
+        $this->assertTrue((bool) $stub->calledWith('a', 'b', 'c'));
+        $this->assertTrue((bool) $stub->calledWith('a', 'b', '~'));
+        $this->assertTrue((bool) $stub->calledWith('a', '*'));
+        $this->assertTrue((bool) $stub->calledWith('*'));
+        $this->assertTrue((bool) $stub->calledWith(111));
+        $this->assertTrue((bool) $stub->callAt(0)->calledWith('a', 'b', 'c'));
+        $this->assertTrue((bool) $stub->callAt(1)->calledWith(111));
+        $this->assertTrue((bool) $stub->returned('x'));
+        $this->assertTrue((bool) $stub->returned('y'));
 
-        x\inOrder(
-            $stub->calledWith('a', 'b', 'c'),
-            $stub->returned('x'),
-            $stub->calledWith(111),
-            $stub->returned('y')
+        $this->assertTrue(
+            (bool) x\inOrder(
+                $stub->calledWith('a', 'b', 'c'),
+                $stub->returned('x'),
+                $stub->calledWith(111),
+                $stub->returned('y')
+            )
         );
     }
 
@@ -449,11 +457,11 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame($value, iterator_to_array($result));
         $this->assertSame($value, iterator_to_array($result));
 
-        $stub->iterated()->produced();
-        $stub->iterated()->produced('b');
-        $stub->iterated()->produced('d');
-        $stub->iterated()->produced('a', 'b');
-        $stub->iterated()->produced('c', 'd');
+        $this->assertTrue((bool) $stub->iterated()->produced());
+        $this->assertTrue((bool) $stub->iterated()->produced('b'));
+        $this->assertTrue((bool) $stub->iterated()->produced('d'));
+        $this->assertTrue((bool) $stub->iterated()->produced('a', 'b'));
+        $this->assertTrue((bool) $stub->iterated()->produced('c', 'd'));
 
         $this->assertSame('b', $result['a']);
         $this->assertSame(2, count($result));
@@ -471,11 +479,11 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $this->assertSame($value, iterator_to_array($result));
         $this->assertSame($value, iterator_to_array($result));
 
-        $stub->iterated()->produced();
-        $stub->iterated()->produced('b');
-        $stub->iterated()->produced('d');
-        $stub->iterated()->produced('a', 'b');
-        $stub->iterated()->produced('c', 'd');
+        $this->assertTrue((bool) $stub->iterated()->produced());
+        $this->assertTrue((bool) $stub->iterated()->produced('b'));
+        $this->assertTrue((bool) $stub->iterated()->produced('d'));
+        $this->assertTrue((bool) $stub->iterated()->produced('a', 'b'));
+        $this->assertTrue((bool) $stub->iterated()->produced('c', 'd'));
 
         $this->assertSame('b', $result['a']);
         $this->assertSame(2, count($result));
@@ -531,7 +539,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $handle = x\partialMock('Eloquent\Phony\Test\TestClassC');
         $handle->get()->methodB('a');
 
-        $handle->methodB->calledWith('a');
+        $this->assertTrue((bool) $handle->methodB->calledWith('a'));
     }
 
     public function testHandleStubOverriding()
@@ -776,13 +784,15 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy('c');
         $spy('d');
 
-        x\inOrder(
-            $spy->calledWith('a'),
-            x\anyOrder(
-                $spy->calledWith('c'),
-                $spy->calledWith('b')
-            ),
-            $spy->calledWith('d')
+        $this->assertTrue(
+            (bool) x\inOrder(
+                $spy->calledWith('a'),
+                x\anyOrder(
+                    $spy->calledWith('c'),
+                    $spy->calledWith('b')
+                ),
+                $spy->calledWith('d')
+            )
         );
     }
 
@@ -943,7 +953,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceD');
 
-        $handle->noInteraction();
+        $this->assertTrue((bool) $handle->noInteraction());
     }
 
     public function testCallsArgumentWithFullMockImplicitReturns()
@@ -953,7 +963,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy = Phony::spy();
 
         $this->assertNull($handle->get()->testClassAMethodA($spy));
-        $spy->called();
+        $this->assertTrue((bool) $spy->called());
     }
 
     public function testIncompleteCalls()
@@ -1008,7 +1018,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $mock = $handle->get();
 
         $this->assertSame('magic a bc', $mock->a('b', 'c'));
-        $handle->a->calledWith('b', 'c');
+        $this->assertTrue((bool) $handle->a->calledWith('b', 'c'));
     }
 
     public function testPartialMockOfStaticMagicCallTrait()
@@ -1021,7 +1031,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $class = get_class($mock);
 
         $this->assertSame('magic a bc', $class::a('b', 'c'));
-        x\onStatic($mock)->a->calledWith('b', 'c');
+        $this->assertTrue((bool) x\onStatic($mock)->a->calledWith('b', 'c'));
     }
 
     public function testInvalidStubUsageWithInvoke()
@@ -1043,8 +1053,8 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($handleA->get(), $mockB->methodA());
         $this->assertSame('a', $mockB->methodA($handleA->get()));
-        $handleB->methodA->calledWith($handleA);
-        $handleB->methodA->returned($handleA);
+        $this->assertTrue((bool) $handleB->methodA->calledWith($handleA));
+        $this->assertTrue((bool) $handleB->methodA->returned($handleA));
     }
 
     public function testIterableSpySubstitution()
@@ -1056,16 +1066,16 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $spy($iterable);
         $spy($iterableSpy);
 
-        $stub->returned($iterable);
-        $stub->returned($iterableSpy);
-        $stub->returned(x\equalTo($iterable));
-        $stub->never()->returned(x\equalTo($iterableSpy));
-        $spy->callAt(0)->calledWith($iterable);
-        $spy->callAt(0)->calledWith($iterableSpy);
-        $spy->callAt(0)->never()->calledWith(x\equalTo($iterableSpy));
-        $spy->callAt(1)->calledWith($iterable);
-        $spy->callAt(1)->calledWith($iterableSpy);
-        $spy->callAt(1)->never()->calledWith(x\equalTo($iterable));
+        $this->assertTrue((bool) $stub->returned($iterable));
+        $this->assertTrue((bool) $stub->returned($iterableSpy));
+        $this->assertTrue((bool) $stub->returned(x\equalTo($iterable)));
+        $this->assertTrue((bool) $stub->never()->returned(x\equalTo($iterableSpy)));
+        $this->assertTrue((bool) $spy->callAt(0)->calledWith($iterable));
+        $this->assertTrue((bool) $spy->callAt(0)->calledWith($iterableSpy));
+        $this->assertTrue((bool) $spy->callAt(0)->never()->calledWith(x\equalTo($iterableSpy)));
+        $this->assertTrue((bool) $spy->callAt(1)->calledWith($iterable));
+        $this->assertTrue((bool) $spy->callAt(1)->calledWith($iterableSpy));
+        $this->assertTrue((bool) $spy->callAt(1)->never()->calledWith(x\equalTo($iterable)));
     }
 
     public function testReturnByReferenceMocking()
@@ -1220,10 +1230,10 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('a', $iterableSpyAFirst);
         $this->assertSame(array('a', 'b'), $iterableSpyBContents);
-        $singleWrapped->twice()->produced('a');
-        $singleWrapped->once()->produced('b');
-        $doubleWrapped->once()->produced('a');
-        $doubleWrapped->once()->produced('b');
+        $this->assertTrue((bool) $singleWrapped->twice()->produced('a'));
+        $this->assertTrue((bool) $singleWrapped->once()->produced('b'));
+        $this->assertTrue((bool) $doubleWrapped->once()->produced('a'));
+        $this->assertTrue((bool) $doubleWrapped->once()->produced('b'));
     }
 
     public function testIterableSpyDoubleWrappingWithTraversable()
@@ -1241,10 +1251,10 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('a', $iterableSpyAFirst);
         $this->assertSame(array('a', 'b'), $iterableSpyBContents);
-        $singleWrapped->twice()->produced('a');
-        $singleWrapped->once()->produced('b');
-        $doubleWrapped->once()->produced('a');
-        $doubleWrapped->once()->produced('b');
+        $this->assertTrue((bool) $singleWrapped->twice()->produced('a'));
+        $this->assertTrue((bool) $singleWrapped->once()->produced('b'));
+        $this->assertTrue((bool) $doubleWrapped->once()->produced('a'));
+        $this->assertTrue((bool) $doubleWrapped->once()->produced('b'));
     }
 
     public function testIterableSpyDoubleWrappingWithGenerator()
@@ -1282,12 +1292,12 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(array('a', 'b'), $generatorSpyAContents);
         $this->assertSame(array(1 => 'b', 2 => 'c'), $generatorSpyBContents);
-        $singleWrapped->once()->produced(0, 'a');
-        $singleWrapped->once()->produced(1, 'b');
-        $singleWrapped->once()->produced(2, 'c');
-        $doubleWrapped->never()->produced('a');
-        $doubleWrapped->once()->produced(1, 'b');
-        $doubleWrapped->once()->produced(2, 'c');
+        $this->assertTrue((bool) $singleWrapped->once()->produced(0, 'a'));
+        $this->assertTrue((bool) $singleWrapped->once()->produced(1, 'b'));
+        $this->assertTrue((bool) $singleWrapped->once()->produced(2, 'c'));
+        $this->assertTrue((bool) $doubleWrapped->never()->produced('a'));
+        $this->assertTrue((bool) $doubleWrapped->once()->produced(1, 'b'));
+        $this->assertTrue((bool) $doubleWrapped->once()->produced(2, 'c'));
     }
 
     public function testIterableSpyDoubleWrappingWithGeneratorWithoutImplicitNext()
@@ -1325,12 +1335,12 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(array('a', 'b'), $generatorSpyAContents);
         $this->assertSame(array(2 => 'c'), $generatorSpyBContents);
-        $singleWrapped->once()->produced(0, 'a');
-        $singleWrapped->once()->produced(1, 'b');
-        $singleWrapped->once()->produced(2, 'c');
-        $doubleWrapped->never()->produced('a');
-        $doubleWrapped->never()->produced('b');
-        $doubleWrapped->once()->produced(2, 'c');
+        $this->assertTrue((bool) $singleWrapped->once()->produced(0, 'a'));
+        $this->assertTrue((bool) $singleWrapped->once()->produced(1, 'b'));
+        $this->assertTrue((bool) $singleWrapped->once()->produced(2, 'c'));
+        $this->assertTrue((bool) $doubleWrapped->never()->produced('a'));
+        $this->assertTrue((bool) $doubleWrapped->never()->produced('b'));
+        $this->assertTrue((bool) $doubleWrapped->once()->produced(2, 'c'));
     }
 
     public function exporterExamplesTest()
