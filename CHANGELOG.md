@@ -1,5 +1,40 @@
 # Phony changelog
 
+## 1.0.0 (2017-04-24)
+
+- **[BC BREAK]** Third-party test framework integrations have been moved to
+  separate Composer packages ([#216]).
+- **[BC BREAK]** Dropped support for Counterpart, Mockery, Phake, and Prophecy
+  matchers ([#216]).
+
+[#216]: https://github.com/eloquent/phony/issues/216
+
+### Migrating to 1.x
+
+No code changes should be required, but in some cases, the Composer package name
+and version constraint will need to be updated:
+
+- If you're using Phony under **PHPUnit**:
+  - Change the Composer package from `eloquent/phony` to
+    `eloquent/phony-phpunit`.
+  - Pick the appropriate version constraint for the version of PHPUnit you
+    intend to use. See the [eloquent/phony-phpunit repository] for more
+    information.
+- If you're using Phony under **Peridot**:
+  - If you were using `eloquent/peridot-phony`, change the Composer package to
+    `eloquent/phony-peridot`.
+  - If you were using `eloquent/phony`, no changes are required, but consider
+    trying `eloquent/phony-peridot` for the added auto-wired mock support. See
+    the [eloquent/phony-peridot repository] for more information.
+- If you're using Phony under **SimpleTest**, change the Composer package from
+  `eloquent/phony` to `eloquent/phony-simpletest`.
+- If you're using Phony under **Pho**, change the Composer package from
+  `eloquent/phony` to `eloquent/phony-pho`.
+- For other frameworks, or standalone use, no changes are required.
+
+[eloquent/phony-peridot repository]: https://github.com/eloquent/phony-peridot
+[eloquent/phony-phpunit repository]: https://github.com/eloquent/phony-phpunit
+
 ## 0.14.7 (2017-04-22)
 
 - **[FIXED]** The "last error" state is now cleared when using the feature

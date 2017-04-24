@@ -91,28 +91,21 @@ integrations seamless and intuitive:
 - Tight integration with [PHPUnit][phpunit integration],
   [Pho][pho integration] and [SimpleTest][simpletest integration]
 - [Can be used standalone, too]
-- Supports matchers from [Counterpart][counterpart matchers],
-  [Hamcrest][hamcrest matchers], [PHPUnit][phpunit matchers],
-  [SimpleTest][simpletest matchers], and even other mocking frameworks like
-  [Phake][phake matchers], [Prophecy][prophecy matchers], and
-  [Mockery][mockery matchers]
+- Supports matchers from [Hamcrest][hamcrest matchers],
+  [PHPUnit][phpunit matchers], and [SimpleTest][simpletest matchers].
 
 Interested in better integration with other test frameworks? So are we! Just
 open a [GitHub issue] if there's something we can do.
 
 [can be used standalone, too]: http://eloquent-software.com/phony/latest/#standalone-usage
 [choosing the correct namespace to import]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
-[counterpart matchers]: http://eloquent-software.com/phony/latest/#counterpart-matchers
 [hamcrest matchers]: http://eloquent-software.com/phony/latest/#hamcrest-matchers
 [integrates seamlessly with other testing libraries and tools]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
-[mockery matchers]: http://eloquent-software.com/phony/latest/#mockery-matchers
 [most test frameworks need no special treatment]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
 [no configuration or bootstrap code necessary]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
-[phake matchers]: http://eloquent-software.com/phony/latest/#phake-matchers
 [pho integration]: http://eloquent-software.com/phony/latest/#pho-usage
 [phpunit integration]: http://eloquent-software.com/phony/latest/#phpunit-usage
 [phpunit matchers]: http://eloquent-software.com/phony/latest/#phpunit-constraints
-[prophecy matchers]: http://eloquent-software.com/phony/latest/#prophecy-argument-tokens
 [simpletest integration]: http://eloquent-software.com/phony/latest/#simpletest-usage
 [simpletest matchers]: http://eloquent-software.com/phony/latest/#simpletest-expectations
 
