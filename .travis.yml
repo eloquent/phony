@@ -43,7 +43,7 @@ matrix:
 before_install:
     - phpenv config-rm xdebug.ini || true
     - composer config --global github-oauth.github.com $GITHUB_TOKEN
-install: scripts/composer-install --prefer-dist --no-progress --no-interaction
+install: composer install --prefer-dist --no-progress --no-interaction
 before_script:
   - if [[ "$HHVMPHP7" ]]; then echo hhvm.php7.all=1 >> /etc/hhvm/php.ini; fi
 script: scripts/travis
@@ -70,6 +70,5 @@ env:
 cache:
     directories:
         - $HOME/.composer
-        - .composer
 
 sudo: false

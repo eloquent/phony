@@ -19,7 +19,7 @@
         "errors/exceptions": "^0.1",
         "hamcrest/hamcrest-php": "^2",
         "icecave/semver": "^3",
-        "phpunit/phpunit": "^4|^5"
+        "phpunit/phpunit": "^4"
     },
     "autoload": {
         "psr-4": {
@@ -37,5 +37,10 @@
             "test/src/ClassA.php",
             "test/src/TestClass.php"
         ]
+    },
+    "config": {
+        "platform": {
+            "php": "5.3.99999"
+        }
     }
 }

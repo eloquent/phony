@@ -13,7 +13,7 @@ lint: test/bin/php-cs-fixer
 	test/bin/php-cs-fixer fix --using-cache no
 
 install:
-	PHONY_MAKEFILE_INSTALL=1 scripts/composer-install
+	composer install
 
 edge-cases: install
 	php --version
