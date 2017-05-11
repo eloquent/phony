@@ -69,7 +69,7 @@ deploy:
 env:
     global:
         - ELOQUENT_PUBLISH_VERSION=7.1
-        - secure: "j+ElTeNDwLIjcifor5MzdTmvxGbDWktWZcKNKy7QKrp/ApQn/A+0gEacaHmEOIXBUEIEFwIyV8VpEDq1qkN63NWL865bKx/vb7X73xilKrcem1y8MxnCsKwqCtnLS8FR9ni7eZnfzhV+kjvXuGAobxY3ZlX/Go0AAAj/l4ziMtc="
+        - secure: "ZACO936IO20LK1BfiDoOVgy+1NpeghXM5vk+9p2kf/9VhithSqSOipoCj4KxasVjAYi2XMQjUNTsoAgLZc7yaHlBYVEZrHpMylzD6Hp9a9K56z/bPEZlPjjLRzbsYMtF1OzKormLOfJIt0aNyJfGcgdD2+uyRUvuL0+z+0toQro="
 
 cache:
     directories:
