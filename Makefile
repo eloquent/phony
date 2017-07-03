@@ -1,10 +1,10 @@
 test: install
 	php --version
-	vendor/bin/phpunit --no-coverage
+	PHP_ERROR_EXCEPTION_DEPRECATIONS=1 vendor/bin/phpunit --no-coverage
 
 coverage: install
 	phpdbg --version
-	phpdbg -qrr vendor/bin/phpunit
+	PHP_ERROR_EXCEPTION_DEPRECATIONS=1 phpdbg -qrr vendor/bin/phpunit
 
 open-coverage:
 	open coverage/index.html

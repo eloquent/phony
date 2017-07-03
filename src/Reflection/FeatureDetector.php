@@ -275,11 +275,7 @@ class FeatureDetector
                 return $detector->checkInternalMethod('Generator', 'getReturn');
             },
 
-            'object.constructor.php4' => function ($detector) {
-                if ($detector->isSupported('runtime.hhvm')) {
-                    return true; // @codeCoverageIgnore
-                }
-
+            'object.constructor.php4' => function () {
                 return version_compare(PHP_VERSION, '7.x', '<');
             },
 
