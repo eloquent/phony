@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 1.0.1 (2017-07-04)
 
 - **[FIXED]** Matcher verification no longer uses deprecated `each()` function.
 
