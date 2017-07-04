@@ -1,5 +1,9 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** Matcher verification no longer uses deprecated `each()` function.
+
 ## 1.0.0 (2017-04-24)
 
 - **[BC BREAK]** Third-party test framework integrations have been moved to

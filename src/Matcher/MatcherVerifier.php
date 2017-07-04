@@ -40,16 +40,20 @@ class MatcherVerifier
      */
     public function matches(array $matchers, array $arguments)
     {
-        $pair = each($arguments);
+        $argumentCount = count($arguments);
+        $index = 0;
 
         foreach ($matchers as $matcher) {
             if ($matcher instanceof WildcardMatcher) {
                 $matchCount = 0;
                 $innerMatcher = $matcher->matcher();
 
-                while (!empty($pair) && $innerMatcher->matches($pair[1])) {
+                while (
+                    $index < $argumentCount &&
+                    $innerMatcher->matches($arguments[$index])
+                ) {
                     ++$matchCount;
-                    $pair = each($arguments);
+                    ++$index;
                 }
 
                 $maximumArguments = $matcher->maximumArguments();
@@ -68,14 +72,17 @@ class MatcherVerifier
                 continue;
             }
 
-            if (empty($pair) || !$matcher->matches($pair[1])) {
+            if (
+                $index >= $argumentCount ||
+                !$matcher->matches($arguments[$index])
+            ) {
                 return false;
-            } else {
-                $pair = each($arguments);
             }
+
+            ++$index;
         }
 
-        return false === $pair;
+        return $index === $argumentCount;
     }
 
     /**
@@ -92,7 +99,8 @@ class MatcherVerifier
         $isMatch = true;
         $matcherMatches = array();
         $argumentMatches = array();
-        $pair = each($arguments);
+        $argumentCount = count($arguments);
+        $index = 0;
 
         foreach ($matchers as $matcher) {
             if ($matcher instanceof WildcardMatcher) {
@@ -102,36 +110,42 @@ class MatcherVerifier
                 $maximumArguments = $matcher->maximumArguments();
 
                 for ($count = 0; $count < $minimumArguments; ++$count) {
-                    if (empty($pair)) {
+                    if ($index >= $argumentCount) {
                         $matcherIsMatch = false;
                         $argumentMatches[] = false;
 
                         break;
                     }
 
-                    if ($innerMatcher->matches($pair[1])) {
+                    if ($innerMatcher->matches($arguments[$index])) {
                         $argumentMatches[] = true;
                     } else {
                         $matcherIsMatch = false;
                         $argumentMatches[] = false;
                     }
 
-                    $pair = each($arguments);
+                    ++$index;
                 }
 
                 if (null === $maximumArguments) {
-                    while (!empty($pair) && $innerMatcher->matches($pair[1])) {
+                    while (
+                        $index < $argumentCount &&
+                        $innerMatcher->matches($arguments[$index])
+                    ) {
                         $argumentMatches[] = true;
-                        $pair = each($arguments);
+                        ++$index;
                     }
                 } else {
                     for (; $count < $maximumArguments; ++$count) {
-                        if (empty($pair) || !$innerMatcher->matches($pair[1])) {
+                        if (
+                            $index >= $argumentCount ||
+                            !$innerMatcher->matches($arguments[$index])
+                        ) {
                             break;
                         }
 
                         $argumentMatches[] = true;
-                        $pair = each($arguments);
+                        ++$index;
                     }
                 }
 
@@ -141,18 +155,19 @@ class MatcherVerifier
                 continue;
             }
 
-            $matcherIsMatch = !empty($pair) && $matcher->matches($pair[1]);
+            $matcherIsMatch =
+                $index < $argumentCount &&
+                $matcher->matches($arguments[$index]);
 
             $isMatch = $isMatch && $matcherIsMatch;
             $matcherMatches[] = $matcherIsMatch;
             $argumentMatches[] = $matcherIsMatch;
-            $pair = each($arguments);
+            ++$index;
         }
 
-        while (!empty($pair)) {
+        for (; $index < $argumentCount; ++$index) {
             $argumentMatches[] = false;
             $isMatch = false;
-            $pair = each($arguments);
         }
 
         return new MatcherResult($isMatch, $matcherMatches, $argumentMatches);
