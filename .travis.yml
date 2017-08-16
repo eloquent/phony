@@ -8,6 +8,7 @@ matrix:
         - php: 5.6
         - php: 7.0
         - php: 7.1
+        - php: 7.2
         - php: nightly
         - php: hhvm-3.6
           sudo: required
@@ -57,18 +58,18 @@ deploy:
       script: make publish
       skip_cleanup: true
       on:
-          php: '7.1'
+          php: '7.2'
           branch: master
     - provider: script
       script: make publish
       skip_cleanup: true
       on:
-          php: '7.1'
+          php: '7.2'
           tags: true
 
 env:
     global:
-        - ELOQUENT_PUBLISH_VERSION=7.1
+        - ELOQUENT_PUBLISH_VERSION=7.2
         - secure: "ZACO936IO20LK1BfiDoOVgy+1NpeghXM5vk+9p2kf/9VhithSqSOipoCj4KxasVjAYi2XMQjUNTsoAgLZc7yaHlBYVEZrHpMylzD6Hp9a9K56z/bPEZlPjjLRzbsYMtF1OzKormLOfJIt0aNyJfGcgdD2+uyRUvuL0+z+0toQro="
 
 cache:

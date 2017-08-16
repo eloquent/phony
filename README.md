@@ -50,7 +50,7 @@ Full [documentation] is available.
 ## What is *Phony*?
 
 *Phony* is a PHP library for creating [test doubles]. *Phony* supports a wide
-range of PHP versions, from 5.3 through to 7.1, as well as [HHVM].
+range of PHP versions, from 5.3 through to 7.2, as well as [HHVM].
 
 [test doubles]: https://en.wikipedia.org/wiki/Test_double
 
