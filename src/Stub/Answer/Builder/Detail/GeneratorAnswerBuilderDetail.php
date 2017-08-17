@@ -17,10 +17,7 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorYieldFromIteration;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 
 /**
- * A detail class for generator answer builders without support for return
- * values.
- *
- * @codeCoverageIgnore
+ * A detail class for generator answer builders.
  */
 abstract class GeneratorAnswerBuilderDetail
 {
@@ -46,14 +43,15 @@ abstract class GeneratorAnswerBuilderDetail
         &$returnsSelf,
         Invoker $invoker
     ) {
-        // @codeCoverageIgnoreStart
         return function ($self, $arguments) use (
             &$iterations,
             &$requests,
             &$exception,
+            &$returnValue,
+            &$returnsArgument,
+            &$returnsSelf,
             $invoker
         ) {
-            // @codeCoverageIgnoreEnd
             foreach ($iterations as $iteration) {
                 foreach ($iteration->requests as $request) {
                     $invoker->callWith(
@@ -95,6 +93,16 @@ abstract class GeneratorAnswerBuilderDetail
             if ($exception) {
                 throw $exception;
             }
+
+            if ($returnsSelf) {
+                return $self;
+            }
+
+            if (null !== $returnsArgument) {
+                return $arguments->get($returnsArgument);
+            }
+
+            return $returnValue;
         };
     }
 }

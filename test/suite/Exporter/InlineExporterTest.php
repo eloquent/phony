@@ -217,10 +217,6 @@ class InlineExporterTest extends TestCase
 
     public function testExportGenerators()
     {
-        if (!$this->featureDetector->isSupported('generator')) {
-            $this->markTestSkipped('Requires generators.');
-        }
-
         $generator = call_user_func(
             function () {
                 return;
@@ -337,10 +333,6 @@ class InlineExporterTest extends TestCase
 
     public function testExportGeneratorSpies()
     {
-        if (!$this->featureDetector->isSupported('generator')) {
-            $this->markTestSkipped('Requires generators.');
-        }
-
         $spy = $this->spyFactory->create(
             function () {
                 return;
@@ -453,10 +445,6 @@ class InlineExporterTest extends TestCase
 
     public function testExportCallableWithTraits()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $builderA = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestTraitA')
             ->named('PhonyMockInlineExporterExportCallableWithTraitsA');
         $mockA = $builderA->get();

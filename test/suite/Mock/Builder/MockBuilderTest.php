@@ -85,8 +85,7 @@ class MockBuilderTest extends TestCase
             $typeNames,
             $this->factory,
             $this->handleFactory,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
     }
 
@@ -128,7 +127,6 @@ class MockBuilderTest extends TestCase
         $this->assertSame($this->factory, $this->subject->factory());
         $this->assertSame($this->handleFactory, $this->subject->handleFactory());
         $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
-        $this->assertSame($this->featureDetector, $this->subject->featureDetector());
         $this->assertFalse($this->subject->isFinalized());
         $this->assertFalse($this->subject->isBuilt());
     }
@@ -153,10 +151,6 @@ class MockBuilderTest extends TestCase
 
     public function testConstructorWithTraits()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $this->setUpWith(
             [
                 'Eloquent\Phony\Test\TestClassB',
@@ -176,7 +170,6 @@ class MockBuilderTest extends TestCase
         $this->assertEquals($this->typesFor($this->typeNamesTraits), $this->subject->types());
         $this->assertSame($this->factory, $this->subject->factory());
         $this->assertSame($this->handleFactory, $this->subject->handleFactory());
-        $this->assertSame($this->featureDetector, $this->subject->featureDetector());
         $this->assertFalse($this->subject->isFinalized());
         $this->assertFalse($this->subject->isBuilt());
     }
@@ -648,10 +641,6 @@ class MockBuilderTest extends TestCase
      */
     public function testBuildThrowables($typeNames, $expectedTypes, $expectedNonTypes)
     {
-        if (!$this->featureDetector->isSupported('error.exception.engine')) {
-            $this->markTestSkipped('Requires engine error exceptions.');
-        }
-
         $this->setUpWith($typeNames);
 
         $this->assertTypes($expectedTypes, $expectedNonTypes, $this->subject->build());

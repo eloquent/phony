@@ -18,9 +18,7 @@ use Generator;
 use Throwable;
 
 /**
- * A detail class for generator spy syntax using an expression.
- *
- * @codeCoverageIgnore
+ * A detail class for generator spies under PHP.
  */
 abstract class GeneratorSpyFactoryDetailPhp
 {
@@ -57,15 +55,20 @@ abstract class GeneratorSpyFactoryDetailPhp
                 }
 
                 if (!$generator->valid()) {
-                    $call->setEndEvent($callEventFactory->createReturned(null));
+                    $returnValue = $generator->getReturn();
+                    $call->setEndEvent(
+                        $callEventFactory->createReturned($returnValue)
+                    );
 
-                    break;
+                    return $returnValue;
                 }
             } catch (Throwable $thrown) {
                 // re-thrown after recording
+                // @codeCoverageIgnoreStart
             } catch (Exception $thrown) {
                 // re-thrown after recording
             }
+            // @codeCoverageIgnoreEnd
 
             if ($thrown) {
                 $call->setEndEvent(

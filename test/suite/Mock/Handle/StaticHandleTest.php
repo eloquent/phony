@@ -254,10 +254,6 @@ class StaticHandleTest extends TestCase
 
     public function testStubbingWithTraitMethod()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $this->setUpWith('Eloquent\Phony\Test\TestTraitA');
         $this->subject->partial();
         $className = $this->className;
@@ -302,10 +298,6 @@ class StaticHandleTest extends TestCase
 
     public function testStubbingWithTraitFinalMethod()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $this->setUpWith('Eloquent\Phony\Test\TestTraitG');
         $this->subject->partial();
         $className = $this->className;

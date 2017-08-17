@@ -26,15 +26,13 @@ class MockDefinition
     /**
      * Construct a new mock definition.
      *
-     * @param array<string,ReflectionClass>                            $types                      The types.
-     * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customMethods              The custom methods.
-     * @param array<string,mixed>                                      $customProperties           The custom properties.
-     * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customStaticMethods        The custom static methods.
-     * @param array<string,mixed>                                      $customStaticProperties     The custom static properties.
-     * @param array<string,mixed>                                      $customConstants            The custom constants.
-     * @param string|null                                              $className                  The class name.
-     * @param bool                                                     $isTraitSupported           True if traits are supported.
-     * @param bool                                                     $isRelaxedKeywordsSupported True if relaxed keywords are supported.
+     * @param array<string,ReflectionClass>                            $types                  The types.
+     * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customMethods          The custom methods.
+     * @param array<string,mixed>                                      $customProperties       The custom properties.
+     * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customStaticMethods    The custom static methods.
+     * @param array<string,mixed>                                      $customStaticProperties The custom static properties.
+     * @param array<string,mixed>                                      $customConstants        The custom constants.
+     * @param string|null                                              $className              The class name.
      */
     public function __construct(
         array $types,
@@ -43,9 +41,7 @@ class MockDefinition
         array $customStaticMethods,
         array $customStaticProperties,
         array $customConstants,
-        $className,
-        $isTraitSupported,
-        $isRelaxedKeywordsSupported
+        $className
     ) {
         $this->types = $types;
         $this->customMethods = $customMethods;
@@ -54,8 +50,6 @@ class MockDefinition
         $this->customStaticProperties = $customStaticProperties;
         $this->customConstants = $customConstants;
         $this->className = $className;
-        $this->isTraitSupported = $isTraitSupported;
-        $this->isRelaxedKeywordsSupported = $isRelaxedKeywordsSupported;
 
         $this->signature = [
             'types' => array_keys($types),
@@ -260,7 +254,7 @@ class MockDefinition
 
             if ($type->isInterface()) {
                 $this->interfaceNames[] = $typeName;
-            } elseif ($this->isTraitSupported && $type->isTrait()) {
+            } elseif ($type->isTrait()) {
                 $this->traitNames[] = $typeName;
             } else {
                 $this->parentClassName = $typeName;
@@ -337,26 +331,7 @@ class MockDefinition
             }
         }
 
-        if ($this->isRelaxedKeywordsSupported) {
-            // class is the only keyword that can not be used as a method name
-            unset($methods['class']);
-            // @codeCoverageIgnoreStart
-        } else {
-            $methodNames = array_keys($methods);
-            $tokens = token_get_all('<?php ' . implode(' ', $methodNames));
-
-            foreach ($methodNames as $index => $methodName) {
-                $tokenIndex = $index * 2 + 1;
-
-                if (
-                    !is_array($tokens[$tokenIndex]) ||
-                    $tokens[$tokenIndex][0] !== T_STRING
-                ) {
-                    unset($methods[$methodName]);
-                }
-            }
-        }
-        // @codeCoverageIgnoreEnd
+        unset($methods['class']);
 
         foreach ($this->customStaticMethods as $methodName => $method) {
             list($callback, $reflector) = $method;
@@ -392,8 +367,6 @@ class MockDefinition
     private $customConstants;
     private $className;
     private $signature;
-    private $isTraitSupported;
-    private $isRelaxedKeywordsSupported;
     private $typeNames;
     private $parentClassName;
     private $interfaceNames;

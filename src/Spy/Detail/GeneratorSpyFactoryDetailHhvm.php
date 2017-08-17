@@ -18,8 +18,7 @@ use Generator;
 use Throwable;
 
 /**
- * A detail class for generator spies under HHVM without support for return
- * values.
+ * A detail class for generator spies under HHVM.
  *
  * @codeCoverageIgnore
  */
@@ -28,18 +27,16 @@ abstract class GeneratorSpyFactoryDetailHhvm
     /**
      * Create a new generator spy.
      *
-     * @param Call             $call                             The call from which the generator originated.
-     * @param Generator        $generator                        The generator.
-     * @param CallEventFactory $callEventFactory                 The call event factory to use.
-     * @param bool             $isGeneratorImplicitNextSupported True if implicit generator next() behavior is supported.
+     * @param Call             $call             The call from which the generator originated.
+     * @param Generator        $generator        The generator.
+     * @param CallEventFactory $callEventFactory The call event factory to use.
      *
      * @return Generator The newly created generator spy.
      */
     public static function createGeneratorSpy(
         Call $call,
         Generator $generator,
-        CallEventFactory $callEventFactory,
-        $isGeneratorImplicitNextSupported
+        CallEventFactory $callEventFactory
     ) {
         $call->addIterableEvent($callEventFactory->createUsed());
 
@@ -51,11 +48,7 @@ abstract class GeneratorSpyFactoryDetailHhvm
             $thrown = null;
 
             try {
-                if ($isFirst) {
-                    if (!$isGeneratorImplicitNextSupported) {
-                        $generator->next();
-                    }
-                } else {
+                if (!$isFirst) {
                     if ($receivedException) {
                         $generator->throw($receivedException);
                     } else {
@@ -64,9 +57,12 @@ abstract class GeneratorSpyFactoryDetailHhvm
                 }
 
                 if (!$generator->valid()) {
-                    $call->setEndEvent($callEventFactory->createReturned(null));
+                    $returnValue = $generator->getReturn();
+                    $call->setEndEvent(
+                        $callEventFactory->createReturned($returnValue)
+                    );
 
-                    break;
+                    return $returnValue;
                 }
             } catch (Throwable $thrown) {
                 // re-thrown after recording

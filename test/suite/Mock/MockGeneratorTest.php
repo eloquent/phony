@@ -26,8 +26,6 @@ class MockGeneratorTest extends TestCase
         $this->labelSequencer = new Sequencer();
         $this->signatureInspector = FunctionSignatureInspector::instance();
         $this->featureDetector = new FeatureDetector();
-        $this->isTraitSupported = $this->featureDetector->isSupported('trait');
-        $this->isRelaxedKeywordsSupported = $this->featureDetector->isSupported('parser.relaxed-keywords');
         $this->subject = new MockGenerator($this->labelSequencer, $this->signatureInspector, $this->featureDetector);
     }
 
@@ -55,9 +53,7 @@ class MockGeneratorTest extends TestCase
             [],
             [],
             [],
-            null,
-            $this->isTraitSupported,
-            $this->isRelaxedKeywordsSupported
+            null
         );
 
         $this->assertSame($expected, $this->subject->generateClassName($definition));
@@ -65,10 +61,6 @@ class MockGeneratorTest extends TestCase
 
     public function testClassNameWithTraits()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $this->types = [
             new ReflectionClass('Eloquent\Phony\Test\TestTraitA'),
             new ReflectionClass('Eloquent\Phony\Test\TestTraitB'),
@@ -80,9 +72,7 @@ class MockGeneratorTest extends TestCase
             [],
             [],
             [],
-            null,
-            $this->isTraitSupported,
-            $this->isRelaxedKeywordsSupported
+            null
         );
 
         $this->assertSame('PhonyMock_TestTraitA_0', $this->subject->generateClassName($definition));
@@ -109,10 +99,6 @@ class MockGeneratorTest extends TestCase
      */
     public function testGenerate($testName)
     {
-        if ($this->featureDetector->isSupported('object.constructor.php4')) {
-            require_once __DIR__ . '/../../src/TestClassOldConstructor.php';
-        }
-
         $fixturePath = __DIR__ . '/../../fixture/mock-generator';
 
         $detector = FeatureDetector::instance();

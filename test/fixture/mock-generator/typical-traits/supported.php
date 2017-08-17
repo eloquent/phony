@@ -6,6 +6,4 @@ if (defined('HHVM_VERSION')) {
     return false;
 }
 
-$message = 'Requires traits.';
-
-return $detector->isSupported('trait');
+return true;

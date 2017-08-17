@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Stub\Answer\Builder;
 
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\StubFactory;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -24,12 +23,7 @@ class GeneratorAnswerBuilderFactoryTest extends TestCase
     {
         $this->invocableInspector = new InvocableInspector();
         $this->invoker = new Invoker();
-        $this->featureDetector = new FeatureDetector();
-        $this->subject = new GeneratorAnswerBuilderFactory(
-            $this->invocableInspector,
-            $this->invoker,
-            $this->featureDetector
-        );
+        $this->subject = new GeneratorAnswerBuilderFactory($this->invocableInspector, $this->invoker);
     }
 
     public function testCreate()
@@ -37,7 +31,6 @@ class GeneratorAnswerBuilderFactoryTest extends TestCase
         $stub = StubFactory::instance()->create();
         $expected = new GeneratorAnswerBuilder(
             $stub,
-            $this->featureDetector->isSupported('generator.return'),
             $this->invocableInspector,
             $this->invoker
         );

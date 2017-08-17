@@ -183,10 +183,6 @@ class EmptyValueFactoryTest extends TestCase
 
     public function testFromTypeWithGenerator()
     {
-        if (!class_exists('Generator')) {
-            $this->markTestSkipped('Requires generators.');
-        }
-
         $actual = $this->subject->fromType($this->createType('Generator'));
 
         $this->assertInstanceOf('Generator', $actual);

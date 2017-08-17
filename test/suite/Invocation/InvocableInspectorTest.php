@@ -74,26 +74,15 @@ class InvocableInspectorTest extends TestCase
     {
         $this->assertNull($this->subject->callbackReturnType(function () {}));
 
-        if ($this->featureDetector->isSupported('return.type')) {
-            $type = $this->subject->callbackReturnType(eval('return function () : int {};'));
+        $type = $this->subject->callbackReturnType(eval('return function () : int {};'));
 
-            $this->assertInstanceOf('ReflectionType', $type);
-            $this->assertSame('int', strval($type));
+        $this->assertInstanceOf('ReflectionType', $type);
+        $this->assertSame('int', strval($type));
 
-            $type = $this->subject->callbackReturnType(eval('return function () : stdClass {};'));
+        $type = $this->subject->callbackReturnType(eval('return function () : stdClass {};'));
 
-            $this->assertInstanceOf('ReflectionType', $type);
-            $this->assertSame('stdClass', strval($type));
-        }
-    }
-
-    public function testIsBoundClosureSupported()
-    {
-        $reflectorReflector = new ReflectionClass('ReflectionFunction');
-        $expected = $reflectorReflector->hasMethod('getClosureThis');
-
-        $this->assertSame($expected, $this->subject->isBoundClosureSupported());
-        $this->assertSame($expected, $this->subject->isBoundClosureSupported());
+        $this->assertInstanceOf('ReflectionType', $type);
+        $this->assertSame('stdClass', strval($type));
     }
 
     public function testInstance()

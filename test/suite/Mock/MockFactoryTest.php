@@ -15,7 +15,6 @@ use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Exception\MockGenerationFailedException;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestMockGenerator;
 use PHPUnit\Framework\TestCase;
@@ -28,12 +27,9 @@ class MockFactoryTest extends TestCase
         $this->labelSequencer = new Sequencer();
         $this->generator = MockGenerator::instance();
         $this->handleFactory = HandleFactory::instance();
-        $this->featureDetector = FeatureDetector::instance();
-        $this->subject =
-            new MockFactory($this->labelSequencer, $this->generator, $this->handleFactory, $this->featureDetector);
+        $this->subject = new MockFactory($this->labelSequencer, $this->generator, $this->handleFactory);
 
         $this->builderFactory = MockBuilderFactory::instance();
-        $this->featureDetector = FeatureDetector::instance();
     }
 
     public function testCreateMockClass()
@@ -87,8 +83,7 @@ class MockFactoryTest extends TestCase
         $this->subject = new MockFactory(
             $this->labelSequencer,
             new TestMockGenerator('{'),
-            $this->handleFactory,
-            $this->featureDetector
+            $this->handleFactory
         );
         $builder = $this->builderFactory->create();
         $reporting = error_reporting();
@@ -182,21 +177,6 @@ class MockFactoryTest extends TestCase
         $this->assertSame(['a', 'b'], $actual->constructorArguments);
         $this->assertSame('first', $a);
         $this->assertSame('second', $b);
-    }
-
-    public function testCreatePartialMockWithOldConstructor()
-    {
-        if (!$this->featureDetector->isSupported('object.constructor.php4')) {
-            $this->markTestSkipped('Requires PHP4-style constructors.');
-        }
-
-        require_once __DIR__ . '/../../src/TestClassOldConstructor.php';
-
-        $builder = $this->builderFactory->create('TestClassOldConstructor');
-        $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMockWithOldConstructor');
-        $actual = $this->subject->createPartialMock($builder->build(), ['a', 'b']);
-
-        $this->assertSame(['a', 'b'], $actual->constructorArguments);
     }
 
     public function testCreateFullMockWithFinalConstructor()

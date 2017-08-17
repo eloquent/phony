@@ -33,8 +33,6 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
     ) {
         parent::__construct($invocableInspector);
 
-        $this->isVariadicParameterSupported = $featureDetector
-            ->isSupported('parameter.variadic');
         $this->isIterableTypeHintSupported = $featureDetector
             ->isSupported('type.iterable');
     }
@@ -77,10 +75,7 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
 
             $byReference = $parameter->isPassedByReference() ? '&' : '';
 
-            if (
-                $this->isVariadicParameterSupported &&
-                $parameter->isVariadic()
-            ) {
+            if ($parameter->isVariadic()) {
                 $variadic = '...';
             } else {
                 $variadic = '';
@@ -115,6 +110,5 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
         return $signature;
     }
 
-    private $isVariadicParameterSupported;
     private $isIterableTypeHintSupported;
 }

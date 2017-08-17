@@ -1177,10 +1177,6 @@ class GeneratorVerifierTest extends TestCase
 
     public function testThrewWithEngineErrorException()
     {
-        if (!$this->featureDetector->isSupported('error.exception.engine')) {
-            $this->markTestSkipped('Requires engine error exceptions.');
-        }
-
         $this->exceptionA = new Error('You done goofed.');
         $this->generatorThrewEvent = $this->eventFactory->createThrew($this->exceptionA);
         $this->generatorThrowCall = $this->callFactory->create(

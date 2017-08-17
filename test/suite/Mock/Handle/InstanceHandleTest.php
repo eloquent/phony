@@ -328,10 +328,6 @@ class InstanceHandleTest extends TestCase
 
     public function testStubbingWithTraitMethod()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $this->setUpWith('Eloquent\Phony\Test\TestTraitA');
         $this->subject->partial();
         $this->subject->testClassAMethodB->with('a', 'b')->returns('x');
@@ -371,10 +367,6 @@ class InstanceHandleTest extends TestCase
 
     public function testStubbingWithTraitFinalMethod()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $this->setUpWith('Eloquent\Phony\Test\TestTraitG');
         $this->subject->partial();
         $this->subject->testTraitGMethodA->with('a', 'b')->returns('x');
@@ -416,13 +408,6 @@ class InstanceHandleTest extends TestCase
 
     public function testStubbingWithUncallableMethodWithReturnType()
     {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM scalar type hints are bugged.');
-        }
-
         $this->setUpWith('Eloquent\Phony\Test\TestInterfaceWithReturnType');
         $this->subject->partial();
         $this->subject->scalarType->with('a', 'b')->returns(111);
@@ -433,13 +418,6 @@ class InstanceHandleTest extends TestCase
 
     public function testStubbingWithUncallableMagicMethodWithReturnType()
     {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM scalar type hints are bugged.');
-        }
-
         $this->setUpWith('Eloquent\Phony\Test\TestInterfaceWithReturnType');
         $this->subject->partial();
         $this->subject->nonexistent->with('a', 'b')->returns('x');

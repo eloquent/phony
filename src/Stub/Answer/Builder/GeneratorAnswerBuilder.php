@@ -16,7 +16,6 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Stub\Answer\Builder\Detail\GeneratorAnswerBuilderDetail;
-use Eloquent\Phony\Stub\Answer\Builder\Detail\GeneratorAnswerBuilderDetailWithReturn;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Stub;
 use Exception;
@@ -30,19 +29,16 @@ class GeneratorAnswerBuilder
     /**
      * Construct a new generator answer builder.
      *
-     * @param Stub               $stub                       The stub.
-     * @param bool               $isGeneratorReturnSupported True if generator return values are supported.
-     * @param InvocableInspector $invocableInspector         The invocable inspector to use.
-     * @param Invoker            $invoker                    The invoker to use.
+     * @param Stub               $stub               The stub.
+     * @param InvocableInspector $invocableInspector The invocable inspector to use.
+     * @param Invoker            $invoker            The invoker to use.
      */
     public function __construct(
         Stub $stub,
-        $isGeneratorReturnSupported,
         InvocableInspector $invocableInspector,
         Invoker $invoker
     ) {
         $this->stub = $stub;
-        $this->isGeneratorReturnSupported = $isGeneratorReturnSupported;
         $this->invocableInspector = $invocableInspector;
         $this->invoker = $invoker;
 
@@ -321,18 +317,9 @@ class GeneratorAnswerBuilder
             $value = $value->get();
         }
 
-        if ($this->isGeneratorReturnSupported || null === $value) {
-            $this->returnValue = $value;
-            $this->returnsArgument = null;
-            $this->returnsSelf = false;
-            // @codeCoverageIgnoreStart
-        } else {
-            throw new RuntimeException(
-                'The current runtime does not support the supplied generator ' .
-                'return value.'
-            );
-        }
-        // @codeCoverageIgnoreEnd
+        $this->returnValue = $value;
+        $this->returnsArgument = null;
+        $this->returnsSelf = false;
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $this->stub
@@ -356,14 +343,6 @@ class GeneratorAnswerBuilder
      */
     public function returnsArgument($index = 0)
     {
-        // @codeCoverageIgnoreStart
-        if (!$this->isGeneratorReturnSupported) {
-            throw new RuntimeException(
-                'The current runtime does not support generator return values.'
-            );
-        }
-        // @codeCoverageIgnoreEnd
-
         $this->returnsArgument = $index;
 
         return $this->stub;
@@ -376,14 +355,6 @@ class GeneratorAnswerBuilder
      */
     public function returnsSelf()
     {
-        // @codeCoverageIgnoreStart
-        if (!$this->isGeneratorReturnSupported) {
-            throw new RuntimeException(
-                'The current runtime does not support generator return values.'
-            );
-        }
-        // @codeCoverageIgnoreEnd
-
         $this->returnsSelf = true;
 
         return $this->stub;
@@ -433,19 +404,6 @@ class GeneratorAnswerBuilder
      */
     public function answer()
     {
-        if ($this->isGeneratorReturnSupported) {
-            return GeneratorAnswerBuilderDetailWithReturn::answer(
-                $this->iterations,
-                $this->requests,
-                $this->exception,
-                $this->returnValue,
-                $this->returnsArgument,
-                $this->returnsSelf,
-                $this->invoker
-            );
-        }
-
-        // @codeCoverageIgnoreStart
         return GeneratorAnswerBuilderDetail::answer(
             $this->iterations,
             $this->requests,
@@ -455,7 +413,6 @@ class GeneratorAnswerBuilder
             $this->returnsSelf,
             $this->invoker
         );
-        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -471,7 +428,6 @@ class GeneratorAnswerBuilder
     }
 
     private $stub;
-    private $isGeneratorReturnSupported;
     private $invocableInspector;
     private $invoker;
     private $requests;

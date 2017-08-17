@@ -25,7 +25,6 @@ use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Mock\MockGenerator;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use ReflectionClass;
 use ReflectionException;
 
@@ -50,7 +49,6 @@ class MockBuilder
      * @param MockFactory        $factory            The factory to use.
      * @param HandleFactory      $handleFactory      The handle factory to use.
      * @param InvocableInspector $invocableInspector The invocable inspector.
-     * @param FeatureDetector    $featureDetector    The feature detector to use.
      *
      * @throws MockException If invalid input is supplied.
      */
@@ -58,23 +56,11 @@ class MockBuilder
         $types,
         MockFactory $factory,
         HandleFactory $handleFactory,
-        InvocableInspector $invocableInspector,
-        FeatureDetector $featureDetector
+        InvocableInspector $invocableInspector
     ) {
-        $this->isTraitSupported = $featureDetector->isSupported('trait');
-        $this->isAnonymousClassSupported =
-            $featureDetector->isSupported('class.anonymous');
-        $this->isRelaxedKeywordsSupported =
-            $featureDetector->isSupported('parser.relaxed-keywords');
-        $this->isEngineErrorExceptionSupported =
-            $featureDetector->isSupported('error.exception.engine');
-        $this->isDateTimeInterfaceSupported =
-            interface_exists('DateTimeInterface');
-
         $this->factory = $factory;
         $this->handleFactory = $handleFactory;
         $this->invocableInspector = $invocableInspector;
-        $this->featureDetector = $featureDetector;
 
         $this->types = [];
         $this->parentClassName = null;
@@ -130,16 +116,6 @@ class MockBuilder
     public function invocableInspector()
     {
         return $this->invocableInspector;
-    }
-
-    /**
-     * Get the feature detector.
-     *
-     * @return FeatureDetector The feature detector.
-     */
-    public function featureDetector()
-    {
-        return $this->featureDetector;
     }
 
     /**
@@ -219,11 +195,11 @@ class MockBuilder
                 throw new InvalidTypeException($type);
             }
 
-            if ($this->isAnonymousClassSupported && $type->isAnonymous()) {
+            if ($type->isAnonymous()) {
                 throw new AnonymousClassException();
             }
 
-            $isTrait = $this->isTraitSupported && $type->isTrait();
+            $isTrait = $type->isTrait();
 
             if (!$isTrait && $type->isFinal()) {
                 throw new FinalClassException($type->getName());
@@ -428,9 +404,7 @@ class MockBuilder
                 $this->customStaticMethods,
                 $this->customStaticProperties,
                 $this->customConstants,
-                $this->className,
-                $this->isTraitSupported,
-                $this->isRelaxedKeywordsSupported
+                $this->className
             );
         }
 
@@ -608,18 +582,12 @@ class MockBuilder
             'iterator',
             'iteratoraggregate'
         );
-
-        if ($this->isDateTimeInterfaceSupported) {
-            $this->resolveInternalInterface(
-                'datetimeinterface',
-                'datetimeimmutable',
-                'datetime'
-            );
-        }
-
-        if ($this->isEngineErrorExceptionSupported) {
-            $this->resolveInternalInterface('throwable', 'exception', 'error');
-        }
+        $this->resolveInternalInterface(
+            'datetimeinterface',
+            'datetimeimmutable',
+            'datetime'
+        );
+        $this->resolveInternalInterface('throwable', 'exception', 'error');
     }
 
     private function resolveInternalInterface(
@@ -702,12 +670,6 @@ class MockBuilder
     private $factory;
     private $handleFactory;
     private $invocableInspector;
-    private $featureDetector;
-    private $isTraitSupported;
-    private $isAnonymousClassSupported;
-    private $isRelaxedKeywordsSupported;
-    private $isEngineErrorExceptionSupported;
-    private $isDateTimeInterfaceSupported;
     private $types;
     private $parentClassName;
     private $customMethods;

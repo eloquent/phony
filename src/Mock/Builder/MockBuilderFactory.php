@@ -14,7 +14,6 @@ namespace Eloquent\Phony\Mock\Builder;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\MockFactory;
-use Eloquent\Phony\Reflection\FeatureDetector;
 
 /**
  * Creates mock builders.
@@ -32,8 +31,7 @@ class MockBuilderFactory
             self::$instance = new self(
                 MockFactory::instance(),
                 HandleFactory::instance(),
-                InvocableInspector::instance(),
-                FeatureDetector::instance()
+                InvocableInspector::instance()
             );
         }
 
@@ -46,18 +44,15 @@ class MockBuilderFactory
      * @param MockFactory        $mockFactory        The mock factory to use.
      * @param HandleFactory      $handleFactory      The handle factory to use.
      * @param InvocableInspector $invocableInspector The invocable inspector.
-     * @param FeatureDetector    $featureDetector    The feature detector to use.
      */
     public function __construct(
         MockFactory $mockFactory,
         HandleFactory $handleFactory,
-        InvocableInspector $invocableInspector,
-        FeatureDetector $featureDetector
+        InvocableInspector $invocableInspector
     ) {
         $this->mockFactory = $mockFactory;
         $this->handleFactory = $handleFactory;
         $this->invocableInspector = $invocableInspector;
-        $this->featureDetector = $featureDetector;
     }
 
     /**
@@ -77,8 +72,7 @@ class MockBuilderFactory
             $types,
             $this->mockFactory,
             $this->handleFactory,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
     }
 
@@ -86,5 +80,4 @@ class MockBuilderFactory
     private $mockFactory;
     private $handleFactory;
     private $invocableInspector;
-    private $featureDetector;
 }

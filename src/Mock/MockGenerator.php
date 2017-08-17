@@ -56,10 +56,6 @@ class MockGenerator
         $this->signatureInspector = $signatureInspector;
         $this->featureDetector = $featureDetector;
 
-        $this->isClosureBindingSupported =
-            $this->featureDetector->isSupported('closure.bind');
-        $this->isReturnTypeSupported =
-            $this->featureDetector->isSupported('return.type');
         $this->isNullableTypeSupported =
             $this->featureDetector->isSupported('type.nullable');
         $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
@@ -264,10 +260,7 @@ EOD;
                 $parameter[3];
         }
 
-        if (
-            $this->isReturnTypeSupported &&
-            $methodReflector->hasReturnType()
-        ) {
+        if ($methodReflector->hasReturnType()) {
             $type = $methodReflector->getReturnType();
             $isBuiltin = $type->isBuiltin();
 
@@ -461,10 +454,7 @@ EOD;
                 }
             }
 
-            if (
-                $this->isReturnTypeSupported &&
-                $methodReflector->hasReturnType()
-            ) {
+            if ($methodReflector->hasReturnType()) {
                 $type = $methodReflector->getReturnType();
                 $isBuiltin = $type->isBuiltin();
 
@@ -655,10 +645,7 @@ EOD;
                 $parameter[2];
         }
 
-        if (
-            $this->isReturnTypeSupported &&
-            $methodReflector->hasReturnType()
-        ) {
+        if ($methodReflector->hasReturnType()) {
             $type = $methodReflector->getReturnType();
             $isBuiltin = $type->isBuiltin();
 
@@ -836,8 +823,7 @@ EOD;
                 $constructorName = $constructor->getName();
 
                 if ($constructor->isPrivate()) {
-                    if ($this->isClosureBindingSupported) {
-                        $source .= <<<EOD
+                    $source .= <<<EOD
 
     private function _callParentConstructor(
         \Eloquent\Phony\Call\Arguments \$arguments
@@ -853,7 +839,6 @@ EOD;
     }
 
 EOD;
-                    }
                 } else {
                     $source .= <<<EOD
 
@@ -1037,8 +1022,6 @@ EOD;
     private $labelSequencer;
     private $signatureInspector;
     private $featureDetector;
-    private $isClosureBindingSupported;
-    private $isReturnTypeSupported;
     private $isNullableTypeSupported;
     private $canMockPharDestruct;
     private $isHhvm;

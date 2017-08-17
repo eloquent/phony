@@ -26,8 +26,6 @@ class MockDefinitionTest extends TestCase
     protected function setUp()
     {
         $this->featureDetector = new FeatureDetector();
-        $this->isTraitSupported = $this->featureDetector->isSupported('trait');
-        $this->isRelaxedKeywordsSupported = $this->featureDetector->isSupported('parser.relaxed-keywords');
 
         $this->typeNames = [
             'Countable',
@@ -101,9 +99,7 @@ class MockDefinitionTest extends TestCase
             $this->customStaticMethods,
             $this->customStaticProperties,
             $this->customConstants,
-            $this->className,
-            $this->isTraitSupported,
-            $this->isRelaxedKeywordsSupported
+            $this->className
         );
     }
 
@@ -126,10 +122,6 @@ class MockDefinitionTest extends TestCase
 
     public function testConstructorWithTraits()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $this->setUpWith($this->typeNamesTraits);
 
         $this->assertSame($this->types, $this->subject->types());
@@ -259,9 +251,6 @@ class MockDefinitionTest extends TestCase
 
     public function testMethodsWithTraits()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
         if ($this->featureDetector->isSupported('runtime.hhvm')) {
             $this->markTestSkipped('HHVM treats closures as inequal when created in different classes.');
         }
@@ -464,9 +453,6 @@ class MockDefinitionTest extends TestCase
 
     public function testMethodsWithFinalMethodsAndTraits()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
         if ($this->featureDetector->isSupported('runtime.hhvm')) {
             $this->markTestSkipped('HHVM treats closures as inequal when created in different classes.');
         }
@@ -548,9 +534,7 @@ class MockDefinitionTest extends TestCase
             [],
             [],
             [],
-            null,
-            $this->isTraitSupported,
-            $this->isRelaxedKeywordsSupported
+            null
         );
 
         $this->assertTrue($definitionA->isEqualTo($definitionA));
@@ -575,9 +559,7 @@ class MockDefinitionTest extends TestCase
             [],
             [],
             [],
-            null,
-            $this->isTraitSupported,
-            $this->isRelaxedKeywordsSupported
+            null
         );
         $definitionB = new MockDefinition(
             [],
@@ -589,9 +571,7 @@ class MockDefinitionTest extends TestCase
             [],
             [],
             [],
-            null,
-            $this->isTraitSupported,
-            $this->isRelaxedKeywordsSupported
+            null
         );
 
         $this->assertFalse($definitionA->isEqualTo($definitionB));
@@ -608,9 +588,7 @@ class MockDefinitionTest extends TestCase
             ],
             [],
             [],
-            null,
-            $this->isTraitSupported,
-            $this->isRelaxedKeywordsSupported
+            null
         );
         $definitionB = new MockDefinition(
             [],
@@ -622,9 +600,7 @@ class MockDefinitionTest extends TestCase
             ],
             [],
             [],
-            null,
-            $this->isTraitSupported,
-            $this->isRelaxedKeywordsSupported
+            null
         );
 
         $this->assertFalse($definitionA->isEqualTo($definitionB));

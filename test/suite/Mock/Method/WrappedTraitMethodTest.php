@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
@@ -22,11 +21,6 @@ class WrappedTraitMethodTest extends TestCase
     protected function setUp()
     {
         $this->mockBuilderFactory = MockBuilderFactory::instance();
-        $this->featureDetector = FeatureDetector::instance();
-
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
 
         $this->callTraitMethod = new ReflectionMethod($this, 'setUp');
         $this->traitName = 'Eloquent\Phony\Test\TestTraitA';

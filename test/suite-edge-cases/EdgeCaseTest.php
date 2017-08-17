@@ -25,9 +25,6 @@ class EdgeCaseTest extends TestCase
         if (!class_exists('SimpleXMLElement')) {
             $this->markTestSkipped('Requires the SimpleXMLElement class.');
         }
-        if (!$this->featureDetector->isSupported('object.constructor.bypass.extended-internal')) {
-            $this->markTestSkipped('Requires support for bypassing constructors of classes that extend internals');
-        }
 
         $full = x\mock('SimpleXMLElement');
         $mock = $full->get();
@@ -52,9 +49,6 @@ class EdgeCaseTest extends TestCase
     {
         if (!class_exists('SimpleXMLIterator')) {
             $this->markTestSkipped('Requires the SimpleXMLIterator class.');
-        }
-        if (!$this->featureDetector->isSupported('object.constructor.bypass.extended-internal')) {
-            $this->markTestSkipped('Requires support for bypassing constructors of classes that extend internals');
         }
 
         $full = x\mock('SimpleXMLIterator');

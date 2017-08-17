@@ -17,13 +17,11 @@ use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Exception\MockGenerationFailedException;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Exception;
 use ParseError;
 use ParseException;
 use ReflectionClass;
-use RuntimeException;
 use Throwable;
 
 /**
@@ -42,8 +40,7 @@ class MockFactory
             self::$instance = new self(
                 Sequencer::sequence('mock-label'),
                 MockGenerator::instance(),
-                HandleFactory::instance(),
-                FeatureDetector::instance()
+                HandleFactory::instance()
             );
         }
 
@@ -53,27 +50,19 @@ class MockFactory
     /**
      * Cosntruct a new mock factory.
      *
-     * @param Sequencer       $labelSequencer  The label sequencer to use.
-     * @param MockGenerator   $generator       The generator to use.
-     * @param HandleFactory   $handleFactory   The handle factory to use.
-     * @param FeatureDetector $featureDetector The feature detector to use.
+     * @param Sequencer     $labelSequencer The label sequencer to use.
+     * @param MockGenerator $generator      The generator to use.
+     * @param HandleFactory $handleFactory  The handle factory to use.
      */
     public function __construct(
         Sequencer $labelSequencer,
         MockGenerator $generator,
-        HandleFactory $handleFactory,
-        FeatureDetector $featureDetector
+        HandleFactory $handleFactory
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->generator = $generator;
         $this->handleFactory = $handleFactory;
         $this->definitions = [];
-
-        $this->isConstructorBypassSupported =
-            $featureDetector->isSupported('object.constructor.bypass');
-        $this->isConstructorBypassSupportedForExtendedInternals =
-            $featureDetector
-                ->isSupported('object.constructor.bypass.extended-internal');
     }
 
     /**
@@ -183,55 +172,7 @@ class MockFactory
      */
     public function createFullMock(ReflectionClass $class)
     {
-        $constructor = $class->getConstructor();
-        $isDone = false;
-
-        if ($constructor && $constructor->isFinal()) {
-            $mock = false;
-
-            if ($this->isConstructorBypassSupportedForExtendedInternals) {
-                $mock = $class->newInstanceWithoutConstructor();
-                $isDone = true;
-                // @codeCoverageIgnoreStart
-            } elseif ($this->isConstructorBypassSupported) {
-                $isInternal = false;
-                $ancestor = $class->getParentClass();
-
-                while (!$isInternal && $ancestor) {
-                    if ($isInternal = $ancestor->isInternal()) {
-                        break;
-                    }
-
-                    $ancestor = $ancestor->getParentClass();
-                }
-
-                if (!$isInternal) {
-                    $mock = $class->newInstanceWithoutConstructor();
-                    $isDone = true;
-                }
-            }
-
-            if (!$isDone) {
-                $className = $class->getName();
-                $serialized =
-                    sprintf('O:%d:"%s":0:{}', strlen($className), $className);
-
-                try {
-                    $mock = @unserialize($serialized);
-                    $isDone = $mock instanceof $className;
-                } catch (Throwable $error) {
-                    // re-thrown after cleanup
-                } catch (Exception $error) {
-                    // re-thrown after cleanup
-                }
-            }
-        }
-        // @codeCoverageIgnoreEnd
-
-        if (!$isDone) {
-            $mock = $class->newInstance();
-        }
-
+        $mock = $class->newInstanceWithoutConstructor();
         $this->handleFactory
             ->instanceHandle($mock, strval($this->labelSequencer->next()));
 
@@ -251,76 +192,12 @@ class MockFactory
         ReflectionClass $class,
         $arguments = []
     ) {
-        $constructor = $class->getConstructor();
-        $isDone = false;
-        $isConstructorCalled = false;
-
-        if ($constructor && $constructor->isFinal()) {
-            $mock = false;
-
-            if ($this->isConstructorBypassSupportedForExtendedInternals) {
-                $mock = $class->newInstanceWithoutConstructor();
-                $isDone = true;
-                // @codeCoverageIgnoreStart
-            } elseif ($this->isConstructorBypassSupported) {
-                $isInternal = false;
-                $ancestor = $class->getParentClass();
-
-                while (!$isInternal && $ancestor) {
-                    if ($isInternal = $ancestor->isInternal()) {
-                        break;
-                    }
-
-                    $ancestor = $ancestor->getParentClass();
-                }
-
-                if (!$isInternal) {
-                    $mock = $class->newInstanceWithoutConstructor();
-                    $isDone = true;
-                }
-            }
-
-            if (!$isDone) {
-                $className = $class->getName();
-                $serialized =
-                    sprintf('O:%d:"%s":0:{}', strlen($className), $className);
-
-                try {
-                    $mock = @unserialize($serialized);
-                    $isDone = $mock instanceof $className;
-                } catch (Throwable $error) {
-                    // re-thrown after cleanup
-                } catch (Exception $error) {
-                    // re-thrown after cleanup
-                }
-            }
-
-            if (!$isDone) {
-                if (null === $arguments) {
-                    throw new RuntimeException(
-                        sprintf(
-                            'Unable to bypass final constructor for %s.',
-                            $class->getName()
-                        )
-                    );
-                }
-
-                $mock = $class->newInstanceArgs($arguments);
-                $isDone = true;
-                $isConstructorCalled = true;
-            }
-        }
-        // @codeCoverageIgnoreEnd
-
-        if (!$isDone) {
-            $mock = $class->newInstance();
-        }
-
+        $mock = $class->newInstanceWithoutConstructor();
         $handle = $this->handleFactory
             ->instanceHandle($mock, strval($this->labelSequencer->next()));
         $handle->partial();
 
-        if (!$isConstructorCalled && null !== $arguments) {
+        if (null !== $arguments) {
             $handle->constructWith($arguments);
         }
 
@@ -332,6 +209,4 @@ class MockFactory
     private $generator;
     private $handleFactory;
     private $definitions;
-    private $isConstructorBypassSupported;
-    private $isConstructorBypassSupportedForExtendedInternals;
 }

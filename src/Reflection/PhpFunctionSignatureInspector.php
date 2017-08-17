@@ -33,14 +33,6 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
     ) {
         parent::__construct($invocableInspector);
 
-        $this->isExportReferenceSupported = $featureDetector
-            ->isSupported('reflection.function.export.reference');
-        $this->isVariadicParameterSupported = $featureDetector
-            ->isSupported('parameter.variadic');
-        $this->isScalarTypeHintSupported = $featureDetector
-            ->isSupported('parameter.hint.scalar');
-        $this->isCallableTypeHintSupported = $featureDetector
-            ->isSupported('type.callable');
         $this->isIterableTypeHintSupported = $featureDetector
             ->isSupported('type.iterable');
         $this->isObjectTypeHintSupported = $featureDetector
@@ -82,10 +74,7 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
             } elseif (
                 '' !== $typehint &&
                 'array ' !== $typehint &&
-                (
-                    !$this->isCallableTypeHintSupported ||
-                    'callable ' !== $typehint
-                ) &&
+                'callable ' !== $typehint &&
                 (
                     !$this->isIterableTypeHintSupported ||
                     'iterable ' !== $typehint
@@ -95,9 +84,7 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
                     'object ' !== $typehint
                 )
             ) {
-                if (!$this->isScalarTypeHintSupported) {
-                    $typehint = '\\' . $typehint; // @codeCoverageIgnore
-                } elseif (
+                if (
                     'integer ' === $typehint &&
                     $parameter->getType()->isBuiltin()
                 ) {
@@ -112,16 +99,9 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
                 }
             }
 
-            if ($this->isExportReferenceSupported) {
-                $byReference = $match[4];
-            } else {
-                $byReference = $parameter->isPassedByReference() ? '&' : ''; // @codeCoverageIgnore
-            }
+            $byReference = $match[4];
 
-            if (
-                $this->isVariadicParameterSupported &&
-                $parameter->isVariadic()
-            ) {
+            if ($parameter->isVariadic()) {
                 $variadic = '...';
                 $optional = false;
             } else {
@@ -149,10 +129,6 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
         return $signature;
     }
 
-    private $isExportReferenceSupported;
-    private $isVariadicParameterSupported;
-    private $isScalarTypeHintSupported;
-    private $isCallableTypeHintSupported;
     private $isIterableTypeHintSupported;
     private $isObjectTypeHintSupported;
 }

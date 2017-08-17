@@ -227,14 +227,12 @@ class FacadeDriver
         $mockFactory = new MockFactory(
             $mockLabelSequence,
             $mockGenerator,
-            $handleFactory,
-            $featureDetector
+            $handleFactory
         );
         $mockBuilderFactory = new MockBuilderFactory(
             $mockFactory,
             $handleFactory,
-            $invocableInspector,
-            $featureDetector
+            $invocableInspector
         );
         $spyVerifierFactory = new SpyVerifierFactory(
             $spyFactory,

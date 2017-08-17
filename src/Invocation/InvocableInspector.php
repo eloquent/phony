@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Invocation;
 
 use Closure;
-use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
@@ -36,18 +35,6 @@ class InvocableInspector
         }
 
         return self::$instance;
-    }
-
-    /**
-     * Construct a new invocable inspector.
-     */
-    public function __construct()
-    {
-        $reflectorReflector = new ReflectionClass('ReflectionFunction');
-        $this->isBoundClosureSupported =
-            $reflectorReflector->hasMethod('getClosureThis');
-        $this->isReturnTypeSupported =
-            $reflectorReflector->hasMethod('getReturnType');
     }
 
     /**
@@ -94,24 +81,8 @@ class InvocableInspector
      */
     public function callbackReturnType($callback)
     {
-        if (!$this->isReturnTypeSupported) {
-            return null; // @codeCoverageIgnore
-        }
-
         return $this->callbackReflector($callback)->getReturnType();
     }
 
-    /**
-     * Returns true if bound closures are supported.
-     *
-     * @return bool True if bound closures are supported.
-     */
-    public function isBoundClosureSupported()
-    {
-        return $this->isBoundClosureSupported;
-    }
-
     private static $instance;
-    private $isBoundClosureSupported;
-    private $isReturnTypeSupported;
 }

@@ -911,10 +911,6 @@ class StubDataTest extends TestCase
      */
     public function testReturnsWithReturnTypes($type, $expected)
     {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-
         $this->subject = new StubData(
             eval("return function (): $type {};"),
             null,

@@ -1532,10 +1532,6 @@ class SpyVerifierTest extends TestCase
 
     public function testThrewWithEngineErrorException()
     {
-        if (!$this->featureDetector->isSupported('error.exception.engine')) {
-            $this->markTestSkipped('Requires engine error exceptions.');
-        }
-
         $this->exceptionA = new Error('You done goofed.');
         $this->exceptionB = new Error('Consequences will never be the same.');
         $this->callC = $this->callFactory->create(

@@ -537,10 +537,6 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesGeneratorSpySubstitution()
     {
-        if (!$this->featureDetector->isSupported('generator')) {
-            $this->markTestSkipped('Requires generators.');
-        }
-
         $functionA = eval('return function() { yield "a"; yield "b"; };');
         $functionB = eval('return function() { yield "b"; yield "c"; };');
 

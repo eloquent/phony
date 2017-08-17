@@ -15,9 +15,7 @@ use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Spy\Detail\GeneratorSpyFactoryDetailHhvm;
-use Eloquent\Phony\Spy\Detail\GeneratorSpyFactoryDetailHhvmWithReturn;
 use Eloquent\Phony\Spy\Detail\GeneratorSpyFactoryDetailPhp;
-use Eloquent\Phony\Spy\Detail\GeneratorSpyFactoryDetailPhpWithReturn;
 use Generator;
 
 /**
@@ -53,11 +51,6 @@ class GeneratorSpyFactory
         FeatureDetector $featureDetector
     ) {
         $this->callEventFactory = $callEventFactory;
-
-        $this->isGeneratorImplicitNextSupported = $featureDetector
-            ->isSupported('generator.implicit-next');
-        $this->isGeneratorReturnSupported = $featureDetector
-            ->isSupported('generator.return');
         $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
     }
 
@@ -71,39 +64,21 @@ class GeneratorSpyFactory
      */
     public function create(Call $call, Generator $generator)
     {
+        // @codeCoverageIgnoreStart
         if ($this->isHhvm) {
-            // @codeCoverageIgnoreStart
-            if ($this->isGeneratorReturnSupported) {
-                $spy =
-                    GeneratorSpyFactoryDetailHhvmWithReturn::createGeneratorSpy(
-                        $call,
-                        $generator,
-                        $this->callEventFactory
-                    );
-            } else {
-                $spy = GeneratorSpyFactoryDetailHhvm::createGeneratorSpy(
-                    $call,
-                    $generator,
-                    $this->callEventFactory,
-                    $this->isGeneratorImplicitNextSupported
-                );
-            }
-            // @codeCoverageIgnoreEnd
-        } elseif ($this->isGeneratorReturnSupported) {
-            $spy = GeneratorSpyFactoryDetailPhpWithReturn::createGeneratorSpy(
+            $spy = GeneratorSpyFactoryDetailHhvm::createGeneratorSpy(
                 $call,
                 $generator,
                 $this->callEventFactory
             );
-            // @codeCoverageIgnoreStart
         } else {
+            // @codeCoverageIgnoreEnd
             $spy = GeneratorSpyFactoryDetailPhp::createGeneratorSpy(
                 $call,
                 $generator,
                 $this->callEventFactory
             );
         }
-        // @codeCoverageIgnoreEnd
 
         $spy->_phonySubject = $generator;
 
@@ -112,7 +87,5 @@ class GeneratorSpyFactory
 
     private static $instance;
     private $callEventFactory;
-    private $isGeneratorImplicitNextSupported;
-    private $isGeneratorReturnSupported;
     private $isHhvm;
 }

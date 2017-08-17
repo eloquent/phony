@@ -14,7 +14,6 @@ namespace Eloquent\Phony\Mock\Builder;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\MockFactory;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -25,12 +24,10 @@ class MockBuilderFactoryTest extends TestCase
         $this->mockFactory = MockFactory::instance();
         $this->handleFactory = HandleFactory::instance();
         $this->invocableInspector = InvocableInspector::instance();
-        $this->featureDetector = FeatureDetector::instance();
         $this->subject = new MockBuilderFactory(
             $this->mockFactory,
             $this->handleFactory,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
     }
 
@@ -42,8 +39,7 @@ class MockBuilderFactoryTest extends TestCase
             $types,
             $this->mockFactory,
             $this->handleFactory,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
 
         $this->assertEquals($expected, $actual);

@@ -42,8 +42,6 @@ class EmptyValueFactory
      */
     public function __construct(FeatureDetector $featureDetector)
     {
-        $this->isReturnTypeSupported =
-            $featureDetector->isSupported('return.type');
         $this->isObjectTypeSupported =
             $featureDetector->isSupported('type.object');
     }
@@ -149,10 +147,6 @@ class EmptyValueFactory
      */
     public function fromFunction(ReflectionFunctionAbstract $function)
     {
-        if (!$this->isReturnTypeSupported) {
-            return null; // @codeCoverageIgnore
-        }
-
         if ($type = $function->getReturnType()) {
             return $this->fromType($type);
         }
@@ -163,6 +157,5 @@ class EmptyValueFactory
     private static $instance;
     private $stubVerifierFactory;
     private $mockBuilderFactory;
-    private $isReturnTypeSupported;
     private $isObjectTypeSupported;
 }

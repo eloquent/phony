@@ -110,13 +110,6 @@ class FunctionalTest extends TestCase
 
     public function testVariadicParameterMocking()
     {
-        if (!$this->featureDetector->isSupported('parameter.variadic')) {
-            $this->markTestSkipped('Requires variadic parameters.');
-        }
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('Broken because of https://github.com/facebook/hhvm/issues/5762');
-        }
-
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameter');
         $handle->method->does(
             function () {
@@ -129,13 +122,6 @@ class FunctionalTest extends TestCase
 
     public function testVariadicParameterMockingWithType()
     {
-        if (!$this->featureDetector->isSupported('parameter.variadic.type')) {
-            $this->markTestSkipped('Requires type-hinted variadic parameters.');
-        }
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('Broken because of https://github.com/facebook/hhvm/issues/5762');
-        }
-
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameterWithType');
         $handle->method->does(
             function () {
@@ -169,13 +155,6 @@ class FunctionalTest extends TestCase
 
     public function testScalarTypeHintMocking()
     {
-        if (!$this->featureDetector->isSupported('parameter.hint.scalar')) {
-            $this->markTestSkipped('Requires scalar type hints.');
-        }
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM scalar type hints are bugged.');
-        }
-
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint');
         $handle->get()->method(123, 1.23, '<string>', true);
 
@@ -184,13 +163,6 @@ class FunctionalTest extends TestCase
 
     public function testReturnTypeMocking()
     {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM scalar type hints are bugged.');
-        }
-
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType');
         $object = new TestClassA();
         $handle->classType->with('x')->does(
@@ -214,13 +186,6 @@ class FunctionalTest extends TestCase
 
     public function testMagicMethodReturnTypeMocking()
     {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM scalar type hints are bugged.');
-        }
-
         $mock = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType')->get();
 
         x\onStatic($mock)->nonexistent->returns('x');
@@ -232,13 +197,6 @@ class FunctionalTest extends TestCase
 
     public function testGeneratorReturnTypeSpying()
     {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-        if (!$this->featureDetector->isSupported('generator')) {
-            $this->markTestSkipped('Requires generators.');
-        }
-
         $stub = x\stub(eval('return function (): Generator {};'))->returns();
         iterator_to_array($stub());
 
@@ -247,13 +205,6 @@ class FunctionalTest extends TestCase
 
     public function testReturnTypeMockingInvalidType()
     {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM scalar type hints are bugged.');
-        }
-
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType');
         $handle->scalarType->returns('<string>');
 
@@ -309,13 +260,6 @@ class FunctionalTest extends TestCase
 
     public function testSpyReturnType()
     {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM scalar type hints are bugged.');
-        }
-
         $spy = x\spy(eval('return function () : int { return 123; };'));
 
         $this->assertSame(123, $spy());
@@ -405,13 +349,6 @@ class FunctionalTest extends TestCase
 
     public function testStubReturnType()
     {
-        if (!$this->featureDetector->isSupported('return.type')) {
-            $this->markTestSkipped('Requires return type declarations.');
-        }
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM scalar type hints are bugged.');
-        }
-
         $stub = x\stub(eval('return function () : int { return 123; };'))->forwards();
 
         $this->assertSame(123, $stub());
@@ -533,10 +470,6 @@ class FunctionalTest extends TestCase
 
     public function testDefaultArgumentsNotRecorded()
     {
-        if (!$this->featureDetector->isSupported('parameter.type.self.override')) {
-            $this->markTestSkipped('Requires support for overriding self parameters.');
-        }
-
         $handle = x\partialMock('Eloquent\Phony\Test\TestClassC');
         $handle->get()->methodB('a');
 
@@ -570,10 +503,6 @@ class FunctionalTest extends TestCase
 
     public function testCanCallMockedTraitMethod()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $handle = x\partialMock(['stdClass', 'Eloquent\Phony\Test\TestTraitA']);
 
         $this->assertSame('ab', $handle->get()->testClassAMethodB('a', 'b'));
@@ -581,10 +510,6 @@ class FunctionalTest extends TestCase
 
     public function testCanCallMockedTraitMethodWithoutParentClass()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $handle = x\partialMock(['Eloquent\Phony\Test\TestTraitA']);
 
         $this->assertSame('ab', $handle->get()->testClassAMethodB('a', 'b'));
@@ -592,10 +517,6 @@ class FunctionalTest extends TestCase
 
     public function testCanCallMockedAbstractTraitMethod()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $handle = x\partialMock(['stdClass', 'Eloquent\Phony\Test\TestTraitC']);
 
         $this->assertNull($handle->get()->testTraitCMethodA('a', 'b'));
@@ -603,10 +524,6 @@ class FunctionalTest extends TestCase
 
     public function testCanCallMockedAbstractTraitMethodWithoutParentClass()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $handle = x\partialMock(['Eloquent\Phony\Test\TestTraitC']);
 
         $this->assertNull($handle->get()->testTraitCMethodA('a', 'b'));
@@ -614,10 +531,6 @@ class FunctionalTest extends TestCase
 
     public function testCanCallMockedTraitMethodWithInterface()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $handle = x\partialMock(['Eloquent\Phony\Test\TestTraitH', 'Eloquent\Phony\Test\TestInterfaceE']);
 
         $this->assertSame('a', $handle->get()->methodA());
@@ -632,10 +545,6 @@ class FunctionalTest extends TestCase
 
     public function testCanMockTraitWithPrivateConstructor()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $handle = x\partialMock('Eloquent\Phony\Test\TestTraitF', ['a', 'b']);
 
         $this->assertSame(['a', 'b'], $handle->get()->constructorArguments);
@@ -643,10 +552,6 @@ class FunctionalTest extends TestCase
 
     public function testCanMockClassAndCallPrivateConstructor()
     {
-        if (!$this->featureDetector->isSupported('closure.bind')) {
-            $this->markTestSkipped('Requires closure binding.');
-        }
-
         $handle = x\partialMock('Eloquent\Phony\Test\TestClassD', ['a', 'b']);
 
         $this->assertSame(['a', 'b'], $handle->get()->constructorArguments);
@@ -724,10 +629,6 @@ class FunctionalTest extends TestCase
 
     public function testTraitConstructorCalling()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $handle = x\partialMock('Eloquent\Phony\Test\TestTraitD', ['a', 'b', 'c']);
 
         $this->assertSame(['a', 'b', 'c'], $handle->get()->constructorArguments);
@@ -735,10 +636,6 @@ class FunctionalTest extends TestCase
 
     public function testTraitConstructorConflictResolution()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $handle = x\partialMock(
             ['Eloquent\Phony\Test\TestTraitD', 'Eloquent\Phony\Test\TestTraitE'],
             ['a', 'b', 'c']
@@ -999,10 +896,6 @@ class FunctionalTest extends TestCase
 
     public function testCannotMockAnonymousClasses()
     {
-        if (!$this->featureDetector->isSupported('class.anonymous')) {
-            $this->markTestSkipped('Requires anonymous classes.');
-        }
-
         $instance = eval('return new class {};');
 
         $this->expectException('Eloquent\Phony\Mock\Exception\AnonymousClassException');
@@ -1011,10 +904,6 @@ class FunctionalTest extends TestCase
 
     public function testPartialMockOfMagicCallTrait()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $handle = x\partialMock('Eloquent\Phony\Test\TestTraitJ');
         $mock = $handle->get();
 
@@ -1024,10 +913,6 @@ class FunctionalTest extends TestCase
 
     public function testPartialMockOfStaticMagicCallTrait()
     {
-        if (!$this->featureDetector->isSupported('trait')) {
-            $this->markTestSkipped('Requires traits.');
-        }
-
         $mock = x\partialMock('Eloquent\Phony\Test\TestTraitJ')->get();
         $class = get_class($mock);
 
@@ -1136,10 +1021,6 @@ class FunctionalTest extends TestCase
 
     public function testBasicGeneratorStubbing()
     {
-        if (!$this->featureDetector->isSupported('generator')) {
-            $this->markTestSkipped('Requires generators.');
-        }
-
         $stub = x\stub()
             ->generates(['a' => 'b', 'c'])
                 ->yields('d', 'e')
@@ -1156,10 +1037,6 @@ class FunctionalTest extends TestCase
 
     public function testGeneratorStubbingWithReturnValue()
     {
-        if (!$this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires generator return values.');
-        }
-
         $stub = x\stub()->generates()->returns('d');
 
         $generator = $stub();
@@ -1171,10 +1048,6 @@ class FunctionalTest extends TestCase
 
     public function testGeneratorStubbingWithMultipleAnswers()
     {
-        if (!$this->featureDetector->isSupported('generator')) {
-            $this->markTestSkipped('Requires generators.');
-        }
-
         $stub = x\stub()
             ->generates()->yields('a')->returns()
             ->returns('b')
@@ -1187,10 +1060,6 @@ class FunctionalTest extends TestCase
 
     public function testGeneratorStubbingWithEmptyGenerator()
     {
-        if (!$this->featureDetector->isSupported('generator')) {
-            $this->markTestSkipped('Requires generators.');
-        }
-
         $stub = x\stub();
         $stub->generates();
 
@@ -1260,13 +1129,6 @@ class FunctionalTest extends TestCase
 
     public function testIterableSpyDoubleWrappingWithGenerator()
     {
-        if (!$this->featureDetector->isSupported('generator')) {
-            $this->markTestSkipped('Requires generators.');
-        }
-        if (!$this->featureDetector->isSupported('generator.implicit-next')) {
-            $this->markTestSkipped('Requires implicit next() generators.');
-        }
-
         $stub = x\stub()->generates()->yieldsFrom(['a', 'b', 'c'])->returns();
         $generatorSpyA = $stub();
         $stub->returns($generatorSpyA);
@@ -1298,49 +1160,6 @@ class FunctionalTest extends TestCase
         $this->assertTrue((bool) $singleWrapped->once()->produced(2, 'c'));
         $this->assertTrue((bool) $doubleWrapped->never()->produced('a'));
         $this->assertTrue((bool) $doubleWrapped->once()->produced(1, 'b'));
-        $this->assertTrue((bool) $doubleWrapped->once()->produced(2, 'c'));
-    }
-
-    public function testIterableSpyDoubleWrappingWithGeneratorWithoutImplicitNext()
-    {
-        if (!$this->featureDetector->isSupported('generator')) {
-            $this->markTestSkipped('Requires generators.');
-        }
-        if ($this->featureDetector->isSupported('generator.implicit-next')) {
-            $this->markTestSkipped('Requires explicit next() generators.');
-        }
-
-        $stub = x\stub()->generates()->yieldsFrom(['a', 'b', 'c'])->returns();
-        $generatorSpyA = $stub();
-        $stub->returns($generatorSpyA);
-        $generatorSpyB = $stub();
-
-        $this->assertSame($generatorSpyA, $generatorSpyB->_phonySubject);
-
-        $first = true;
-        $generatorSpyAContents = [];
-        foreach ($generatorSpyA as $value) {
-            $generatorSpyAContents[] = $value;
-
-            if ($first) {
-                $first = false;
-
-                continue;
-            }
-
-            break;
-        }
-        $generatorSpyBContents = iterator_to_array($generatorSpyB);
-        $singleWrapped = $stub->callAt(0)->generated();
-        $doubleWrapped = $stub->callAt(1)->generated();
-
-        $this->assertSame(['a', 'b'], $generatorSpyAContents);
-        $this->assertSame([2 => 'c'], $generatorSpyBContents);
-        $this->assertTrue((bool) $singleWrapped->once()->produced(0, 'a'));
-        $this->assertTrue((bool) $singleWrapped->once()->produced(1, 'b'));
-        $this->assertTrue((bool) $singleWrapped->once()->produced(2, 'c'));
-        $this->assertTrue((bool) $doubleWrapped->never()->produced('a'));
-        $this->assertTrue((bool) $doubleWrapped->never()->produced('b'));
         $this->assertTrue((bool) $doubleWrapped->once()->produced(2, 'c'));
     }
 

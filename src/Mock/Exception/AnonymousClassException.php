@@ -16,8 +16,7 @@ use Exception;
 /**
  * Anonymous classes cannot be mocked.
  */
-final class AnonymousClassException extends Exception implements
-    MockException
+final class AnonymousClassException extends Exception implements MockException
 {
     /**
      * Construct an anonymous class exception.

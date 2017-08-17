@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Stub\Answer\Builder;
 
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\Stub;
 
 /**
@@ -31,8 +30,7 @@ class GeneratorAnswerBuilderFactory
         if (!self::$instance) {
             self::$instance = new self(
                 InvocableInspector::instance(),
-                Invoker::instance(),
-                FeatureDetector::instance()
+                Invoker::instance()
             );
         }
 
@@ -44,18 +42,13 @@ class GeneratorAnswerBuilderFactory
      *
      * @param InvocableInspector $invocableInspector The invocable inspector to use.
      * @param Invoker            $invoker            The invoker to use.
-     * @param FeatureDetector    $featureDetector    The feature detector to use.
      */
     public function __construct(
         InvocableInspector $invocableInspector,
-        Invoker $invoker,
-        FeatureDetector $featureDetector
+        Invoker $invoker
     ) {
         $this->invocableInspector = $invocableInspector;
         $this->invoker = $invoker;
-
-        $this->isGeneratorReturnSupported =
-            $featureDetector->isSupported('generator.return');
     }
 
     /**
@@ -69,7 +62,6 @@ class GeneratorAnswerBuilderFactory
     {
         return new GeneratorAnswerBuilder(
             $stub,
-            $this->isGeneratorReturnSupported,
             $this->invocableInspector,
             $this->invoker
         );
@@ -78,5 +70,4 @@ class GeneratorAnswerBuilderFactory
     private static $instance;
     private $invocableInspector;
     private $invoker;
-    private $isGeneratorReturnSupported;
 }

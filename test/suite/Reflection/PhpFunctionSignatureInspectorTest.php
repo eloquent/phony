@@ -112,10 +112,6 @@ class PhpFunctionSignatureInspectorTest extends TestCase
 
     public function testSignatureWithCallableTypeHint()
     {
-        if (!$this->featureDetector->isSupported('type.callable')) {
-            $this->markTestSkipped('Requires callable type hint support.');
-        }
-
         $function = new ReflectionFunction(
             eval('return function (callable $a = null, callable $b, callable $c = null) {};')
         );
@@ -132,10 +128,6 @@ class PhpFunctionSignatureInspectorTest extends TestCase
 
     public function testSignatureWithConstantDefault()
     {
-        if (!$this->featureDetector->isSupported('parameter.default.constant')) {
-            $this->markTestSkipped('Requires support for constants as parameter defaults.');
-        }
-
         $function = new ReflectionMethod($this, 'methodA');
         $actual = $this->subject->signature($function);
         $expected = [
@@ -174,13 +166,6 @@ class PhpFunctionSignatureInspectorTest extends TestCase
 
     public function testSignatureWithVariadicParameter()
     {
-        if (!$this->featureDetector->isSupported('parameter.variadic')) {
-            $this->markTestSkipped('Requires variadic parameters.');
-        }
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('Broken because of https://github.com/facebook/hhvm/issues/5762');
-        }
-
         $function = new ReflectionFunction(eval('return function(...$a){};'));
         $actual = $this->subject->signature($function);
         $expected = ['a' => ['', '', '...', '']];

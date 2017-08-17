@@ -29,12 +29,10 @@ class GeneratorAnswerBuilderTest extends TestCase
         $this->self = (object) [];
         $this->stub = StubFactory::instance()->create(null, $this->self);
         $this->featureDetector = FeatureDetector::instance();
-        $this->isGeneratorReturnSupported = $this->featureDetector->isSupported('generator.return');
         $this->invocableInspector = new InvocableInspector();
         $this->invoker = new Invoker();
         $this->subject = new GeneratorAnswerBuilder(
             $this->stub,
-            $this->isGeneratorReturnSupported,
             $this->invocableInspector,
             $this->invoker
         );
@@ -330,10 +328,6 @@ class GeneratorAnswerBuilderTest extends TestCase
         $this->subject->yields($handle, 'a');
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 
-        if (!$this->featureDetector->isSupported('generator.implicit-next')) {
-            $generator->next();
-        }
-
         $this->assertSame($handle->get(), $generator->key());
     }
 
@@ -386,10 +380,6 @@ class GeneratorAnswerBuilderTest extends TestCase
         );
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 
-        if (!$this->featureDetector->isSupported('generator.implicit-next')) {
-            $generator->next();
-        }
-
         $this->assertSame($handle->get(), $generator->key());
     }
 
@@ -409,10 +399,6 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testReturnsWithValue()
     {
-        if (!$this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires generator return values.');
-        }
-
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returns('c'));
 
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
@@ -423,10 +409,6 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testReturnsWithInstanceHandleValue()
     {
-        if (!$this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires generator return values.');
-        }
-
         $handle = Phony::mock();
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returns($handle));
 
@@ -438,10 +420,6 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testReturnsWithMulitpleValues()
     {
-        if (!$this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires generator return values.');
-        }
-
         $this->stub->doesWith($this->answer, [], true, true, false);
 
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returns('c', 'd'));
@@ -457,25 +435,8 @@ class GeneratorAnswerBuilderTest extends TestCase
         $this->assertSame('d', $generator->getReturn());
     }
 
-    public function testReturnsFailureValueNotSupported()
-    {
-        if ($this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires no support for generator return values.');
-        }
-
-        $this->expectException(
-            'RuntimeException',
-            'The current runtime does not support the supplied generator return value.'
-        );
-        $this->subject->returns('a');
-    }
-
     public function testReturnsArgument()
     {
-        if (!$this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires generator return values.');
-        }
-
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returnsArgument(1));
 
         $arguments = Arguments::create('c', 'd');
@@ -487,10 +448,6 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testReturnsArgumentWithoutIndex()
     {
-        if (!$this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires generator return values.');
-        }
-
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returnsArgument());
 
         $arguments = Arguments::create('c', 'd');
@@ -502,10 +459,6 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testReturnsArgumentWithNegativeIndex()
     {
-        if (!$this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires generator return values.');
-        }
-
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returnsArgument(-1));
 
         $arguments = Arguments::create('c', 'd', 'e');
@@ -517,10 +470,6 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testReturnsArgumentWithUndefinedArgument()
     {
-        if (!$this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires generator return values.');
-        }
-
         $this->assertSame($this->stub, $this->subject->returnsArgument(1));
 
         $arguments = Arguments::create();
@@ -530,25 +479,8 @@ class GeneratorAnswerBuilderTest extends TestCase
         iterator_to_array($generator);
     }
 
-    public function testReturnsArgumentFailureUnsupported()
-    {
-        if ($this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires no support for generator return values.');
-        }
-
-        $this->expectException(
-            'RuntimeException',
-            'The current runtime does not support generator return values.'
-        );
-        $this->subject->returnsArgument();
-    }
-
     public function testReturnsSelf()
     {
-        if (!$this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires generator return values.');
-        }
-
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returnsSelf());
 
         $arguments = Arguments::create('c', 'd');
@@ -556,19 +488,6 @@ class GeneratorAnswerBuilderTest extends TestCase
 
         $this->assertSame(['a', 'b'], iterator_to_array($generator));
         $this->assertSame($this->self, $generator->getReturn());
-    }
-
-    public function testReturnsSelfFailureNotSupported()
-    {
-        if ($this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires no support for generator return values.');
-        }
-
-        $this->expectException(
-            'RuntimeException',
-            'The current runtime does not support generator return values.'
-        );
-        $this->subject->returnsSelf();
     }
 
     public function testThrows()

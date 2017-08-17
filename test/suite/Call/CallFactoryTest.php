@@ -66,10 +66,6 @@ class CallFactoryTest extends TestCase
 
     public function testRecordEngineErrorException()
     {
-        if (!$this->featureDetector->isSupported('error.exception.engine')) {
-            $this->markTestSkipped('Requires engine error exceptions.');
-        }
-
         $exception = new Error('You done goofed.');
         $callback = function () use ($exception) {
             throw $exception;

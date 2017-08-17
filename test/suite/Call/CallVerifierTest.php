@@ -640,10 +640,6 @@ class CallVerifierTest extends TestCase
 
     public function testThrewWithEngineErrorException()
     {
-        if (!$this->featureDetector->isSupported('error.exception.engine')) {
-            $this->markTestSkipped('Requires engine error exceptions.');
-        }
-
         $this->exception = new Error('You done goofed.');
         $this->threwEvent = $this->callEventFactory->createThrew($this->exception);
         $this->callWithException =

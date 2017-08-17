@@ -44,10 +44,6 @@ class GeneratorSpyFactoryTest extends TestCase
             }
         );
         $spy = $this->subject->create($this->call, $generator, true);
-        if (!$this->featureDetector->isSupported('generator.implicit-next')) {
-            $spy->next();
-        }
-
         while ($spy->valid()) {
             $spy->send(strtoupper($spy->current()));
         }
@@ -88,10 +84,6 @@ class GeneratorSpyFactoryTest extends TestCase
         $spy = $this->subject->create($this->call, $generator, true);
         $caughtException = null;
         try {
-            if (!$this->featureDetector->isSupported('generator.implicit-next')) {
-                $spy->next();
-            }
-
             while ($spy->valid()) {
                 $spy->send(strtoupper($spy->current()));
             }
@@ -122,10 +114,6 @@ class GeneratorSpyFactoryTest extends TestCase
 
     public function testCreateWithReceivedException()
     {
-        if (!$this->featureDetector->isSupported('generator.exception')) {
-            $this->markTestSkipped('Requires generator exception support.');
-        }
-
         $receivedException = new RuntimeException('You done goofed.');
         $generator = call_user_func(
             function () {
@@ -140,10 +128,6 @@ class GeneratorSpyFactoryTest extends TestCase
             }
         );
         $spy = $this->subject->create($this->call, $generator, true);
-        if (!$this->featureDetector->isSupported('generator.implicit-next')) {
-            $spy->next();
-        }
-
         while ($spy->valid()) {
             if (1 === $spy->key()) {
                 $spy->throw($receivedException);
@@ -231,10 +215,6 @@ class GeneratorSpyFactoryTest extends TestCase
 
     public function testGeneratorReturn()
     {
-        if (!$this->featureDetector->isSupported('generator.return')) {
-            $this->markTestSkipped('Requires generator return support.');
-        }
-
         $generator = eval(
             'return call_user_func(function () { return 123; yield; });'
         );
