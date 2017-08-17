@@ -128,7 +128,7 @@ class InstanceHandle extends AbstractHandle
      *
      * @return $this This handle.
      */
-    public function constructWith($arguments = array())
+    public function constructWith($arguments = [])
     {
         if ($this->callParentConstructorMethod) {
             if (!$arguments instanceof Arguments) {
@@ -199,7 +199,7 @@ class InstanceHandle extends AbstractHandle
                     function ($arguments) use ($method, $object) {
                         return $method->invokeArgs($object, $arguments->all());
                     },
-                    array(),
+                    [],
                     false,
                     true,
                     false

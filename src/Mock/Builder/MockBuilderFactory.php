@@ -71,7 +71,7 @@ class MockBuilderFactory
      *
      * @return MockBuilder The mock builder.
      */
-    public function create($types = array())
+    public function create($types = [])
     {
         return new MockBuilder(
             $types,

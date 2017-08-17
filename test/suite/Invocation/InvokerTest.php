@@ -30,7 +30,7 @@ class InvokerTest extends TestCase
         $this->assertSame(phpversion(), $this->subject->callWith('phpversion', Arguments::create()));
         $this->assertSame(1, $this->subject->callWith('strlen', Arguments::create('a')));
         $this->assertSame(
-            array('invokeWith', array('a', 'b')),
+            ['invokeWith', ['a', 'b']],
             $this->subject->callWith($this->invocable, Arguments::create('a', 'b'))
         );
     }

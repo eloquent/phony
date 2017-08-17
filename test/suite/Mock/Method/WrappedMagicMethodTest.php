@@ -46,7 +46,7 @@ class WrappedMagicMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame(array($this->mock, '__call'), $this->subject->callback());
+        $this->assertSame([$this->mock, '__call'], $this->subject->callback());
         $this->assertNull($this->subject->label());
     }
 
@@ -69,7 +69,7 @@ class WrappedMagicMethodTest extends TestCase
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame(
-            array('Eloquent\Phony\Test\TestClassB', '__callStatic'),
+            ['Eloquent\Phony\Test\TestClassB', '__callStatic'],
             $this->subject->callback()
         );
         $this->assertNull($this->subject->label());
@@ -97,7 +97,7 @@ class WrappedMagicMethodTest extends TestCase
 
         $this->assertSame('magic nonexistent ab', $subject('a', 'b'));
         $this->assertSame('magic nonexistent ab', $subject->invoke('a', 'b'));
-        $this->assertSame('magic nonexistent ab', $subject->invokeWith(array('a', 'b')));
+        $this->assertSame('magic nonexistent ab', $subject->invokeWith(['a', 'b']));
         $this->assertSame('magic nonexistent ', $subject->invokeWith());
     }
 
@@ -112,7 +112,7 @@ class WrappedMagicMethodTest extends TestCase
 
         $this->assertSame('static magic nonexistent ab', $subject('a', 'b'));
         $this->assertSame('static magic nonexistent ab', $subject->invoke('a', 'b'));
-        $this->assertSame('static magic nonexistent ab', $subject->invokeWith(array('a', 'b')));
+        $this->assertSame('static magic nonexistent ab', $subject->invokeWith(['a', 'b']));
         $this->assertSame('static magic nonexistent ', $subject->invokeWith());
     }
 
@@ -122,7 +122,7 @@ class WrappedMagicMethodTest extends TestCase
 
         $this->assertSame('return-value', $subject('a', 'b'));
         $this->assertSame('return-value', $subject->invoke('a', 'b'));
-        $this->assertSame('return-value', $subject->invokeWith(array('a', 'b')));
+        $this->assertSame('return-value', $subject->invokeWith(['a', 'b']));
         $this->assertSame('return-value', $subject->invokeWith());
     }
 }

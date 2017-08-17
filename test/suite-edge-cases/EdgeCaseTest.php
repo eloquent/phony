@@ -41,7 +41,7 @@ class EdgeCaseTest extends TestCase
             $this->markTestSkipped('Requires the SimpleXMLElement class.');
         }
 
-        $partial = x\partialMock('SimpleXMLElement', array('<root><sub></sub></root>'));
+        $partial = x\partialMock('SimpleXMLElement', ['<root><sub></sub></root>']);
         $mock = $partial->get();
 
         $this->assertTrue($mock instanceof SimpleXMLElement);
@@ -69,7 +69,7 @@ class EdgeCaseTest extends TestCase
             $this->markTestSkipped('Requires the SimpleXMLIterator class.');
         }
 
-        $partial = x\partialMock('SimpleXMLIterator', array('<root><sub></sub></root>'));
+        $partial = x\partialMock('SimpleXMLIterator', ['<root><sub></sub></root>']);
         $mock = $partial->get();
 
         $this->assertTrue($mock instanceof SimpleXMLIterator);
@@ -78,7 +78,7 @@ class EdgeCaseTest extends TestCase
 
     public function typeData()
     {
-        $data = array();
+        $data = [];
 
         if (function_exists('get_declared_traits')) {
             $typeNames = array_merge(get_declared_classes(), get_declared_interfaces(), get_declared_traits());
@@ -125,7 +125,7 @@ class EdgeCaseTest extends TestCase
                 }
             }
 
-            $data[$typeName] = array($typeName);
+            $data[$typeName] = [$typeName];
         }
 
         return $data;
@@ -148,7 +148,7 @@ class EdgeCaseTest extends TestCase
 
     public function functionData()
     {
-        $data = array();
+        $data = [];
 
         $functionNames = get_defined_functions();
         $functionNames = array_merge($functionNames['internal'], $functionNames['user']);
@@ -158,7 +158,7 @@ class EdgeCaseTest extends TestCase
                 continue;
             }
 
-            $data[$functionName] = array($functionName);
+            $data[$functionName] = [$functionName];
         }
 
         return $data;

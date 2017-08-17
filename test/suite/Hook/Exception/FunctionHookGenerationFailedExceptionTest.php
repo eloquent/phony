@@ -37,7 +37,7 @@ ERROR
 // this line is NOT context
 EOD;
         $source = str_replace("\n", PHP_EOL, $source);
-        $error = array('message' => 'errorMessage', 'line' => 5);
+        $error = ['message' => 'errorMessage', 'line' => 5];
         $exception = new FunctionHookGenerationFailedException(
             $this->functionName,
             $this->callback,
@@ -124,7 +124,7 @@ ERROR
 // this line is NOT context
 EOD;
         $source = str_replace("\n", PHP_EOL, $source);
-        $error = array('message' => 'errorMessage', 'line' => 2);
+        $error = ['message' => 'errorMessage', 'line' => 2];
         $exception = new FunctionHookGenerationFailedException(
             $this->functionName,
             $this->callback,
@@ -163,7 +163,7 @@ ERROR
 // this line is context
 EOD;
         $source = str_replace("\n", PHP_EOL, $source);
-        $error = array('message' => 'errorMessage', 'line' => 5);
+        $error = ['message' => 'errorMessage', 'line' => 5];
         $exception = new FunctionHookGenerationFailedException(
             $this->functionName,
             $this->callback,

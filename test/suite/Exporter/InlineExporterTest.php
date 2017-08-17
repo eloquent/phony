@@ -52,34 +52,34 @@ class InlineExporterTest extends TestCase
 
     public function exportData()
     {
-        return array(
-            'null'             => array(null,                                            'null'),
-            'true'             => array(true,                                            'true'),
-            'false'            => array(false,                                           'false'),
-            '0'                => array(0,                                               '0'),
-            '-0'               => array(-0,                                              '0'),
-            '1'                => array(1,                                               '1'),
-            '-1'               => array(-1,                                              '-1'),
-            '0.0'              => array(0.0,                                             '0.000000e+0'),
-            '-0.0'             => array(-0.0,                                            '0.000000e+0'),
-            '1.0'              => array(1.0,                                             '1.000000e+0'),
-            '-1.0'             => array(-1.0,                                            '-1.000000e+0'),
-            'STDIN'            => array(STDIN,                                           'resource#1'),
-            'STDOUT'           => array(STDOUT,                                          'resource#2'),
-            'a\nb'             => array("a\nb",                                          '"a\nb"'),
-            '[]'               => array(array(),                                         '#0[]'),
-            '[1]'              => array(array(1),                                        '#0[1]'),
-            '[1, 1]'           => array(array(1, 1),                                     '#0[1, 1]'),
-            '[1: 1]'           => array(array(1 => 1),                                   '#0[1: 1]'),
-            '[1: 1, 2: 2]'     => array(array(1 => 1, 2 => 2),                           '#0[1: 1, 2: 2]'),
-            '[1, [1, 1]]'      => array(array(1, array(1, 1)),                           '#0[1, #1[1, 1]]'),
-            '[[1, 1], [1, 1]]' => array(array(array(1, 1), array(1, 1)),                 '#0[#1[1, 1], #2[1, 1]]'),
-            '{a: 0}'           => array((object) array('a' => 0),                        '#0{a: 0}'),
-            '{a: 0, b: 1}'     => array((object) array('a' => 0, 'b' => 1),              '#0{a: 0, b: 1}'),
-            '{a: {a: 0}}'      => array((object) array('a' => (object) array('a' => 0)), '#0{a: #1{a: 0}}'),
-            '{a: []}'          => array((object) array('a' => array()),                  '#0{a: #0[]}'),
-            'object'           => array(new TestClass(),                                 'TestClass#0{}'),
-        );
+        return [
+            'null'             => [null,                                            'null'],
+            'true'             => [true,                                            'true'],
+            'false'            => [false,                                           'false'],
+            '0'                => [0,                                               '0'],
+            '-0'               => [-0,                                              '0'],
+            '1'                => [1,                                               '1'],
+            '-1'               => [-1,                                              '-1'],
+            '0.0'              => [0.0,                                             '0.000000e+0'],
+            '-0.0'             => [-0.0,                                            '0.000000e+0'],
+            '1.0'              => [1.0,                                             '1.000000e+0'],
+            '-1.0'             => [-1.0,                                            '-1.000000e+0'],
+            'STDIN'            => [STDIN,                                           'resource#1'],
+            'STDOUT'           => [STDOUT,                                          'resource#2'],
+            'a\nb'             => ["a\nb",                                          '"a\nb"'],
+            '[]'               => [[],                                         '#0[]'],
+            '[1]'              => [[1],                                        '#0[1]'],
+            '[1, 1]'           => [[1, 1],                                     '#0[1, 1]'],
+            '[1: 1]'           => [[1 => 1],                                   '#0[1: 1]'],
+            '[1: 1, 2: 2]'     => [[1 => 1, 2 => 2],                           '#0[1: 1, 2: 2]'],
+            '[1, [1, 1]]'      => [[1, [1, 1]],                           '#0[1, #1[1, 1]]'],
+            '[[1, 1], [1, 1]]' => [[[1, 1], [1, 1]],                 '#0[#1[1, 1], #2[1, 1]]'],
+            '{a: 0}'           => [(object) ['a' => 0],                        '#0{a: 0}'],
+            '{a: 0, b: 1}'     => [(object) ['a' => 0, 'b' => 1],              '#0{a: 0, b: 1}'],
+            '{a: {a: 0}}'      => [(object) ['a' => (object) ['a' => 0]], '#0{a: #1{a: 0}}'],
+            '{a: []}'          => [(object) ['a' => []],                  '#0{a: #0[]}'],
+            'object'           => [new TestClass(),                                 'TestClass#0{}'],
+        ];
     }
 
     /**
@@ -95,8 +95,8 @@ class InlineExporterTest extends TestCase
 
     public function testExportMaxDepthWithArrays()
     {
-        $array = array();
-        $value = array(&$array, array(&$array));
+        $array = [];
+        $value = [&$array, [&$array]];
 
         $this->assertSame('#0[~2]', $this->subject->export($value, 0));
         $this->assertSame('#0[#1[], #2[~1]]', $this->subject->export($value, 1));
@@ -106,8 +106,8 @@ class InlineExporterTest extends TestCase
 
     public function testExportMaxDepthWithObjects()
     {
-        $object = (object) array();
-        $value = (object) array('a' => &$object, 'b' => (object) array('a' => &$object));
+        $object = (object) [];
+        $value = (object) ['a' => &$object, 'b' => (object) ['a' => &$object]];
 
         $this->assertSame('#0{~2}', $this->subject->export($value, 0));
         $this->assertSame('#0{a: #1{}, b: #2{~1}}', $this->subject->export($value, 1));
@@ -126,7 +126,7 @@ class InlineExporterTest extends TestCase
 
     public function testExportRecursiveArray()
     {
-        $value = array();
+        $value = [];
         $value['inner'] = &$value;
 
         $this->assertSame('#0["inner": &0[]]', $this->subject->export($value));
@@ -134,8 +134,8 @@ class InlineExporterTest extends TestCase
 
     public function testExportObjectPersistentIds()
     {
-        $objectA = (object) array();
-        $objectB = (object) array();
+        $objectA = (object) [];
+        $objectB = (object) [];
 
         $this->assertSame('#0{}', $this->subject->export($objectA));
         $this->assertSame('#1{}', $this->subject->export($objectB));
@@ -262,7 +262,7 @@ class InlineExporterTest extends TestCase
         $anonymous = $this->spyFactory->create()->setLabel('anonymous');
         $verifier = $this->spyVerifierFactory->createFromCallback('implode')->setLabel('verifier');
         $anonymousVerifier = $this->spyVerifierFactory->createFromCallback()->setLabel('anonymous-verifier');
-        $repeated = array($spy, $spy);
+        $repeated = [$spy, $spy];
 
         $this->assertSame('spy#0(implode)[label]', $this->subject->export($spy));
         $this->assertSame(
@@ -354,7 +354,7 @@ class InlineExporterTest extends TestCase
 
     public function testExportIterableSpies()
     {
-        $stub = $this->stubVerifierFactory->create()->setUseIterableSpies(true)->returns(array());
+        $stub = $this->stubVerifierFactory->create()->setUseIterableSpies(true)->returns([]);
         $iterableSpy = $stub();
 
         $this->assertSame('iterable-spy#0(#0[])', $this->subject->export($iterableSpy));
@@ -407,7 +407,7 @@ class InlineExporterTest extends TestCase
         $this->assertSame('InlineExporterTest->testExportCallable', $this->subject->exportCallable(__METHOD__));
         $this->assertSame(
             'TestClassA->testClassAMethodA',
-            $this->subject->exportCallable(array($mockA, 'testClassAMethodA'))
+            $this->subject->exportCallable([$mockA, 'testClassAMethodA'])
         );
         $this->assertSame(
             'TestClassA[parent-class]->testClassAMethodA',
@@ -415,7 +415,7 @@ class InlineExporterTest extends TestCase
         );
         $this->assertSame(
             'TestClassA::testClassAStaticMethodA',
-            $this->subject->exportCallable(array('PhonyMockInlineExporterExportCallableA', 'testClassAStaticMethodA'))
+            $this->subject->exportCallable(['PhonyMockInlineExporterExportCallableA', 'testClassAStaticMethodA'])
         );
         $this->assertSame(
             'TestClassA::testClassAStaticMethodA',
@@ -423,11 +423,11 @@ class InlineExporterTest extends TestCase
         );
         $this->assertSame(
             'PhonyMockInlineExporterExportCallableA->method',
-            $this->subject->exportCallable(array($mockA, 'method'))
+            $this->subject->exportCallable([$mockA, 'method'])
         );
         $this->assertSame(
             'PhonyMockInlineExporterExportCallableA::staticMethod',
-            $this->subject->exportCallable(array('PhonyMockInlineExporterExportCallableA', 'staticMethod'))
+            $this->subject->exportCallable(['PhonyMockInlineExporterExportCallableA', 'staticMethod'])
         );
         $this->assertSame(
             'PhonyMockInlineExporterExportCallableA::staticMethod',
@@ -435,7 +435,7 @@ class InlineExporterTest extends TestCase
         );
         $this->assertSame(
             'TestInterfaceA->testClassAMethodA',
-            $this->subject->exportCallable(array($mockB, 'testClassAMethodA'))
+            $this->subject->exportCallable([$mockB, 'testClassAMethodA'])
         );
         $this->assertSame(
             'TestInterfaceA[interface]->testClassAMethodA',
@@ -443,7 +443,7 @@ class InlineExporterTest extends TestCase
         );
         $this->assertSame(
             'TestInterfaceA::testClassAStaticMethodA',
-            $this->subject->exportCallable(array('PhonyMockInlineExporterExportCallableB', 'testClassAStaticMethodA'))
+            $this->subject->exportCallable(['PhonyMockInlineExporterExportCallableB', 'testClassAStaticMethodA'])
         );
         $this->assertSame(
             'TestInterfaceA::testClassAStaticMethodA',
@@ -465,7 +465,7 @@ class InlineExporterTest extends TestCase
 
         $this->assertSame(
             'PhonyMockInlineExporterExportCallableWithTraitsA->testClassAMethodB',
-            $this->subject->exportCallable(array($mockA, 'testClassAMethodB'))
+            $this->subject->exportCallable([$mockA, 'testClassAMethodB'])
         );
         $this->assertSame(
             'PhonyMockInlineExporterExportCallableWithTraitsA[trait]->testClassAMethodB',
@@ -474,7 +474,7 @@ class InlineExporterTest extends TestCase
         $this->assertSame(
             'PhonyMockInlineExporterExportCallableWithTraitsA::testClassAStaticMethodA',
             $this->subject->exportCallable(
-                array('PhonyMockInlineExporterExportCallableWithTraitsA', 'testClassAStaticMethodA')
+                ['PhonyMockInlineExporterExportCallableWithTraitsA', 'testClassAStaticMethodA']
             )
         );
         $this->assertSame(
@@ -485,8 +485,8 @@ class InlineExporterTest extends TestCase
 
     public function testReset()
     {
-        $objectA = (object) array();
-        $objectB = (object) array();
+        $objectA = (object) [];
+        $objectB = (object) [];
         $this->subject->export($objectA);
         $this->subject->export($objectB);
         $this->subject->reset();

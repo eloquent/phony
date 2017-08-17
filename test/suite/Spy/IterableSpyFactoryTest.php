@@ -28,7 +28,7 @@ class IterableSpyFactoryTest extends TestCase
 
     public function testCreateWithArrayReturn()
     {
-        $values = array('a' => 'b', 'c' => 'd');
+        $values = ['a' => 'b', 'c' => 'd'];
         $iterable = $values;
         $this->call = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
@@ -41,11 +41,11 @@ class IterableSpyFactoryTest extends TestCase
         $this->callEventFactory->sequencer()->set(0);
         $this->callEventFactory->clock()->setTime(1.0);
         $this->callFactory->reset();
-        $iterableEvents = array(
+        $iterableEvents = [
             $this->callEventFactory->createUsed(),
             $this->callEventFactory->createProduced('a', 'b'),
             $this->callEventFactory->createProduced('c', 'd'),
-        );
+        ];
         foreach ($iterableEvents as $iterableEvent) {
             $iterableEvent->setCall($this->call);
         }
@@ -60,7 +60,7 @@ class IterableSpyFactoryTest extends TestCase
 
     public function testCreateWithIteratorReturn()
     {
-        $values = array('a' => 'b', 'c' => 'd');
+        $values = ['a' => 'b', 'c' => 'd'];
         $iterable = new ArrayIterator($values);
         $this->call = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
@@ -73,11 +73,11 @@ class IterableSpyFactoryTest extends TestCase
         $this->callEventFactory->sequencer()->set(0);
         $this->callEventFactory->clock()->setTime(1.0);
         $this->callFactory->reset();
-        $iterableEvents = array(
+        $iterableEvents = [
             $this->callEventFactory->createUsed(),
             $this->callEventFactory->createProduced('a', 'b'),
             $this->callEventFactory->createProduced('c', 'd'),
-        );
+        ];
         foreach ($iterableEvents as $iterableEvent) {
             $iterableEvent->setCall($this->call);
         }
@@ -92,7 +92,7 @@ class IterableSpyFactoryTest extends TestCase
 
     public function testCreateWithIteratorAggregateReturn()
     {
-        $values = array('a' => 'b', 'c' => 'd');
+        $values = ['a' => 'b', 'c' => 'd'];
         $iterable = new TestIteratorAggregate($values);
         $this->call = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
@@ -105,11 +105,11 @@ class IterableSpyFactoryTest extends TestCase
         $this->callEventFactory->sequencer()->set(0);
         $this->callEventFactory->clock()->setTime(1.0);
         $this->callFactory->reset();
-        $iterableEvents = array(
+        $iterableEvents = [
             $this->callEventFactory->createUsed(),
             $this->callEventFactory->createProduced('a', 'b'),
             $this->callEventFactory->createProduced('c', 'd'),
-        );
+        ];
         foreach ($iterableEvents as $iterableEvent) {
             $iterableEvent->setCall($this->call);
         }
@@ -135,7 +135,7 @@ class IterableSpyFactoryTest extends TestCase
         $this->call = $this->callFactory->create();
 
         $this->expectException('InvalidArgumentException', "Unsupported iterable of type 'stdClass'.");
-        $this->subject->create($this->call, (object) array());
+        $this->subject->create($this->call, (object) []);
     }
 
     public function testInstance()

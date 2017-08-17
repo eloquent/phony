@@ -76,7 +76,7 @@ class FacadeDriver
      */
     protected function __construct(AssertionRecorder $assertionRecorder)
     {
-        $this->sequences = array();
+        $this->sequences = [];
 
         $anyMatcher = new AnyMatcher();
         $objectIdSequence = Sequencer::sequence('exporter-object-id');

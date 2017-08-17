@@ -39,7 +39,7 @@ class FunctionalTest extends TestCase
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
 
         $this->assertSame(
-            array('a', 'b'),
+            ['a', 'b'],
             $handle->testClassAMethodA->calledWith('a', '*')->firstCall()->arguments()->all()
         );
         $this->assertSame('b', $handle->testClassAMethodA->calledWith('a', '*')->firstCall()->argument(1));
@@ -54,7 +54,7 @@ class FunctionalTest extends TestCase
         $this->assertSame('x', $mock->testClassAMethodA('a', 'b'));
         $this->assertSame('cd', $mock->testClassAMethodA('c', 'd'));
         $this->assertSame(
-            array('a', 'b'),
+            ['a', 'b'],
             $handle->testClassAMethodA->calledWith('a', '*')->firstCall()->arguments()->all()
         );
         $this->assertSame('b', $handle->testClassAMethodA->calledWith('a', '*')->firstCall()->argument(1));
@@ -62,13 +62,13 @@ class FunctionalTest extends TestCase
 
     public function testMockCalls()
     {
-        $mock = x\partialMock('Eloquent\Phony\Test\TestClassB', array('A', 'B'))->get();
+        $mock = x\partialMock('Eloquent\Phony\Test\TestClassB', ['A', 'B'])->get();
         $e = 'e';
         $n = 'n';
         $q = 'q';
         $r = 'r';
 
-        $this->assertSame(array('A', 'B'), $mock->constructorArguments);
+        $this->assertSame(['A', 'B'], $mock->constructorArguments);
         $this->assertSame('ab', $mock::testClassAStaticMethodA('a', 'b'));
         $this->assertSame('cde', $mock::testClassAStaticMethodB('c', 'd', $e));
         $this->assertSame('third', $e);
@@ -124,7 +124,7 @@ class FunctionalTest extends TestCase
             }
         );
 
-        $this->assertSame(array(1, 2), $handle->get()->method(1, 2));
+        $this->assertSame([1, 2], $handle->get()->method(1, 2));
     }
 
     public function testVariadicParameterMockingWithType()
@@ -142,10 +142,10 @@ class FunctionalTest extends TestCase
                 return func_get_args();
             }
         );
-        $a = (object) array();
-        $b = (object) array();
+        $a = (object) [];
+        $b = (object) [];
 
-        $this->assertSame(array($a, $b), $handle->get()->method($a, $b));
+        $this->assertSame([$a, $b], $handle->get()->method($a, $b));
     }
 
     public function testVariadicParameterMockingByReference()
@@ -325,13 +325,13 @@ class FunctionalTest extends TestCase
     {
         $stubA = x\spyGlobal('vsprintf', 'Eloquent\Phony\Test');
 
-        $this->assertSame('a, b', Test\vsprintf('%s, %s', array('a', 'b')));
-        $this->assertTrue((bool) $stubA->calledWith('%s, %s', array('a', 'b')));
+        $this->assertSame('a, b', Test\vsprintf('%s, %s', ['a', 'b']));
+        $this->assertTrue((bool) $stubA->calledWith('%s, %s', ['a', 'b']));
 
         $stubB = x\spyGlobal('vsprintf', 'Eloquent\Phony\Test');
 
-        $this->assertSame('a, b', Test\vsprintf('%s, %s', array('a', 'b')));
-        $this->assertTrue((bool) $stubB->calledWith('%s, %s', array('a', 'b')));
+        $this->assertSame('a, b', Test\vsprintf('%s, %s', ['a', 'b']));
+        $this->assertTrue((bool) $stubB->calledWith('%s, %s', ['a', 'b']));
     }
 
     public function testStubStatic()
@@ -421,34 +421,34 @@ class FunctionalTest extends TestCase
     {
         $stubA = x\stubGlobal('vsprintf', 'Eloquent\Phony\Test');
 
-        $this->assertNull(Test\vsprintf('%s, %s', array('a', 'b')));
+        $this->assertNull(Test\vsprintf('%s, %s', ['a', 'b']));
 
         $stubA->returns('x');
 
-        $this->assertSame('x', Test\vsprintf('%s, %s', array('a', 'b')));
+        $this->assertSame('x', Test\vsprintf('%s, %s', ['a', 'b']));
 
         $stubA->forwards();
 
-        $this->assertSame('a, b', Test\vsprintf('%s, %s', array('a', 'b')));
-        $stubA->times(3)->calledWith('%s, %s', array('a', 'b'));
+        $this->assertSame('a, b', Test\vsprintf('%s, %s', ['a', 'b']));
+        $stubA->times(3)->calledWith('%s, %s', ['a', 'b']);
 
         $stubB = x\stubGlobal('vsprintf', 'Eloquent\Phony\Test');
 
-        $this->assertNull(Test\vsprintf('%s, %s', array('a', 'b')));
-        $stubB->calledWith('%s, %s', array('a', 'b'));
+        $this->assertNull(Test\vsprintf('%s, %s', ['a', 'b']));
+        $stubB->calledWith('%s, %s', ['a', 'b']);
 
         $stubB->returns('x');
 
-        $this->assertSame('x', Test\vsprintf('%s, %s', array('a', 'b')));
+        $this->assertSame('x', Test\vsprintf('%s, %s', ['a', 'b']));
 
         x\restoreGlobalFunctions();
 
-        $this->assertSame('a, b', Test\vsprintf('%s, %s', array('a', 'b')));
+        $this->assertSame('a, b', Test\vsprintf('%s, %s', ['a', 'b']));
     }
 
     public function testIterableSpying()
     {
-        $value = array('a' => 'b', 'c' => 'd');
+        $value = ['a' => 'b', 'c' => 'd'];
 
         $stub = x\stub();
         $stub->setUseIterableSpies(true);
@@ -470,7 +470,7 @@ class FunctionalTest extends TestCase
 
     public function testIterableSpyingWithArrayLikeObject()
     {
-        $value = array('a' => 'b', 'c' => 'd');
+        $value = ['a' => 'b', 'c' => 'd'];
 
         $stub = x\stub();
         $stub->setUseIterableSpies(true);
@@ -556,7 +556,7 @@ class FunctionalTest extends TestCase
 
     public function testCanCallMockedInterfaceMethod()
     {
-        $handle = x\partialMock(array('stdClass', 'Eloquent\Phony\Test\TestInterfaceA'));
+        $handle = x\partialMock(['stdClass', 'Eloquent\Phony\Test\TestInterfaceA']);
 
         $this->assertNull($handle->get()->testClassAMethodA('a', 'b'));
     }
@@ -574,7 +574,7 @@ class FunctionalTest extends TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $handle = x\partialMock(array('stdClass', 'Eloquent\Phony\Test\TestTraitA'));
+        $handle = x\partialMock(['stdClass', 'Eloquent\Phony\Test\TestTraitA']);
 
         $this->assertSame('ab', $handle->get()->testClassAMethodB('a', 'b'));
     }
@@ -585,7 +585,7 @@ class FunctionalTest extends TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $handle = x\partialMock(array('Eloquent\Phony\Test\TestTraitA'));
+        $handle = x\partialMock(['Eloquent\Phony\Test\TestTraitA']);
 
         $this->assertSame('ab', $handle->get()->testClassAMethodB('a', 'b'));
     }
@@ -596,7 +596,7 @@ class FunctionalTest extends TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $handle = x\partialMock(array('stdClass', 'Eloquent\Phony\Test\TestTraitC'));
+        $handle = x\partialMock(['stdClass', 'Eloquent\Phony\Test\TestTraitC']);
 
         $this->assertNull($handle->get()->testTraitCMethodA('a', 'b'));
     }
@@ -607,7 +607,7 @@ class FunctionalTest extends TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $handle = x\partialMock(array('Eloquent\Phony\Test\TestTraitC'));
+        $handle = x\partialMock(['Eloquent\Phony\Test\TestTraitC']);
 
         $this->assertNull($handle->get()->testTraitCMethodA('a', 'b'));
     }
@@ -618,7 +618,7 @@ class FunctionalTest extends TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $handle = x\partialMock(array('Eloquent\Phony\Test\TestTraitH', 'Eloquent\Phony\Test\TestInterfaceE'));
+        $handle = x\partialMock(['Eloquent\Phony\Test\TestTraitH', 'Eloquent\Phony\Test\TestInterfaceE']);
 
         $this->assertSame('a', $handle->get()->methodA());
     }
@@ -636,9 +636,9 @@ class FunctionalTest extends TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $handle = x\partialMock('Eloquent\Phony\Test\TestTraitF', array('a', 'b'));
+        $handle = x\partialMock('Eloquent\Phony\Test\TestTraitF', ['a', 'b']);
 
-        $this->assertSame(array('a', 'b'), $handle->get()->constructorArguments);
+        $this->assertSame(['a', 'b'], $handle->get()->constructorArguments);
     }
 
     public function testCanMockClassAndCallPrivateConstructor()
@@ -647,9 +647,9 @@ class FunctionalTest extends TestCase
             $this->markTestSkipped('Requires closure binding.');
         }
 
-        $handle = x\partialMock('Eloquent\Phony\Test\TestClassD', array('a', 'b'));
+        $handle = x\partialMock('Eloquent\Phony\Test\TestClassD', ['a', 'b']);
 
-        $this->assertSame(array('a', 'b'), $handle->get()->constructorArguments);
+        $this->assertSame(['a', 'b'], $handle->get()->constructorArguments);
     }
 
     public function testMatcherAdaptationForBooleanValues()
@@ -675,16 +675,16 @@ class FunctionalTest extends TestCase
         $this->assertSame(__FILE__, $exception->getFile());
         $this->assertSame($line, $exception->getLine());
         $this->assertSame(
-            array(
-                array(
+            [
+                [
                     'file' => __FILE__,
                     'line' => $line,
                     'function' => 'called',
                     'class' => 'Eloquent\Phony\Spy\SpyVerifier',
                     'type' => '->',
-                    'args' => array(),
-                ),
-            ),
+                    'args' => [],
+                ],
+            ],
             $exception->getTrace()
         );
     }
@@ -695,12 +695,12 @@ class FunctionalTest extends TestCase
         $reflector = new ReflectionClass('Exception');
         $traceProperty = $reflector->getProperty('trace');
         $traceProperty->setAccessible(true);
-        $traceProperty->setValue($exception, array());
+        $traceProperty->setValue($exception, []);
         AssertionException::trim($exception);
 
         $this->assertNull($exception->getFile());
         $this->assertNull($exception->getLine());
-        $this->assertSame(array(), $exception->getTrace());
+        $this->assertSame([], $exception->getTrace());
     }
 
     public function testHandleCaseInsensitivity()
@@ -728,9 +728,9 @@ class FunctionalTest extends TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $handle = x\partialMock('Eloquent\Phony\Test\TestTraitD', array('a', 'b', 'c'));
+        $handle = x\partialMock('Eloquent\Phony\Test\TestTraitD', ['a', 'b', 'c']);
 
-        $this->assertSame(array('a', 'b', 'c'), $handle->get()->constructorArguments);
+        $this->assertSame(['a', 'b', 'c'], $handle->get()->constructorArguments);
     }
 
     public function testTraitConstructorConflictResolution()
@@ -740,11 +740,11 @@ class FunctionalTest extends TestCase
         }
 
         $handle = x\partialMock(
-            array('Eloquent\Phony\Test\TestTraitD', 'Eloquent\Phony\Test\TestTraitE'),
-            array('a', 'b', 'c')
+            ['Eloquent\Phony\Test\TestTraitD', 'Eloquent\Phony\Test\TestTraitE'],
+            ['a', 'b', 'c']
         );
 
-        $this->assertSame(array('a', 'b', 'c'), $handle->get()->constructorArguments);
+        $this->assertSame(['a', 'b', 'c'], $handle->get()->constructorArguments);
     }
 
     public function testCallAtWithAssertionResult()
@@ -754,7 +754,7 @@ class FunctionalTest extends TestCase
         $spy('b', 1);
         $spy('a', 2);
 
-        $this->assertSame(array('a', 2), $spy->calledWith('a', '*')->callAt(1)->arguments()->all());
+        $this->assertSame(['a', 2], $spy->calledWith('a', '*')->callAt(1)->arguments()->all());
     }
 
     public function testPhonySelfMagicParameter()
@@ -774,7 +774,7 @@ class FunctionalTest extends TestCase
             );
 
         $this->assertSame($handle->get(), $handle->get()->testClassAMethodA());
-        $this->assertSame(array($handle->get()), $callArguments);
+        $this->assertSame([$handle->get()], $callArguments);
     }
 
     public function testOrderVerification()
@@ -938,9 +938,9 @@ class FunctionalTest extends TestCase
 
     public function testCanCallCustomMethodWithInvocableObjectImplementation()
     {
-        $mock = x\partialMock(array('methodA' => new TestInvocable()))->get();
+        $mock = x\partialMock(['methodA' => new TestInvocable()])->get();
 
-        $this->assertSame(array('invokeWith', array('a', 'b')), $mock->methodA('a', 'b'));
+        $this->assertSame(['invokeWith', ['a', 'b']], $mock->methodA('a', 'b'));
     }
 
     public function testMockWithUncallableMagicMethod()
@@ -970,7 +970,7 @@ class FunctionalTest extends TestCase
     public function testIncompleteCalls()
     {
         $test = $this;
-        $context = (object) array('spy' => null);
+        $context = (object) ['spy' => null];
         $context->spy = $spy = x\spy(
             function () use ($test, $context) {
                 $test->assertFalse($context->spy->callAt(0)->hasResponded());
@@ -984,7 +984,7 @@ class FunctionalTest extends TestCase
     public function testCallRespondedAndCompleted()
     {
         $stub = x\stub();
-        $stub->returns(array(), array());
+        $stub->returns([], []);
         $stub();
         $stub->setUseIterableSpies(true);
         $stub();
@@ -1047,7 +1047,7 @@ class FunctionalTest extends TestCase
     {
         $handleA = x\mock();
         $handleA->get();
-        $handleB = x\mock(array('methodA' => function () {}));
+        $handleB = x\mock(['methodA' => function () {}]);
         $mockB = $handleB->get();
         $handleB->methodA->returns($handleA);
         $handleB->methodA->with($handleA)->returns('a');
@@ -1061,7 +1061,7 @@ class FunctionalTest extends TestCase
     public function testIterableSpySubstitution()
     {
         $stub = x\stub()->setUseIterableSpies(true)->returnsArgument();
-        $iterable = array('a', 'b');
+        $iterable = ['a', 'b'];
         $iterableSpy = $stub($iterable);
         $spy = x\spy();
         $spy($iterable);
@@ -1106,8 +1106,8 @@ class FunctionalTest extends TestCase
 
     public function testAdHocMocksWithSameSignatures()
     {
-        $foo = x\partialMock(array('test' => function () { return 'foo'; }))->get();
-        $bar = x\partialMock(array('test' => function () { return 'bar'; }))->get();
+        $foo = x\partialMock(['test' => function () { return 'foo'; }])->get();
+        $bar = x\partialMock(['test' => function () { return 'bar'; }])->get();
 
         $this->assertSame('foo', $foo->test());
         $this->assertSame('bar', $bar->test());
@@ -1115,14 +1115,14 @@ class FunctionalTest extends TestCase
 
     public function testAdHocMocksWithMagicSelf()
     {
-        $mock = x\partialMock(array('test' => function ($phonySelf) { return $phonySelf; }))->get();
+        $mock = x\partialMock(['test' => function ($phonySelf) { return $phonySelf; }])->get();
 
         $this->assertSame($mock, $mock->test());
     }
 
     public function testAdHocMocksWithMagicSelfOutput()
     {
-        $builder = x\mockBuilder(array('test' => function ($phonySelf) { return $phonySelf; }))
+        $builder = x\mockBuilder(['test' => function ($phonySelf) { return $phonySelf; }])
             ->named('PhonyTestAdHocMocksWithMagicSelfOutput');
         $mock = $builder->get();
         $handle = x\on($mock)->setLabel('label');
@@ -1141,7 +1141,7 @@ class FunctionalTest extends TestCase
         }
 
         $stub = x\stub()
-            ->generates(array('a' => 'b', 'c'))
+            ->generates(['a' => 'b', 'c'])
                 ->yields('d', 'e')
                 ->yields('f')
                 ->yields()
@@ -1151,7 +1151,7 @@ class FunctionalTest extends TestCase
         $actual = iterator_to_array($generator);
 
         $this->assertInstanceOf('Generator', $generator);
-        $this->assertSame(array('a' => 'b', 0 => 'c', 'd' => 'e', 1 => 'f', 2 => null), $actual);
+        $this->assertSame(['a' => 'b', 0 => 'c', 'd' => 'e', 1 => 'f', 2 => null], $actual);
     }
 
     public function testGeneratorStubbingWithReturnValue()
@@ -1180,9 +1180,9 @@ class FunctionalTest extends TestCase
             ->returns('b')
             ->generates()->yields('c')->returns();
 
-        $this->assertSame(array('a'), iterator_to_array($stub()));
+        $this->assertSame(['a'], iterator_to_array($stub()));
         $this->assertSame('b', $stub());
-        $this->assertSame(array('c'), iterator_to_array($stub()));
+        $this->assertSame(['c'], iterator_to_array($stub()));
     }
 
     public function testGeneratorStubbingWithEmptyGenerator()
@@ -1198,7 +1198,7 @@ class FunctionalTest extends TestCase
         $actual = iterator_to_array($generator);
 
         $this->assertInstanceOf('Generator', $generator);
-        $this->assertSame(array(), $actual);
+        $this->assertSame([], $actual);
     }
 
     public function testAssertionExceptionConstruction()
@@ -1218,7 +1218,7 @@ class FunctionalTest extends TestCase
 
     public function testIterableSpyDoubleWrappingWithArray()
     {
-        $stub = x\stub()->setUseIterableSpies(true)->returns(array('a', 'b'));
+        $stub = x\stub()->setUseIterableSpies(true)->returns(['a', 'b']);
         $iterableSpyA = $stub();
         $stub->returns($iterableSpyA);
         $iterableSpyB = $stub();
@@ -1230,7 +1230,7 @@ class FunctionalTest extends TestCase
         $doubleWrapped = $stub->callAt(1)->iterated();
 
         $this->assertSame('a', $iterableSpyAFirst);
-        $this->assertSame(array('a', 'b'), $iterableSpyBContents);
+        $this->assertSame(['a', 'b'], $iterableSpyBContents);
         $this->assertTrue((bool) $singleWrapped->twice()->produced('a'));
         $this->assertTrue((bool) $singleWrapped->once()->produced('b'));
         $this->assertTrue((bool) $doubleWrapped->once()->produced('a'));
@@ -1239,7 +1239,7 @@ class FunctionalTest extends TestCase
 
     public function testIterableSpyDoubleWrappingWithTraversable()
     {
-        $stub = x\stub()->setUseIterableSpies(true)->returns(new ArrayIterator(array('a', 'b')));
+        $stub = x\stub()->setUseIterableSpies(true)->returns(new ArrayIterator(['a', 'b']));
         $iterableSpyA = $stub();
         $stub->returns($iterableSpyA);
         $iterableSpyB = $stub();
@@ -1251,7 +1251,7 @@ class FunctionalTest extends TestCase
         $doubleWrapped = $stub->callAt(1)->iterated();
 
         $this->assertSame('a', $iterableSpyAFirst);
-        $this->assertSame(array('a', 'b'), $iterableSpyBContents);
+        $this->assertSame(['a', 'b'], $iterableSpyBContents);
         $this->assertTrue((bool) $singleWrapped->twice()->produced('a'));
         $this->assertTrue((bool) $singleWrapped->once()->produced('b'));
         $this->assertTrue((bool) $doubleWrapped->once()->produced('a'));
@@ -1267,7 +1267,7 @@ class FunctionalTest extends TestCase
             $this->markTestSkipped('Requires implicit next() generators.');
         }
 
-        $stub = x\stub()->generates()->yieldsFrom(array('a', 'b', 'c'))->returns();
+        $stub = x\stub()->generates()->yieldsFrom(['a', 'b', 'c'])->returns();
         $generatorSpyA = $stub();
         $stub->returns($generatorSpyA);
         $generatorSpyB = $stub();
@@ -1275,7 +1275,7 @@ class FunctionalTest extends TestCase
         $this->assertSame($generatorSpyA, $generatorSpyB->_phonySubject);
 
         $first = true;
-        $generatorSpyAContents = array();
+        $generatorSpyAContents = [];
         foreach ($generatorSpyA as $value) {
             $generatorSpyAContents[] = $value;
 
@@ -1291,8 +1291,8 @@ class FunctionalTest extends TestCase
         $singleWrapped = $stub->callAt(0)->generated();
         $doubleWrapped = $stub->callAt(1)->generated();
 
-        $this->assertSame(array('a', 'b'), $generatorSpyAContents);
-        $this->assertSame(array(1 => 'b', 2 => 'c'), $generatorSpyBContents);
+        $this->assertSame(['a', 'b'], $generatorSpyAContents);
+        $this->assertSame([1 => 'b', 2 => 'c'], $generatorSpyBContents);
         $this->assertTrue((bool) $singleWrapped->once()->produced(0, 'a'));
         $this->assertTrue((bool) $singleWrapped->once()->produced(1, 'b'));
         $this->assertTrue((bool) $singleWrapped->once()->produced(2, 'c'));
@@ -1310,7 +1310,7 @@ class FunctionalTest extends TestCase
             $this->markTestSkipped('Requires explicit next() generators.');
         }
 
-        $stub = x\stub()->generates()->yieldsFrom(array('a', 'b', 'c'))->returns();
+        $stub = x\stub()->generates()->yieldsFrom(['a', 'b', 'c'])->returns();
         $generatorSpyA = $stub();
         $stub->returns($generatorSpyA);
         $generatorSpyB = $stub();
@@ -1318,7 +1318,7 @@ class FunctionalTest extends TestCase
         $this->assertSame($generatorSpyA, $generatorSpyB->_phonySubject);
 
         $first = true;
-        $generatorSpyAContents = array();
+        $generatorSpyAContents = [];
         foreach ($generatorSpyA as $value) {
             $generatorSpyAContents[] = $value;
 
@@ -1334,8 +1334,8 @@ class FunctionalTest extends TestCase
         $singleWrapped = $stub->callAt(0)->generated();
         $doubleWrapped = $stub->callAt(1)->generated();
 
-        $this->assertSame(array('a', 'b'), $generatorSpyAContents);
-        $this->assertSame(array(2 => 'c'), $generatorSpyBContents);
+        $this->assertSame(['a', 'b'], $generatorSpyAContents);
+        $this->assertSame([2 => 'c'], $generatorSpyBContents);
         $this->assertTrue((bool) $singleWrapped->once()->produced(0, 'a'));
         $this->assertTrue((bool) $singleWrapped->once()->produced(1, 'b'));
         $this->assertTrue((bool) $singleWrapped->once()->produced(2, 'c'));
@@ -1346,47 +1346,47 @@ class FunctionalTest extends TestCase
 
     public function exporterExamplesTest()
     {
-        $sequence = array(1, 2);
-        $repeatedSequences = array(&$sequence, &$sequence);
-        $inner = (object) array('a' => 1);
-        $repeatedObjects = (object) array('b' => $inner, 'c' => $inner);
-        $identifierCollision = array((object) array(), array((object) array()));
+        $sequence = [1, 2];
+        $repeatedSequences = [&$sequence, &$sequence];
+        $inner = (object) ['a' => 1];
+        $repeatedObjects = (object) ['b' => $inner, 'c' => $inner];
+        $identifierCollision = [(object) [], [(object) []]];
         $inner = new ClassA();
         $inner->c = 'd';
-        $classNameExclusion = (object) array('a' => $inner, 'b' => $inner);
+        $classNameExclusion = (object) ['a' => $inner, 'b' => $inner];
 
-        return array(
+        return [
             // The exporter format
-            'null'           => array(null,                               'null'),
-            'true'           => array(true,                               'true'),
-            'false'          => array(false,                              'false'),
-            'integer'        => array(111,                                '111'),
-            'float'          => array(1.11,                               '1.110000e+0'),
-            'float string'   => array('1.11',                             '"1.11"'),
-            'string'         => array("a\nb",                             '"a\nb"'),
-            'resource'       => array(STDIN,                              'resource#1'),
-            'sequence'       => array($sequence,                          '#0[1, 2]'),
-            'map'            => array(array('a' => 1, 'b' => 2),          '#0["a": 1, "b": 2]'),
-            'generic object' => array((object) array('a' => 1, 'b' => 2), '#0{a: 1, b: 2}'),
-            'object'         => array(new ClassA(),                       'ClassA#0{}'),
+            'null'           => [null,                               'null'],
+            'true'           => [true,                               'true'],
+            'false'          => [false,                              'false'],
+            'integer'        => [111,                                '111'],
+            'float'          => [1.11,                               '1.110000e+0'],
+            'float string'   => ['1.11',                             '"1.11"'],
+            'string'         => ["a\nb",                             '"a\nb"'],
+            'resource'       => [STDIN,                              'resource#1'],
+            'sequence'       => [$sequence,                          '#0[1, 2]'],
+            'map'            => [['a' => 1, 'b' => 2],          '#0["a": 1, "b": 2]'],
+            'generic object' => [(object) ['a' => 1, 'b' => 2], '#0{a: 1, b: 2}'],
+            'object'         => [new ClassA(),                       'ClassA#0{}'],
 
             // Export identifiers and references
-            'repeated sequence'       => array($repeatedSequences, '#0[#1[1, 2], &1[]]'),
-            'repeated generic object' => array($repeatedObjects,   '#0{b: #1{a: 1}, c: &1{}}'),
+            'repeated sequence'       => [$repeatedSequences, '#0[#1[1, 2], &1[]]'],
+            'repeated generic object' => [$repeatedObjects,   '#0{b: #1{a: 1}, c: &1{}}'],
 
             // Export reference types
-            'identifier collision' => array($identifierCollision, '#0[#0{}, #1[#1{}]]'),
+            'identifier collision' => [$identifierCollision, '#0[#0{}, #1[#1{}]]'],
 
             // Export reference exclusions
-            'class name exclusion' => array($classNameExclusion, '#0{a: ClassA#1{c: "d"}, b: &1{}}'),
+            'class name exclusion' => [$classNameExclusion, '#0{a: ClassA#1{c: "d"}, b: &1{}}'],
 
             // Exporting closures
-            'closure' => array(function () {}, 'Closure#0{}[FunctionalTest.php:' . __LINE__ . ']'),
+            'closure' => [function () {}, 'Closure#0{}[FunctionalTest.php:' . __LINE__ . ']'],
 
             // Exporting exceptions
-            'exception'           => array(new Exception('a', 1, new Exception()), 'Exception#0{message: "a", code: 1, previous: Exception#1{}}'),
-            'exception defaulted' => array(new RuntimeException(),                 'RuntimeException#0{}'),
-        );
+            'exception'           => [new Exception('a', 1, new Exception()), 'Exception#0{message: "a", code: 1, previous: Exception#1{}}'],
+            'exception defaulted' => [new RuntimeException(),                 'RuntimeException#0{}'],
+        ];
     }
 
     /**
@@ -1404,7 +1404,7 @@ class FunctionalTest extends TestCase
         $this->markTestSkipped('Requires process isolation to actually work.');
 
         $inner = x\mock('ClassA')->setLabel('mock-label');
-        $value = array($inner, $inner);
+        $value = [$inner, $inner];
         $this->exporter->reset();
 
         $this->assertSame(
@@ -1417,12 +1417,12 @@ class FunctionalTest extends TestCase
     {
         $this->markTestSkipped('Requires process isolation to actually work.');
 
-        $array = array();
-        $object = (object) array();
+        $array = [];
+        $object = (object) [];
         $wrapper = x\spy('implode')->setLabel('spy-label');
-        $valueA = array(&$array, &$array);
-        $valueB = array($object, $object);
-        $valueC = array($wrapper, $wrapper);
+        $valueA = [&$array, &$array];
+        $valueB = [$object, $object];
+        $valueC = [$wrapper, $wrapper];
         $this->exporter->reset();
 
         $this->assertSame('#0[#1[], &1[]]', $this->exporter->export($valueA, -1));
@@ -1435,7 +1435,7 @@ class FunctionalTest extends TestCase
         $this->markTestSkipped('Requires process isolation to actually work.');
 
         $inner = x\mock();
-        $value = array($inner, $inner);
+        $value = [$inner, $inner];
         $this->exporter->reset();
 
         $this->assertSame('#0[handle#0(PhonyMock_0#1{}[0]), &0()]', $this->exporter->export($value, -1));
@@ -1445,11 +1445,11 @@ class FunctionalTest extends TestCase
     {
         $this->markTestSkipped('Requires process isolation to actually work.');
 
-        $a = (object) array();
-        $b = (object) array();
+        $a = (object) [];
+        $b = (object) [];
         $c = x\mock();
-        $valueA = array($a, $b, $c, $a);
-        $valueB = array($b, $a, $b, $c);
+        $valueA = [$a, $b, $c, $a];
+        $valueB = [$b, $a, $b, $c];
         $this->exporter->reset();
 
         $this->assertSame('#0[#0{}, #1{}, handle#2(PhonyMock_0#3{}[0]), &0{}]', $this->exporter->export($valueA, -1));
@@ -1460,10 +1460,10 @@ class FunctionalTest extends TestCase
     {
         $this->markTestSkipped('Requires process isolation to actually work.');
 
-        $a = array();
-        $b = array();
-        $valueA = array(&$a, &$b, &$a);
-        $valueB = array(&$b, &$a, &$b);
+        $a = [];
+        $b = [];
+        $valueA = [&$a, &$b, &$a];
+        $valueB = [&$b, &$a, &$b];
         $this->exporter->reset();
 
         $this->assertSame('#0[#1[], #2[], &1[]]', $this->exporter->export($valueA, -1));
@@ -1474,9 +1474,9 @@ class FunctionalTest extends TestCase
     {
         $this->markTestSkipped('Requires process isolation to actually work.');
 
-        $recursiveArray = array();
+        $recursiveArray = [];
         $recursiveArray[] = &$recursiveArray;
-        $recursiveObject = (object) array();
+        $recursiveObject = (object) [];
         $recursiveObject->a = $recursiveObject;
         $this->exporter->reset();
 
@@ -1566,8 +1566,8 @@ class FunctionalTest extends TestCase
         $this->markTestSkipped('Requires process isolation to actually work.');
 
         $object = new ClassA();
-        $spyA = x\spy(array($object, 'methodA'))->setLabel('spy-label');
-        $spyB = x\spy(array('ClassA', 'staticMethodA'))->setLabel('spy-label');
+        $spyA = x\spy([$object, 'methodA'])->setLabel('spy-label');
+        $spyB = x\spy(['ClassA', 'staticMethodA'])->setLabel('spy-label');
         $this->exporter->reset();
 
         $this->assertSame('spy#0(ClassA->methodA)[spy-label]', $this->exporter->export($spyA, -1));
@@ -1576,8 +1576,8 @@ class FunctionalTest extends TestCase
 
     public function testExporterExamplesExportDepth()
     {
-        $valueA = array(array(), array('a', 'b', 'c'));
-        $valueB = array((object) array(), (object) array('a', 'b', 'c'));
+        $valueA = [[], ['a', 'b', 'c']];
+        $valueB = [(object) [], (object) ['a', 'b', 'c']];
         $this->exporter->reset();
 
         $this->assertSame('#0[#1[], #2[~3]]', $this->exporter->export($valueA));

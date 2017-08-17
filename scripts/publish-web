@@ -76,7 +76,7 @@ if (file_exists($workPath)) {
 
 echo "Detecting versions...\n";
 
-$versions = array();
+$versions = [];
 
 if (Version::tryParse($currentVersion, $version)) {
     $versions[] = $version;
@@ -117,7 +117,7 @@ if ($versions) {
     $latestVersion = 'master';
 }
 
-$versionStrings = array();
+$versionStrings = [];
 
 foreach ($versions as $version) {
     $versionString = $version->major() . '.' . $version->minor();

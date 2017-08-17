@@ -27,13 +27,13 @@ class DifferenceEngineTest extends TestCase
     public function differenceData()
     {
         //                         from               to                      expected
-        return array(
-            'Equal'       => array('foo,bar,baz,qux', 'foo,bar,baz,qux',      'foo,bar,baz,qux'),
-            'Insertion'   => array('foo,bar,baz,qux', 'foo,bar,doom,baz,qux', 'foo,bar,{+doom,+}baz,qux'),
-            'Deletion'    => array('foo,bar,baz,qux', 'foo,bar,qux',          'foo,bar,[-baz,-]qux'),
-            'Replacement' => array('foo,bar,baz,qux', 'foo,bar,doom,qux',     'foo,bar,[-baz-]{+doom+},qux'),
-            'Unrelated'   => array('#0{}',            'foo#0{bar}',           '{+foo+}#0[-{}-]{+{bar}+}'),
-        );
+        return [
+            'Equal'       => ['foo,bar,baz,qux', 'foo,bar,baz,qux',      'foo,bar,baz,qux'],
+            'Insertion'   => ['foo,bar,baz,qux', 'foo,bar,doom,baz,qux', 'foo,bar,{+doom,+}baz,qux'],
+            'Deletion'    => ['foo,bar,baz,qux', 'foo,bar,qux',          'foo,bar,[-baz,-]qux'],
+            'Replacement' => ['foo,bar,baz,qux', 'foo,bar,doom,qux',     'foo,bar,[-baz-]{+doom+},qux'],
+            'Unrelated'   => ['#0{}',            'foo#0{bar}',           '{+foo+}#0[-{}-]{+{bar}+}'],
+        ];
     }
 
     /**

@@ -26,7 +26,7 @@ class GeneratorAnswerBuilderTest extends TestCase
 {
     protected function setUp()
     {
-        $this->self = (object) array();
+        $this->self = (object) [];
         $this->stub = StubFactory::instance()->create(null, $this->self);
         $this->featureDetector = FeatureDetector::instance();
         $this->isGeneratorReturnSupported = $this->featureDetector->isSupported('generator.return');
@@ -41,7 +41,7 @@ class GeneratorAnswerBuilderTest extends TestCase
 
         $this->answer = $this->subject->answer();
 
-        $this->callsA = array();
+        $this->callsA = [];
         $callsA = &$this->callsA;
         $this->callCountA = 0;
         $callCountA = &$this->callCountA;
@@ -55,7 +55,7 @@ class GeneratorAnswerBuilderTest extends TestCase
             return $arguments;
         };
 
-        $this->callsB = array();
+        $this->callsB = [];
         $callsB = &$this->callsB;
         $this->callCountB = 0;
         $callCountB = &$this->callCountB;
@@ -69,7 +69,7 @@ class GeneratorAnswerBuilderTest extends TestCase
             return $arguments;
         };
 
-        $this->callsC = array();
+        $this->callsC = [];
         $callsC = &$this->callsC;
         $this->callCountC = 0;
         $callCountC = &$this->callCountC;
@@ -101,7 +101,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         );
 
         iterator_to_array(call_user_func($this->answer, $this->self, Arguments::create('a', 'b')));
-        $expected = array(array('a', 'b'));
+        $expected = [['a', 'b']];
 
         $this->assertSame($expected, $this->callsA);
         $this->assertSame($expected, $this->callsB);
@@ -113,7 +113,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $a = null;
         $b = null;
         $this->subject->calls($this->referenceCallback);
-        iterator_to_array(call_user_func($this->answer, $this->self, new Arguments(array(&$a, &$b))));
+        iterator_to_array(call_user_func($this->answer, $this->self, new Arguments([&$a, &$b])));
 
         $this->assertSame('a', $a);
         $this->assertSame('b', $b);
@@ -124,25 +124,25 @@ class GeneratorAnswerBuilderTest extends TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
-                ->callsWith($this->callbackA, array('A', 'B'), true, true, true)
-                ->callsWith($this->callbackA, array('C', 'D'), true, true, true)
-                ->callsWith($this->callbackB, array('E', 'F'), true, true, true)
+                ->callsWith($this->callbackA, ['A', 'B'], true, true, true)
+                ->callsWith($this->callbackA, ['C', 'D'], true, true, true)
+                ->callsWith($this->callbackB, ['E', 'F'], true, true, true)
         );
 
         $arguments = Arguments::create('a', 'b');
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
         $this->assertEquals(
-            array(
-                array($this->self, 'A', 'B', $arguments, 'a', 'b'),
-                array($this->self, 'C', 'D', $arguments, 'a', 'b'),
-            ),
+            [
+                [$this->self, 'A', 'B', $arguments, 'a', 'b'],
+                [$this->self, 'C', 'D', $arguments, 'a', 'b'],
+            ],
             $this->callsA
         );
         $this->assertEquals(
-            array(
-                array($this->self, 'E', 'F', $arguments, 'a', 'b'),
-            ),
+            [
+                [$this->self, 'E', 'F', $arguments, 'a', 'b'],
+            ],
             $this->callsB
         );
     }
@@ -154,7 +154,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $arguments = Arguments::create('a', 'b');
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
-        $this->assertEquals(array(array('a', 'b')), $this->callsA);
+        $this->assertEquals([['a', 'b']], $this->callsA);
     }
 
     public function testCallsWithSelfParameterAutoDetection()
@@ -169,7 +169,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $arguments = Arguments::create('a', 'b');
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
-        $this->assertSame(array($this->self, 'a', 'b'), $actual);
+        $this->assertSame([$this->self, 'a', 'b'], $actual);
     }
 
     public function testCallsWithWithReferenceParameters()
@@ -178,8 +178,8 @@ class GeneratorAnswerBuilderTest extends TestCase
         $b = null;
         $c = null;
         $d = null;
-        $this->subject->callsWith($this->referenceCallback, array(&$a, &$b));
-        $arguments = new Arguments(array(&$c, &$d));
+        $this->subject->callsWith($this->referenceCallback, [&$a, &$b]);
+        $arguments = new Arguments([&$c, &$d]);
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
         $this->assertSame('a', $a);
@@ -201,16 +201,16 @@ class GeneratorAnswerBuilderTest extends TestCase
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
         $this->assertEquals(
-            array(
-                array($this->callbackA, $this->callbackB),
-                array($this->callbackA, $this->callbackB),
-            ),
+            [
+                [$this->callbackA, $this->callbackB],
+                [$this->callbackA, $this->callbackB],
+            ],
             $this->callsA
         );
         $this->assertEquals(
-            array(
-                array($this->callbackA, $this->callbackB),
-            ),
+            [
+                [$this->callbackA, $this->callbackB],
+            ],
             $this->callsB
         );
     }
@@ -221,26 +221,26 @@ class GeneratorAnswerBuilderTest extends TestCase
             $this->subject,
             $this->subject
                 ->callsArgumentWith()
-                ->callsArgumentWith(0, array('A', 'B'), true, true, true)
-                ->callsArgumentWith(0, array('C', 'D'), true, true, true)
-                ->callsArgumentWith(1, array('E', 'F'), true, true, true)
+                ->callsArgumentWith(0, ['A', 'B'], true, true, true)
+                ->callsArgumentWith(0, ['C', 'D'], true, true, true)
+                ->callsArgumentWith(1, ['E', 'F'], true, true, true)
         );
 
         $arguments = Arguments::create($this->callbackA, $this->callbackB);
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
         $this->assertEquals(
-            array(
-                array($this->callbackA, $this->callbackB),
-                array($this->self, 'A', 'B', $arguments, $this->callbackA, $this->callbackB),
-                array($this->self, 'C', 'D', $arguments, $this->callbackA, $this->callbackB),
-            ),
+            [
+                [$this->callbackA, $this->callbackB],
+                [$this->self, 'A', 'B', $arguments, $this->callbackA, $this->callbackB],
+                [$this->self, 'C', 'D', $arguments, $this->callbackA, $this->callbackB],
+            ],
             $this->callsA
         );
         $this->assertEquals(
-            array(
-                array($this->self, 'E', 'F', $arguments, $this->callbackA, $this->callbackB),
-            ),
+            [
+                [$this->self, 'E', 'F', $arguments, $this->callbackA, $this->callbackB],
+            ],
             $this->callsB
         );
     }
@@ -251,8 +251,8 @@ class GeneratorAnswerBuilderTest extends TestCase
         $b = null;
         $c = null;
         $d = null;
-        $this->subject->callsArgumentWith(2, array(&$a, &$b), false, false, true);
-        $arguments = new Arguments(array(&$c, &$d, $this->referenceCallback));
+        $this->subject->callsArgumentWith(2, [&$a, &$b], false, false, true);
+        $arguments = new Arguments([&$c, &$d, $this->referenceCallback]);
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
         $this->assertSame('a', $a);
@@ -274,7 +274,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $a = null;
         $b = null;
         $c = null;
-        $arguments = new Arguments(array(&$a, &$b, &$c));
+        $arguments = new Arguments([&$a, &$b, &$c]);
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
         $this->assertSame('a', $a);
@@ -288,7 +288,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $this->subject->setsArgument(0, $handle);
 
         $a = null;
-        $arguments = new Arguments(array(&$a));
+        $arguments = new Arguments([&$a]);
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));
 
         $this->assertSame($handle->get(), $a);
@@ -298,7 +298,7 @@ class GeneratorAnswerBuilderTest extends TestCase
     {
         $this->assertSame($this->subject, $this->subject->yields('a', 'b')->yields('c')->yields());
         $this->assertSame(
-            array('a' => 'b', 0 => 'c', 1 => null),
+            ['a' => 'b', 0 => 'c', 1 => null],
             iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments))
         );
     }
@@ -308,9 +308,9 @@ class GeneratorAnswerBuilderTest extends TestCase
         $arguments = Arguments::create('b', 'c');
 
         $this->assertSame($this->subject, $this->subject->calls($this->callbackA, $this->callbackB)->yields('a'));
-        $this->assertSame(array('a'), iterator_to_array(call_user_func($this->answer, $this->self, $arguments)));
-        $this->assertSame(array(array('b', 'c')), $this->callsA);
-        $this->assertSame(array(array('b', 'c')), $this->callsB);
+        $this->assertSame(['a'], iterator_to_array(call_user_func($this->answer, $this->self, $arguments)));
+        $this->assertSame([['b', 'c']], $this->callsA);
+        $this->assertSame([['b', 'c']], $this->callsB);
     }
 
     public function testYieldsWithInstanceHandles()
@@ -319,7 +319,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $this->subject->yields($handle);
 
         $this->assertSame(
-            array($handle->get()),
+            [$handle->get()],
             iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments))
         );
     }
@@ -339,7 +339,7 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testYieldsFrom()
     {
-        $values = array('a' => 'b', 'c' => 'd');
+        $values = ['a' => 'b', 'c' => 'd'];
 
         $this->assertSame($this->subject, $this->subject->yieldsFrom($values));
         $this->assertSame($values, iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments)));
@@ -347,7 +347,7 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testYieldsFromWithIterator()
     {
-        $values = array('a' => 'b', 'c' => 'd');
+        $values = ['a' => 'b', 'c' => 'd'];
 
         $this->assertSame($this->subject, $this->subject->yieldsFrom(new ArrayIterator($values)));
         $this->assertSame($values, iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments)));
@@ -357,19 +357,19 @@ class GeneratorAnswerBuilderTest extends TestCase
     {
         $arguments = Arguments::create('b', 'c');
 
-        $this->assertSame($this->subject, $this->subject->calls($this->callbackA, $this->callbackB)->yieldsFrom(array('a')));
-        $this->assertSame(array('a'), iterator_to_array(call_user_func($this->answer, $this->self, $arguments)));
-        $this->assertSame(array(array('b', 'c')), $this->callsA);
-        $this->assertSame(array(array('b', 'c')), $this->callsB);
+        $this->assertSame($this->subject, $this->subject->calls($this->callbackA, $this->callbackB)->yieldsFrom(['a']));
+        $this->assertSame(['a'], iterator_to_array(call_user_func($this->answer, $this->self, $arguments)));
+        $this->assertSame([['b', 'c']], $this->callsA);
+        $this->assertSame([['b', 'c']], $this->callsB);
     }
 
     public function testYieldsFromWithInstanceHandles()
     {
         $handle = Phony::mock();
-        $this->subject->yieldsFrom(array($handle));
+        $this->subject->yieldsFrom([$handle]);
 
         $this->assertSame(
-            array($handle->get()),
+            [$handle->get()],
             iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments))
         );
     }
@@ -379,9 +379,9 @@ class GeneratorAnswerBuilderTest extends TestCase
         $handle = Phony::mock();
         $this->subject->yieldsFrom(
             new TupleIterator(
-                array(
-                    array($handle, 'a'),
-                )
+                [
+                    [$handle, 'a'],
+                ]
             )
         );
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
@@ -397,7 +397,7 @@ class GeneratorAnswerBuilderTest extends TestCase
     {
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returns());
         $this->assertSame(
-            array('a', 'b'),
+            ['a', 'b'],
             iterator_to_array(call_user_func($this->answer, $this->self, $this->arguments))
         );
     }
@@ -417,7 +417,7 @@ class GeneratorAnswerBuilderTest extends TestCase
 
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 
-        $this->assertSame(array('a', 'b'), iterator_to_array($generator));
+        $this->assertSame(['a', 'b'], iterator_to_array($generator));
         $this->assertSame('c', $generator->getReturn());
     }
 
@@ -432,7 +432,7 @@ class GeneratorAnswerBuilderTest extends TestCase
 
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 
-        $this->assertSame(array('a', 'b'), iterator_to_array($generator));
+        $this->assertSame(['a', 'b'], iterator_to_array($generator));
         $this->assertSame($handle->get(), $generator->getReturn());
     }
 
@@ -442,18 +442,18 @@ class GeneratorAnswerBuilderTest extends TestCase
             $this->markTestSkipped('Requires generator return values.');
         }
 
-        $this->stub->doesWith($this->answer, array(), true, true, false);
+        $this->stub->doesWith($this->answer, [], true, true, false);
 
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returns('c', 'd'));
 
         $generator = call_user_func($this->stub);
 
-        $this->assertSame(array('a', 'b'), iterator_to_array($generator));
+        $this->assertSame(['a', 'b'], iterator_to_array($generator));
         $this->assertSame('c', $generator->getReturn());
 
         $generator = call_user_func($this->stub);
 
-        $this->assertSame(array('a', 'b'), iterator_to_array($generator));
+        $this->assertSame(['a', 'b'], iterator_to_array($generator));
         $this->assertSame('d', $generator->getReturn());
     }
 
@@ -481,7 +481,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $arguments = Arguments::create('c', 'd');
         $generator = call_user_func($this->answer, $this->self, $arguments);
 
-        $this->assertSame(array('a', 'b'), iterator_to_array($generator));
+        $this->assertSame(['a', 'b'], iterator_to_array($generator));
         $this->assertSame('d', $generator->getReturn());
     }
 
@@ -496,7 +496,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $arguments = Arguments::create('c', 'd');
         $generator = call_user_func($this->answer, $this->self, $arguments);
 
-        $this->assertSame(array('a', 'b'), iterator_to_array($generator));
+        $this->assertSame(['a', 'b'], iterator_to_array($generator));
         $this->assertSame('c', $generator->getReturn());
     }
 
@@ -511,7 +511,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $arguments = Arguments::create('c', 'd', 'e');
         $generator = call_user_func($this->answer, $this->self, $arguments);
 
-        $this->assertSame(array('a', 'b'), iterator_to_array($generator));
+        $this->assertSame(['a', 'b'], iterator_to_array($generator));
         $this->assertSame('e', $generator->getReturn());
     }
 
@@ -554,7 +554,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $arguments = Arguments::create('c', 'd');
         $generator = call_user_func($this->answer, $this->self, $arguments);
 
-        $this->assertSame(array('a', 'b'), iterator_to_array($generator));
+        $this->assertSame(['a', 'b'], iterator_to_array($generator));
         $this->assertSame($this->self, $generator->getReturn());
     }
 
@@ -578,7 +578,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $this->assertSame($this->stub, $this->subject->throws());
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 
-        $values = array();
+        $values = [];
         $actual = null;
 
         try {
@@ -589,7 +589,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         }
 
         $this->assertInstanceOf('Exception', $actual);
-        $this->assertSame(array('a', 'b'), $values);
+        $this->assertSame(['a', 'b'], $values);
     }
 
     public function testThrowsWithInstanceHandles()
@@ -626,7 +626,7 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testThrowsWithMultipleExceptions()
     {
-        $this->stub->doesWith($this->answer, array(), true, true, false);
+        $this->stub->doesWith($this->answer, [], true, true, false);
         $exceptionA = new Exception('a');
         $exceptionB = new Exception('b');
         $this->subject->throws($exceptionA, $exceptionB);

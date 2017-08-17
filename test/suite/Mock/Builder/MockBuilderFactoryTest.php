@@ -36,7 +36,7 @@ class MockBuilderFactoryTest extends TestCase
 
     public function testCreate()
     {
-        $types = array('Eloquent\Phony\Test\TestInterfaceA', 'Eloquent\Phony\Test\TestInterfaceB');
+        $types = ['Eloquent\Phony\Test\TestInterfaceA', 'Eloquent\Phony\Test\TestInterfaceB'];
         $actual = $this->subject->create($types);
         $expected = new MockBuilder(
             $types,

@@ -27,99 +27,99 @@ class AssertionExceptionTest extends TestCase
 
     public function tracePhonyCallData()
     {
-        return array(
-            'Method' => array(
-                array(
-                    array(
+        return [
+            'Method' => [
+                [
+                    [
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'methodA',
                         'class' =>  'Eloquent\Phony\ClassA',
-                    ),
-                    array(
+                    ],
+                    [
                         'file' => '/path/to/file/b',
                         'line' => 222,
                         'function' => 'methodB',
                         'class' =>  'Eloquent\Phony\ClassB',
-                    ),
-                    array(
+                    ],
+                    [
                         'file' => '/path/to/file/c',
                         'line' => 333,
                         'function' => 'methodC',
                         'class' => 'ClassC',
-                    ),
-                ),
-                array(
+                    ],
+                ],
+                [
                     'file' => '/path/to/file/b',
                     'line' => 222,
                     'function' => 'methodB',
                     'class' =>  'Eloquent\Phony\ClassB',
-                ),
-            ),
+                ],
+            ],
 
-            'Function' => array(
-                array(
-                    array(
+            'Function' => [
+                [
+                    [
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'methodA',
                         'class' =>  'Eloquent\Phony\ClassA',
-                    ),
-                    array(
+                    ],
+                    [
                         'file' => '/path/to/file/b',
                         'line' => 222,
                         'function' => 'Eloquent\Phony\functionB',
-                    ),
-                    array(
+                    ],
+                    [
                         'file' => '/path/to/file/c',
                         'line' => 333,
                         'function' => 'functionC',
-                    ),
-                ),
-                array(
+                    ],
+                ],
+                [
                     'file' => '/path/to/file/b',
                     'line' => 222,
                     'function' => 'Eloquent\Phony\functionB',
-                ),
-            ),
+                ],
+            ],
 
-            'No external calls' => array(
-                array(
-                    array(
+            'No external calls' => [
+                [
+                    [
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'methodA',
                         'class' =>  'Eloquent\Phony\ClassA',
-                    ),
-                    array(
+                    ],
+                    [
                         'file' => '/path/to/file/b',
                         'line' => 222,
                         'function' => 'Eloquent\Phony\functionB',
-                    ),
-                ),
-                array(
+                    ],
+                ],
+                [
                     'file' => '/path/to/file/b',
                     'line' => 222,
                     'function' => 'Eloquent\Phony\functionB',
-                ),
-            ),
+                ],
+            ],
 
-            'Direct construction from outside namespace' => array(
-                array(
-                    array(
+            'Direct construction from outside namespace' => [
+                [
+                    [
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'functionA',
-                    ),
-                ),
+                    ],
+                ],
                 null,
-            ),
+            ],
 
-            'Empty Trace' => array(
-                array(),
+            'Empty Trace' => [
+                [],
                 null,
-            ),
-        );
+            ],
+        ];
     }
 
     /**

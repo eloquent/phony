@@ -46,8 +46,8 @@ class GeneratorAnswerBuilder
         $this->invocableInspector = $invocableInspector;
         $this->invoker = $invoker;
 
-        $this->requests = array();
-        $this->iterations = array();
+        $this->requests = [];
+        $this->iterations = [];
         $this->returnsSelf = false;
     }
 
@@ -81,7 +81,7 @@ class GeneratorAnswerBuilder
      */
     public function callsWith(
         $callback,
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -149,7 +149,7 @@ class GeneratorAnswerBuilder
      */
     public function callsArgumentWith(
         $index = 0,
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = false,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -182,7 +182,7 @@ class GeneratorAnswerBuilder
 
                 return $invoker->callWith($callback, $finalArguments);
             },
-            array(),
+            [],
             true,
             true,
             false
@@ -221,7 +221,7 @@ class GeneratorAnswerBuilder
             function ($arguments) use ($index, $value) {
                 $arguments->set($index, $value);
             },
-            array(),
+            [],
             false,
             true,
             false
@@ -278,7 +278,7 @@ class GeneratorAnswerBuilder
             $hasValue,
             $value
         );
-        $this->requests = array();
+        $this->requests = [];
 
         return $this;
     }
@@ -294,7 +294,7 @@ class GeneratorAnswerBuilder
     {
         $this->iterations[] =
             new GeneratorYieldFromIteration($this->requests, $values);
-        $this->requests = array();
+        $this->requests = [];
 
         return $this;
     }
@@ -311,7 +311,7 @@ class GeneratorAnswerBuilder
     public function returns($value = null)
     {
         $argumentCount = func_num_args();
-        $copies = array();
+        $copies = [];
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $copies[$i] = clone $this;
@@ -336,7 +336,7 @@ class GeneratorAnswerBuilder
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $this->stub
-                ->doesWith($copies[$i]->answer(), array(), true, true, false);
+                ->doesWith($copies[$i]->answer(), [], true, true, false);
 
             $copies[$i]->returns(func_get_arg($i));
         }
@@ -400,7 +400,7 @@ class GeneratorAnswerBuilder
     public function throws($exception = null)
     {
         $argumentCount = func_num_args();
-        $copies = array();
+        $copies = [];
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $copies[$i] = clone $this;
@@ -418,7 +418,7 @@ class GeneratorAnswerBuilder
 
         for ($i = 1; $i < $argumentCount; ++$i) {
             $this->stub
-                ->doesWith($copies[$i]->answer(), array(), true, true, false);
+                ->doesWith($copies[$i]->answer(), [], true, true, false);
 
             $copies[$i]->throws(func_get_arg($i));
         }

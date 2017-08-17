@@ -27,7 +27,7 @@ class StubVerifierWithGeneratorsTest extends TestCase
     protected function setUp()
     {
         $this->callback = 'implode';
-        $this->self = (object) array();
+        $this->self = (object) [];
         $this->label = 'label';
         $this->stubFactory = StubFactory::instance();
         $this->stub = $this->stubFactory->create($this->callback, $this->self)->setLabel($this->label);
@@ -54,7 +54,7 @@ class StubVerifierWithGeneratorsTest extends TestCase
             $this->generatorAnswerBuilderFactory
         );
 
-        $this->callsA = array();
+        $this->callsA = [];
         $callsA = &$this->callsA;
         $this->callCountA = 0;
         $callCountA = &$this->callCountA;
@@ -68,7 +68,7 @@ class StubVerifierWithGeneratorsTest extends TestCase
             return $arguments;
         };
 
-        $this->callsB = array();
+        $this->callsB = [];
         $callsB = &$this->callsB;
         $this->callCountB = 0;
         $callCountB = &$this->callCountB;
@@ -82,7 +82,7 @@ class StubVerifierWithGeneratorsTest extends TestCase
             return $arguments;
         };
 
-        $this->callsC = array();
+        $this->callsC = [];
         $callsC = &$this->callsC;
         $this->callCountC = 0;
         $callCountC = &$this->callCountC;
@@ -96,7 +96,7 @@ class StubVerifierWithGeneratorsTest extends TestCase
             return $arguments;
         };
 
-        $this->callsD = array();
+        $this->callsD = [];
         $callsD = &$this->callsD;
         $this->callCountD = 0;
         $callCountD = &$this->callCountD;
@@ -110,7 +110,7 @@ class StubVerifierWithGeneratorsTest extends TestCase
             return $arguments;
         };
 
-        $this->callsE = array();
+        $this->callsE = [];
         $callsE = &$this->callsE;
         $this->callCountE = 0;
         $callCountE = &$this->callCountE;
@@ -124,7 +124,7 @@ class StubVerifierWithGeneratorsTest extends TestCase
             return $arguments;
         };
 
-        $this->callsF = array();
+        $this->callsF = [];
         $callsF = &$this->callsF;
         $this->callCountF = 0;
         $callCountF = &$this->callCountF;
@@ -148,24 +148,24 @@ class StubVerifierWithGeneratorsTest extends TestCase
 
     public function testGenerates()
     {
-        $builder = $this->subject->generates(array('a' => 'b', 'c'));
+        $builder = $this->subject->generates(['a' => 'b', 'c']);
         $generator = call_user_func($this->subject);
         $actual = iterator_to_array($generator);
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder', $builder);
         $this->assertInstanceOf('Generator', $generator);
         $this->assertSame($this->subject, $builder->returns());
-        $this->assertSame(array('a' => 'b', 0 => 'c'), $actual);
+        $this->assertSame(['a' => 'b', 0 => 'c'], $actual);
     }
 
     public function testGeneratesWithMultipleArguments()
     {
-        $builder = $this->subject->generates(array('a'), array('b'));
+        $builder = $this->subject->generates(['a'], ['b']);
         $actualA = iterator_to_array(call_user_func($this->subject));
         $actualB = iterator_to_array(call_user_func($this->subject));
 
         $this->assertInstanceOf('Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder', $builder);
-        $this->assertSame(array('a'), $actualA);
-        $this->assertSame(array('b'), $actualB);
+        $this->assertSame(['a'], $actualA);
+        $this->assertSame(['b'], $actualB);
     }
 }

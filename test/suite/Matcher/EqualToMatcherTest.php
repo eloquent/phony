@@ -40,7 +40,7 @@ class EqualToMatcherTest extends TestCase
 
     public function problematicScalarValues()
     {
-        return array(
+        return [
             true,
             false,
             null,
@@ -54,23 +54,23 @@ class EqualToMatcherTest extends TestCase
             0.0,
             1.0,
             -1.0,
-            array(),
-        );
+            [],
+        ];
     }
 
     public function matchesEqualData()
     {
-        $result = array(
-            'scalar'             => array('foo'),
-            'array - sequence'   => array(array('foo', 'bar')),
-            'array - assoc'      => array(array('foo' => 'bar', 'baz' => 'qux')),
-            'array - nested'     => array(array('foo' => array('bar' => 'baz'))),
-            'object - anonymous' => array((object) array('foo' => 'bar', 'baz' => 'qux')),
-            'object - declared'  => array(new TestDerivedClassA()),
-        );
+        $result = [
+            'scalar'             => ['foo'],
+            'array - sequence'   => [['foo', 'bar']],
+            'array - assoc'      => [['foo' => 'bar', 'baz' => 'qux']],
+            'array - nested'     => [['foo' => ['bar' => 'baz']]],
+            'object - anonymous' => [(object) ['foo' => 'bar', 'baz' => 'qux']],
+            'object - declared'  => [new TestDerivedClassA()],
+        ];
 
         foreach ($this->problematicScalarValues() as $value) {
-            $result[] = array($value, $value);
+            $result[] = [$value, $value];
         }
 
         return $result;
@@ -111,99 +111,99 @@ class EqualToMatcherTest extends TestCase
 
     public function matchesNotEqualData()
     {
-        $result = array(
-            'scalar' => array('foo', 'XXX'),
+        $result = [
+            'scalar' => ['foo', 'XXX'],
 
-            'array - sequence' => array(
-                array('foo', 'bar'),
-                array('foo', 'XXX'),
-            ),
+            'array - sequence' => [
+                ['foo', 'bar'],
+                ['foo', 'XXX'],
+            ],
 
-            'array - sequence (different lengths)' => array(
-                array('foo'),
-                array('foo', 'bar'),
-            ),
+            'array - sequence (different lengths)' => [
+                ['foo'],
+                ['foo', 'bar'],
+            ],
 
-            'array - sequence (different order)' => array(
-                array('foo', 'bar'),
-                array('bar', 'foo'),
-            ),
+            'array - sequence (different order)' => [
+                ['foo', 'bar'],
+                ['bar', 'foo'],
+            ],
 
-            'array - assoc (different key)' => array(
-                array('foo' => 'bar'),
-                array('XXX' => 'bar'),
-            ),
+            'array - assoc (different key)' => [
+                ['foo' => 'bar'],
+                ['XXX' => 'bar'],
+            ],
 
-            'array - assoc (different value)' => array(
-                array('foo' => 'bar'),
-                array('foo' => 'XXX'),
-            ),
+            'array - assoc (different value)' => [
+                ['foo' => 'bar'],
+                ['foo' => 'XXX'],
+            ],
 
-            'array - assoc (different lengths)' => array(
-                array('foo' => 'bar'),
-                array('foo' => 'bar', 'baz' => 'qux'),
-            ),
+            'array - assoc (different lengths)' => [
+                ['foo' => 'bar'],
+                ['foo' => 'bar', 'baz' => 'qux'],
+            ],
 
-            'array - compared to non array (lhs)' => array(
+            'array - compared to non array (lhs)' => [
                 '<string>',
-                array('foo' => 'bar'),
-            ),
+                ['foo' => 'bar'],
+            ],
 
-            'array - compared to non array (rhs)' => array(
-                array('foo' => 'bar'),
+            'array - compared to non array (rhs)' => [
+                ['foo' => 'bar'],
                 '<string>',
-            ),
+            ],
 
-            'object - anonymous (different key)' => array(
-                (object) array('foo' => 'bar'),
-                (object) array('XXX' => 'bar'),
-            ),
+            'object - anonymous (different key)' => [
+                (object) ['foo' => 'bar'],
+                (object) ['XXX' => 'bar'],
+            ],
 
-            'object - anonymous (different value)' => array(
-                (object) array('foo' => 'bar'),
-                (object) array('foo' => 'XXX'),
-            ),
+            'object - anonymous (different value)' => [
+                (object) ['foo' => 'bar'],
+                (object) ['foo' => 'XXX'],
+            ],
 
-            'object - declared (different public property)' => array(
+            'object - declared (different public property)' => [
                 new TestDerivedClassA(),
                 new TestDerivedClassA('XXX'),
-            ),
+            ],
 
-            'object - declared (different private property)' => array(
+            'object - declared (different private property)' => [
                 new TestDerivedClassA(),
                 new TestDerivedClassA(null, 'XXX'),
-            ),
+            ],
 
-            'object - declared (different protected property)' => array(
+            'object - declared (different protected property)' => [
                 new TestDerivedClassA(),
                 new TestDerivedClassA(null, null, 'XXX'),
-            ),
+            ],
 
-            'object - declared (same properties, different class)' => array(
+            'object - declared (same properties, different class)' => [
                 new TestDerivedClassA(),
                 new TestDerivedClassB(),
-            ),
+            ],
 
-            'object - compared to non object (lhs)' => array(
+            'object - compared to non object (lhs)' => [
                 '<string>',
-                (object) array('foo' => 'bar'),
-            ),
+                (object) ['foo' => 'bar'],
+            ],
 
-            'object - compared to non object (rhs)' => array(
-                (object) array('foo' => 'bar'),
+            'object - compared to non object (rhs)' => [
+                (object) ['foo' => 'bar'],
                 '<string>',
-            ),
-        );
+            ],
+        ];
 
         $values = $this->problematicScalarValues();
         $count = count($values);
 
         for ($i = 0; $i < $count; ++$i) {
             for ($j = $i + 1; $j < $count; ++$j) {
-                $result[] = array(
+                $result[] = [
                     $values[$i],
                     $values[$j],
-                );
+                ];
             }
         }
 
@@ -258,12 +258,12 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesEqualWithDirectObjectCycles()
     {
-        $left = (object) array();
+        $left = (object) [];
         $left->before = 'foo';
         $left->cycle = $left;
         $left->after = 'bar';
 
-        $right = (object) array();
+        $right = (object) [];
         $right->before = 'foo';
         $right->cycle = $right;
         $right->after = 'bar';
@@ -275,12 +275,12 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesNotEqualWithDirectObjectCycles()
     {
-        $left = (object) array();
+        $left = (object) [];
         $left->before = 'foo';
         $left->cycle = $left;
         $left->after = 'bar';
 
-        $right = (object) array();
+        $right = (object) [];
         $right->before = 'foo';
         $right->cycle = $right;
         $right->after = 'XXX';
@@ -292,21 +292,21 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesEqualWithIndirectObjectCycles()
     {
-        $leftA = (object) array();
+        $leftA = (object) [];
         $leftA->before = 'foo';
         $leftA->cycle = $leftA;
         $leftA->after = 'bar';
 
-        $leftB = (object) array();
+        $leftB = (object) [];
         $leftB->cycle = $leftA;
         $leftA->cycle = $leftB;
 
-        $rightA = (object) array();
+        $rightA = (object) [];
         $rightA->before = 'foo';
         $rightA->cycle = $rightA;
         $rightA->after = 'bar';
 
-        $rightB = (object) array();
+        $rightB = (object) [];
         $rightB->cycle = $rightA;
         $rightA->cycle = $rightB;
 
@@ -317,21 +317,21 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesNotEqualWithIndirectObjectCycles()
     {
-        $leftA = (object) array();
+        $leftA = (object) [];
         $leftA->before = 'foo';
         $leftA->cycle = $leftA;
         $leftA->after = 'bar';
 
-        $leftB = (object) array();
+        $leftB = (object) [];
         $leftB->cycle = $leftA;
         $leftA->cycle = $leftB;
 
-        $rightA = (object) array();
+        $rightA = (object) [];
         $rightA->before = 'foo';
         $rightA->cycle = $rightA;
         $rightA->after = 'XXX';
 
-        $rightB = (object) array();
+        $rightB = (object) [];
         $rightB->cycle = $rightA;
         $rightA->cycle = $rightB;
 
@@ -342,12 +342,12 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesEqualWithDirectArrayCycles()
     {
-        $left = array();
+        $left = [];
         $left['before'] = 'foo';
         $left['cycle'] = &$left;
         $left['after'] = 'bar';
 
-        $right = array();
+        $right = [];
         $right['before'] = 'foo';
         $right['cycle'] = &$right;
         $right['after'] = 'bar';
@@ -359,12 +359,12 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesNotEqualWithDirectArrayCycles()
     {
-        $left = array();
+        $left = [];
         $left['before'] = 'foo';
         $left['cycle'] = &$left;
         $left['after'] = 'bar';
 
-        $right = array();
+        $right = [];
         $right['before'] = 'foo';
         $right['cycle'] = &$right;
         $right['after'] = 'XXX';
@@ -376,21 +376,21 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesEqualWithIndirectArrayCycles()
     {
-        $leftA = array();
+        $leftA = [];
         $leftA['before'] = 'foo';
         $leftA['cycle'] = &$leftA;
         $leftA['after'] = 'bar';
 
-        $leftB = array();
+        $leftB = [];
         $leftB['cycle'] = &$leftA;
         $leftA['cycle'] = &$leftB;
 
-        $rightA = array();
+        $rightA = [];
         $rightA['before'] = 'foo';
         $rightA['cycle'] = &$rightA;
         $rightA['after'] = 'bar';
 
-        $rightB = array();
+        $rightB = [];
         $rightB['cycle'] = &$rightA;
         $rightA['cycle'] = &$rightB;
 
@@ -401,21 +401,21 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesNotEqualWithIndirectArrayCycles()
     {
-        $leftA = array();
+        $leftA = [];
         $leftA['before'] = 'foo';
         $leftA['cycle'] = &$leftA;
         $leftA['after'] = 'bar';
 
-        $leftB = array();
+        $leftB = [];
         $leftB['cycle'] = &$leftA;
         $leftA['cycle'] = &$leftB;
 
-        $rightA = array();
+        $rightA = [];
         $rightA['before'] = 'foo';
         $rightA['cycle'] = &$rightA;
         $rightA['after'] = 'XXX';
 
-        $rightB = array();
+        $rightB = [];
         $rightB['cycle'] = &$rightA;
         $rightA['cycle'] = &$rightB;
 
@@ -426,11 +426,11 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesEqualWithArrayAndObjectCycle()
     {
-        $leftArray = array();
-        $rightArray = array();
+        $leftArray = [];
+        $rightArray = [];
 
-        $left  = (object) array();
-        $right = (object) array();
+        $left  = (object) [];
+        $right = (object) [];
 
         $left->array = &$leftArray;
         $right->array = &$rightArray;
@@ -445,9 +445,9 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesArraysContainingReferencesToSameArray()
     {
-        $shared = array('foo', 'bar');
-        $left  = array(&$shared);
-        $right = array(&$shared);
+        $shared = ['foo', 'bar'];
+        $left  = [&$shared];
+        $right = [&$shared];
 
         $matcher = new EqualToMatcher($left, true, $this->exporter);
 
@@ -489,8 +489,8 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesResetsArrayPointers()
     {
-        $left = array('foo', 'bar', 'spam');
-        $right = array('foo', 'bar', 'spam');
+        $left = ['foo', 'bar', 'spam'];
+        $right = ['foo', 'bar', 'spam'];
 
         next($left);
 
@@ -502,34 +502,34 @@ class EqualToMatcherTest extends TestCase
     public function testMatchesIterableSpySubstitution()
     {
         $stub = Phony::stub()->setUseIterableSpies(true)->returnsArgument();
-        $iterableSpyA = $stub(array('a', 'b'));
-        $iterableSpyB = $stub(array('a', 'b'));
-        $iterableSpyC = $stub(array('b', 'c'));
+        $iterableSpyA = $stub(['a', 'b']);
+        $iterableSpyB = $stub(['a', 'b']);
+        $iterableSpyC = $stub(['b', 'c']);
 
         $matcher = new EqualToMatcher($iterableSpyA, true, $this->exporter);
 
-        $this->assertTrue($matcher->matches(array('a', 'b')));
+        $this->assertTrue($matcher->matches(['a', 'b']));
         $this->assertTrue($matcher->matches($iterableSpyA));
         $this->assertTrue($matcher->matches($iterableSpyB));
         $this->assertFalse($matcher->matches($iterableSpyC));
 
         $matcher = new EqualToMatcher($iterableSpyA, false, $this->exporter);
 
-        $this->assertFalse($matcher->matches(array('a', 'b')));
+        $this->assertFalse($matcher->matches(['a', 'b']));
         $this->assertTrue($matcher->matches($iterableSpyA));
         $this->assertFalse($matcher->matches($iterableSpyB));
         $this->assertFalse($matcher->matches($iterableSpyC));
 
-        $matcher = new EqualToMatcher(array('a', 'b'), true, $this->exporter);
+        $matcher = new EqualToMatcher(['a', 'b'], true, $this->exporter);
 
-        $this->assertTrue($matcher->matches(array('a', 'b')));
+        $this->assertTrue($matcher->matches(['a', 'b']));
         $this->assertTrue($matcher->matches($iterableSpyA));
         $this->assertTrue($matcher->matches($iterableSpyB));
         $this->assertFalse($matcher->matches($iterableSpyC));
 
-        $matcher = new EqualToMatcher(array('a', 'b'), false, $this->exporter);
+        $matcher = new EqualToMatcher(['a', 'b'], false, $this->exporter);
 
-        $this->assertTrue($matcher->matches(array('a', 'b')));
+        $this->assertTrue($matcher->matches(['a', 'b']));
         $this->assertFalse($matcher->matches($iterableSpyA));
         $this->assertFalse($matcher->matches($iterableSpyB));
         $this->assertFalse($matcher->matches($iterableSpyC));

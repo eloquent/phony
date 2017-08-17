@@ -41,10 +41,10 @@ class GeneratorVerifierFactoryTest extends TestCase
     public function testCreate()
     {
         $spy = $this->spyFactory->create();
-        $calls = array(
+        $calls = [
             $this->callFactory->create(),
             $this->callFactory->create(),
-        );
+        ];
         $expected = new GeneratorVerifier(
             $spy,
             $calls,

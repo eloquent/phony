@@ -29,7 +29,7 @@ class ExceptionAssertionRecorderTest extends TestCase
 
     public function testCreateSuccess()
     {
-        $events = array(new ReturnedEvent(0, 0.0, null), new ReturnedEvent(1, 1.0, null));
+        $events = [new ReturnedEvent(0, 0.0, null), new ReturnedEvent(1, 1.0, null)];
         $expected = new EventSequence($events, $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->createSuccess($events));
@@ -37,14 +37,14 @@ class ExceptionAssertionRecorderTest extends TestCase
 
     public function testCreateSuccessDefaults()
     {
-        $expected = new EventSequence(array(), $this->callVerifierFactory);
+        $expected = new EventSequence([], $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->createSuccess());
     }
 
     public function testCreateSuccessFromEventCollection()
     {
-        $events = new EventSequence(array(), $this->callVerifierFactory);
+        $events = new EventSequence([], $this->callVerifierFactory);
 
         $this->assertEquals($events, $this->subject->createSuccessFromEventCollection($events));
     }

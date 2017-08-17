@@ -34,7 +34,7 @@ class HamcrestMatcherDriverTest extends TestCase
 
     public function testMatcherClassNames()
     {
-        $this->assertSame(array('Hamcrest\Matcher'), $this->subject->matcherClassNames());
+        $this->assertSame(['Hamcrest\Matcher'], $this->subject->matcherClassNames());
     }
 
     public function testWrapMatcher()

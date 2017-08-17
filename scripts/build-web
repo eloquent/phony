@@ -30,26 +30,26 @@ if ($needsRender) {
             'https://api.github.com/markdown/raw',
             false,
             stream_context_create(
-                array(
-                    'http' => array(
+                [
+                    'http' => [
                         'user_agent' => 'PHP',
                         'header' => $header,
                         'method' => 'POST',
                         'content' => file_get_contents('doc/index.md'),
-                    ),
-                )
+                    ],
+                ]
             )
         ),
-        array(
+        [
             'id="user-content-' => 'id="',
             'name="user-content-' => 'name="',
-        )
+        ]
     );
 
     file_put_contents(
         'build/web.json',
         json_encode(
-            array('content' => $content, 'hash' => $hash),
+            ['content' => $content, 'hash' => $hash],
             JSON_PRETTY_PRINT
         )
     );

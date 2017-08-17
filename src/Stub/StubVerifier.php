@@ -166,7 +166,7 @@ class StubVerifier extends SpyVerifier implements Stub
      */
     public function with()
     {
-        call_user_func_array(array($this->stub, 'with'), func_get_args());
+        call_user_func_array([$this->stub, 'with'], func_get_args());
 
         return $this;
     }
@@ -183,7 +183,7 @@ class StubVerifier extends SpyVerifier implements Stub
      */
     public function calls($callback)
     {
-        call_user_func_array(array($this->stub, 'calls'), func_get_args());
+        call_user_func_array([$this->stub, 'calls'], func_get_args());
 
         return $this;
     }
@@ -203,7 +203,7 @@ class StubVerifier extends SpyVerifier implements Stub
      */
     public function callsWith(
         $callback,
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -234,7 +234,7 @@ class StubVerifier extends SpyVerifier implements Stub
      */
     public function callsArgument($index = 0)
     {
-        call_user_func_array(array($this->stub, 'callsArgument'), func_get_args());
+        call_user_func_array([$this->stub, 'callsArgument'], func_get_args());
 
         return $this;
     }
@@ -257,7 +257,7 @@ class StubVerifier extends SpyVerifier implements Stub
      */
     public function callsArgumentWith(
         $index = 0,
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = false,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -309,7 +309,7 @@ class StubVerifier extends SpyVerifier implements Stub
      */
     public function does($callback)
     {
-        call_user_func_array(array($this->stub, 'does'), func_get_args());
+        call_user_func_array([$this->stub, 'does'], func_get_args());
 
         return $this;
     }
@@ -327,7 +327,7 @@ class StubVerifier extends SpyVerifier implements Stub
      */
     public function doesWith(
         $callback,
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -354,7 +354,7 @@ class StubVerifier extends SpyVerifier implements Stub
      * @return $this This stub.
      */
     public function forwards(
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -379,7 +379,7 @@ class StubVerifier extends SpyVerifier implements Stub
      */
     public function returns($value = null)
     {
-        call_user_func_array(array($this->stub, 'returns'), func_get_args());
+        call_user_func_array([$this->stub, 'returns'], func_get_args());
 
         return $this;
     }
@@ -423,7 +423,7 @@ class StubVerifier extends SpyVerifier implements Stub
      */
     public function throws($exception = null)
     {
-        call_user_func_array(array($this->stub, 'throws'), func_get_args());
+        call_user_func_array([$this->stub, 'throws'], func_get_args());
 
         return $this;
     }
@@ -437,10 +437,10 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */
-    public function generates($values = array())
+    public function generates($values = [])
     {
         $builder = $this->generatorAnswerBuilderFactory->create($this);
-        $this->stub->doesWith($builder->answer(), array(), true, true, false);
+        $this->stub->doesWith($builder->answer(), [], true, true, false);
 
         foreach (func_get_args() as $index => $values) {
             if ($index > 0) {
@@ -448,7 +448,7 @@ class StubVerifier extends SpyVerifier implements Stub
 
                 $builder = $this->generatorAnswerBuilderFactory->create($this);
                 $this->stub
-                    ->doesWith($builder->answer(), array(), true, true, false);
+                    ->doesWith($builder->answer(), [], true, true, false);
             }
 
             $builder->yieldsFrom($values);

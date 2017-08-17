@@ -52,7 +52,7 @@ class Arguments implements Countable, IteratorAggregate
      */
     public function copy()
     {
-        $arguments = array();
+        $arguments = [];
 
         foreach ($this->arguments as $argument) {
             $arguments[] = $argument;

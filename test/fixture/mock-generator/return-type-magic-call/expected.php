@@ -29,7 +29,7 @@ implements \Eloquent\Phony\Mock\Mock
     ) {
         return \call_user_func_array(
             'parent::__callStatic',
-            array($name, $arguments->all())
+            [$name, $arguments->all()]
         );
     }
 
@@ -38,14 +38,14 @@ implements \Eloquent\Phony\Mock\Mock
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array($this, 'parent::__call'),
-            array($name, $arguments->all())
+            [$this, 'parent::__call'],
+            [$name, $arguments->all()]
         );
     }
 
-    private static $_uncallableMethods = array();
-    private static $_traitMethods = array();
-    private static $_customMethods = array();
+    private static $_uncallableMethods = [];
+    private static $_traitMethods = [];
+    private static $_customMethods = [];
     private static $_staticHandle;
     private $_handle;
 }

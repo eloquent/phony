@@ -37,13 +37,13 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
 
         if ($handle instanceof StaticHandle) {
             $this->mock = null;
-            $callback = array(
+            $callback = [
                 $method->getDeclaringClass()->getName(),
                 $this->name,
-            );
+            ];
         } else {
             $this->mock = $handle->get();
-            $callback = array($this->mock, $this->name);
+            $callback = [$this->mock, $this->name];
         }
 
         parent::__construct($callback, null);

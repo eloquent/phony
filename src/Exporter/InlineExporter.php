@@ -71,7 +71,7 @@ class InlineExporter implements Exporter
         $this->depth = $depth;
         $this->objectSequencer = $objectSequencer;
         $this->invocableInspector = $invocableInspector;
-        $this->objectIds = array();
+        $this->objectIds = [];
         $this->jsonFlags = 0;
 
         if (defined('JSON_UNESCAPED_SLASHES')) {
@@ -115,13 +115,13 @@ class InlineExporter implements Exporter
             $depth = $this->depth;
         }
 
-        $final = (object) array();
-        $stack = array(array(&$value, $final, 0, gettype($value)));
-        $results = array();
+        $final = (object) [];
+        $stack = [[&$value, $final, 0, gettype($value)]];
+        $results = [];
         $seenWrappers = new SplObjectStorage();
         $seenObjects = new SplObjectStorage();
-        $seenArrays = array();
-        $arrayResults = array();
+        $seenArrays = [];
+        $arrayResults = [];
         $arrayId = 0;
 
         while (!empty($stack)) {
@@ -198,7 +198,7 @@ class InlineExporter implements Exporter
 
                     $arrayResults[$id] = $result;
 
-                    $result->children = array();
+                    $result->children = [];
                     $result->sequence = true;
                     $sequenceKey = 0;
 
@@ -214,22 +214,22 @@ class InlineExporter implements Exporter
                             }
                         }
 
-                        $keyResult = (object) array();
-                        $valueResult = (object) array();
-                        $result->children[] = array($keyResult, $valueResult);
+                        $keyResult = (object) [];
+                        $valueResult = (object) [];
+                        $result->children[] = [$keyResult, $valueResult];
 
-                        $stack[] = array(
+                        $stack[] = [
                             $key,
                             $keyResult,
                             $currentDepth + 1,
                             gettype($key),
-                        );
-                        $stack[] = array(
+                        ];
+                        $stack[] = [
                             &$childValue,
                             $valueResult,
                             $currentDepth + 1,
                             gettype($childValue),
-                        );
+                        ];
                     }
 
                     break;
@@ -365,17 +365,17 @@ class InlineExporter implements Exporter
 
                     if ($isHandle) {
                         if ($isStaticHandle) {
-                            $result->child = (object) array(
+                            $result->child = (object) [
                                 'final' => $phpValues["\0*\0class"]->getName(),
-                            );
+                            ];
                         } else {
-                            $result->child = (object) array();
-                            $stack[] = array(
+                            $result->child = (object) [];
+                            $stack[] = [
                                 $phpValues["\0*\0mock"],
                                 $result->child,
                                 $currentDepth,
                                 'object',
-                            );
+                            ];
                         }
                     } elseif ($isSpy) {
                         if ($isSpyVerifier) {
@@ -385,11 +385,11 @@ class InlineExporter implements Exporter
                         }
 
                         if (!$phpValues["\0*\0isAnonymous"]) {
-                            $result->child = (object) array(
+                            $result->child = (object) [
                                 'final' => $this->exportCallable(
                                     $phpValues["\0*\0callback"]
                                 ),
-                            );
+                            ];
                         }
 
                         $result->label = $phpValues["\0*\0label"];
@@ -401,31 +401,31 @@ class InlineExporter implements Exporter
                         }
 
                         if (!$phpValues["\0*\0isAnonymous"]) {
-                            $result->child = (object) array(
+                            $result->child = (object) [
                                 'final' => $this->exportCallable(
                                     $phpValues["\0*\0callback"]
                                 ),
-                            );
+                            ];
                         }
 
                         $result->label = $phpValues["\0*\0label"];
                     } elseif ($isGeneratorSpy) {
-                        $result->child = (object) array();
-                        $stack[] = array(
+                        $result->child = (object) [];
+                        $stack[] = [
                             $value->_phonySubject,
                             $result->child,
                             $currentDepth,
                             'object',
-                        );
+                        ];
                     } elseif ($isIterableSpy) {
                         $iterable = $value->iterable();
-                        $result->child = (object) array();
-                        $stack[] = array(
+                        $result->child = (object) [];
+                        $stack[] = [
                             $iterable,
                             $result->child,
                             $currentDepth,
                             gettype($iterable),
-                        );
+                        ];
                     }
 
                     if ($isWrapper) {
@@ -460,11 +460,11 @@ class InlineExporter implements Exporter
                             $result->label =
                                 basename($reflector->getFilename()) . ':' .
                                 $reflector->getStartLine();
-                            $phpValues = array();
+                            $phpValues = [];
                         }
 
-                        $properties = array();
-                        $propertyCounts = array();
+                        $properties = [];
+                        $propertyCounts = [];
 
                         foreach (
                             $phpValues as $propertyName => $propertyValue
@@ -487,17 +487,17 @@ class InlineExporter implements Exporter
                                         $matches[1] . '.' . $propertyName;
                                 }
 
-                                $properties[] = array(
+                                $properties[] = [
                                     $propertyName,
                                     $realName,
                                     $propertyValue,
-                                );
+                                ];
                             } else {
-                                $properties[] = array(
+                                $properties[] = [
                                     $propertyName,
                                     $propertyName,
                                     $propertyValue,
-                                );
+                                ];
                             }
 
                             if (isset($propertyCounts[$propertyName])) {
@@ -507,7 +507,7 @@ class InlineExporter implements Exporter
                             }
                         }
 
-                        $values = array();
+                        $values = [];
 
                         foreach ($properties as $property) {
                             list($shortName, $realName, $propertyValue) =
@@ -550,19 +550,19 @@ class InlineExporter implements Exporter
 
                         $seenObjects->offsetSet($value, true);
 
-                        $result->children = array();
+                        $result->children = [];
                         $result->object = true;
 
                         foreach ($values as $key => &$childValue) {
-                            $valueResult = (object) array();
-                            $result->children[] = array($key, $valueResult);
+                            $valueResult = (object) [];
+                            $result->children[] = [$key, $valueResult];
 
-                            $stack[] = array(
+                            $stack[] = [
                                 &$childValue,
                                 $valueResult,
                                 $currentDepth + 1,
                                 gettype($childValue),
-                            );
+                            ];
                         }
                     }
 
@@ -730,7 +730,7 @@ class InlineExporter implements Exporter
      */
     public function reset()
     {
-        $this->objectIds = array();
+        $this->objectIds = [];
         $this->objectSequencer->reset();
     }
 

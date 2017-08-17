@@ -35,7 +35,7 @@ class CallFactoryTest extends TestCase
     public function testRecord()
     {
         $callback = 'implode';
-        $arguments = Arguments::create(array('a', 'b'));
+        $arguments = Arguments::create(['a', 'b']);
         $returnValue = 'ab';
         $spy = $this->spyFactory->create();
         $expected = new CallData(0, $this->eventFactory->createCalled($spy, $arguments));
@@ -44,7 +44,7 @@ class CallFactoryTest extends TestCase
         $actual = $this->subject->record($callback, $arguments, $spy);
 
         $this->assertEquals($expected, $actual);
-        $this->assertEquals(array($expected), $spy->allCalls());
+        $this->assertEquals([$expected], $spy->allCalls());
     }
 
     public function testRecordException()
@@ -53,7 +53,7 @@ class CallFactoryTest extends TestCase
         $callback = function () use ($exception) {
             throw $exception;
         };
-        $arguments = Arguments::create(array('a', 'b'));
+        $arguments = Arguments::create(['a', 'b']);
         $spy = $this->spyFactory->create();
         $expected = new CallData(0, $this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createThrew($exception));
@@ -61,7 +61,7 @@ class CallFactoryTest extends TestCase
         $actual = $this->subject->record($callback, $arguments, $spy);
 
         $this->assertEquals($expected, $actual);
-        $this->assertEquals(array($expected), $spy->allCalls());
+        $this->assertEquals([$expected], $spy->allCalls());
     }
 
     public function testRecordEngineErrorException()
@@ -74,7 +74,7 @@ class CallFactoryTest extends TestCase
         $callback = function () use ($exception) {
             throw $exception;
         };
-        $arguments = Arguments::create(array('a', 'b'));
+        $arguments = Arguments::create(['a', 'b']);
         $spy = $this->spyFactory->create();
         $expected = new CallData(0, $this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createThrew($exception));
@@ -82,7 +82,7 @@ class CallFactoryTest extends TestCase
         $actual = $this->subject->record($callback, $arguments, $spy);
 
         $this->assertEquals($expected, $actual);
-        $this->assertEquals(array($expected), $spy->allCalls());
+        $this->assertEquals([$expected], $spy->allCalls());
     }
 
     public function testInstance()

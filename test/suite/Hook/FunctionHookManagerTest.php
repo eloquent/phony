@@ -57,7 +57,7 @@ class FunctionHookManagerTest extends TestCase
 
         $a = null;
         $b = null;
-        call_user_func_array($this->fullName, array(&$a, &$b));
+        call_user_func_array($this->fullName, [&$a, &$b]);
 
         $this->assertSame('a', $a);
         $this->assertSame('b', $b);
@@ -108,12 +108,12 @@ class FunctionHookManagerTest extends TestCase
         );
 
         $this->assertSame('x', call_user_func($this->namespace . '\\sprintf', '%s', 'a'));
-        $this->assertSame('y', call_user_func($this->namespace . '\\vsprintf', '%s', array('b')));
+        $this->assertSame('y', call_user_func($this->namespace . '\\vsprintf', '%s', ['b']));
 
         $this->subject->restoreGlobalFunctions();
 
         $this->assertSame('a', call_user_func($this->namespace . '\\sprintf', '%s', 'a'));
-        $this->assertSame('b', call_user_func($this->namespace . '\\vsprintf', '%s', array('b')));
+        $this->assertSame('b', call_user_func($this->namespace . '\\vsprintf', '%s', ['b']));
     }
 
     public function testInstance()

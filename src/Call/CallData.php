@@ -73,7 +73,7 @@ class CallData implements Call
         $calledEvent->setCall($this);
         $this->calledEvent = $calledEvent;
 
-        $this->iterableEvents = array();
+        $this->iterableEvents = [];
     }
 
     /**
@@ -277,7 +277,7 @@ class CallData implements Call
      */
     public function getIterator()
     {
-        return new ArrayIterator(array($this));
+        return new ArrayIterator([$this]);
     }
 
     /**
@@ -408,7 +408,7 @@ class CallData implements Call
      */
     public function allCalls()
     {
-        return array($this);
+        return [$this];
     }
 
     /**
@@ -581,11 +581,11 @@ class CallData implements Call
     public function response()
     {
         if ($this->responseEvent instanceof ReturnedEvent) {
-            return array(null, $this->responseEvent->value());
+            return [null, $this->responseEvent->value()];
         }
 
         if ($this->responseEvent instanceof ThrewEvent) {
-            return array($this->responseEvent->exception(), null);
+            return [$this->responseEvent->exception(), null];
         }
 
         throw new UndefinedResponseException('The call has not yet responded.');
@@ -600,11 +600,11 @@ class CallData implements Call
     public function generatorResponse()
     {
         if ($this->endEvent instanceof ReturnedEvent) {
-            return array(null, $this->endEvent->value());
+            return [null, $this->endEvent->value()];
         }
 
         if ($this->endEvent instanceof ThrewEvent) {
-            return array($this->endEvent->exception(), null);
+            return [$this->endEvent->exception(), null];
         }
 
         throw new UndefinedResponseException(

@@ -98,21 +98,21 @@ class SpyVerifierWithGeneratorsTest extends TestCase
         $this->matchers = $this->matcherFactory->adaptAll($this->arguments->all());
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
+            $this->callEventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], $this->arguments),
             $this->callEventFactory->createReturned($this->returnValueA),
             null,
             $this->callEventFactory->createReturned($this->returnValueA)
         );
         $this->callAResponse = $this->callA->responseEvent();
         $this->callB = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this->thisValueB, 'testClassAMethodA')),
+            $this->callEventFactory->createCalled([$this->thisValueB, 'testClassAMethodA']),
             $this->callEventFactory->createReturned($this->returnValueB),
             null,
             $this->callEventFactory->createReturned($this->returnValueB)
         );
         $this->callBResponse = $this->callB->responseEvent();
         $this->callC = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this->thisValueA, 'testClassAMethodA'), $this->arguments),
+            $this->callEventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], $this->arguments),
             $this->callEventFactory->createThrew($this->exceptionA),
             null,
             $this->callEventFactory->createThrew($this->exceptionA)
@@ -126,12 +126,12 @@ class SpyVerifierWithGeneratorsTest extends TestCase
         );
         $this->callDResponse = $this->callD->responseEvent();
         $this->callE = $this->callFactory->create($this->callEventFactory->createCalled('implode'));
-        $this->calls = array($this->callA, $this->callB, $this->callC, $this->callD, $this->callE);
+        $this->calls = [$this->callA, $this->callB, $this->callC, $this->callD, $this->callE];
         $this->wrappedCallA = $this->callVerifierFactory->fromCall($this->callA);
         $this->wrappedCallB = $this->callVerifierFactory->fromCall($this->callB);
         $this->wrappedCallC = $this->callVerifierFactory->fromCall($this->callC);
         $this->wrappedCallD = $this->callVerifierFactory->fromCall($this->callD);
-        $this->wrappedCalls = array($this->wrappedCallA, $this->wrappedCallB, $this->wrappedCallC, $this->wrappedCallD);
+        $this->wrappedCalls = [$this->wrappedCallA, $this->wrappedCallB, $this->wrappedCallC, $this->wrappedCallD];
 
         $this->callFactory->reset();
 
@@ -149,7 +149,7 @@ class SpyVerifierWithGeneratorsTest extends TestCase
         $this->generatorEventF = $this->callEventFactory->createReceived('t');
         $this->generatorEventG = $this->callEventFactory->createProduced('u', 'v');
         $this->generatorEventH = $this->callEventFactory->createReceivedException($this->receivedExceptionB);
-        $this->generatorEvents = array(
+        $this->generatorEvents = [
             $this->generatorEventA,
             $this->generatorEventB,
             $this->generatorEventC,
@@ -158,7 +158,7 @@ class SpyVerifierWithGeneratorsTest extends TestCase
             $this->generatorEventF,
             $this->generatorEventG,
             $this->generatorEventH,
-        );
+        ];
         $this->generatorEndEvent = $this->callEventFactory->createReturned(null);
         $this->generatorCall = $this->callFactory->create(
             $this->generatorCalledEvent,
@@ -210,14 +210,14 @@ class SpyVerifierWithGeneratorsTest extends TestCase
     public function testGenerated()
     {
         $this->assertEquals(
-            $this->generatorVerifierFactory->create($this->spy, array()),
+            $this->generatorVerifierFactory->create($this->spy, []),
             $this->subject->never()->generated()
         );
 
         $this->subject->addCall($this->generatorCall);
 
         $this->assertEquals(
-            $this->generatorVerifierFactory->create($this->spy, array($this->generatorCall)),
+            $this->generatorVerifierFactory->create($this->spy, [$this->generatorCall]),
             $this->subject->generated()
         );
     }
@@ -243,16 +243,16 @@ class SpyVerifierWithGeneratorsTest extends TestCase
 
         $this->assertFalse((bool) $this->subject->always()->checkGenerated());
 
-        $this->subject->setCalls(array($this->generatorCall, $this->generatorCall));
+        $this->subject->setCalls([$this->generatorCall, $this->generatorCall]);
 
         $this->assertTrue((bool) $this->subject->always()->checkGenerated());
     }
 
     public function testAlwaysGenerated()
     {
-        $this->subject->setCalls(array($this->generatorCall, $this->generatorCall));
+        $this->subject->setCalls([$this->generatorCall, $this->generatorCall]);
         $expected =
-            $this->generatorVerifierFactory->create($this->spy, array($this->generatorCall, $this->generatorCall));
+            $this->generatorVerifierFactory->create($this->spy, [$this->generatorCall, $this->generatorCall]);
 
         $this->assertEquals($expected, $this->subject->always()->generated());
     }

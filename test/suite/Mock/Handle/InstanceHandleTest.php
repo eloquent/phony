@@ -40,12 +40,12 @@ class InstanceHandleTest extends TestCase
 {
     protected function setUp()
     {
-        $this->state = (object) array(
-            'stubs' => (object) array(),
+        $this->state = (object) [
+            'stubs' => (object) [],
             'defaultAnswerCallback' => 'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback',
             'isRecording' => true,
             'label' => 'label',
-        );
+        ];
         $this->stubFactory = StubFactory::instance();
         $this->objectSequencer = new Sequencer();
         $this->invocableInspector = new InvocableInspector();
@@ -236,7 +236,7 @@ class InstanceHandleTest extends TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->assertEquals(new EventSequence(array(), $this->callVerifierFactory), $this->subject->noInteraction());
+        $this->assertEquals(new EventSequence([], $this->callVerifierFactory), $this->subject->noInteraction());
     }
 
     public function testNoInteractionFailure()
@@ -268,7 +268,7 @@ class InstanceHandleTest extends TestCase
 
         $this->assertNull($this->mock->constructorArguments);
         $this->assertSame($this->subject, $this->subject->construct('a', 'b'));
-        $this->assertSame(array('a', 'b'), $this->mock->constructorArguments);
+        $this->assertSame(['a', 'b'], $this->mock->constructorArguments);
     }
 
     public function testConstructWith()
@@ -288,8 +288,8 @@ class InstanceHandleTest extends TestCase
         );
 
         $this->assertNull($this->mock->constructorArguments);
-        $this->assertSame($this->subject, $this->subject->constructWith(array('a', 'b')));
-        $this->assertSame(array('a', 'b'), $this->mock->constructorArguments);
+        $this->assertSame($this->subject, $this->subject->constructWith(['a', 'b']));
+        $this->assertSame(['a', 'b'], $this->mock->constructorArguments);
     }
 
     public function testConstructWithWithReferenceParameters()
@@ -311,7 +311,7 @@ class InstanceHandleTest extends TestCase
         $b = 'b';
 
         $this->assertNull($this->mock->constructorArguments);
-        $this->assertSame($this->subject, $this->subject->constructWith(array(&$a, &$b)));
+        $this->assertSame($this->subject, $this->subject->constructWith([&$a, &$b]));
         $this->assertSame('first', $a);
         $this->assertSame('second', $b);
     }
@@ -386,11 +386,11 @@ class InstanceHandleTest extends TestCase
     public function testStubbingWithCustomMethod()
     {
         $this->mockBuilder = $this->mockBuilderFactory->create(
-            array(
+            [
                 'methodA' => function () {
                     return implode(func_get_args());
                 },
-            )
+            ]
         );
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partial();

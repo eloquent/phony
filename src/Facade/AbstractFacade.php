@@ -44,7 +44,7 @@ abstract class AbstractFacade
      *
      * @return MockBuilder The mock builder.
      */
-    public static function mockBuilder($types = array())
+    public static function mockBuilder($types = [])
     {
         return static::driver()->mockBuilderFactory->create($types);
     }
@@ -60,7 +60,7 @@ abstract class AbstractFacade
      *
      * @return InstanceHandle A handle around the new mock.
      */
-    public static function mock($types = array())
+    public static function mock($types = [])
     {
         $driver = static::driver();
 
@@ -85,7 +85,7 @@ abstract class AbstractFacade
      *
      * @return InstanceHandle A handle around the new mock.
      */
-    public static function partialMock($types = array(), $arguments = array())
+    public static function partialMock($types = [], $arguments = [])
     {
         $driver = static::driver();
 

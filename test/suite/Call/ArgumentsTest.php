@@ -19,7 +19,7 @@ class ArgumentsTest extends TestCase
     {
         $this->a = 'a';
         $this->b = 'b';
-        $this->arguments = array(&$this->a, &$this->b);
+        $this->arguments = [&$this->a, &$this->b];
         $this->subject = new Arguments($this->arguments);
     }
 
@@ -49,13 +49,13 @@ class ArgumentsTest extends TestCase
         $this->assertSame($this->subject, $this->subject->set('c'));
         $this->assertSame($this->subject, $this->subject->set(1, 'd'));
 
-        $this->assertSame(array('c', 'd'), $this->subject->all());
+        $this->assertSame(['c', 'd'], $this->subject->all());
         $this->assertSame('c', $this->a);
         $this->assertSame('d', $this->b);
 
         $this->assertSame($this->subject, $this->subject->set());
 
-        $this->assertSame(array(null, 'd'), $this->subject->all());
+        $this->assertSame([null, 'd'], $this->subject->all());
         $this->assertNull($this->a);
     }
 
@@ -73,7 +73,7 @@ class ArgumentsTest extends TestCase
 
     public function testSetFailureNoArguments()
     {
-        $this->subject = new Arguments(array());
+        $this->subject = new Arguments([]);
 
         $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->set('value');
@@ -90,7 +90,7 @@ class ArgumentsTest extends TestCase
         $this->assertFalse($this->subject->has(111));
         $this->assertFalse($this->subject->has(-111));
 
-        $this->subject = new Arguments(array());
+        $this->subject = new Arguments([]);
 
         $this->assertFalse($this->subject->has());
         $this->assertFalse($this->subject->has(0));
@@ -120,7 +120,7 @@ class ArgumentsTest extends TestCase
 
     public function testGetFailureNoArguments()
     {
-        $this->subject = new Arguments(array());
+        $this->subject = new Arguments([]);
 
         $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->get();
@@ -128,6 +128,6 @@ class ArgumentsTest extends TestCase
 
     public function testCreate()
     {
-        $this->assertEquals(new Arguments(array('a', 'b')), Arguments::create('a', 'b'));
+        $this->assertEquals(new Arguments(['a', 'b']), Arguments::create('a', 'b'));
     }
 }

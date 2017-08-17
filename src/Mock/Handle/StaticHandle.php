@@ -114,7 +114,7 @@ class StaticHandle extends AbstractHandle
                     function ($arguments) use ($method, $object) {
                         return $method->invokeArgs($object, $arguments->all());
                     },
-                    array(),
+                    [],
                     false,
                     true,
                     false

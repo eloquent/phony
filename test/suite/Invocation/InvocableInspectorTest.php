@@ -36,11 +36,11 @@ class InvocableInspectorTest extends TestCase
     {
         $this->assertEquals(
             new ReflectionMethod(__METHOD__),
-            $this->subject->callbackReflector(array($this, __FUNCTION__))
+            $this->subject->callbackReflector([$this, __FUNCTION__])
         );
         $this->assertEquals(
             new ReflectionMethod(__METHOD__),
-            $this->subject->callbackReflector(array(__CLASS__, __FUNCTION__))
+            $this->subject->callbackReflector([__CLASS__, __FUNCTION__])
         );
         $this->assertEquals(new ReflectionMethod(__METHOD__), $this->subject->callbackReflector(__METHOD__));
         $this->assertEquals(new ReflectionFunction('implode'), $this->subject->callbackReflector('implode'));
@@ -67,7 +67,7 @@ class InvocableInspectorTest extends TestCase
     public function testCallbackReflectorFailureObject()
     {
         $this->expectException('ReflectionException', 'Invalid callback.');
-        $this->subject->callbackReflector((object) array());
+        $this->subject->callbackReflector((object) []);
     }
 
     public function testCallbackReturnType()

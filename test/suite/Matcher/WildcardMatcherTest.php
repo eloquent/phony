@@ -39,14 +39,14 @@ class WildcardMatcherTest extends TestCase
         $this->matcher = new EqualToMatcher('x', true, $this->exporter);
 
         //                                        matcher                 minimum maximum expected
-        return array(
-            'Any amount of anything'     => array(AnyMatcher::instance(), 0,      null,   '<any>*'),
-            'Any amount of equal to'     => array($this->matcher,         0,      null,   '"x"*'),
-            'Minimum amount of anything' => array(AnyMatcher::instance(), 111,    null,   '<any>{111,}'),
-            'Maximum amount of anything' => array(AnyMatcher::instance(), 0,      111,    '<any>{,111}'),
-            'Range of anything'          => array(AnyMatcher::instance(), 111,    222,    '<any>{111,222}'),
-            'Exact amount of anything'   => array(AnyMatcher::instance(), 111,    111,    '<any>{111}'),
-        );
+        return [
+            'Any amount of anything'     => [AnyMatcher::instance(), 0,      null,   '<any>*'],
+            'Any amount of equal to'     => [$this->matcher,         0,      null,   '"x"*'],
+            'Minimum amount of anything' => [AnyMatcher::instance(), 111,    null,   '<any>{111,}'],
+            'Maximum amount of anything' => [AnyMatcher::instance(), 0,      111,    '<any>{,111}'],
+            'Range of anything'          => [AnyMatcher::instance(), 111,    222,    '<any>{111,222}'],
+            'Exact amount of anything'   => [AnyMatcher::instance(), 111,    111,    '<any>{111}'],
+        ];
     }
 
     /**

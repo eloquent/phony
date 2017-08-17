@@ -26,11 +26,11 @@ class CallWithGeneratorsTest extends TestCase
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callback = 'implode';
-        $this->arguments = new Arguments(array('a', 'b'));
+        $this->arguments = new Arguments(['a', 'b']);
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
         $this->subject = new CallData(0, $this->calledEvent);
 
-        $this->events = array($this->calledEvent);
+        $this->events = [$this->calledEvent];
 
         $this->returnValue = 'ab';
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
@@ -41,14 +41,14 @@ class CallWithGeneratorsTest extends TestCase
         $generatedEvent = $this->callEventFactory->createReturned(GeneratorFactory::createEmpty());
         $generatorEventA = $this->callEventFactory->createProduced(null, null);
         $generatorEventB = $this->callEventFactory->createReceived(null);
-        $generatorEvents = array($generatorEventA, $generatorEventB);
+        $generatorEvents = [$generatorEventA, $generatorEventB];
         $endEvent = $this->callEventFactory->createReturned(null);
         $this->subject = new CallData(0, $this->calledEvent);
         $this->subject->setResponseEvent($generatedEvent);
         $this->subject->addIterableEvent($generatorEventA);
         $this->subject->addIterableEvent($generatorEventB);
         $this->subject->setEndEvent($endEvent);
-        $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent);
+        $this->events = [$this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent];
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
@@ -75,7 +75,7 @@ class CallWithGeneratorsTest extends TestCase
         $generatedEvent = $this->callEventFactory->createReturned(GeneratorFactory::createEmpty());
         $generatorEventA = $this->callEventFactory->createProduced(null, null);
         $generatorEventB = $this->callEventFactory->createReceived(null);
-        $generatorEvents = array($generatorEventA, $generatorEventB);
+        $generatorEvents = [$generatorEventA, $generatorEventB];
         $exception = new RuntimeException('You done goofed.');
         $endEvent = $this->callEventFactory->createThrew($exception);
         $this->subject = new CallData(0, $this->calledEvent);
@@ -83,7 +83,7 @@ class CallWithGeneratorsTest extends TestCase
         $this->subject->addIterableEvent($generatorEventA);
         $this->subject->addIterableEvent($generatorEventB);
         $this->subject->setEndEvent($endEvent);
-        $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent);
+        $this->events = [$this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB, $endEvent];
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
@@ -111,12 +111,12 @@ class CallWithGeneratorsTest extends TestCase
         $generatedEvent = $this->callEventFactory->createReturned(GeneratorFactory::createEmpty());
         $generatorEventA = $this->callEventFactory->createProduced(null, null);
         $generatorEventB = $this->callEventFactory->createReceived(null);
-        $generatorEvents = array($generatorEventA, $generatorEventB);
+        $generatorEvents = [$generatorEventA, $generatorEventB];
         $this->subject = new CallData(0, $this->calledEvent);
         $this->subject->setResponseEvent($generatedEvent);
         $this->subject->addIterableEvent($generatorEventA);
         $this->subject->addIterableEvent($generatorEventB);
-        $this->events = array($this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB);
+        $this->events = [$this->calledEvent, $generatedEvent, $generatorEventA, $generatorEventB];
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
@@ -143,12 +143,12 @@ class CallWithGeneratorsTest extends TestCase
         $generatedEvent = $this->callEventFactory->createReturned(GeneratorFactory::createEmpty());
         $this->subject = new CallData(0, $this->calledEvent);
         $this->subject->setResponseEvent($generatedEvent);
-        $this->events = array($this->calledEvent, $generatedEvent);
+        $this->events = [$this->calledEvent, $generatedEvent];
 
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->subject, $this->subject->calledEvent()->call());
         $this->assertSame($generatedEvent, $this->subject->responseEvent());
-        $this->assertSame(array(), $this->subject->iterableEvents());
+        $this->assertSame([], $this->subject->iterableEvents());
         $this->assertNull($this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
         $this->assertSame($this->events, $this->subject->allEvents());
@@ -185,7 +185,7 @@ class CallWithGeneratorsTest extends TestCase
         $this->subject->setResponseEvent($generatedEvent);
         $this->subject->addIterableEvent($generatorEventA);
         $this->subject->addIterableEvent($generatorEventB);
-        $generatorEvents = array($generatorEventA, $generatorEventB);
+        $generatorEvents = [$generatorEventA, $generatorEventB];
 
         $this->assertSame($generatorEvents, $this->subject->iterableEvents());
         $this->assertSame($this->subject, $generatorEventA->call());

@@ -20,7 +20,7 @@ class ArraySpyTest extends TestCase
     {
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->array = array('a' => 'b', 'c' => 'd');
+        $this->array = ['a' => 'b', 'c' => 'd'];
         $this->call = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
             $this->callEventFactory->createReturned($this->array)

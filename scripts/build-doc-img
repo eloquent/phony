@@ -35,7 +35,7 @@ const ATOM_NEWLINE = 1;
 const ATOM_ANSI = 2;
 const ATOM_TEXT = 3;
 
-$verifications = array();
+$verifications = [];
 
 foreach (scandir($fixturePath) as $verification) {
     if ('.' === $verification[0]) {
@@ -71,19 +71,19 @@ foreach ($verifications as $verification) {
     }
 
     $atoms = preg_split($splitPattern, $output, -1, $splitFlags);
-    $tokens = array();
+    $tokens = [];
 
     foreach ($atoms as $atom) {
         if ("\n" === $atom) {
-            $tokens[] = array(ATOM_NEWLINE, '');
+            $tokens[] = [ATOM_NEWLINE, ''];
         } elseif (preg_match($ansiSequencePattern, $atom)) {
-            $tokens[] = array(ATOM_ANSI, $atom);
+            $tokens[] = [ATOM_ANSI, $atom];
         } else {
-            $tokens[] = array(ATOM_TEXT, $atom);
+            $tokens[] = [ATOM_TEXT, $atom];
         }
     }
 
-    $tokens[] = array(ATOM_NEWLINE, '');
+    $tokens[] = [ATOM_NEWLINE, ''];
 
     $weight = '';
     $previousWeight = '';
@@ -93,7 +93,7 @@ foreach ($verifications as $verification) {
     $previousDecoration = '';
     $text = '';
     $line = '';
-    $lines = array();
+    $lines = [];
     $y = 12;
 
     foreach ($tokens as $token) {
@@ -167,7 +167,7 @@ foreach ($verifications as $verification) {
             $decoration !== $previousDecoration
         ) {
             if ('' !== $text) {
-                $class = array();
+                $class = [];
 
                 if ($previousWeight) {
                     $class[] = $previousWeight;
@@ -191,10 +191,10 @@ foreach ($verifications as $verification) {
 
                     $line .= strtr(
                         $spanTemplate,
-                        array(
+                        [
                             '{attributes}' => $attributes,
                             '{content}' => htmlspecialchars($text),
-                        )
+                        ]
                     );
                 } else {
                     $line .= htmlspecialchars($text);
@@ -213,7 +213,7 @@ foreach ($verifications as $verification) {
             $text = '';
             $y += 16;
             $lines[] =
-                strtr($lineTemplate, array('{y}' => $y, '{content}' => $line));
+                strtr($lineTemplate, ['{y}' => $y, '{content}' => $line]);
             $line = '';
         } else {
             $text .= $content;
@@ -229,7 +229,7 @@ foreach ($verifications as $verification) {
         $svgPath,
         strtr(
             $template,
-            array('{height}' => $y, '{content}' => implode($lines))
+            ['{height}' => $y, '{content}' => implode($lines)]
         )
     );
 }

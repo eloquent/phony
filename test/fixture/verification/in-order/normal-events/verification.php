@@ -16,7 +16,7 @@ try {
     $stub('c', 'd');
 } catch (Exception $e) {
 }
-iterator_to_array($stub(array('e', 'f')));
+iterator_to_array($stub(['e', 'f']));
 
 // verification
 Phony::inOrder(

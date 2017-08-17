@@ -3848,7 +3848,7 @@ When stubbing, iterable spies and generator spies are substituted when
 
 ```php
 $stubA = stub()->setUseIterableSpies(true)->returnsArgument();
-$iterable = array('a', 'b');
+$iterable = ['a', 'b'];
 $iterableSpy = $stubA($iterable);
 
 $stubB = stub();
@@ -3862,7 +3862,7 @@ The same is true when [verifying that a spy was called with specific arguments]:
 
 ```php
 $stubA = stub()->setUseIterableSpies(true)->returnsArgument();
-$iterable = array('a', 'b');
+$iterable = ['a', 'b'];
 $iterableSpy = $stubA($iterable);
 
 $stubB = stub();
@@ -3877,7 +3877,7 @@ And also when [verifying spy return values]:
 
 ```php
 $stub = stub()->setUseIterableSpies(true)->returnsArgument();
-$iterable = array('a', 'b');
+$iterable = ['a', 'b'];
 $iterableSpy = $stub($iterable);
 
 // these two statements are equivalent
@@ -3941,7 +3941,7 @@ $spy = spy(
 );
 $spy->setUseIterableSpies(true);
 
-$traversable = new ArrayIterator(array('a', 'b'));
+$traversable = new ArrayIterator(['a', 'b']);
 $iterableSpy = $spy($traversable);
 $nestedIterableSpy = $spy($iterableSpy);
 
@@ -4513,7 +4513,7 @@ numeric identifier that can be used to identify repeated occurrences of the same
 value. This is represented as a number sign (`#`) followed by the identifier:
 
 ```php
-$value = (object) array();
+$value = (object) [];
 // $value is exported as '#0{}'
 ```
 

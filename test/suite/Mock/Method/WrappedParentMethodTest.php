@@ -39,7 +39,7 @@ class WrappedParentMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame(array($this->mock, 'testClassAMethodE'), $this->subject->callback());
+        $this->assertSame([$this->mock, 'testClassAMethodE'], $this->subject->callback());
         $this->assertNull($this->subject->label());
     }
 
@@ -56,7 +56,7 @@ class WrappedParentMethodTest extends TestCase
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame(
-            array('Eloquent\Phony\Test\TestClassA', 'testClassAStaticMethodE'),
+            ['Eloquent\Phony\Test\TestClassA', 'testClassAStaticMethodE'],
             $this->subject->callback()
         );
         $this->assertNull($this->subject->label());
@@ -85,7 +85,7 @@ class WrappedParentMethodTest extends TestCase
 
         $this->assertSame('protected ab', $subject('a', 'b'));
         $this->assertSame('protected ab', $subject->invoke('a', 'b'));
-        $this->assertSame('protected ab', $subject->invokeWith(array('a', 'b')));
+        $this->assertSame('protected ab', $subject->invokeWith(['a', 'b']));
         $this->assertSame('protected ', $subject->invokeWith());
     }
 
@@ -101,7 +101,7 @@ class WrappedParentMethodTest extends TestCase
 
         $this->assertSame('protected ab', $subject('a', 'b'));
         $this->assertSame('protected ab', $subject->invoke('a', 'b'));
-        $this->assertSame('protected ab', $subject->invokeWith(array('a', 'b')));
+        $this->assertSame('protected ab', $subject->invokeWith(['a', 'b']));
         $this->assertSame('protected ', $subject->invokeWith());
     }
 }

@@ -53,12 +53,12 @@ class HandleFactoryTest extends TestCase
         $handleProperty->setValue($mock, null);
         $expected = new InstanceHandle(
             $mock,
-            (object) array(
+            (object) [
                 'defaultAnswerCallback' => 'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback',
-                'stubs' => (object) array(),
+                'stubs' => (object) [],
                 'isRecording' => true,
                 'label' => 'label',
-            ),
+            ],
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->emptyValueFactory,
@@ -99,11 +99,11 @@ class HandleFactoryTest extends TestCase
         $handleProperty->setValue(null, null);
         $expected = new StaticHandle(
             $class,
-            (object) array(
+            (object) [
                 'defaultAnswerCallback' => 'Eloquent\Phony\Stub\StubData::forwardsAnswerCallback',
-                'stubs' => (object) array(),
+                'stubs' => (object) [],
                 'isRecording' => true,
-            ),
+            ],
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->emptyValueFactory,

@@ -25,12 +25,12 @@ class MockGenerationFailedExceptionTest extends TestCase
         $this->isRelaxedKeywordsSupported = $this->featureDetector->isSupported('parser.relaxed-keywords');
 
         $this->definition = new MockDefinition(
-            array(),
-            array(),
-            array(),
-            array(),
-            array(),
-            array(),
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
             'ClassName',
             $this->isTraitSupported,
             $this->isRelaxedKeywordsSupported
@@ -52,7 +52,7 @@ ERROR
 // this line is NOT context
 EOD;
         $source = str_replace("\n", PHP_EOL, $source);
-        $error = array('message' => 'errorMessage', 'line' => 5);
+        $error = ['message' => 'errorMessage', 'line' => 5];
         $exception = new MockGenerationFailedException('ClassName', $this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 5.
@@ -125,7 +125,7 @@ ERROR
 // this line is NOT context
 EOD;
         $source = str_replace("\n", PHP_EOL, $source);
-        $error = array('message' => 'errorMessage', 'line' => 2);
+        $error = ['message' => 'errorMessage', 'line' => 2];
         $exception = new MockGenerationFailedException('ClassName', $this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 2.
@@ -157,7 +157,7 @@ ERROR
 // this line is context
 EOD;
         $source = str_replace("\n", PHP_EOL, $source);
-        $error = array('message' => 'errorMessage', 'line' => 5);
+        $error = ['message' => 'errorMessage', 'line' => 5];
         $exception = new MockGenerationFailedException('ClassName', $this->definition, $source, $error, $this->cause);
         $expected = <<<'EOD'
 Mock class ClassName generation failed: errorMessage in generated code on line 5.

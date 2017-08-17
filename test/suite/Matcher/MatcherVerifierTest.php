@@ -21,24 +21,24 @@ class MatcherVerifierTest extends TestCase
         $this->subject = new MatcherVerifier();
 
         $this->matcherFactory = MatcherFactory::instance();
-        $this->arguments = array('a', 'b', 'c');
+        $this->arguments = ['a', 'b', 'c'];
     }
 
     public function matchesData()
     {
         //                                    matchers                   isValid
-        return array(
-            'Exact arguments'        => array(array('a', 'b', 'c'),      true),
-            'Empty'                  => array(array(),                   false),
-            'First arguments'        => array(array('a', 'b'),           false),
-            'Single argument'        => array(array('a'),                false),
-            'Last arguments'         => array(array('b', 'c'),           false),
-            'Last argument'          => array(array('c'),                false),
-            'Extra arguments'        => array(array('a', 'b', 'c', 'd'), false),
-            'First argument differs' => array(array('d', 'b', 'c'),      false),
-            'Last argument differs'  => array(array('a', 'b', 'd'),      false),
-            'Unused argument'        => array(array('d'),                false),
-        );
+        return [
+            'Exact arguments'        => [['a', 'b', 'c'],      true],
+            'Empty'                  => [[],                   false],
+            'First arguments'        => [['a', 'b'],           false],
+            'Single argument'        => [['a'],                false],
+            'Last arguments'         => [['b', 'c'],           false],
+            'Last argument'          => [['c'],                false],
+            'Extra arguments'        => [['a', 'b', 'c', 'd'], false],
+            'First argument differs' => [['d', 'b', 'c'],      false],
+            'Last argument differs'  => [['a', 'b', 'd'],      false],
+            'Unused argument'        => [['d'],                false],
+        ];
     }
 
     /**
@@ -55,114 +55,114 @@ class MatcherVerifierTest extends TestCase
 
     public function testMatchesExplicitArgumentExistence()
     {
-        $matchers = array($this->matcherFactory->equalTo(null));
+        $matchers = [$this->matcherFactory->equalTo(null)];
 
-        $this->assertTrue($this->subject->matches($matchers, array(null)));
-        $this->assertFalse($this->subject->matches($matchers, array()));
+        $this->assertTrue($this->subject->matches($matchers, [null]));
+        $this->assertFalse($this->subject->matches($matchers, []));
     }
 
     public function testMatchesWithWildcardAfterValue()
     {
-        $matchers = array(
+        $matchers = [
             $this->matcherFactory->equalTo('a'),
             new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null),
-        );
+        ];
 
-        $this->assertTrue($this->subject->matches($matchers, array('a')));
-        $this->assertTrue($this->subject->matches($matchers, array('a', 'b')));
-        $this->assertTrue($this->subject->matches($matchers, array('a', 'b', 'b')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'x')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'b', 'x')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'x', 'b')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'x', 'x')));
+        $this->assertTrue($this->subject->matches($matchers, ['a']));
+        $this->assertTrue($this->subject->matches($matchers, ['a', 'b']));
+        $this->assertTrue($this->subject->matches($matchers, ['a', 'b', 'b']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'x']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'b', 'x']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'x', 'b']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'x', 'x']));
     }
 
     public function testMatchesWithWildcardBeforeValue()
     {
-        $matchers = array(
+        $matchers = [
             new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null),
             $this->matcherFactory->equalTo('a'),
-        );
+        ];
 
-        $this->assertTrue($this->subject->matches($matchers, array('a')));
-        $this->assertTrue($this->subject->matches($matchers, array('b', 'a')));
-        $this->assertTrue($this->subject->matches($matchers, array('b', 'b', 'a')));
-        $this->assertFalse($this->subject->matches($matchers, array('x', 'a')));
-        $this->assertFalse($this->subject->matches($matchers, array('b', 'x', 'a')));
-        $this->assertFalse($this->subject->matches($matchers, array('x', 'b', 'a')));
-        $this->assertFalse($this->subject->matches($matchers, array('x', 'x', 'a')));
+        $this->assertTrue($this->subject->matches($matchers, ['a']));
+        $this->assertTrue($this->subject->matches($matchers, ['b', 'a']));
+        $this->assertTrue($this->subject->matches($matchers, ['b', 'b', 'a']));
+        $this->assertFalse($this->subject->matches($matchers, ['x', 'a']));
+        $this->assertFalse($this->subject->matches($matchers, ['b', 'x', 'a']));
+        $this->assertFalse($this->subject->matches($matchers, ['x', 'b', 'a']));
+        $this->assertFalse($this->subject->matches($matchers, ['x', 'x', 'a']));
     }
 
     public function testMatchesWithWildcardBeforeValueGreedy()
     {
-        $matchers = array(
+        $matchers = [
             new WildcardMatcher($this->matcherFactory->equalTo('a'), 0, null),
             $this->matcherFactory->equalTo('a'),
-        );
+        ];
 
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'a')));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'a']));
     }
 
     public function testMatchesWithOnlyWildcard()
     {
-        $matchers = array(new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null));
+        $matchers = [new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null)];
 
-        $this->assertTrue($this->subject->matches($matchers, array()));
-        $this->assertTrue($this->subject->matches($matchers, array('b')));
-        $this->assertTrue($this->subject->matches($matchers, array('b', 'b')));
-        $this->assertFalse($this->subject->matches($matchers, array('x')));
-        $this->assertFalse($this->subject->matches($matchers, array('b', 'x')));
-        $this->assertFalse($this->subject->matches($matchers, array('x', 'b')));
-        $this->assertFalse($this->subject->matches($matchers, array('x', 'x')));
+        $this->assertTrue($this->subject->matches($matchers, []));
+        $this->assertTrue($this->subject->matches($matchers, ['b']));
+        $this->assertTrue($this->subject->matches($matchers, ['b', 'b']));
+        $this->assertFalse($this->subject->matches($matchers, ['x']));
+        $this->assertFalse($this->subject->matches($matchers, ['b', 'x']));
+        $this->assertFalse($this->subject->matches($matchers, ['x', 'b']));
+        $this->assertFalse($this->subject->matches($matchers, ['x', 'x']));
     }
 
     public function testMatchesWithWildcardMinimumArguments()
     {
-        $matchers = array(
+        $matchers = [
             $this->matcherFactory->equalTo('a'),
             new WildcardMatcher($this->matcherFactory->equalTo('b'), 1, null),
-        );
+        ];
 
-        $this->assertFalse($this->subject->matches($matchers, array('a')));
-        $this->assertTrue($this->subject->matches($matchers, array('a', 'b')));
-        $this->assertTrue($this->subject->matches($matchers, array('a', 'b', 'b')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'x')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'b', 'x')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'x', 'b')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'x', 'x')));
+        $this->assertFalse($this->subject->matches($matchers, ['a']));
+        $this->assertTrue($this->subject->matches($matchers, ['a', 'b']));
+        $this->assertTrue($this->subject->matches($matchers, ['a', 'b', 'b']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'x']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'b', 'x']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'x', 'b']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'x', 'x']));
     }
 
     public function testMatchesWithWildcardMaximumArguments()
     {
-        $matchers = array(
+        $matchers = [
             $this->matcherFactory->equalTo('a'),
             new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, 1),
-        );
+        ];
 
-        $this->assertTrue($this->subject->matches($matchers, array('a')));
-        $this->assertTrue($this->subject->matches($matchers, array('a', 'b')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'b', 'b')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'x')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'b', 'x')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'x', 'b')));
-        $this->assertFalse($this->subject->matches($matchers, array('a', 'x', 'x')));
+        $this->assertTrue($this->subject->matches($matchers, ['a']));
+        $this->assertTrue($this->subject->matches($matchers, ['a', 'b']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'b', 'b']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'x']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'b', 'x']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'x', 'b']));
+        $this->assertFalse($this->subject->matches($matchers, ['a', 'x', 'x']));
     }
 
     public function explainData()
     {
         //                                    matchers                   isMatch matcherMatches                  argumentMatches
-        return array(
-            'Exact arguments'        => array(array('a', 'b', 'c'),      true,   array(true, true, true),        array(true, true, true)),
-            'Empty'                  => array(array(),                   false,  array(),                        array(false, false, false)),
-            'First arguments'        => array(array('a', 'b'),           false,  array(true, true),              array(true, true, false)),
-            'Single argument'        => array(array('a'),                false,  array(true),                    array(true, false, false)),
-            'Last arguments'         => array(array('b', 'c'),           false,  array(false, false),            array(false, false, false)),
-            'Last argument'          => array(array('c'),                false,  array(false),                   array(false, false, false)),
-            'Extra arguments'        => array(array('a', 'b', 'c', 'd'), false,  array(true, true, true, false), array(true, true, true, false)),
-            'First argument differs' => array(array('d', 'b', 'c'),      false,  array(false, true, true),       array(false, true, true)),
-            'Last argument differs'  => array(array('a', 'b', 'd'),      false,  array(true, true, false),       array(true, true, false)),
-            'Unused argument'        => array(array('d'),                false,  array(false),                   array(false, false, false)),
-        );
+        return [
+            'Exact arguments'        => [['a', 'b', 'c'],      true,   [true, true, true],        [true, true, true]],
+            'Empty'                  => [[],                   false,  [],                        [false, false, false]],
+            'First arguments'        => [['a', 'b'],           false,  [true, true],              [true, true, false]],
+            'Single argument'        => [['a'],                false,  [true],                    [true, false, false]],
+            'Last arguments'         => [['b', 'c'],           false,  [false, false],            [false, false, false]],
+            'Last argument'          => [['c'],                false,  [false],                   [false, false, false]],
+            'Extra arguments'        => [['a', 'b', 'c', 'd'], false,  [true, true, true, false], [true, true, true, false]],
+            'First argument differs' => [['d', 'b', 'c'],      false,  [false, true, true],       [false, true, true]],
+            'Last argument differs'  => [['a', 'b', 'd'],      false,  [true, true, false],       [true, true, false]],
+            'Unused argument'        => [['d'],                false,  [false],                   [false, false, false]],
+        ];
     }
 
     /**
@@ -181,214 +181,214 @@ class MatcherVerifierTest extends TestCase
 
     public function testExplainExplicitArgumentExistence()
     {
-        $matchers = array($this->matcherFactory->equalTo(null));
+        $matchers = [$this->matcherFactory->equalTo(null)];
 
         $this->assertEquals(
-            new MatcherResult(true, array(true), array(true)),
-            $this->subject->explain($matchers, array(null))
+            new MatcherResult(true, [true], [true]),
+            $this->subject->explain($matchers, [null])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(false), array(false)),
-            $this->subject->explain($matchers, array())
+            new MatcherResult(false, [false], [false]),
+            $this->subject->explain($matchers, [])
         );
     }
 
     public function testExplainWithWildcardAfterValue()
     {
-        $matchers = array(
+        $matchers = [
             $this->matcherFactory->equalTo('a'),
             new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null),
-        );
+        ];
 
         $this->assertEquals(
-            new MatcherResult(true, array(true, true), array(true)),
-            $this->subject->explain($matchers, array('a'))
+            new MatcherResult(true, [true, true], [true]),
+            $this->subject->explain($matchers, ['a'])
         );
         $this->assertEquals(
-            new MatcherResult(true, array(true, true), array(true, true)),
-            $this->subject->explain($matchers, array('a', 'b'))
+            new MatcherResult(true, [true, true], [true, true]),
+            $this->subject->explain($matchers, ['a', 'b'])
         );
         $this->assertEquals(
-            new MatcherResult(true, array(true, true), array(true, true, true)),
-            $this->subject->explain($matchers, array('a', 'b', 'b'))
+            new MatcherResult(true, [true, true], [true, true, true]),
+            $this->subject->explain($matchers, ['a', 'b', 'b'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, true), array(true, false)),
-            $this->subject->explain($matchers, array('a', 'x'))
+            new MatcherResult(false, [true, true], [true, false]),
+            $this->subject->explain($matchers, ['a', 'x'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, true), array(true, true, false)),
-            $this->subject->explain($matchers, array('a', 'b', 'x'))
+            new MatcherResult(false, [true, true], [true, true, false]),
+            $this->subject->explain($matchers, ['a', 'b', 'x'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, true), array(true, false, false)),
-            $this->subject->explain($matchers, array('a', 'x', 'b'))
+            new MatcherResult(false, [true, true], [true, false, false]),
+            $this->subject->explain($matchers, ['a', 'x', 'b'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, true), array(true, false, false)),
-            $this->subject->explain($matchers, array('a', 'x', 'x'))
+            new MatcherResult(false, [true, true], [true, false, false]),
+            $this->subject->explain($matchers, ['a', 'x', 'x'])
         );
     }
 
     public function testExplainWithWildcardBeforeValue()
     {
-        $matchers = array(
+        $matchers = [
             new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null),
             $this->matcherFactory->equalTo('a'),
-        );
+        ];
 
         $this->assertEquals(
-            new MatcherResult(true, array(true, true), array(true)),
-            $this->subject->explain($matchers, array('a'))
+            new MatcherResult(true, [true, true], [true]),
+            $this->subject->explain($matchers, ['a'])
         );
         $this->assertEquals(
-            new MatcherResult(true, array(true, true), array(true, true)),
-            $this->subject->explain($matchers, array('b', 'a'))
+            new MatcherResult(true, [true, true], [true, true]),
+            $this->subject->explain($matchers, ['b', 'a'])
         );
         $this->assertEquals(
-            new MatcherResult(true, array(true, true), array(true, true, true)),
-            $this->subject->explain($matchers, array('b', 'b', 'a'))
+            new MatcherResult(true, [true, true], [true, true, true]),
+            $this->subject->explain($matchers, ['b', 'b', 'a'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, false), array(false, false)),
-            $this->subject->explain($matchers, array('x', 'a'))
+            new MatcherResult(false, [true, false], [false, false]),
+            $this->subject->explain($matchers, ['x', 'a'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, false), array(true, false, false)),
-            $this->subject->explain($matchers, array('b', 'x', 'a'))
+            new MatcherResult(false, [true, false], [true, false, false]),
+            $this->subject->explain($matchers, ['b', 'x', 'a'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, false), array(false, false, false)),
-            $this->subject->explain($matchers, array('x', 'b', 'a'))
+            new MatcherResult(false, [true, false], [false, false, false]),
+            $this->subject->explain($matchers, ['x', 'b', 'a'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, false), array(false, false, false)),
-            $this->subject->explain($matchers, array('x', 'x', 'a'))
+            new MatcherResult(false, [true, false], [false, false, false]),
+            $this->subject->explain($matchers, ['x', 'x', 'a'])
         );
     }
 
     public function testExplainWithWildcardBeforeValueGreedy()
     {
-        $matchers = array(
+        $matchers = [
             new WildcardMatcher($this->matcherFactory->equalTo('a'), 0, null),
             $this->matcherFactory->equalTo('a'),
-        );
+        ];
 
         $this->assertEquals(
-            new MatcherResult(false, array(true, false), array(true, true, false)),
-            $this->subject->explain($matchers, array('a', 'a'))
+            new MatcherResult(false, [true, false], [true, true, false]),
+            $this->subject->explain($matchers, ['a', 'a'])
         );
     }
 
     public function testExplainWithOnlyWildcard()
     {
-        $matchers = array(new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null));
+        $matchers = [new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null)];
 
         $this->assertEquals(
-            new MatcherResult(true, array(true), array()),
-            $this->subject->explain($matchers, array())
+            new MatcherResult(true, [true], []),
+            $this->subject->explain($matchers, [])
         );
         $this->assertEquals(
-            new MatcherResult(true, array(true), array(true)),
-            $this->subject->explain($matchers, array('b'))
+            new MatcherResult(true, [true], [true]),
+            $this->subject->explain($matchers, ['b'])
         );
         $this->assertEquals(
-            new MatcherResult(true, array(true), array(true, true)),
-            $this->subject->explain($matchers, array('b', 'b'))
+            new MatcherResult(true, [true], [true, true]),
+            $this->subject->explain($matchers, ['b', 'b'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true), array(false)),
-            $this->subject->explain($matchers, array('x'))
+            new MatcherResult(false, [true], [false]),
+            $this->subject->explain($matchers, ['x'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true), array(true, false)),
-            $this->subject->explain($matchers, array('b', 'x'))
+            new MatcherResult(false, [true], [true, false]),
+            $this->subject->explain($matchers, ['b', 'x'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true), array(false, false)),
-            $this->subject->explain($matchers, array('x', 'b'))
+            new MatcherResult(false, [true], [false, false]),
+            $this->subject->explain($matchers, ['x', 'b'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true), array(false, false)),
-            $this->subject->explain($matchers, array('x', 'x'))
+            new MatcherResult(false, [true], [false, false]),
+            $this->subject->explain($matchers, ['x', 'x'])
         );
     }
 
     public function testExplainWithWildcardMinimumArguments()
     {
-        $matchers = array(
+        $matchers = [
             $this->matcherFactory->equalTo('a'),
             new WildcardMatcher($this->matcherFactory->equalTo('b'), 2, null),
-        );
+        ];
 
         $this->assertEquals(
-            new MatcherResult(false, array(true, false), array(true, false)),
-            $this->subject->explain($matchers, array('a'))
+            new MatcherResult(false, [true, false], [true, false]),
+            $this->subject->explain($matchers, ['a'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, false), array(true, true, false)),
-            $this->subject->explain($matchers, array('a', 'b'))
+            new MatcherResult(false, [true, false], [true, true, false]),
+            $this->subject->explain($matchers, ['a', 'b'])
         );
         $this->assertEquals(
-            new MatcherResult(true, array(true, true), array(true, true, true)),
-            $this->subject->explain($matchers, array('a', 'b', 'b'))
+            new MatcherResult(true, [true, true], [true, true, true]),
+            $this->subject->explain($matchers, ['a', 'b', 'b'])
         );
         $this->assertEquals(
-            new MatcherResult(true, array(true, true), array(true, true, true, true)),
-            $this->subject->explain($matchers, array('a', 'b', 'b', 'b'))
+            new MatcherResult(true, [true, true], [true, true, true, true]),
+            $this->subject->explain($matchers, ['a', 'b', 'b', 'b'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, false), array(true, false, false)),
-            $this->subject->explain($matchers, array('a', 'x'))
+            new MatcherResult(false, [true, false], [true, false, false]),
+            $this->subject->explain($matchers, ['a', 'x'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, false), array(true, true, false)),
-            $this->subject->explain($matchers, array('a', 'b', 'x'))
+            new MatcherResult(false, [true, false], [true, true, false]),
+            $this->subject->explain($matchers, ['a', 'b', 'x'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, false), array(true, false, true)),
-            $this->subject->explain($matchers, array('a', 'x', 'b'))
+            new MatcherResult(false, [true, false], [true, false, true]),
+            $this->subject->explain($matchers, ['a', 'x', 'b'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, false), array(true, false, false)),
-            $this->subject->explain($matchers, array('a', 'x', 'x'))
+            new MatcherResult(false, [true, false], [true, false, false]),
+            $this->subject->explain($matchers, ['a', 'x', 'x'])
         );
     }
 
     public function testExplainWithWildcardMaximumArguments()
     {
-        $matchers = array(
+        $matchers = [
             $this->matcherFactory->equalTo('a'),
             new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, 1),
-        );
+        ];
 
         $this->assertEquals(
-            new MatcherResult(true, array(true, true), array(true)),
-            $this->subject->explain($matchers, array('a'))
+            new MatcherResult(true, [true, true], [true]),
+            $this->subject->explain($matchers, ['a'])
         );
         $this->assertEquals(
-            new MatcherResult(true, array(true, true), array(true, true)),
-            $this->subject->explain($matchers, array('a', 'b'))
+            new MatcherResult(true, [true, true], [true, true]),
+            $this->subject->explain($matchers, ['a', 'b'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, true), array(true, true, false)),
-            $this->subject->explain($matchers, array('a', 'b', 'b'))
+            new MatcherResult(false, [true, true], [true, true, false]),
+            $this->subject->explain($matchers, ['a', 'b', 'b'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, true), array(true, false)),
-            $this->subject->explain($matchers, array('a', 'x'))
+            new MatcherResult(false, [true, true], [true, false]),
+            $this->subject->explain($matchers, ['a', 'x'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, true), array(true, true, false)),
-            $this->subject->explain($matchers, array('a', 'b', 'x'))
+            new MatcherResult(false, [true, true], [true, true, false]),
+            $this->subject->explain($matchers, ['a', 'b', 'x'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, true), array(true, false, false)),
-            $this->subject->explain($matchers, array('a', 'x', 'b'))
+            new MatcherResult(false, [true, true], [true, false, false]),
+            $this->subject->explain($matchers, ['a', 'x', 'b'])
         );
         $this->assertEquals(
-            new MatcherResult(false, array(true, true), array(true, false, false)),
-            $this->subject->explain($matchers, array('a', 'x', 'x'))
+            new MatcherResult(false, [true, true], [true, false, false]),
+            $this->subject->explain($matchers, ['a', 'x', 'x'])
         );
     }
 

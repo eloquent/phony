@@ -55,7 +55,7 @@ class ExceptionAssertionRecorder implements AssertionRecorder
      *
      * @return EventCollection The result.
      */
-    public function createSuccess(array $events = array())
+    public function createSuccess(array $events = [])
     {
         return new EventSequence($events, $this->callVerifierFactory);
     }

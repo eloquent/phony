@@ -76,13 +76,13 @@ class MockBuilder
         $this->invocableInspector = $invocableInspector;
         $this->featureDetector = $featureDetector;
 
-        $this->types = array();
+        $this->types = [];
         $this->parentClassName = null;
-        $this->customMethods = array();
-        $this->customProperties = array();
-        $this->customStaticMethods = array();
-        $this->customStaticProperties = array();
-        $this->customConstants = array();
+        $this->customMethods = [];
+        $this->customProperties = [];
+        $this->customStaticMethods = [];
+        $this->customStaticProperties = [];
+        $this->customConstants = [];
         $this->isFinalized = false;
         $this->emptyCallback = function () {};
 
@@ -171,7 +171,7 @@ class MockBuilder
             throw new FinalizedMockException();
         }
 
-        $types = array();
+        $types = [];
 
         foreach (func_get_args() as $type) {
             if (is_array($type)) {
@@ -187,16 +187,16 @@ class MockBuilder
             }
         }
 
-        $toAdd = array();
+        $toAdd = [];
 
         if (!$this->parentClassName) {
-            $parentClassNames = array();
+            $parentClassNames = [];
         } else {
-            $parentClassNames = array($this->parentClassName);
+            $parentClassNames = [$this->parentClassName];
         }
 
         $parentClassName = null;
-        $definitions = array();
+        $definitions = [];
 
         foreach ($types as $type) {
             if (is_string($type)) {
@@ -280,10 +280,10 @@ class MockBuilder
             $callback = $this->emptyCallback;
         }
 
-        $this->customMethods[$name] = array(
+        $this->customMethods[$name] = [
             $callback,
             $this->invocableInspector->callbackReflector($callback),
-        );
+        ];
 
         return $this;
     }
@@ -326,10 +326,10 @@ class MockBuilder
             $callback = $this->emptyCallback;
         }
 
-        $this->customStaticMethods[$name] = array(
+        $this->customStaticMethods[$name] = [
             $callback,
             $this->invocableInspector->callbackReflector($callback),
-        );
+        ];
 
         return $this;
     }
@@ -574,7 +574,7 @@ class MockBuilder
      * @return Mock          The mock instance.
      * @throws MockException If the mock generation fails.
      */
-    public function partialWith($arguments = array())
+    public function partialWith($arguments = [])
     {
         $this->mock =
             $this->factory->createPartialMock($this->build(), $arguments);
@@ -657,7 +657,7 @@ class MockBuilder
 
         if ($isImplementor && !$isConcrete) {
             $this->types = array_merge(
-                array($preferred => new ReflectionClass($preferred)),
+                [$preferred => new ReflectionClass($preferred)],
                 $this->types
             );
         }

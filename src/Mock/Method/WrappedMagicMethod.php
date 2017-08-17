@@ -48,13 +48,13 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
 
         if ($callMagicMethod->isStatic()) {
             $this->mock = null;
-            $callback = array(
+            $callback = [
                 $callMagicMethod->getDeclaringClass()->getName(),
                 '__callStatic',
-            );
+            ];
         } else {
             $this->mock = $handle->get();
-            $callback = array($this->mock, '__call');
+            $callback = [$this->mock, '__call'];
         }
 
         parent::__construct($callback, null);
@@ -120,7 +120,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
-    public function invokeWith($arguments = array())
+    public function invokeWith($arguments = [])
     {
         if ($this->isUncallable) {
             return $this->returnValue;

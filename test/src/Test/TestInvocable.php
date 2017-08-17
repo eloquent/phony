@@ -16,22 +16,22 @@ use Eloquent\Phony\Invocation\Invocable;
 
 class TestInvocable implements Invocable
 {
-    public function invokeWith($arguments = array())
+    public function invokeWith($arguments = [])
     {
         if (!$arguments instanceof Arguments) {
             $arguments = Arguments::fromArray($arguments);
         }
 
-        return array(__FUNCTION__, $arguments->all());
+        return [__FUNCTION__, $arguments->all()];
     }
 
     public function invoke()
     {
-        return array(__FUNCTION__, func_get_args());
+        return [__FUNCTION__, func_get_args()];
     }
 
     public function __invoke()
     {
-        return array(__FUNCTION__, func_get_args());
+        return [__FUNCTION__, func_get_args()];
     }
 }

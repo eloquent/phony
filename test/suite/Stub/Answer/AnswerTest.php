@@ -21,7 +21,7 @@ class AnswerTest extends TestCase
         $this->primaryRequest = new CallRequest('implode', Arguments::create(), false, false, false);
         $this->secondaryRequestA = new CallRequest('implode', Arguments::create(), false, false, false);
         $this->secondaryRequestB = new CallRequest('implode', Arguments::create(), false, false, false);
-        $this->secondaryRequests = array($this->secondaryRequestA, $this->secondaryRequestB);
+        $this->secondaryRequests = [$this->secondaryRequestA, $this->secondaryRequestB];
         $this->subject = new Answer($this->primaryRequest, $this->secondaryRequests);
     }
 

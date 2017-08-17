@@ -21,7 +21,7 @@ class MethodDefinitionCollectionTest extends TestCase
     {
         $this->callbackA = function () {};
         $this->callbackB = function () {};
-        $this->methods = array(
+        $this->methods = [
             'methodA' =>
                 new CustomMethodDefinition(true, 'methodA', $this->callbackA, new ReflectionFunction($this->callbackA)),
             'methodB' =>
@@ -58,8 +58,8 @@ class MethodDefinitionCollectionTest extends TestCase
                 new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodD'),
                 'testClassAStaticMethodD'
             ),
-        );
-        $this->traitMethods = array(
+        ];
+        $this->traitMethods = [
             new TraitMethodDefinition(
                 new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodA'),
                 'testClassAMethodA'
@@ -68,7 +68,7 @@ class MethodDefinitionCollectionTest extends TestCase
                 new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodB'),
                 'testClassAMethodB'
             ),
-        );
+        ];
         $this->subject = new MethodDefinitionCollection($this->methods, $this->traitMethods);
     }
 
@@ -77,53 +77,53 @@ class MethodDefinitionCollectionTest extends TestCase
         $this->assertSame($this->methods, $this->subject->allMethods());
         $this->assertSame($this->traitMethods, $this->subject->traitMethods());
         $this->assertSame(
-            array(
+            [
                 'methodA' => $this->methods['methodA'],
                 'testClassAStaticMethodA' => $this->methods['testClassAStaticMethodA'],
                 'testClassAStaticMethodB' => $this->methods['testClassAStaticMethodB'],
                 'testClassAStaticMethodC' => $this->methods['testClassAStaticMethodC'],
                 'testClassAStaticMethodD' => $this->methods['testClassAStaticMethodD'],
-            ),
+            ],
             $this->subject->staticMethods()
         );
         $this->assertSame(
-            array(
+            [
                 'methodB' => $this->methods['methodB'],
                 'testClassAMethodA' => $this->methods['testClassAMethodA'],
                 'testClassAMethodB' => $this->methods['testClassAMethodB'],
                 'testClassAMethodC' => $this->methods['testClassAMethodC'],
                 'testClassAMethodD' => $this->methods['testClassAMethodD'],
-            ),
+            ],
             $this->subject->methods()
         );
         $this->assertSame(
-            array(
+            [
                 'methodA' => $this->methods['methodA'],
                 'testClassAStaticMethodA' => $this->methods['testClassAStaticMethodA'],
                 'testClassAStaticMethodB' => $this->methods['testClassAStaticMethodB'],
-            ),
+            ],
             $this->subject->publicStaticMethods()
         );
         $this->assertSame(
-            array(
+            [
                 'methodB' => $this->methods['methodB'],
                 'testClassAMethodA' => $this->methods['testClassAMethodA'],
                 'testClassAMethodB' => $this->methods['testClassAMethodB'],
-            ),
+            ],
             $this->subject->publicMethods()
         );
         $this->assertSame(
-            array(
+            [
                 'testClassAStaticMethodC' => $this->methods['testClassAStaticMethodC'],
                 'testClassAStaticMethodD' => $this->methods['testClassAStaticMethodD'],
-            ),
+            ],
             $this->subject->protectedStaticMethods()
         );
         $this->assertSame(
-            array(
+            [
                 'testClassAMethodC' => $this->methods['testClassAMethodC'],
                 'testClassAMethodD' => $this->methods['testClassAMethodD'],
-            ),
+            ],
             $this->subject->protectedMethods()
         );
     }

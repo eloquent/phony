@@ -9,7 +9,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a1 = null
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -24,7 +24,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!self::$_staticHandle) {
             $result = \call_user_func_array(
-                array(__CLASS__, 'parent::' . 'export'),
+                [__CLASS__, 'parent::' . 'export'],
                 $arguments
             );
 
@@ -45,7 +45,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function __toString()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -53,7 +53,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . '__toString'),
+                [$this, 'parent::' . '__toString'],
                 $arguments
             );
 
@@ -70,7 +70,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getName()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -78,7 +78,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getName'),
+                [$this, 'parent::' . 'getName'],
                 $arguments
             );
 
@@ -95,7 +95,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function isInternal()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -103,7 +103,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'isInternal'),
+                [$this, 'parent::' . 'isInternal'],
                 $arguments
             );
 
@@ -120,7 +120,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function isUserDefined()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -128,7 +128,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'isUserDefined'),
+                [$this, 'parent::' . 'isUserDefined'],
                 $arguments
             );
 
@@ -145,7 +145,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function isInstantiable()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -153,7 +153,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'isInstantiable'),
+                [$this, 'parent::' . 'isInstantiable'],
                 $arguments
             );
 
@@ -170,7 +170,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function isCloneable()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -178,7 +178,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'isCloneable'),
+                [$this, 'parent::' . 'isCloneable'],
                 $arguments
             );
 
@@ -195,7 +195,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getFileName()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -203,7 +203,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getFileName'),
+                [$this, 'parent::' . 'getFileName'],
                 $arguments
             );
 
@@ -220,7 +220,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getStartLine()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -228,7 +228,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getStartLine'),
+                [$this, 'parent::' . 'getStartLine'],
                 $arguments
             );
 
@@ -245,7 +245,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getEndLine()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -253,7 +253,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getEndLine'),
+                [$this, 'parent::' . 'getEndLine'],
                 $arguments
             );
 
@@ -270,7 +270,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getDocComment()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -278,7 +278,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getDocComment'),
+                [$this, 'parent::' . 'getDocComment'],
                 $arguments
             );
 
@@ -295,7 +295,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getConstructor()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -303,7 +303,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getConstructor'),
+                [$this, 'parent::' . 'getConstructor'],
                 $arguments
             );
 
@@ -321,7 +321,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a0
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -333,7 +333,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'hasMethod'),
+                [$this, 'parent::' . 'hasMethod'],
                 $arguments
             );
 
@@ -351,7 +351,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a0
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -363,7 +363,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getMethod'),
+                [$this, 'parent::' . 'getMethod'],
                 $arguments
             );
 
@@ -381,7 +381,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a0 = null
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -393,7 +393,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getMethods'),
+                [$this, 'parent::' . 'getMethods'],
                 $arguments
             );
 
@@ -411,7 +411,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a0
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -423,7 +423,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'hasProperty'),
+                [$this, 'parent::' . 'hasProperty'],
                 $arguments
             );
 
@@ -441,7 +441,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a0
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -453,7 +453,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getProperty'),
+                [$this, 'parent::' . 'getProperty'],
                 $arguments
             );
 
@@ -471,7 +471,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a0 = null
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -483,7 +483,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getProperties'),
+                [$this, 'parent::' . 'getProperties'],
                 $arguments
             );
 
@@ -501,7 +501,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a0
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -513,7 +513,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'hasConstant'),
+                [$this, 'parent::' . 'hasConstant'],
                 $arguments
             );
 
@@ -530,7 +530,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getConstants()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -538,7 +538,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getConstants'),
+                [$this, 'parent::' . 'getConstants'],
                 $arguments
             );
 
@@ -556,7 +556,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a0
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -568,7 +568,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getConstant'),
+                [$this, 'parent::' . 'getConstant'],
                 $arguments
             );
 
@@ -585,7 +585,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getInterfaces()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -593,7 +593,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getInterfaces'),
+                [$this, 'parent::' . 'getInterfaces'],
                 $arguments
             );
 
@@ -610,7 +610,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getInterfaceNames()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -618,7 +618,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getInterfaceNames'),
+                [$this, 'parent::' . 'getInterfaceNames'],
                 $arguments
             );
 
@@ -635,7 +635,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function isInterface()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -643,7 +643,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'isInterface'),
+                [$this, 'parent::' . 'isInterface'],
                 $arguments
             );
 
@@ -660,7 +660,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getTraits()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -668,7 +668,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getTraits'),
+                [$this, 'parent::' . 'getTraits'],
                 $arguments
             );
 
@@ -685,7 +685,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getTraitNames()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -693,7 +693,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getTraitNames'),
+                [$this, 'parent::' . 'getTraitNames'],
                 $arguments
             );
 
@@ -710,7 +710,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getTraitAliases()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -718,7 +718,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getTraitAliases'),
+                [$this, 'parent::' . 'getTraitAliases'],
                 $arguments
             );
 
@@ -735,7 +735,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function isTrait()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -743,7 +743,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'isTrait'),
+                [$this, 'parent::' . 'isTrait'],
                 $arguments
             );
 
@@ -760,7 +760,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function isAbstract()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -768,7 +768,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'isAbstract'),
+                [$this, 'parent::' . 'isAbstract'],
                 $arguments
             );
 
@@ -785,7 +785,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function isFinal()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -793,7 +793,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'isFinal'),
+                [$this, 'parent::' . 'isFinal'],
                 $arguments
             );
 
@@ -810,7 +810,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getModifiers()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -818,7 +818,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getModifiers'),
+                [$this, 'parent::' . 'getModifiers'],
                 $arguments
             );
 
@@ -836,7 +836,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a0
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -848,7 +848,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'isInstance'),
+                [$this, 'parent::' . 'isInstance'],
                 $arguments
             );
 
@@ -866,7 +866,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a0
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -878,7 +878,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'newInstance'),
+                [$this, 'parent::' . 'newInstance'],
                 $arguments
             );
 
@@ -895,7 +895,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function newInstanceWithoutConstructor()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -903,7 +903,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'newInstanceWithoutConstructor'),
+                [$this, 'parent::' . 'newInstanceWithoutConstructor'],
                 $arguments
             );
 
@@ -921,7 +921,7 @@ implements \Eloquent\Phony\Mock\Mock
         array $a0 = null
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -933,7 +933,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'newInstanceArgs'),
+                [$this, 'parent::' . 'newInstanceArgs'],
                 $arguments
             );
 
@@ -950,7 +950,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getParentClass()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -958,7 +958,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getParentClass'),
+                [$this, 'parent::' . 'getParentClass'],
                 $arguments
             );
 
@@ -976,7 +976,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a0
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -988,7 +988,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'isSubclassOf'),
+                [$this, 'parent::' . 'isSubclassOf'],
                 $arguments
             );
 
@@ -1005,7 +1005,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getStaticProperties()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -1013,7 +1013,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getStaticProperties'),
+                [$this, 'parent::' . 'getStaticProperties'],
                 $arguments
             );
 
@@ -1032,7 +1032,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a1 = null
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -1047,7 +1047,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getStaticPropertyValue'),
+                [$this, 'parent::' . 'getStaticPropertyValue'],
                 $arguments
             );
 
@@ -1066,7 +1066,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a1
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -1081,7 +1081,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'setStaticPropertyValue'),
+                [$this, 'parent::' . 'setStaticPropertyValue'],
                 $arguments
             );
 
@@ -1098,7 +1098,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getDefaultProperties()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -1106,7 +1106,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getDefaultProperties'),
+                [$this, 'parent::' . 'getDefaultProperties'],
                 $arguments
             );
 
@@ -1123,7 +1123,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function isIterateable()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -1131,7 +1131,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'isIterateable'),
+                [$this, 'parent::' . 'isIterateable'],
                 $arguments
             );
 
@@ -1149,7 +1149,7 @@ implements \Eloquent\Phony\Mock\Mock
         $a0
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -1161,7 +1161,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'implementsInterface'),
+                [$this, 'parent::' . 'implementsInterface'],
                 $arguments
             );
 
@@ -1178,7 +1178,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getExtension()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -1186,7 +1186,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getExtension'),
+                [$this, 'parent::' . 'getExtension'],
                 $arguments
             );
 
@@ -1203,7 +1203,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getExtensionName()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -1211,7 +1211,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getExtensionName'),
+                [$this, 'parent::' . 'getExtensionName'],
                 $arguments
             );
 
@@ -1228,7 +1228,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function inNamespace()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -1236,7 +1236,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'inNamespace'),
+                [$this, 'parent::' . 'inNamespace'],
                 $arguments
             );
 
@@ -1253,7 +1253,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getNamespaceName()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -1261,7 +1261,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getNamespaceName'),
+                [$this, 'parent::' . 'getNamespaceName'],
                 $arguments
             );
 
@@ -1278,7 +1278,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function getShortName()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -1286,7 +1286,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'getShortName'),
+                [$this, 'parent::' . 'getShortName'],
                 $arguments
             );
 
@@ -1305,7 +1305,7 @@ implements \Eloquent\Phony\Mock\Mock
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array(__CLASS__, 'parent::' . $name),
+            [__CLASS__, 'parent::' . $name],
             $arguments->all()
         );
     }
@@ -1315,7 +1315,7 @@ implements \Eloquent\Phony\Mock\Mock
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array($this, 'parent::' . $name),
+            [$this, 'parent::' . $name],
             $arguments->all()
         );
     }
@@ -1324,14 +1324,14 @@ implements \Eloquent\Phony\Mock\Mock
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         \call_user_func_array(
-            array($this, 'parent::__construct'),
+            [$this, 'parent::__construct'],
             $arguments->all()
         );
     }
 
-    private static $_uncallableMethods = array();
-    private static $_traitMethods = array();
-    private static $_customMethods = array();
+    private static $_uncallableMethods = [];
+    private static $_traitMethods = [];
+    private static $_customMethods = [];
     private static $_staticHandle;
     private $_handle;
 }

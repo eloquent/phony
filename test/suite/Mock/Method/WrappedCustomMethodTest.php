@@ -41,7 +41,7 @@ class WrappedCustomMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame(array($this->mock, 'setUp'), $this->subject->callback());
+        $this->assertSame([$this->mock, 'setUp'], $this->subject->callback());
         $this->assertNull($this->subject->label());
     }
 
@@ -58,7 +58,7 @@ class WrappedCustomMethodTest extends TestCase
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame(
-            array('Eloquent\Phony\Test\TestClassB', 'testClassAStaticMethodB'),
+            ['Eloquent\Phony\Test\TestClassB', 'testClassAStaticMethodB'],
             $this->subject->callback()
         );
         $this->assertNull($this->subject->label());
@@ -80,7 +80,7 @@ class WrappedCustomMethodTest extends TestCase
 
         $this->assertSame('custom ab', $subject('a', 'b'));
         $this->assertSame('custom ab', $subject->invoke('a', 'b'));
-        $this->assertSame('custom ab', $subject->invokeWith(array('a', 'b')));
+        $this->assertSame('custom ab', $subject->invokeWith(['a', 'b']));
         $this->assertSame('custom ', $subject->invokeWith());
     }
 
@@ -92,7 +92,7 @@ class WrappedCustomMethodTest extends TestCase
 
         $this->assertSame('custom ab', $subject('a', 'b'));
         $this->assertSame('custom ab', $subject->invoke('a', 'b'));
-        $this->assertSame('custom ab', $subject->invokeWith(array('a', 'b')));
+        $this->assertSame('custom ab', $subject->invokeWith(['a', 'b']));
         $this->assertSame('custom ', $subject->invokeWith());
     }
 
@@ -103,7 +103,7 @@ class WrappedCustomMethodTest extends TestCase
         };
         $subject = new WrappedCustomMethod($this->customCallback, $this->method, $this->handle, $this->invoker);
         $a = null;
-        $subject->invokeWith(array(&$a));
+        $subject->invokeWith([&$a]);
 
         $this->assertSame('a', $a);
     }

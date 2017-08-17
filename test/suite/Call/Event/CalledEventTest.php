@@ -22,7 +22,7 @@ class CalledEventTest extends TestCase
         $this->sequenceNumber = 111;
         $this->time = 1.11;
         $this->callback = 'implode';
-        $this->arguments = new Arguments(array('a', 'b'));
+        $this->arguments = new Arguments(['a', 'b']);
         $this->subject = new CalledEvent($this->sequenceNumber, $this->time, $this->callback, $this->arguments);
 
         $this->callFactory = new TestCallFactory();

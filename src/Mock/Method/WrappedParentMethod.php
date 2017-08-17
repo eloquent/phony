@@ -59,7 +59,7 @@ class WrappedParentMethod extends AbstractWrappedMethod
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
-    public function invokeWith($arguments = array())
+    public function invokeWith($arguments = [])
     {
         if (!$arguments instanceof Arguments) {
             $arguments = new Arguments($arguments);

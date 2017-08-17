@@ -19,7 +19,7 @@ class UnusedStubCriteriaExceptionTest extends TestCase
     public function testException()
     {
         $matcherFactory = MatcherFactory::instance();
-        $criteria = array($matcherFactory->equalTo('a'), $matcherFactory->equalTo('b'));
+        $criteria = [$matcherFactory->equalTo('a'), $matcherFactory->equalTo('b')];
         $exception = new UnusedStubCriteriaException($criteria);
 
         $this->assertSame($criteria, $exception->criteria());

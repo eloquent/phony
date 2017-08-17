@@ -41,13 +41,13 @@ class EmptyValueFactoryTest extends TestCase
 
     public function fromTypeData()
     {
-        return array(
-            'bool'   => array('bool',   false),
-            'int'    => array('int',    0),
-            'float'  => array('float',  .0),
-            'string' => array('string', ''),
-            'array'  => array('array',  array()),
-        );
+        return [
+            'bool'   => ['bool',   false],
+            'int'    => ['int',    0],
+            'float'  => ['float',  .0],
+            'string' => ['string', ''],
+            'array'  => ['array',  []],
+        ];
     }
 
     /**
@@ -62,7 +62,7 @@ class EmptyValueFactoryTest extends TestCase
     {
         $actual = $this->subject->fromType($this->createType('stdClass'));
 
-        $this->assertSame(array(), (array) $actual);
+        $this->assertSame([], (array) $actual);
         $this->assertSame('{}', json_encode($actual));
     }
 
@@ -71,7 +71,7 @@ class EmptyValueFactoryTest extends TestCase
         $actual = $this->subject->fromType($this->createType('object'));
 
         if ($this->featureDetector->isSupported('type.object')) {
-            $this->assertSame(array(), (array) $actual);
+            $this->assertSame([], (array) $actual);
             $this->assertSame('{}', json_encode($actual));
         } else {
             $this->assertInstanceOf('object', $actual);
@@ -101,7 +101,7 @@ class EmptyValueFactoryTest extends TestCase
             $this->markTestSkipped('Requires the iterable type.');
         }
 
-        $this->assertSame(array(), $this->subject->fromType($this->createType('iterable')));
+        $this->assertSame([], $this->subject->fromType($this->createType('iterable')));
     }
 
     public function testFromTypeWithVoid()
@@ -125,7 +125,7 @@ class EmptyValueFactoryTest extends TestCase
 
     public function fromTypeWithIteratorTypeData()
     {
-        $types = array(
+        $types = [
             'AppendIterator',
             'ArrayIterator',
             'CachingIterator',
@@ -159,11 +159,11 @@ class EmptyValueFactoryTest extends TestCase
             'RegexIterator',
             'SeekableIterator',
             'Traversable',
-        );
-        $data = array();
+        ];
+        $data = [];
 
         foreach ($types as $type) {
-            $data[$type] = array($type);
+            $data[$type] = [$type];
         }
 
         return $data;
@@ -178,7 +178,7 @@ class EmptyValueFactoryTest extends TestCase
 
         $this->assertInstanceOf($type, $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
-        $this->assertSame(array(), iterator_to_array($actual));
+        $this->assertSame([], iterator_to_array($actual));
     }
 
     public function testFromTypeWithGenerator()
@@ -190,12 +190,12 @@ class EmptyValueFactoryTest extends TestCase
         $actual = $this->subject->fromType($this->createType('Generator'));
 
         $this->assertInstanceOf('Generator', $actual);
-        $this->assertSame(array(), iterator_to_array($actual));
+        $this->assertSame([], iterator_to_array($actual));
     }
 
     public function fromTypeWithThrowableTypeData()
     {
-        $types = array(
+        $types = [
             'ArithmeticError',
             'AssertionError',
             'BadFunctionCallException',
@@ -221,11 +221,11 @@ class EmptyValueFactoryTest extends TestCase
             'TypeError',
             'UnderflowException',
             'UnexpectedValueException',
-        );
-        $data = array();
+        ];
+        $data = [];
 
         foreach ($types as $type) {
-            $data[$type] = array($type);
+            $data[$type] = [$type];
         }
 
         return $data;
@@ -251,7 +251,7 @@ class EmptyValueFactoryTest extends TestCase
 
     public function fromTypeWithCollectionTypeData()
     {
-        $types = array(
+        $types = [
             'SplDoublyLinkedList',
             'SplFixedArray',
             'SplHeap',
@@ -261,11 +261,11 @@ class EmptyValueFactoryTest extends TestCase
             'SplPriorityQueue',
             'SplQueue',
             'SplStack',
-        );
-        $data = array();
+        ];
+        $data = [];
 
         foreach ($types as $type) {
-            $data[$type] = array($type);
+            $data[$type] = [$type];
         }
 
         return $data;
@@ -280,7 +280,7 @@ class EmptyValueFactoryTest extends TestCase
 
         $this->assertInstanceOf($type, $actual);
         $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
-        $this->assertSame(array(), iterator_to_array($actual));
+        $this->assertSame([], iterator_to_array($actual));
         $this->assertSame(0, count($actual));
     }
 

@@ -28,14 +28,14 @@ class FunctionHookGeneratorTest extends TestCase
     public function generateData()
     {
         $fixturePath = __DIR__ . '/../../fixture/hook-generator';
-        $data = array();
+        $data = [];
 
         foreach (scandir($fixturePath) as $testName) {
             if ('.' === $testName[0]) {
                 continue;
             }
 
-            $data[$testName] = array($testName);
+            $data[$testName] = [$testName];
         }
 
         return $data;

@@ -99,7 +99,7 @@ class FunctionHookGenerator
 
         $source .=
             "    \$argumentCount = \\func_num_args();\n" .
-            '    $arguments = array();' .
+            '    $arguments = [];' .
             $argumentPacking .
             "\n\n    for (\$i = " .
             $parameterCount .

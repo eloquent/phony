@@ -95,7 +95,7 @@ class EventOrderVerifier
         }
 
         $isMatch = true;
-        $matchingEvents = array();
+        $matchingEvents = [];
         $earliestEvent = null;
 
         foreach ($events as $event) {
@@ -238,7 +238,7 @@ class EventOrderVerifier
 
     private function expectedEvents($events)
     {
-        $expected = array();
+        $expected = [];
         $earliestEvent = null;
 
         foreach ($events as $event) {
@@ -274,7 +274,7 @@ class EventOrderVerifier
 
     private function mergeEvents($events)
     {
-        $merged = array();
+        $merged = [];
 
         foreach ($events as $event) {
             if ($event instanceof Event) {

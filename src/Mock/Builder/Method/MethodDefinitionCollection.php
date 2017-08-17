@@ -26,15 +26,15 @@ class MethodDefinitionCollection
      */
     public function __construct(array $methods, array $traitMethods)
     {
-        $this->methodNames = array();
+        $this->methodNames = [];
         $this->allMethods = $methods;
         $this->traitMethods = $traitMethods;
-        $this->staticMethods = array();
-        $this->methods = array();
-        $this->publicStaticMethods = array();
-        $this->publicMethods = array();
-        $this->protectedStaticMethods = array();
-        $this->protectedMethods = array();
+        $this->staticMethods = [];
+        $this->methods = [];
+        $this->publicStaticMethods = [];
+        $this->publicMethods = [];
+        $this->protectedStaticMethods = [];
+        $this->protectedMethods = [];
 
         foreach ($methods as $name => $method) {
             $this->methodNames[strtolower($name)] = $name;

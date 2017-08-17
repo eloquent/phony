@@ -40,7 +40,7 @@ class SpyDataTest extends TestCase
 
         $this->callA = $this->callFactory->create();
         $this->callB = $this->callFactory->create();
-        $this->calls = array($this->callA, $this->callB);
+        $this->calls = [$this->callA, $this->callB];
 
         $this->callFactory->reset();
     }
@@ -52,7 +52,7 @@ class SpyDataTest extends TestCase
         $this->assertSame($this->label, $this->subject->label());
         $this->assertTrue($this->subject->useGeneratorSpies());
         $this->assertFalse($this->subject->useIterableSpies());
-        $this->assertSame(array(), $this->subject->allCalls());
+        $this->assertSame([], $this->subject->allCalls());
     }
 
     public function testSetLabel()
@@ -88,7 +88,7 @@ class SpyDataTest extends TestCase
     {
         $this->subject->addCall($this->callA);
 
-        $this->assertSame(array($this->callA), $this->subject->allCalls());
+        $this->assertSame([$this->callA], $this->subject->allCalls());
 
         $this->subject->addCall($this->callB);
 
@@ -135,21 +135,21 @@ class SpyDataTest extends TestCase
 
     public function testAllEvents()
     {
-        $this->assertSame(array(), $this->subject->allEvents());
+        $this->assertSame([], $this->subject->allEvents());
 
         $this->subject->addCall($this->callA);
 
-        $this->assertSame(array($this->callA), $this->subject->allEvents());
+        $this->assertSame([$this->callA], $this->subject->allEvents());
     }
 
     public function testAllCalls()
     {
-        $this->assertSame(array(), $this->subject->allCalls());
+        $this->assertSame([], $this->subject->allCalls());
 
         $this->subject->addCall($this->callA);
 
-        $this->assertSame(array($this->callA), $this->subject->allCalls());
-        $this->assertSame(array($this->callA), iterator_to_array($this->subject));
+        $this->assertSame([$this->callA], $this->subject->allCalls());
+        $this->assertSame([$this->callA], iterator_to_array($this->subject));
     }
 
     public function testFirstEvent()
@@ -161,7 +161,7 @@ class SpyDataTest extends TestCase
 
     public function testFirstEventFailureUndefined()
     {
-        $this->subject->setCalls(array());
+        $this->subject->setCalls([]);
 
         $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->firstEvent();
@@ -176,7 +176,7 @@ class SpyDataTest extends TestCase
 
     public function testLastEventFailureUndefined()
     {
-        $this->subject->setCalls(array());
+        $this->subject->setCalls([]);
 
         $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->lastEvent();
@@ -206,7 +206,7 @@ class SpyDataTest extends TestCase
 
     public function testFirstCallFailureUndefined()
     {
-        $this->subject->setCalls(array());
+        $this->subject->setCalls([]);
 
         $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->firstCall();
@@ -221,7 +221,7 @@ class SpyDataTest extends TestCase
 
     public function testLastCallFailureUndefined()
     {
-        $this->subject->setCalls(array());
+        $this->subject->setCalls([]);
 
         $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->lastCall();
@@ -245,30 +245,30 @@ class SpyDataTest extends TestCase
     public function testInvokeMethods()
     {
         $spy = $this->subject;
-        $spy->invokeWith(array(array('a')));
-        $spy->invoke(array('b', 'c'));
-        $spy(array('d'));
+        $spy->invokeWith([['a']]);
+        $spy->invoke(['b', 'c']);
+        $spy(['d']);
         $this->callFactory->reset();
-        $expected = array(
+        $expected = [
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create(array('a'))),
+                $this->callEventFactory->createCalled($spy, Arguments::create(['a'])),
                 ($responseEvent = $this->callEventFactory->createReturned('a')),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create(array('b', 'c'))),
+                $this->callEventFactory->createCalled($spy, Arguments::create(['b', 'c'])),
                 ($responseEvent = $this->callEventFactory->createReturned('bc')),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create(array('d'))),
+                $this->callEventFactory->createCalled($spy, Arguments::create(['d'])),
                 ($responseEvent = $this->callEventFactory->createReturned('d')),
                 null,
                 $responseEvent
             ),
-        );
+        ];
 
         $this->assertEquals($expected, $spy->allCalls());
     }
@@ -283,11 +283,11 @@ class SpyDataTest extends TestCase
             $this->generatorSpyFactory,
             $this->iterableSpyFactory
         );
-        $spy->invokeWith(array('a'));
+        $spy->invokeWith(['a']);
         $spy->invoke('b', 'c');
         $spy('d');
         $this->callFactory->reset();
-        $expected = array(
+        $expected = [
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, Arguments::create('a')),
                 ($responseEvent = $this->callEventFactory->createReturned(null)),
@@ -306,14 +306,14 @@ class SpyDataTest extends TestCase
                 null,
                 $responseEvent
             ),
-        );
+        ];
 
         $this->assertEquals($expected, $spy->allCalls());
     }
 
     public function testInvokeWithExceptionThrown()
     {
-        $exceptions = array(new Exception(), new Exception(), new Exception());
+        $exceptions = [new Exception(), new Exception(), new Exception()];
         $index = 0;
         $callback = function () use (&$exceptions, &$index) {
             $exception = $exceptions[$index++];
@@ -328,7 +328,7 @@ class SpyDataTest extends TestCase
             $this->iterableSpyFactory
         );
         try {
-            $spy->invokeWith(array('a'));
+            $spy->invokeWith(['a']);
         } catch (Exception $caughtException) {
         }
         try {
@@ -340,7 +340,7 @@ class SpyDataTest extends TestCase
         } catch (Exception $caughtException) {
         }
         $this->callFactory->reset();
-        $expected = array(
+        $expected = [
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, Arguments::create('a')),
                 ($responseEvent = $this->callEventFactory->createThrew($exceptions[0])),
@@ -359,7 +359,7 @@ class SpyDataTest extends TestCase
                 null,
                 $responseEvent
             ),
-        );
+        ];
 
         $this->assertEquals($expected, $spy->allCalls());
     }
@@ -379,14 +379,14 @@ class SpyDataTest extends TestCase
         );
         $spy->invokeWith();
         $this->callFactory->reset();
-        $expected = array(
+        $expected = [
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy),
                 ($responseEvent = $this->callEventFactory->createReturned('x')),
                 null,
                 $responseEvent
             ),
-        );
+        ];
 
         $this->assertEquals($expected, $spy->allCalls());
     }
@@ -405,7 +405,7 @@ class SpyDataTest extends TestCase
             $this->iterableSpyFactory
         );
         $value = null;
-        $arguments = array(&$value);
+        $arguments = [&$value];
         $spy->invokeWith($arguments);
 
         $this->assertSame('x', $value);
@@ -432,15 +432,15 @@ class SpyDataTest extends TestCase
         $this->callFactory->reset();
         $expectedCallA =
             $this->callFactory->create($this->callEventFactory->createCalled($spy, Arguments::create('a', 'b')));
-        $iterableSpyA = $this->iterableSpyFactory->create($expectedCallA, array('A', 'B'));
-        $expectedCallA->setResponseEvent($this->callEventFactory->createReturned(array('A', 'B')));
+        $iterableSpyA = $this->iterableSpyFactory->create($expectedCallA, ['A', 'B']);
+        $expectedCallA->setResponseEvent($this->callEventFactory->createReturned(['A', 'B']));
         iterator_to_array($iterableSpyA);
         $expectedCallB =
             $this->callFactory->create($this->callEventFactory->createCalled($spy, Arguments::create('c')));
-        $iterableSpyB = $this->iterableSpyFactory->create($expectedCallB, array('C'));
-        $expectedCallB->setResponseEvent($this->callEventFactory->createReturned(array('C')));
+        $iterableSpyB = $this->iterableSpyFactory->create($expectedCallB, ['C']);
+        $expectedCallB->setResponseEvent($this->callEventFactory->createReturned(['C']));
         iterator_to_array($iterableSpyB);
-        $expected = array($expectedCallA, $expectedCallB);
+        $expected = [$expectedCallA, $expectedCallB];
 
         $this->assertEquals($expected, $spy->allCalls());
     }
@@ -459,7 +459,7 @@ class SpyDataTest extends TestCase
             $this->iterableSpyFactory
         );
         $spy->setUseIterableSpies(true);
-        $iterableSpyA = $spy->invoke(array());
+        $iterableSpyA = $spy->invoke([]);
         $iterableSpyB = $spy->invoke($iterableSpyA);
 
         $this->assertInstanceOf('Eloquent\Phony\Spy\IterableSpy', $iterableSpyA);
@@ -483,7 +483,7 @@ class SpyDataTest extends TestCase
         $spy->stopRecording()->invokeWith();
         $this->callFactory->reset();
 
-        $this->assertSame(array(), $spy->allCalls());
+        $this->assertSame([], $spy->allCalls());
     }
 
     public function testStartRecording()
@@ -502,14 +502,14 @@ class SpyDataTest extends TestCase
         $spy->stopRecording()->invoke('a');
         $spy->startRecording()->invoke('b');
         $this->callFactory->reset();
-        $expected = array(
+        $expected = [
             $this->callFactory->create(
                 $this->callEventFactory->createCalled($spy, Arguments::create('b')),
                 ($responseEvent = $this->callEventFactory->createReturned('x')),
                 null,
                 $responseEvent
             ),
-        );
+        ];
 
         $this->assertEquals($expected, $spy->allCalls());
     }

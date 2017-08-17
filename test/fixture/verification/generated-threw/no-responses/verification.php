@@ -13,7 +13,7 @@ $stub->with('bonobo', '*')->does(
             $verify();
         }
 
-        return array();
+        return [];
     }
 );
 iterator_to_array($stub('aardvark'));

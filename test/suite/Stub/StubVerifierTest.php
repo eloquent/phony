@@ -31,7 +31,7 @@ class StubVerifierTest extends TestCase
     protected function setUp()
     {
         $this->callback = 'implode';
-        $this->self = (object) array();
+        $this->self = (object) [];
         $this->label = 'label';
         $this->stubFactory = StubFactory::instance();
         $this->stub = $this->stubFactory->create($this->callback, $this->self)->setLabel($this->label);
@@ -58,7 +58,7 @@ class StubVerifierTest extends TestCase
             $this->generatorAnswerBuilderFactory
         );
 
-        $this->callsA = array();
+        $this->callsA = [];
         $callsA = &$this->callsA;
         $this->callCountA = 0;
         $callCountA = &$this->callCountA;
@@ -72,7 +72,7 @@ class StubVerifierTest extends TestCase
             return $arguments;
         };
 
-        $this->callsB = array();
+        $this->callsB = [];
         $callsB = &$this->callsB;
         $this->callCountB = 0;
         $callCountB = &$this->callCountB;
@@ -86,7 +86,7 @@ class StubVerifierTest extends TestCase
             return $arguments;
         };
 
-        $this->callsC = array();
+        $this->callsC = [];
         $callsC = &$this->callsC;
         $this->callCountC = 0;
         $callCountC = &$this->callCountC;
@@ -100,7 +100,7 @@ class StubVerifierTest extends TestCase
             return $arguments;
         };
 
-        $this->callsD = array();
+        $this->callsD = [];
         $callsD = &$this->callsD;
         $this->callCountD = 0;
         $callCountD = &$this->callCountD;
@@ -114,7 +114,7 @@ class StubVerifierTest extends TestCase
             return $arguments;
         };
 
-        $this->callsE = array();
+        $this->callsE = [];
         $callsE = &$this->callsE;
         $this->callCountE = 0;
         $callCountE = &$this->callCountE;
@@ -128,7 +128,7 @@ class StubVerifierTest extends TestCase
             return $arguments;
         };
 
-        $this->callsF = array();
+        $this->callsF = [];
         $callsF = &$this->callsF;
         $this->callCountF = 0;
         $callCountF = &$this->callCountF;
@@ -217,56 +217,56 @@ class StubVerifierTest extends TestCase
 
         $this->assertSame('', (string) call_user_func($this->subject, 'a', 'b'));
         $this->assertSame(
-            array(
-                array('a', 'b'),
-            ),
+            [
+                ['a', 'b'],
+            ],
             $this->callsA
         );
-        $this->assertSame(array(), $this->callsB);
-        $this->assertSame(array(), $this->callsC);
+        $this->assertSame([], $this->callsB);
+        $this->assertSame([], $this->callsC);
 
         $this->assertSame('', (string) call_user_func($this->subject, 'c', 'd'));
         $this->assertSame(
-            array(
-                array('a', 'b'),
-                array('c', 'd'),
-            ),
+            [
+                ['a', 'b'],
+                ['c', 'd'],
+            ],
             $this->callsA
         );
         $this->assertSame(
-            array(
-                array('c', 'd'),
-            ),
+            [
+                ['c', 'd'],
+            ],
             $this->callsB
         );
         $this->assertSame(
-            array(
-                array('c', 'd'),
-            ),
+            [
+                ['c', 'd'],
+            ],
             $this->callsC
         );
 
         $this->assertSame('', (string) call_user_func($this->subject, 'e', 'f'));
         $this->assertSame(
-            array(
-                array('a', 'b'),
-                array('c', 'd'),
-                array('e', 'f'),
-            ),
+            [
+                ['a', 'b'],
+                ['c', 'd'],
+                ['e', 'f'],
+            ],
             $this->callsA
         );
         $this->assertSame(
-            array(
-                array('c', 'd'),
-                array('e', 'f'),
-            ),
+            [
+                ['c', 'd'],
+                ['e', 'f'],
+            ],
             $this->callsB
         );
         $this->assertSame(
-            array(
-                array('c', 'd'),
-                array('e', 'f'),
-            ),
+            [
+                ['c', 'd'],
+                ['e', 'f'],
+            ],
             $this->callsC
         );
     }
@@ -276,7 +276,7 @@ class StubVerifierTest extends TestCase
         $a = null;
         $b = null;
         $this->subject->calls($this->referenceCallback)->returns();
-        $this->subject->invokeWith(array(&$a, &$b));
+        $this->subject->invokeWith([&$a, &$b]);
 
         $this->assertSame('a', $a);
         $this->assertSame('b', $b);
@@ -287,51 +287,51 @@ class StubVerifierTest extends TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
-                ->callsWith($this->callbackA, array('A', 'B'), true, true, true)
+                ->callsWith($this->callbackA, ['A', 'B'], true, true, true)
                 ->returns()
-                ->callsWith($this->callbackA, array('C', 'D'), true, true, true)
-                ->callsWith($this->callbackB, array('E', 'F'), true, true, true)
+                ->callsWith($this->callbackA, ['C', 'D'], true, true, true)
+                ->callsWith($this->callbackB, ['E', 'F'], true, true, true)
                 ->returns()
         );
 
         $this->assertSame('', (string) call_user_func($this->subject, 'a', 'b'));
         $this->assertEquals(
-            array(
-                array($this->self, 'A', 'B', new Arguments(array('a', 'b')), 'a', 'b'),
-            ),
+            [
+                [$this->self, 'A', 'B', new Arguments(['a', 'b']), 'a', 'b'],
+            ],
             $this->callsA
         );
-        $this->assertSame(array(), $this->callsB);
+        $this->assertSame([], $this->callsB);
 
         $this->assertSame('', (string) call_user_func($this->subject, 'c', 'd'));
         $this->assertEquals(
-            array(
-                array($this->self, 'A', 'B', new Arguments(array('a', 'b')), 'a', 'b'),
-                array($this->self, 'C', 'D', new Arguments(array('c', 'd')), 'c', 'd'),
-            ),
+            [
+                [$this->self, 'A', 'B', new Arguments(['a', 'b']), 'a', 'b'],
+                [$this->self, 'C', 'D', new Arguments(['c', 'd']), 'c', 'd'],
+            ],
             $this->callsA
         );
         $this->assertEquals(
-            array(
-                array($this->self, 'E', 'F', new Arguments(array('c', 'd')), 'c', 'd'),
-            ),
+            [
+                [$this->self, 'E', 'F', new Arguments(['c', 'd']), 'c', 'd'],
+            ],
             $this->callsB
         );
 
         $this->assertSame('', (string) call_user_func($this->subject, 'e', 'f'));
         $this->assertEquals(
-            array(
-                array($this->self, 'A', 'B', new Arguments(array('a', 'b')), 'a', 'b'),
-                array($this->self, 'C', 'D', new Arguments(array('c', 'd')), 'c', 'd'),
-                array($this->self, 'C', 'D', new Arguments(array('e', 'f')), 'e', 'f'),
-            ),
+            [
+                [$this->self, 'A', 'B', new Arguments(['a', 'b']), 'a', 'b'],
+                [$this->self, 'C', 'D', new Arguments(['c', 'd']), 'c', 'd'],
+                [$this->self, 'C', 'D', new Arguments(['e', 'f']), 'e', 'f'],
+            ],
             $this->callsA
         );
         $this->assertEquals(
-            array(
-                array($this->self, 'E', 'F', new Arguments(array('c', 'd')), 'c', 'd'),
-                array($this->self, 'E', 'F', new Arguments(array('e', 'f')), 'e', 'f'),
-            ),
+            [
+                [$this->self, 'E', 'F', new Arguments(['c', 'd']), 'c', 'd'],
+                [$this->self, 'E', 'F', new Arguments(['e', 'f']), 'e', 'f'],
+            ],
             $this->callsB
         );
     }
@@ -347,42 +347,42 @@ class StubVerifierTest extends TestCase
 
         $this->assertSame('', (string) call_user_func($this->subject, 'a', 'b'));
         $this->assertSame(
-            array(
-                array('a', 'b'),
-            ),
+            [
+                ['a', 'b'],
+            ],
             $this->callsA
         );
-        $this->assertSame(array(), $this->callsB);
+        $this->assertSame([], $this->callsB);
 
         $this->assertSame('', (string) call_user_func($this->subject, 'c', 'd'));
         $this->assertSame(
-            array(
-                array('a', 'b'),
-                array('c', 'd'),
-            ),
+            [
+                ['a', 'b'],
+                ['c', 'd'],
+            ],
             $this->callsA
         );
         $this->assertSame(
-            array(
-                array('c', 'd'),
-            ),
+            [
+                ['c', 'd'],
+            ],
             $this->callsB
         );
 
         $this->assertSame('', (string) call_user_func($this->subject, 'e', 'f'));
         $this->assertSame(
-            array(
-                array('a', 'b'),
-                array('c', 'd'),
-                array('e', 'f'),
-            ),
+            [
+                ['a', 'b'],
+                ['c', 'd'],
+                ['e', 'f'],
+            ],
             $this->callsA
         );
         $this->assertSame(
-            array(
-                array('c', 'd'),
-                array('e', 'f'),
-            ),
+            [
+                ['c', 'd'],
+                ['e', 'f'],
+            ],
             $this->callsB
         );
     }
@@ -393,8 +393,8 @@ class StubVerifierTest extends TestCase
         $b = null;
         $c = null;
         $d = null;
-        $this->subject->callsWith($this->referenceCallback, array(&$a, &$b))->returns();
-        $this->subject->invokeWith(array(&$c, &$d));
+        $this->subject->callsWith($this->referenceCallback, [&$a, &$b])->returns();
+        $this->subject->invokeWith([&$c, &$d]);
 
         $this->assertSame('a', $a);
         $this->assertSame('b', $b);
@@ -432,114 +432,114 @@ class StubVerifierTest extends TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
-                ->callsArgumentWith(0, array('A', 'B'), true, true, true)
+                ->callsArgumentWith(0, ['A', 'B'], true, true, true)
                 ->returns()
-                ->callsArgumentWith(0, array('C', 'D'), true, true, true)
-                ->callsArgumentWith(1, array('E', 'F'), true, true, true)
+                ->callsArgumentWith(0, ['C', 'D'], true, true, true)
+                ->callsArgumentWith(1, ['E', 'F'], true, true, true)
                 ->returns()
         );
 
         $this->assertSame('', (string) call_user_func($this->subject, $this->callbackA, $this->callbackB));
         $this->assertEquals(
-            array(
-                array(
+            [
+                [
                     $this->self,
                     'A',
                     'B',
-                    new Arguments(array($this->callbackA, $this->callbackB)),
+                    new Arguments([$this->callbackA, $this->callbackB]),
                     $this->callbackA,
                     $this->callbackB,
-                ),
-            ),
+                ],
+            ],
             $this->callsA
         );
-        $this->assertSame(array(), $this->callsB);
+        $this->assertSame([], $this->callsB);
 
         $this->assertSame('', (string) call_user_func($this->subject, $this->callbackA, $this->callbackB));
         $this->assertEquals(
-            array(
-                array(
+            [
+                [
                     $this->self,
                     'A',
                     'B',
-                    new Arguments(array($this->callbackA, $this->callbackB)),
+                    new Arguments([$this->callbackA, $this->callbackB]),
                     $this->callbackA,
                     $this->callbackB,
-                ),
-                array(
+                ],
+                [
                     $this->self,
                     'C',
                     'D',
-                    new Arguments(array($this->callbackA, $this->callbackB)),
+                    new Arguments([$this->callbackA, $this->callbackB]),
                     $this->callbackA,
                     $this->callbackB,
-                ),
-            ),
+                ],
+            ],
             $this->callsA
         );
         $this->assertEquals(
-            array(
-                array(
+            [
+                [
                     $this->self,
                     'E',
                     'F',
-                    new Arguments(array($this->callbackA, $this->callbackB)),
+                    new Arguments([$this->callbackA, $this->callbackB]),
                     $this->callbackA,
                     $this->callbackB,
-                ),
-            ),
+                ],
+            ],
             $this->callsB
         );
 
         $this->assertSame('', (string) call_user_func($this->subject, $this->callbackA, $this->callbackB));
         $this->assertEquals(
-            array(
-                array(
+            [
+                [
                     $this->self,
                     'A',
                     'B',
-                    new Arguments(array($this->callbackA, $this->callbackB)),
+                    new Arguments([$this->callbackA, $this->callbackB]),
                     $this->callbackA,
                     $this->callbackB,
-                ),
-                array(
+                ],
+                [
                     $this->self,
                     'C',
                     'D',
-                    new Arguments(array($this->callbackA, $this->callbackB)),
+                    new Arguments([$this->callbackA, $this->callbackB]),
                     $this->callbackA,
                     $this->callbackB,
-                ),
-                array(
+                ],
+                [
                     $this->self,
                     'C',
                     'D',
-                    new Arguments(array($this->callbackA, $this->callbackB)),
+                    new Arguments([$this->callbackA, $this->callbackB]),
                     $this->callbackA,
                     $this->callbackB,
-                ),
-            ),
+                ],
+            ],
             $this->callsA
         );
         $this->assertEquals(
-            array(
-                array(
+            [
+                [
                     $this->self,
                     'E',
                     'F',
-                    new Arguments(array($this->callbackA, $this->callbackB)),
+                    new Arguments([$this->callbackA, $this->callbackB]),
                     $this->callbackA,
                     $this->callbackB,
-                ),
-                array(
+                ],
+                [
                     $this->self,
                     'E',
                     'F',
-                    new Arguments(array($this->callbackA, $this->callbackB)),
+                    new Arguments([$this->callbackA, $this->callbackB]),
                     $this->callbackA,
                     $this->callbackB,
-                ),
-            ),
+                ],
+            ],
             $this->callsB
         );
     }
@@ -572,8 +572,8 @@ class StubVerifierTest extends TestCase
         $b = null;
         $c = null;
         $d = null;
-        $this->subject->callsArgumentWith(2, array(&$a, &$b), false, false, true)->returns();
-        $this->subject->invokeWith(array(&$c, &$d, $this->referenceCallback));
+        $this->subject->callsArgumentWith(2, [&$a, &$b], false, false, true)->returns();
+        $this->subject->invokeWith([&$c, &$d, $this->referenceCallback]);
 
         $this->assertSame('a', $a);
         $this->assertSame('b', $b);
@@ -595,7 +595,7 @@ class StubVerifierTest extends TestCase
         $a = null;
         $b = null;
         $c = null;
-        $this->subject->invokeWith(array(&$a, &$b, &$c));
+        $this->subject->invokeWith([&$a, &$b, &$c]);
 
         $this->assertSame('a', $a);
         $this->assertSame('b', $b);
@@ -611,10 +611,10 @@ class StubVerifierTest extends TestCase
                 ->does($this->callbackB, $this->callbackC)
         );
 
-        $this->assertSame(array('A', 'a', 'b'), call_user_func($this->subject, 'a', 'b'));
-        $this->assertSame(array('B', 'c', 'd'), call_user_func($this->subject, 'c', 'd'));
-        $this->assertSame(array('C', 'e', 'f'), call_user_func($this->subject, 'e', 'f'));
-        $this->assertSame(array('C', 'g', 'h'), call_user_func($this->subject, 'g', 'h'));
+        $this->assertSame(['A', 'a', 'b'], call_user_func($this->subject, 'a', 'b'));
+        $this->assertSame(['B', 'c', 'd'], call_user_func($this->subject, 'c', 'd'));
+        $this->assertSame(['C', 'e', 'f'], call_user_func($this->subject, 'e', 'f'));
+        $this->assertSame(['C', 'g', 'h'], call_user_func($this->subject, 'g', 'h'));
     }
 
     public function testDoesWithReferenceParameters()
@@ -622,7 +622,7 @@ class StubVerifierTest extends TestCase
         $a = null;
         $b = null;
         $this->subject->does($this->referenceCallback);
-        $this->subject->invokeWith(array(&$a, &$b));
+        $this->subject->invokeWith([&$a, &$b]);
 
         $this->assertSame('a', $a);
         $this->assertSame('b', $b);
@@ -633,20 +633,20 @@ class StubVerifierTest extends TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
-                ->doesWith($this->callbackA, array(1, 2), true, true, true)
-                ->doesWith($this->callbackB, array(3, 4), true, true, true)
+                ->doesWith($this->callbackA, [1, 2], true, true, true)
+                ->doesWith($this->callbackB, [3, 4], true, true, true)
         );
 
         $this->assertEquals(
-            array('A', $this->self, 1, 2, new Arguments(array('a', 'b')), 'a', 'b'),
+            ['A', $this->self, 1, 2, new Arguments(['a', 'b']), 'a', 'b'],
             call_user_func($this->subject, 'a', 'b')
         );
         $this->assertEquals(
-            array('B', $this->self, 3, 4, new Arguments(array('c', 'd')), 'c', 'd'),
+            ['B', $this->self, 3, 4, new Arguments(['c', 'd']), 'c', 'd'],
             call_user_func($this->subject, 'c', 'd')
         );
         $this->assertEquals(
-            array('B', $this->self, 3, 4, new Arguments(array('e', 'f')), 'e', 'f'),
+            ['B', $this->self, 3, 4, new Arguments(['e', 'f']), 'e', 'f'],
             call_user_func($this->subject, 'e', 'f')
         );
     }
@@ -660,9 +660,9 @@ class StubVerifierTest extends TestCase
                 ->doesWith($this->callbackB)
         );
 
-        $this->assertSame(array('A', 'a', 'b'), call_user_func($this->subject, 'a', 'b'));
-        $this->assertSame(array('B', 'c', 'd'), call_user_func($this->subject, 'c', 'd'));
-        $this->assertSame(array('B', 'e', 'f'), call_user_func($this->subject, 'e', 'f'));
+        $this->assertSame(['A', 'a', 'b'], call_user_func($this->subject, 'a', 'b'));
+        $this->assertSame(['B', 'c', 'd'], call_user_func($this->subject, 'c', 'd'));
+        $this->assertSame(['B', 'e', 'f'], call_user_func($this->subject, 'e', 'f'));
     }
 
     public function testDoesWithWithReferenceParameters()
@@ -671,8 +671,8 @@ class StubVerifierTest extends TestCase
         $b = null;
         $c = null;
         $d = null;
-        $this->subject->doesWith($this->referenceCallback, array(&$a, &$b));
-        $this->subject->invokeWith(array(&$c, &$d));
+        $this->subject->doesWith($this->referenceCallback, [&$a, &$b]);
+        $this->subject->invokeWith([&$c, &$d]);
 
         $this->assertSame('a', $a);
         $this->assertSame('b', $b);
@@ -697,13 +697,13 @@ class StubVerifierTest extends TestCase
             $this->generatorAnswerBuilderFactory
         );
 
-        $this->assertSame($this->subject, $this->subject->forwards(array(1, 2), true, true, true));
+        $this->assertSame($this->subject, $this->subject->forwards([1, 2], true, true, true));
         $this->assertEquals(
-            array('A', $this->self, 1, 2, new Arguments(array('a', 'b')), 'a', 'b'),
+            ['A', $this->self, 1, 2, new Arguments(['a', 'b']), 'a', 'b'],
             call_user_func($this->subject, 'a', 'b')
         );
         $this->assertEquals(
-            array('A', $this->self, 1, 2, new Arguments(array('c', 'd')), 'c', 'd'),
+            ['A', $this->self, 1, 2, new Arguments(['c', 'd']), 'c', 'd'],
             call_user_func($this->subject, 'c', 'd')
         );
     }
@@ -711,60 +711,60 @@ class StubVerifierTest extends TestCase
     public function testForwardsDefaults()
     {
         $this->assertSame($this->subject, $this->subject->forwards());
-        $this->assertSame('a, b', call_user_func($this->subject, ', ', array('a', 'b')));
-        $this->assertSame('c - d', call_user_func($this->subject, ' - ', array('c', 'd')));
+        $this->assertSame('a, b', call_user_func($this->subject, ', ', ['a', 'b']));
+        $this->assertSame('c - d', call_user_func($this->subject, ' - ', ['c', 'd']));
     }
 
     public function forwardsSelfParameterAutoDetectionData()
     {
-        return array(
-            'Exact match' => array(
+        return [
+            'Exact match' => [
                 function (TestClassA $phonySelf) {
                     return func_get_args();
                 },
                 new TestClassA(),
-                array('a', 'b'),
-                array(new TestClassA(), 'a', 'b'),
-            ),
-            'Subclass' => array(
+                ['a', 'b'],
+                [new TestClassA(), 'a', 'b'],
+            ],
+            'Subclass' => [
                 function (TestClassA $phonySelf) {
                     return func_get_args();
                 },
                 new TestClassB(),
-                array('a', 'b'),
-                array(new TestClassB(), 'a', 'b'),
-            ),
-            'No hint' => array(
+                ['a', 'b'],
+                [new TestClassB(), 'a', 'b'],
+            ],
+            'No hint' => [
                 function ($phonySelf) {
                     return func_get_args();
                 },
                 new TestClassA(),
-                array('a', 'b'),
-                array(new TestClassA(), 'a', 'b'),
-            ),
-            'Wrong name' => array(
+                ['a', 'b'],
+                [new TestClassA(), 'a', 'b'],
+            ],
+            'Wrong name' => [
                 function (TestClassA $a) {
                     return func_get_args();
                 },
                 new TestClassA(),
-                array(new TestClassA(), 'a', 'b'),
-                array(new TestClassA(), 'a', 'b'),
-            ),
-            'No parameters' => array(
+                [new TestClassA(), 'a', 'b'],
+                [new TestClassA(), 'a', 'b'],
+            ],
+            'No parameters' => [
                 function () {
                     return func_get_args();
                 },
                 new TestClassA(),
-                array('a', 'b'),
-                array('a', 'b'),
-            ),
-            'Not a callable object' => array(
+                ['a', 'b'],
+                ['a', 'b'],
+            ],
+            'Not a callable object' => [
                 'implode',
                 new TestClassA(),
-                array(array('a', 'b')),
+                [['a', 'b']],
                 'ab',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -811,8 +811,8 @@ class StubVerifierTest extends TestCase
         $b = null;
         $c = null;
         $d = null;
-        $this->subject->forwards(array(&$a, &$b));
-        $this->subject->invokeWith(array(&$c, &$d));
+        $this->subject->forwards([&$a, &$b]);
+        $this->subject->invokeWith([&$c, &$d]);
 
         $this->assertSame('a', $a);
         $this->assertSame('b', $b);
@@ -859,7 +859,7 @@ class StubVerifierTest extends TestCase
     {
         $this->assertSame($this->subject, $this->subject->throws());
 
-        $thrownExceptions = array();
+        $thrownExceptions = [];
         for ($i = 0; $i < 2; ++$i) {
             try {
                 call_user_func($this->subject);
@@ -868,7 +868,7 @@ class StubVerifierTest extends TestCase
             }
         }
 
-        $this->assertEquals(array(new Exception(), new Exception()), $thrownExceptions);
+        $this->assertEquals([new Exception(), new Exception()], $thrownExceptions);
     }
 
     public function testThrowsWithException()
@@ -877,7 +877,7 @@ class StubVerifierTest extends TestCase
         $exceptionB = new Exception();
         $this->assertSame($this->subject, $this->subject->throws($exceptionA, $exceptionB));
 
-        $thrownExceptions = array();
+        $thrownExceptions = [];
         for ($i = 0; $i < 3; ++$i) {
             try {
                 call_user_func($this->subject);
@@ -886,14 +886,14 @@ class StubVerifierTest extends TestCase
             }
         }
 
-        $this->assertSame(array($exceptionA, $exceptionB, $exceptionB), $thrownExceptions);
+        $this->assertSame([$exceptionA, $exceptionB, $exceptionB], $thrownExceptions);
     }
 
     public function testThrowsWithMessage()
     {
         $this->assertSame($this->subject, $this->subject->throws('a', 'b'));
 
-        $thrownExceptions = array();
+        $thrownExceptions = [];
         for ($i = 0; $i < 3; ++$i) {
             try {
                 call_user_func($this->subject);
@@ -902,7 +902,7 @@ class StubVerifierTest extends TestCase
             }
         }
 
-        $this->assertEquals(array(new Exception('a'), new Exception('b'), new Exception('b')), $thrownExceptions);
+        $this->assertEquals([new Exception('a'), new Exception('b'), new Exception('b')], $thrownExceptions);
     }
 
     public function testMultipleRules()
@@ -925,7 +925,7 @@ class StubVerifierTest extends TestCase
 
         $this->assertSame('e', call_user_func($this->subject, 'b'));
         $this->assertSame('f', call_user_func($this->subject, 'b'));
-        $thrownExceptions = array();
+        $thrownExceptions = [];
         for ($i = 0; $i < 2; ++$i) {
             try {
                 call_user_func($this->subject, 'b');
@@ -933,17 +933,17 @@ class StubVerifierTest extends TestCase
                 $thrownExceptions[] = $thrownException;
             }
         }
-        $this->assertEquals(array(new Exception(), new Exception()), $thrownExceptions);
+        $this->assertEquals([new Exception(), new Exception()], $thrownExceptions);
 
         $this->assertSame('a', call_user_func($this->subject));
         $this->assertSame('d', call_user_func($this->subject, 'a'));
-        $thrownExceptions = array();
+        $thrownExceptions = [];
         try {
             call_user_func($this->subject, 'b');
         } catch (Exception $thrownException) {
             $thrownExceptions[] = $thrownException;
         }
-        $this->assertEquals(array(new Exception()), $thrownExceptions);
+        $this->assertEquals([new Exception()], $thrownExceptions);
 
         $this->assertSame(
             $this->subject,
@@ -994,16 +994,16 @@ class StubVerifierTest extends TestCase
         $this->assertSame(
             $this->subject,
             $this->subject
-                ->with(array('a', 'b'))->calls($callbackA)
-                ->with(array('c', 'd'))->calls($callbackA, $callbackB)
+                ->with(['a', 'b'])->calls($callbackA)
+                ->with(['c', 'd'])->calls($callbackA, $callbackB)
         );
-        $this->assertSame('', (string) call_user_func($this->subject, array('a', 'b')));
+        $this->assertSame('', (string) call_user_func($this->subject, ['a', 'b']));
         $this->assertSame(1, $callCountA);
         $this->assertSame(0, $callCountB);
-        $this->assertSame('', (string) call_user_func($this->subject, array('c', 'd')));
+        $this->assertSame('', (string) call_user_func($this->subject, ['c', 'd']));
         $this->assertSame(2, $callCountA);
         $this->assertSame(1, $callCountB);
-        $this->assertSame('', (string) call_user_func($this->subject, array('e', 'f')));
+        $this->assertSame('', (string) call_user_func($this->subject, ['e', 'f']));
         $this->assertSame(2, $callCountA);
         $this->assertSame(1, $callCountB);
     }
@@ -1023,8 +1023,8 @@ class StubVerifierTest extends TestCase
         $b = null;
         $c = null;
         $d = null;
-        $this->subject->doesWith($this->referenceCallback, array(&$a, &$b));
-        $this->subject->invokeWith(array(&$c, &$d));
+        $this->subject->doesWith($this->referenceCallback, [&$a, &$b]);
+        $this->subject->invokeWith([&$c, &$d]);
 
         $this->assertSame('a', $a);
         $this->assertSame('b', $b);

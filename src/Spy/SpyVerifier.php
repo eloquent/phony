@@ -390,7 +390,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
-    public function invokeWith($arguments = array())
+    public function invokeWith($arguments = [])
     {
         return $this->spy->invokeWith($arguments);
     }
@@ -470,7 +470,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
 
         $matchers = $this->matcherFactory->adaptAll(func_get_args());
         $calls = $this->spy->allCalls();
-        $matchingEvents = array();
+        $matchingEvents = [];
         $totalCount = count($calls);
         $matchCount = 0;
 
@@ -504,7 +504,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
 
         if (
             $result =
-                call_user_func_array(array($this, 'checkCalledWith'), $matchers)
+                call_user_func_array([$this, 'checkCalledWith'], $matchers)
         ) {
             return $result;
         }
@@ -525,7 +525,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $cardinality = $this->resetCardinality();
 
         $calls = $this->spy->allCalls();
-        $matchingEvents = array();
+        $matchingEvents = [];
         $totalCount = count($calls);
         $matchCount = 0;
 
@@ -570,7 +570,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $cardinality = $this->resetCardinality();
 
         $calls = $this->spy->allCalls();
-        $matchingEvents = array();
+        $matchingEvents = [];
         $totalCount = count($calls);
         $matchCount = 0;
 
@@ -617,7 +617,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $cardinality = $this->resetCardinality();
 
         $calls = $this->spy->allCalls();
-        $matchingEvents = array();
+        $matchingEvents = [];
         $totalCount = count($calls);
         $matchCount = 0;
 
@@ -670,15 +670,15 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
-            $arguments = array();
+            $arguments = [];
         } else {
             $value = $this->matcherFactory->adapt($value);
-            $arguments = array($value);
+            $arguments = [$value];
         }
 
         if (
             $result =
-                call_user_func_array(array($this, 'checkReturned'), $arguments)
+                call_user_func_array([$this, 'checkReturned'], $arguments)
         ) {
             return $result;
         }
@@ -702,7 +702,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $cardinality = $this->resetCardinality();
 
         $calls = $this->spy->allCalls();
-        $matchingEvents = array();
+        $matchingEvents = [];
         $totalCount = count($calls);
         $matchCount = 0;
         $isTypeSupported = false;
@@ -823,7 +823,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $cardinality = $this->resetCardinality();
 
         $calls = $this->spy->allCalls();
-        $matchingEvents = array();
+        $matchingEvents = [];
         $totalCount = count($calls);
         $matchCount = 0;
 
@@ -877,7 +877,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $cardinality = $this->resetCardinality();
 
         $calls = $this->spy->allCalls();
-        $matchingEvents = array();
+        $matchingEvents = [];
         $totalCount = count($calls);
         $matchCount = 0;
 

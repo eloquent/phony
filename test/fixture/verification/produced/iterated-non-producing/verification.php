@@ -6,8 +6,8 @@ use Eloquent\Phony\Test\Phony;
 $stub = Phony::stub()->setLabel('label')->setUseIterableSpies(true);
 $stub->with('aardvark')->returns('AARDVARK');
 $stub->with('bonobo')->throws(new RuntimeException('BONOBO'));
-$stub->with('chameleon')->returns(array('CHAMELEON'));
-$stub->with('dugong')->generates(array('DUGONG'));
+$stub->with('chameleon')->returns(['CHAMELEON']);
+$stub->with('dugong')->generates(['DUGONG']);
 $stub('aardvark');
 try {
     $stub('bonobo');

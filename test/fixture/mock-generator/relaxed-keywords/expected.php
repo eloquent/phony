@@ -7,7 +7,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public function return()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -15,7 +15,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'return'),
+                [$this, 'parent::' . 'return'],
                 $arguments
             );
 
@@ -32,7 +32,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public function throw()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -40,7 +40,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'throw'),
+                [$this, 'parent::' . 'throw'],
                 $arguments
             );
 
@@ -57,8 +57,8 @@ implements \Eloquent\Phony\Mock\Mock,
     private static $_uncallableMethods = array (
   'return' => true,
 );
-    private static $_traitMethods = array();
-    private static $_customMethods = array();
+    private static $_traitMethods = [];
+    private static $_customMethods = [];
     private static $_staticHandle;
     private $_handle;
 }

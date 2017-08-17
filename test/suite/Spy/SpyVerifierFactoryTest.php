@@ -129,7 +129,7 @@ class SpyVerifierFactoryTest extends TestCase
 
         \Eloquent\Phony\Test\SpyVerifierFactory\preg_match('/./', 'a', $matches);
 
-        $this->assertSame(array(0 => 'a'), $matches);
+        $this->assertSame([0 => 'a'], $matches);
     }
 
     public function testCreateGlobalFailureWithNonGlobal()

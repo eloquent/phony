@@ -34,12 +34,12 @@ class MockGeneratorTest extends TestCase
     public function classNameData()
     {
         //                                      types                                    expected
-        return array(
-            'Anonymous'                => array(array(),                                 'PhonyMock_0'),
-            'Extends class'            => array(array('stdClass'),                       'PhonyMock_stdClass_0'),
-            'Extends namespaced class' => array(array('Eloquent\Phony\Test\TestClassB'), 'PhonyMock_TestClassB_0'),
-            'Inherits interface'       => array(array('Iterator', 'Countable'),          'PhonyMock_Iterator_0'),
-        );
+        return [
+            'Anonymous'                => [[],                                 'PhonyMock_0'],
+            'Extends class'            => [['stdClass'],                       'PhonyMock_stdClass_0'],
+            'Extends namespaced class' => [['Eloquent\Phony\Test\TestClassB'], 'PhonyMock_TestClassB_0'],
+            'Inherits interface'       => [['Iterator', 'Countable'],          'PhonyMock_Iterator_0'],
+        ];
     }
 
     /**
@@ -50,11 +50,11 @@ class MockGeneratorTest extends TestCase
         $types = array_map(function ($type) { return new ReflectionClass($type); }, $types);
         $definition = new MockDefinition(
             $types,
-            array(),
-            array(),
-            array(),
-            array(),
-            array(),
+            [],
+            [],
+            [],
+            [],
+            [],
             null,
             $this->isTraitSupported,
             $this->isRelaxedKeywordsSupported
@@ -69,17 +69,17 @@ class MockGeneratorTest extends TestCase
             $this->markTestSkipped('Requires traits.');
         }
 
-        $this->types = array(
+        $this->types = [
             new ReflectionClass('Eloquent\Phony\Test\TestTraitA'),
             new ReflectionClass('Eloquent\Phony\Test\TestTraitB'),
-        );
+        ];
         $definition = new MockDefinition(
             $this->types,
-            array(),
-            array(),
-            array(),
-            array(),
-            array(),
+            [],
+            [],
+            [],
+            [],
+            [],
             null,
             $this->isTraitSupported,
             $this->isRelaxedKeywordsSupported
@@ -91,14 +91,14 @@ class MockGeneratorTest extends TestCase
     public function generateData()
     {
         $fixturePath = __DIR__ . '/../../fixture/mock-generator';
-        $data = array();
+        $data = [];
 
         foreach (scandir($fixturePath) as $testName) {
             if ('.' === $testName[0]) {
                 continue;
             }
 
-            $data[$testName] = array($testName);
+            $data[$testName] = [$testName];
         }
 
         return $data;

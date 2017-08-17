@@ -46,7 +46,7 @@ class FeatureDetector
      */
     public function __construct(
         array $features = null,
-        array $supported = array()
+        array $supported = []
     ) {
         if (null === $features) {
             $features = $this->standardFeatures();
@@ -128,7 +128,7 @@ class FeatureDetector
      */
     public function standardFeatures()
     {
-        return array(
+        return [
             'class.anonymous' => function ($detector) {
                 return $detector
                     ->checkInternalMethod('ReflectionClass', 'isAnonymous');
@@ -151,7 +151,7 @@ class FeatureDetector
                 }
 
                 return $detector->checkStatement(
-                    sprintf('const %s=array()', $detector->uniqueSymbolName()),
+                    sprintf('const %s=[]', $detector->uniqueSymbolName()),
                     false
                 );
             },
@@ -166,7 +166,7 @@ class FeatureDetector
 
                 return $detector->checkStatement(
                     sprintf(
-                        'class %s{const A=array();}',
+                        'class %s{const A=[];}',
                         $detector->uniqueSymbolName()
                     ),
                     false
@@ -359,7 +359,7 @@ class FeatureDetector
 
             'reflection.function.export.default.array' => function () {
                 $function =
-                    new ReflectionFunction(function ($a0 = array('a')) {});
+                    new ReflectionFunction(function ($a0 = ['a']) {});
 
                 return false !== strpos(strval($function), "'a'");
             },
@@ -460,7 +460,7 @@ class FeatureDetector
                     false
                 );
             },
-        );
+        ];
     }
 
     /**

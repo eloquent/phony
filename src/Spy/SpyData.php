@@ -57,7 +57,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
         $this->generatorSpyFactory = $generatorSpyFactory;
         $this->iterableSpyFactory = $iterableSpyFactory;
 
-        $this->calls = array();
+        $this->calls = [];
         $this->useGeneratorSpies = true;
         $this->useIterableSpies = false;
         $this->isRecording = true;
@@ -355,7 +355,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
-    public function invokeWith($arguments = array())
+    public function invokeWith($arguments = [])
     {
         if (!$arguments instanceof Arguments) {
             $arguments = new Arguments($arguments);

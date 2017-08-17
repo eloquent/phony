@@ -253,7 +253,7 @@ abstract class AbstractHandle implements Handle
             return $result;
         }
 
-        $calls = array();
+        $calls = [];
 
         foreach (get_object_vars($this->state->stubs) as $stub) {
             $calls = array_merge($calls, $stub->allCalls());

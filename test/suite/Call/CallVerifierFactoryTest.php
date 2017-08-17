@@ -64,9 +64,9 @@ class CallVerifierFactoryTest extends TestCase
 
     public function testFromCalls()
     {
-        $calls = array($this->callA, $this->callB);
+        $calls = [$this->callA, $this->callB];
         $actual = $this->subject->fromCalls($calls);
-        $expected = array(
+        $expected = [
             new CallVerifier(
                 $this->callA,
                 $this->matcherFactory,
@@ -85,7 +85,7 @@ class CallVerifierFactoryTest extends TestCase
                 $this->assertionRecorder,
                 $this->assertionRenderer
             ),
-        );
+        ];
 
         $this->assertEquals($expected, $actual);
     }

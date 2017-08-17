@@ -12,7 +12,7 @@ $stub = Phony::stub(
             $verify();
         }
 
-        return array();
+        return [];
     }
 )->setUseIterableSpies(true)->setLabel('label')->forwards();
 $stub(function () {});

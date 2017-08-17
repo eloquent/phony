@@ -48,7 +48,7 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
      */
     public function signature(ReflectionFunctionAbstract $function)
     {
-        $signature = array();
+        $signature = [];
 
         foreach ($function->getParameters() as $parameter) {
             $name = $parameter->getName();
@@ -68,7 +68,7 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
                             break;
                         }
 
-                        // fall through to default behavior
+                        // no break
 
                     default:
                         $typehint = '\\' . $typehint . ' ';
@@ -109,7 +109,7 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
             }
 
             $signature[$name] =
-                array($typehint, $byReference, $variadic, $defaultValue);
+                [$typehint, $byReference, $variadic, $defaultValue];
         }
 
         return $signature;

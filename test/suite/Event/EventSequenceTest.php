@@ -28,13 +28,13 @@ class EventSequenceTest extends TestCase
         $this->eventC = $this->callEventFactory->createCalled(null, Arguments::create('c', 'd'));
         $this->eventD =
             $this->callFactory->create($this->callEventFactory->createCalled(null, Arguments::create('e', 'f')));
-        $this->events = array($this->eventA, $this->eventB, $this->eventC, $this->eventD);
+        $this->events = [$this->eventA, $this->eventB, $this->eventC, $this->eventD];
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->subject = new EventSequence($this->events, $this->callVerifierFactory);
 
         $this->wrappedCallB = $this->callVerifierFactory->fromCall($this->eventB);
         $this->wrappedCallD = $this->callVerifierFactory->fromCall($this->eventD);
-        $this->wrappedCalls = array($this->wrappedCallB, $this->wrappedCallD);
+        $this->wrappedCalls = [$this->wrappedCallB, $this->wrappedCallD];
     }
 
     public function testConstructor()
@@ -49,12 +49,12 @@ class EventSequenceTest extends TestCase
 
     public function testConstructorDefaults()
     {
-        $this->subject = new EventSequence(array(), $this->callVerifierFactory);
+        $this->subject = new EventSequence([], $this->callVerifierFactory);
 
         $this->assertFalse($this->subject->hasEvents());
         $this->assertFalse($this->subject->hasCalls());
-        $this->assertSame(array(), $this->subject->allEvents());
-        $this->assertSame(array(), $this->subject->allCalls());
+        $this->assertSame([], $this->subject->allEvents());
+        $this->assertSame([], $this->subject->allCalls());
         $this->assertSame(0, $this->subject->callCount());
         $this->assertSame(0, $this->subject->eventCount());
         $this->assertSame(0, count($this->subject));
@@ -67,7 +67,7 @@ class EventSequenceTest extends TestCase
 
     public function testFirstEventFailureUndefined()
     {
-        $this->subject = new EventSequence(array(), $this->callVerifierFactory);
+        $this->subject = new EventSequence([], $this->callVerifierFactory);
 
         $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->firstEvent();
@@ -80,7 +80,7 @@ class EventSequenceTest extends TestCase
 
     public function testLastEventFailureUndefined()
     {
-        $this->subject = new EventSequence(array(), $this->callVerifierFactory);
+        $this->subject = new EventSequence([], $this->callVerifierFactory);
 
         $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->lastEvent();
@@ -107,7 +107,7 @@ class EventSequenceTest extends TestCase
 
     public function testFirstCallFailureUndefined()
     {
-        $this->subject = new EventSequence(array(), $this->callVerifierFactory);
+        $this->subject = new EventSequence([], $this->callVerifierFactory);
 
         $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->firstCall();
@@ -120,7 +120,7 @@ class EventSequenceTest extends TestCase
 
     public function testLastCallFailureUndefined()
     {
-        $this->subject = new EventSequence(array(), $this->callVerifierFactory);
+        $this->subject = new EventSequence([], $this->callVerifierFactory);
 
         $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->lastCall();

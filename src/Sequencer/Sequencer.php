@@ -70,6 +70,6 @@ class Sequencer
         return ++$this->current;
     }
 
-    private static $instances = array();
+    private static $instances = [];
     private $current = -1;
 }

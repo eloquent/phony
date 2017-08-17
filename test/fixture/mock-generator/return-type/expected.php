@@ -17,7 +17,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public function classType() : \Eloquent\Phony\Test\TestClassA
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -25,7 +25,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'classType'),
+                [$this, 'parent::' . 'classType'],
                 $arguments
             );
 
@@ -42,7 +42,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public function scalarType() : int
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -50,7 +50,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'scalarType'),
+                [$this, 'parent::' . 'scalarType'],
                 $arguments
             );
 
@@ -67,7 +67,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public function customMethodWithClassType() : \stdClass
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -75,7 +75,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'customMethodWithClassType'),
+                [$this, 'parent::' . 'customMethodWithClassType'],
                 $arguments
             );
 
@@ -92,7 +92,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public function customMethodWithScalarType() : int
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -100,7 +100,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'customMethodWithScalarType'),
+                [$this, 'parent::' . 'customMethodWithScalarType'],
                 $arguments
             );
 
@@ -130,7 +130,7 @@ implements \Eloquent\Phony\Mock\Mock,
     ) {
         return \call_user_func_array(
             'parent::__callStatic',
-            array($name, $arguments->all())
+            [$name, $arguments->all()]
         );
     }
 
@@ -139,8 +139,8 @@ implements \Eloquent\Phony\Mock\Mock,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array($this, 'parent::__call'),
-            array($name, $arguments->all())
+            [$this, 'parent::__call'],
+            [$name, $arguments->all()]
         );
     }
 
@@ -150,8 +150,8 @@ implements \Eloquent\Phony\Mock\Mock,
   '__call' => true,
   '__callstatic' => true,
 );
-    private static $_traitMethods = array();
-    private static $_customMethods = array();
+    private static $_traitMethods = [];
+    private static $_customMethods = [];
     private static $_staticHandle;
     private $_handle;
 }

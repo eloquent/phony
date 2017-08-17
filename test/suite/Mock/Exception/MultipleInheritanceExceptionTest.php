@@ -17,7 +17,7 @@ class MultipleInheritanceExceptionTest extends TestCase
 {
     public function testException()
     {
-        $classNames = array('ClassNameA', 'ClassNameB', 'ClassNameC');
+        $classNames = ['ClassNameA', 'ClassNameB', 'ClassNameC'];
         $exception = new MultipleInheritanceException($classNames);
 
         $this->assertSame($classNames, $exception->classNames());

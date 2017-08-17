@@ -104,7 +104,7 @@ class EmptyValueFactory
 
             case 'array':
             case 'iterable':
-                return array();
+                return [];
 
             case 'object':
                 // @codeCoverageIgnoreStart
@@ -113,10 +113,10 @@ class EmptyValueFactory
                 }
                 // @codeCoverageIgnoreEnd
 
-                // fall through to stdclass behavior
+                // no break
 
             case 'stdclass':
-                return (object) array();
+                return (object) [];
 
             case 'callable':
                 return $this->stubVerifierFactory->create();

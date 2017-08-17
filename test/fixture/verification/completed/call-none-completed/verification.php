@@ -7,8 +7,8 @@ $stub = Phony::stub()
     ->setLabel('label')
     ->setUseIterableSpies(true)
     ->returnsArgument();
-$stub(array('aardvark', 'bonobo', 'chameleon'));
-foreach ($stub(array('aardvark', 'bonobo', 'chameleon')) as $value) {
+$stub(['aardvark', 'bonobo', 'chameleon']);
+foreach ($stub(['aardvark', 'bonobo', 'chameleon']) as $value) {
     if ('bonobo' === $value) {
         break;
     }

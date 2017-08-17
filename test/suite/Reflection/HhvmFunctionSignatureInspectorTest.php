@@ -56,24 +56,24 @@ class HhvmFunctionSignatureInspectorTest extends TestCase
             ) {}
         );
         $actual = $this->subject->signature($function);
-        $expected = array(
-            'a' => array('',                                         '',  '', ''),
-            'b' => array('',                                         '&', '', ''),
-            'c' => array('array ',                                   '',  '', ' = null'),
-            'd' => array('array ',                                   '&', '', ''),
-            'e' => array('\Type ',                                   '',  '', ' = null'),
-            'f' => array('\Type ',                                   '&', '', ''),
-            'g' => array('\Namespaced\Type ',                        '',  '', ''),
-            'h' => array('\Namespaced\Type ',                        '&', '', ''),
-            'i' => array('\Eloquent\Phony\Reflection\FeatureDetector ', '',  '', ''),
-            'j' => array('',                                         '',  '', " = 'string'"),
-            'k' => array('',                                         '&', '', ' = 111'),
-            'm' => array('array ',                                   '&', '', ' = null'),
-            'n' => array('\Type ',                                   '',  '', ' = null'),
-            'o' => array('\Type ',                                   '&', '', ' = null'),
-            'p' => array('\Namespaced\Type ',                        '',  '', ' = null'),
-            'q' => array('\Namespaced\Type ',                        '&', '', ' = null'),
-        );
+        $expected = [
+            'a' => ['',                                         '',  '', ''],
+            'b' => ['',                                         '&', '', ''],
+            'c' => ['array ',                                   '',  '', ' = null'],
+            'd' => ['array ',                                   '&', '', ''],
+            'e' => ['\Type ',                                   '',  '', ' = null'],
+            'f' => ['\Type ',                                   '&', '', ''],
+            'g' => ['\Namespaced\Type ',                        '',  '', ''],
+            'h' => ['\Namespaced\Type ',                        '&', '', ''],
+            'i' => ['\Eloquent\Phony\Reflection\FeatureDetector ', '',  '', ''],
+            'j' => ['',                                         '',  '', " = 'string'"],
+            'k' => ['',                                         '&', '', ' = 111'],
+            'm' => ['array ',                                   '&', '', ' = null'],
+            'n' => ['\Type ',                                   '',  '', ' = null'],
+            'o' => ['\Type ',                                   '&', '', ' = null'],
+            'p' => ['\Namespaced\Type ',                        '',  '', ' = null'],
+            'q' => ['\Namespaced\Type ',                        '&', '', ' = null'],
+        ];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
@@ -83,7 +83,7 @@ class HhvmFunctionSignatureInspectorTest extends TestCase
     {
         $function = new ReflectionFunction(function () {});
         $actual = $this->subject->signature($function);
-        $expected = array();
+        $expected = [];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
@@ -91,20 +91,20 @@ class HhvmFunctionSignatureInspectorTest extends TestCase
 
     public function testSignatureWithArrayDefault()
     {
-        $function = new ReflectionFunction(function ($a = array('a', 'b', 'c' => 'd')) {});
+        $function = new ReflectionFunction(function ($a = ['a', 'b', 'c' => 'd']) {});
         $actual = $this->subject->signature($function);
 
         $this->assertArrayHasKey('a', $actual);
-        $this->assertSame(array('a', 'b', 'c' => 'd'), eval('return $r' . $actual['a'][3] . ';'));
+        $this->assertSame(['a', 'b', 'c' => 'd'], eval('return $r' . $actual['a'][3] . ';'));
     }
 
     public function testSignatureWithUnavailableDefaultValue()
     {
         $function = new ReflectionMethod('ReflectionClass', 'getMethods');
         $actual = $this->subject->signature($function);
-        $expected = array(
-            'filter' => array('', '', '', ' = null'),
-        );
+        $expected = [
+            'filter' => ['', '', '', ' = null'],
+        ];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
@@ -120,11 +120,11 @@ class HhvmFunctionSignatureInspectorTest extends TestCase
             eval('return function (callable $a = null, callable $b, callable $c = null) {};')
         );
         $actual = $this->subject->signature($function);
-        $expected = array(
-            'a' => array('callable ', '', '', ' = null'),
-            'b' => array('callable ', '', '', ''),
-            'c' => array('callable ', '', '', ' = null'),
-        );
+        $expected = [
+            'a' => ['callable ', '', '', ' = null'],
+            'b' => ['callable ', '', '', ''],
+            'c' => ['callable ', '', '', ' = null'],
+        ];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
@@ -138,10 +138,10 @@ class HhvmFunctionSignatureInspectorTest extends TestCase
 
         $function = new ReflectionMethod($this, 'methodA');
         $actual = $this->subject->signature($function);
-        $expected = array(
-            'a' => array('', '', '', ' = 4'),
-            'b' => array('', '', '', " = 'a'"),
-        );
+        $expected = [
+            'a' => ['', '', '', ' = 4'],
+            'b' => ['', '', '', " = 'a'"],
+        ];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
@@ -151,10 +151,10 @@ class HhvmFunctionSignatureInspectorTest extends TestCase
     {
         $function = new ReflectionMethod($this, 'methodB');
         $actual = $this->subject->signature($function);
-        $expected = array(
-            'a' => array('\Eloquent\Phony\Reflection\HhvmFunctionSignatureInspectorTest ', '', '', ' = null'),
-            'b' => array('\Eloquent\Phony\Reflection\HhvmFunctionSignatureInspectorTest ', '', '', ''),
-        );
+        $expected = [
+            'a' => ['\Eloquent\Phony\Reflection\HhvmFunctionSignatureInspectorTest ', '', '', ' = null'],
+            'b' => ['\Eloquent\Phony\Reflection\HhvmFunctionSignatureInspectorTest ', '', '', ''],
+        ];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
@@ -163,10 +163,10 @@ class HhvmFunctionSignatureInspectorTest extends TestCase
     public function testCallbackSignature()
     {
         $callback = function ($a, array $b = null) {};
-        $expected = array(
-            'a' => array('', '', '', ''),
-            'b' => array('array ', '', '', ' = null'),
-        );
+        $expected = [
+            'a' => ['', '', '', ''],
+            'b' => ['array ', '', '', ' = null'],
+        ];
         $actual = $this->subject->callbackSignature($callback);
 
         $this->assertSame($actual, $expected);
@@ -180,7 +180,7 @@ class HhvmFunctionSignatureInspectorTest extends TestCase
 
         $function = new ReflectionFunction(eval('return function(...$a){};'));
         $actual = $this->subject->signature($function);
-        $expected = array('a' => array('', '', '...', ''));
+        $expected = ['a' => ['', '', '...', '']];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);

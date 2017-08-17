@@ -27,7 +27,7 @@ implements \Eloquent\Phony\Mock\Mock
         &$a0 = null
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = &$a0;
@@ -39,7 +39,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!self::$_staticHandle) {
             $result = \call_user_func_array(
-                array(__CLASS__, 'parent::' . 'testClassAStaticMethodA'),
+                [__CLASS__, 'parent::' . 'testClassAStaticMethodA'],
                 $arguments
             );
 
@@ -60,7 +60,7 @@ implements \Eloquent\Phony\Mock\Mock
         &$a3 = null
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -81,7 +81,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'testClassAMethodB'),
+                [$this, 'parent::' . 'testClassAMethodB'],
                 $arguments
             );
 
@@ -98,7 +98,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function testTraitBMethodA()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -106,7 +106,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'testTraitBMethodA'),
+                [$this, 'parent::' . 'testTraitBMethodA'],
                 $arguments
             );
 
@@ -123,7 +123,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function testTraitCMethodA()
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -131,7 +131,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'testTraitCMethodA'),
+                [$this, 'parent::' . 'testTraitCMethodA'],
                 $arguments
             );
 
@@ -151,13 +151,13 @@ implements \Eloquent\Phony\Mock\Mock
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array(
+            [
                 __CLASS__,
                 '_callTrait_' .
                     \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
                     $name,
-            ),
+            ],
             $arguments->all()
         );
     }
@@ -168,13 +168,13 @@ implements \Eloquent\Phony\Mock\Mock
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array(
+            [
                 $this,
                 '_callTrait_' .
                     \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
                     $name,
-            ),
+            ],
             $arguments->all()
         );
     }
@@ -187,7 +187,7 @@ implements \Eloquent\Phony\Mock\Mock
   'testclassamethodb' => 'Eloquent\\Phony\\Test\\TestTraitA',
   'testtraitbmethoda' => 'Eloquent\\Phony\\Test\\TestTraitB',
 );
-    private static $_customMethods = array();
+    private static $_customMethods = [];
     private static $_staticHandle;
     private $_handle;
 }

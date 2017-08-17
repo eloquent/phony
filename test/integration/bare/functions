@@ -15,7 +15,7 @@ $handle->testClassAMethodA->calledWith('aardvark', 'bonobo');
 // should record failing mock assertions
 $handle = x\mock('Eloquent\Phony\Test\TestClassA');
 $mock = $handle->get();
-$mock->testClassAMethodA('aardvark', array('bonobo', 'capybara', 'dugong'));
-$mock->testClassAMethodA('armadillo', array('bonobo', 'chameleon', 'dormouse'));
+$mock->testClassAMethodA('aardvark', ['bonobo', 'capybara', 'dugong']);
+$mock->testClassAMethodA('armadillo', ['bonobo', 'chameleon', 'dormouse']);
 
-$handle->testClassAMethodA->calledWith('aardvark', array('bonobo', 'chameleon', 'dugong'));
+$handle->testClassAMethodA->calledWith('aardvark', ['bonobo', 'chameleon', 'dugong']);

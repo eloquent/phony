@@ -67,7 +67,7 @@ class MockFactory
         $this->labelSequencer = $labelSequencer;
         $this->generator = $generator;
         $this->handleFactory = $handleFactory;
-        $this->definitions = array();
+        $this->definitions = [];
 
         $this->isConstructorBypassSupported =
             $featureDetector->isSupported('object.constructor.bypass');
@@ -153,7 +153,7 @@ class MockFactory
         }
 
         $class = new ReflectionClass($className);
-        $customMethods = array();
+        $customMethods = [];
 
         foreach ($definition->customStaticMethods() as $methodName => $method) {
             $customMethods[strtolower($methodName)] = $method[0];
@@ -168,7 +168,7 @@ class MockFactory
 
         $this->handleFactory->staticHandle($class);
 
-        $this->definitions[] = array($signature, $class);
+        $this->definitions[] = [$signature, $class];
 
         return $class;
     }
@@ -249,7 +249,7 @@ class MockFactory
      */
     public function createPartialMock(
         ReflectionClass $class,
-        $arguments = array()
+        $arguments = []
     ) {
         $constructor = $class->getConstructor();
         $isDone = false;

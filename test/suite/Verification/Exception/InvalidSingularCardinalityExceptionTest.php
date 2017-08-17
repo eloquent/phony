@@ -17,7 +17,7 @@ class InvalidSingularCardinalityExceptionTest extends TestCase
 {
     public function testException()
     {
-        $cardinality = array(2, 3);
+        $cardinality = [2, 3];
         $exception = new InvalidSingularCardinalityException($cardinality);
 
         $this->assertSame($cardinality, $exception->cardinality());

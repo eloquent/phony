@@ -87,7 +87,7 @@ class DifferenceSequenceMatcher
     {
         $i = 0;
         $j = 0;
-        $opCodes = array();
+        $opCodes = [];
 
         $blocks = $this->getMatchingBlocks();
 
@@ -105,14 +105,14 @@ class DifferenceSequenceMatcher
             }
 
             if ($tag) {
-                $opCodes[] = array($tag, $i, $ai, $j, $bj);
+                $opCodes[] = [$tag, $i, $ai, $j, $bj];
             }
 
             $i = $ai + $size;
             $j = $bj + $size;
 
             if ($size) {
-                $opCodes[] = array('equal', $ai, $i, $bj, $j);
+                $opCodes[] = ['equal', $ai, $i, $bj, $j];
             }
         }
 
@@ -126,8 +126,8 @@ class DifferenceSequenceMatcher
     private function chainB()
     {
         $length = count($this->b);
-        $this->b2j = array();
-        $popularDict = array();
+        $this->b2j = [];
+        $popularDict = [];
 
         for ($i = 0; $i < $length; ++$i) {
             $char = $this->b[$i];
@@ -140,7 +140,7 @@ class DifferenceSequenceMatcher
                     $this->b2j[$char][] = $i;
                 }
             } else {
-                $this->b2j[$char] = array($i);
+                $this->b2j[$char] = [$i];
             }
         }
 
@@ -178,11 +178,11 @@ class DifferenceSequenceMatcher
         $bestJ = $blo;
         $bestSize = 0;
 
-        $j2Len = array();
-        $nothing = array();
+        $j2Len = [];
+        $nothing = [];
 
         for ($i = $alo; $i < $ahi; ++$i) {
-            $newJ2Len = array();
+            $newJ2Len = [];
 
             if (isset($this->b2j[$a[$i]])) {
                 $jDict = $this->b2j[$a[$i]];
@@ -249,7 +249,7 @@ class DifferenceSequenceMatcher
             ++$bestSize;
         }
 
-        return array($bestI, $bestJ, $bestSize);
+        return [$bestI, $bestJ, $bestSize];
     }
 
     /**
@@ -267,9 +267,9 @@ class DifferenceSequenceMatcher
         $aLength = count($this->a);
         $bLength = count($this->b);
 
-        $queue = array(array(0, $aLength, 0, $bLength));
+        $queue = [[0, $aLength, 0, $bLength]];
 
-        $matchingBlocks = array();
+        $matchingBlocks = [];
 
         while (!empty($queue)) {
             list($alo, $ahi, $blo, $bhi) = array_pop($queue);
@@ -281,21 +281,21 @@ class DifferenceSequenceMatcher
                 $matchingBlocks[] = $x;
 
                 if ($alo < $i && $blo < $j) {
-                    $queue[] = array($alo, $i, $blo, $j);
+                    $queue[] = [$alo, $i, $blo, $j];
                 }
 
                 if ($i + $k < $ahi && $j + $k < $bhi) {
-                    $queue[] = array($i + $k, $ahi, $j + $k, $bhi);
+                    $queue[] = [$i + $k, $ahi, $j + $k, $bhi];
                 }
             }
         }
 
-        usort($matchingBlocks, array($this, 'tupleSort'));
+        usort($matchingBlocks, [$this, 'tupleSort']);
 
         $i1 = 0;
         $j1 = 0;
         $k1 = 0;
-        $nonAdjacent = array();
+        $nonAdjacent = [];
 
         foreach ($matchingBlocks as $block) {
             list($i2, $j2, $k2) = $block;
@@ -304,7 +304,7 @@ class DifferenceSequenceMatcher
                 $k1 += $k2;
             } else {
                 if ($k1) {
-                    $nonAdjacent[] = array($i1, $j1, $k1);
+                    $nonAdjacent[] = [$i1, $j1, $k1];
                 }
 
                 $i1 = $i2;
@@ -314,10 +314,10 @@ class DifferenceSequenceMatcher
         }
 
         if ($k1) {
-            $nonAdjacent[] = array($i1, $j1, $k1);
+            $nonAdjacent[] = [$i1, $j1, $k1];
         }
 
-        $nonAdjacent[] = array($aLength, $bLength, 0);
+        $nonAdjacent[] = [$aLength, $bLength, 0];
 
         return $nonAdjacent;
     }

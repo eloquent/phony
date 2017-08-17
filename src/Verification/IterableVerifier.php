@@ -67,7 +67,7 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
             $cardinality->assertSingular();
         }
 
-        $matchingEvents = array();
+        $matchingEvents = [];
         $matchCount = 0;
 
         foreach ($this->calls as $call) {
@@ -145,7 +145,7 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
         }
 
         $isCall = $this->subject instanceof Call;
-        $matchingEvents = array();
+        $matchingEvents = [];
         $matchCount = 0;
         $eventCount = 0;
 
@@ -214,20 +214,20 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
 
         if (0 === $argumentCount) {
             $key = null;
-            $arguments = array();
+            $arguments = [];
         } elseif (1 === $argumentCount) {
             $key = null;
             $value = $this->matcherFactory->adapt($keyOrValue);
-            $arguments = array($value);
+            $arguments = [$value];
         } else {
             $key = $this->matcherFactory->adapt($keyOrValue);
             $value = $this->matcherFactory->adapt($value);
-            $arguments = array($key, $value);
+            $arguments = [$key, $value];
         }
 
         if (
             $result =
-                call_user_func_array(array($this, 'checkProduced'), $arguments)
+                call_user_func_array([$this, 'checkProduced'], $arguments)
         ) {
             return $result;
         }
@@ -256,7 +256,7 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
             $cardinality->assertSingular();
         }
 
-        $matchingEvents = array();
+        $matchingEvents = [];
         $matchCount = 0;
 
         foreach ($this->calls as $call) {

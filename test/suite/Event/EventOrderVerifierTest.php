@@ -74,14 +74,14 @@ class EventOrderVerifierTest extends TestCase
         $this->assertTrue((bool) $this->subject->checkInOrder($this->callACalled, $this->callAResponse));
         $this->assertTrue(
             (bool) $this->subject->checkInOrder(
-                new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory),
-                new EventSequence(array($this->callB), $this->callVerifierFactory)
+                new EventSequence([$this->callA, $this->callC], $this->callVerifierFactory),
+                new EventSequence([$this->callB], $this->callVerifierFactory)
             )
         );
         $this->assertTrue(
             (bool) $this->subject->checkInOrder(
-                new EventSequence(array($this->callB), $this->callVerifierFactory),
-                new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory)
+                new EventSequence([$this->callB], $this->callVerifierFactory),
+                new EventSequence([$this->callA, $this->callC], $this->callVerifierFactory)
             )
         );
         $this->assertFalse((bool) $this->subject->checkInOrder());
@@ -90,14 +90,14 @@ class EventOrderVerifierTest extends TestCase
         $this->assertFalse((bool) $this->subject->checkInOrder($this->callA, $this->callA));
         $this->assertFalse(
             (bool) $this->subject->checkInOrder(
-                new EventSequence(array($this->callB, $this->callC), $this->callVerifierFactory),
-                new EventSequence(array($this->callA), $this->callVerifierFactory)
+                new EventSequence([$this->callB, $this->callC], $this->callVerifierFactory),
+                new EventSequence([$this->callA], $this->callVerifierFactory)
             )
         );
         $this->assertFalse(
             (bool) $this->subject->checkInOrder(
-                new EventSequence(array($this->callC), $this->callVerifierFactory),
-                new EventSequence(array($this->callA, $this->callB), $this->callVerifierFactory)
+                new EventSequence([$this->callC], $this->callVerifierFactory),
+                new EventSequence([$this->callA, $this->callB], $this->callVerifierFactory)
             )
         );
     }
@@ -105,7 +105,7 @@ class EventOrderVerifierTest extends TestCase
     public function testCheckInOrderFailureEmptyResult()
     {
         $this->expectException('InvalidArgumentException', 'Cannot verify event order with empty results.');
-        $this->subject->checkInOrder(new EventSequence(array(), $this->callVerifierFactory));
+        $this->subject->checkInOrder(new EventSequence([], $this->callVerifierFactory));
     }
 
     public function testCheckInOrderFailureInvalidArgument()
@@ -117,49 +117,49 @@ class EventOrderVerifierTest extends TestCase
     public function testCheckInOrderFailureInvalidArgumentObject()
     {
         $this->expectException('InvalidArgumentException', 'Cannot verify event order with supplied value #0{}.');
-        $this->subject->checkInOrder((object) array());
+        $this->subject->checkInOrder((object) []);
     }
 
     public function testInOrder()
     {
         $this->assertEquals(
-            new EventSequence(array($this->callA), $this->callVerifierFactory),
+            new EventSequence([$this->callA], $this->callVerifierFactory),
             $this->subject->inOrder($this->callA)
         );
         $this->assertEquals(
-            new EventSequence(array($this->callA, $this->callB, $this->callC), $this->callVerifierFactory),
+            new EventSequence([$this->callA, $this->callB, $this->callC], $this->callVerifierFactory),
             $this->subject->inOrder($this->callA, $this->callB, $this->callC)
         );
         $this->assertEquals(
             new EventSequence(
-                array($this->callACalled, $this->callBCalled, $this->callCCalled),
+                [$this->callACalled, $this->callBCalled, $this->callCCalled],
                 $this->callVerifierFactory
             ),
             $this->subject->inOrder($this->callACalled, $this->callBCalled, $this->callCCalled)
         );
         $this->assertEquals(
             new EventSequence(
-                array($this->callAResponse, $this->callCResponse, $this->callBResponse),
+                [$this->callAResponse, $this->callCResponse, $this->callBResponse],
                 $this->callVerifierFactory
             ),
             $this->subject->inOrder($this->callAResponse, $this->callCResponse, $this->callBResponse)
         );
         $this->assertEquals(
-            new EventSequence(array($this->callACalled, $this->callAResponse), $this->callVerifierFactory),
+            new EventSequence([$this->callACalled, $this->callAResponse], $this->callVerifierFactory),
             $this->subject->inOrder($this->callACalled, $this->callAResponse)
         );
         $this->assertEquals(
-            new EventSequence(array($this->callA, $this->callB), $this->callVerifierFactory),
+            new EventSequence([$this->callA, $this->callB], $this->callVerifierFactory),
             $this->subject->inOrder(
-                new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory),
-                new EventSequence(array($this->callB), $this->callVerifierFactory)
+                new EventSequence([$this->callA, $this->callC], $this->callVerifierFactory),
+                new EventSequence([$this->callB], $this->callVerifierFactory)
             )
         );
         $this->assertEquals(
-            new EventSequence(array($this->callB, $this->callC), $this->callVerifierFactory),
+            new EventSequence([$this->callB, $this->callC], $this->callVerifierFactory),
             $this->subject->inOrder(
-                new EventSequence(array($this->callB), $this->callVerifierFactory),
-                new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory)
+                new EventSequence([$this->callB], $this->callVerifierFactory),
+                new EventSequence([$this->callA, $this->callC], $this->callVerifierFactory)
             )
         );
     }
@@ -186,8 +186,8 @@ class EventOrderVerifierTest extends TestCase
     {
         $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrder(
-            new EventSequence(array($this->callB, $this->callC), $this->callVerifierFactory),
-            new EventSequence(array($this->callA), $this->callVerifierFactory)
+            new EventSequence([$this->callB, $this->callC], $this->callVerifierFactory),
+            new EventSequence([$this->callA], $this->callVerifierFactory)
         );
     }
 
@@ -195,8 +195,8 @@ class EventOrderVerifierTest extends TestCase
     {
         $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrder(
-            new EventSequence(array($this->callC), $this->callVerifierFactory),
-            new EventSequence(array($this->callA, $this->callB), $this->callVerifierFactory)
+            new EventSequence([$this->callC], $this->callVerifierFactory),
+            new EventSequence([$this->callA, $this->callB], $this->callVerifierFactory)
         );
     }
 
@@ -205,17 +205,17 @@ class EventOrderVerifierTest extends TestCase
         $this->expectException('InvalidArgumentException', 'Cannot verify event order with empty results.');
 
         $this->subject->inOrder(
-            new EventSequence(array($this->callC), $this->callVerifierFactory),
-            new EventSequence(array($this->callB, $this->callA), $this->callVerifierFactory),
-            new EventSequence(array($this->callC), $this->callVerifierFactory),
-            new EventSequence(array(), $this->callVerifierFactory)
+            new EventSequence([$this->callC], $this->callVerifierFactory),
+            new EventSequence([$this->callB, $this->callA], $this->callVerifierFactory),
+            new EventSequence([$this->callC], $this->callVerifierFactory),
+            new EventSequence([], $this->callVerifierFactory)
         );
     }
 
     public function testInOrderFailureEmptyResult()
     {
         $this->expectException('InvalidArgumentException', 'Cannot verify event order with empty results.');
-        $this->subject->inOrder(new EventSequence(array(), $this->callVerifierFactory));
+        $this->subject->inOrder(new EventSequence([], $this->callVerifierFactory));
     }
 
     public function testInOrderFailureInvalidArgument()
@@ -227,60 +227,60 @@ class EventOrderVerifierTest extends TestCase
     public function testInOrderFailureInvalidArgumentObject()
     {
         $this->expectException('InvalidArgumentException', 'Cannot verify event order with supplied value #0{}.');
-        $this->subject->inOrder((object) array());
+        $this->subject->inOrder((object) []);
     }
 
     public function testCheckInOrderSequence()
     {
-        $this->assertTrue((bool) $this->subject->checkInOrderSequence(array($this->callA)));
+        $this->assertTrue((bool) $this->subject->checkInOrderSequence([$this->callA]));
         $this->assertTrue(
-            (bool) $this->subject->checkInOrderSequence(array($this->callA, $this->callB, $this->callC))
-        );
-        $this->assertTrue(
-            (bool) $this->subject
-                ->checkInOrderSequence(array($this->callACalled, $this->callBCalled, $this->callCCalled))
+            (bool) $this->subject->checkInOrderSequence([$this->callA, $this->callB, $this->callC])
         );
         $this->assertTrue(
             (bool) $this->subject
-                ->checkInOrderSequence(array($this->callAResponse, $this->callCResponse, $this->callBResponse))
+                ->checkInOrderSequence([$this->callACalled, $this->callBCalled, $this->callCCalled])
         );
         $this->assertTrue(
-            (bool) $this->subject->checkInOrderSequence(array($this->callACalled, $this->callAResponse))
+            (bool) $this->subject
+                ->checkInOrderSequence([$this->callAResponse, $this->callCResponse, $this->callBResponse])
+        );
+        $this->assertTrue(
+            (bool) $this->subject->checkInOrderSequence([$this->callACalled, $this->callAResponse])
         );
         $this->assertTrue(
             (bool) $this->subject->checkInOrderSequence(
-                array(
-                    new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory),
-                    new EventSequence(array($this->callB), $this->callVerifierFactory),
-                )
+                [
+                    new EventSequence([$this->callA, $this->callC], $this->callVerifierFactory),
+                    new EventSequence([$this->callB], $this->callVerifierFactory),
+                ]
             )
         );
         $this->assertTrue(
             (bool) $this->subject->checkInOrderSequence(
-                array(
-                    new EventSequence(array($this->callB), $this->callVerifierFactory),
-                    new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory),
-                )
+                [
+                    new EventSequence([$this->callB], $this->callVerifierFactory),
+                    new EventSequence([$this->callA, $this->callC], $this->callVerifierFactory),
+                ]
             )
         );
-        $this->assertFalse((bool) $this->subject->checkInOrderSequence(array()));
-        $this->assertFalse((bool) $this->subject->checkInOrderSequence(array($this->callB, $this->callA)));
-        $this->assertFalse((bool) $this->subject->checkInOrderSequence(array($this->callC, $this->callB)));
-        $this->assertFalse((bool) $this->subject->checkInOrderSequence(array($this->callA, $this->callA)));
+        $this->assertFalse((bool) $this->subject->checkInOrderSequence([]));
+        $this->assertFalse((bool) $this->subject->checkInOrderSequence([$this->callB, $this->callA]));
+        $this->assertFalse((bool) $this->subject->checkInOrderSequence([$this->callC, $this->callB]));
+        $this->assertFalse((bool) $this->subject->checkInOrderSequence([$this->callA, $this->callA]));
         $this->assertFalse(
             (bool) $this->subject->checkInOrderSequence(
-                array(
-                    new EventSequence(array($this->callB, $this->callC), $this->callVerifierFactory),
-                    new EventSequence(array($this->callA), $this->callVerifierFactory),
-                )
+                [
+                    new EventSequence([$this->callB, $this->callC], $this->callVerifierFactory),
+                    new EventSequence([$this->callA], $this->callVerifierFactory),
+                ]
             )
         );
         $this->assertFalse(
             (bool) $this->subject->checkInOrderSequence(
-                array(
-                    new EventSequence(array($this->callC), $this->callVerifierFactory),
-                    new EventSequence(array($this->callA, $this->callB), $this->callVerifierFactory),
-                )
+                [
+                    new EventSequence([$this->callC], $this->callVerifierFactory),
+                    new EventSequence([$this->callA, $this->callB], $this->callVerifierFactory),
+                ]
             )
         );
     }
@@ -288,67 +288,67 @@ class EventOrderVerifierTest extends TestCase
     public function testCheckInOrderSequenceFailureEmptyResult()
     {
         $this->expectException('InvalidArgumentException', 'Cannot verify event order with empty results.');
-        $this->subject->checkInOrderSequence(array(new EventSequence(array(), $this->callVerifierFactory)));
+        $this->subject->checkInOrderSequence([new EventSequence([], $this->callVerifierFactory)]);
     }
 
     public function testCheckInOrderSequenceFailureInvalidArgument()
     {
         $this->expectException('InvalidArgumentException', 'Cannot verify event order with supplied value 111.');
-        $this->subject->checkInOrderSequence(array(111));
+        $this->subject->checkInOrderSequence([111]);
     }
 
     public function testCheckInOrderSequenceFailureInvalidArgumentObject()
     {
         $this->expectException('InvalidArgumentException', 'Cannot verify event order with supplied value #0{}.');
-        $this->subject->checkInOrderSequence(array((object) array()));
+        $this->subject->checkInOrderSequence([(object) []]);
     }
 
     public function testInOrderSequence()
     {
         $this->assertEquals(
-            new EventSequence(array($this->callA), $this->callVerifierFactory),
-            $this->subject->inOrderSequence(array($this->callA))
+            new EventSequence([$this->callA], $this->callVerifierFactory),
+            $this->subject->inOrderSequence([$this->callA])
         );
         $this->assertEquals(
-            new EventSequence(array($this->callA, $this->callB, $this->callC), $this->callVerifierFactory),
-            $this->subject->inOrderSequence(array($this->callA, $this->callB, $this->callC))
-        );
-        $this->assertEquals(
-            new EventSequence(
-                array($this->callACalled, $this->callBCalled, $this->callCCalled),
-                $this->callVerifierFactory
-            ),
-            $this->subject
-                ->inOrderSequence(array($this->callACalled, $this->callBCalled, $this->callCCalled))
+            new EventSequence([$this->callA, $this->callB, $this->callC], $this->callVerifierFactory),
+            $this->subject->inOrderSequence([$this->callA, $this->callB, $this->callC])
         );
         $this->assertEquals(
             new EventSequence(
-                array($this->callAResponse, $this->callCResponse, $this->callBResponse),
+                [$this->callACalled, $this->callBCalled, $this->callCCalled],
                 $this->callVerifierFactory
             ),
             $this->subject
-                ->inOrderSequence(array($this->callAResponse, $this->callCResponse, $this->callBResponse))
+                ->inOrderSequence([$this->callACalled, $this->callBCalled, $this->callCCalled])
         );
         $this->assertEquals(
-            new EventSequence(array($this->callACalled, $this->callAResponse), $this->callVerifierFactory),
-            $this->subject->inOrderSequence(array($this->callACalled, $this->callAResponse))
+            new EventSequence(
+                [$this->callAResponse, $this->callCResponse, $this->callBResponse],
+                $this->callVerifierFactory
+            ),
+            $this->subject
+                ->inOrderSequence([$this->callAResponse, $this->callCResponse, $this->callBResponse])
         );
         $this->assertEquals(
-            new EventSequence(array($this->callA, $this->callB), $this->callVerifierFactory),
+            new EventSequence([$this->callACalled, $this->callAResponse], $this->callVerifierFactory),
+            $this->subject->inOrderSequence([$this->callACalled, $this->callAResponse])
+        );
+        $this->assertEquals(
+            new EventSequence([$this->callA, $this->callB], $this->callVerifierFactory),
             $this->subject->inOrderSequence(
-                array(
-                    new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory),
-                    new EventSequence(array($this->callB), $this->callVerifierFactory),
-                )
+                [
+                    new EventSequence([$this->callA, $this->callC], $this->callVerifierFactory),
+                    new EventSequence([$this->callB], $this->callVerifierFactory),
+                ]
             )
         );
         $this->assertEquals(
-            new EventSequence(array($this->callB, $this->callC), $this->callVerifierFactory),
+            new EventSequence([$this->callB, $this->callC], $this->callVerifierFactory),
             $this->subject->inOrderSequence(
-                array(
-                    new EventSequence(array($this->callB), $this->callVerifierFactory),
-                    new EventSequence(array($this->callA, $this->callC), $this->callVerifierFactory),
-                )
+                [
+                    new EventSequence([$this->callB], $this->callVerifierFactory),
+                    new EventSequence([$this->callA, $this->callC], $this->callVerifierFactory),
+                ]
             )
         );
     }
@@ -356,29 +356,29 @@ class EventOrderVerifierTest extends TestCase
     public function testInOrderSequenceFailure()
     {
         $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->inOrderSequence(array($this->callA, $this->callC, $this->callB));
+        $this->subject->inOrderSequence([$this->callA, $this->callC, $this->callB]);
     }
 
     public function testInOrderSequenceFailureEmpty()
     {
         $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->inOrderSequence(array());
+        $this->subject->inOrderSequence([]);
     }
 
     public function testInOrderSequenceFailureOnlySuppliedEvents()
     {
         $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->inOrderSequence(array($this->callB, $this->callA));
+        $this->subject->inOrderSequence([$this->callB, $this->callA]);
     }
 
     public function testInOrderSequenceFailureEventMergingExampleA()
     {
         $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrderSequence(
-            array(
-                new EventSequence(array($this->callB, $this->callC), $this->callVerifierFactory),
-                new EventSequence(array($this->callA), $this->callVerifierFactory),
-            )
+            [
+                new EventSequence([$this->callB, $this->callC], $this->callVerifierFactory),
+                new EventSequence([$this->callA], $this->callVerifierFactory),
+            ]
         );
     }
 
@@ -386,10 +386,10 @@ class EventOrderVerifierTest extends TestCase
     {
         $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->inOrderSequence(
-            array(
-                new EventSequence(array($this->callC), $this->callVerifierFactory),
-                new EventSequence(array($this->callA, $this->callB), $this->callVerifierFactory),
-            )
+            [
+                new EventSequence([$this->callC], $this->callVerifierFactory),
+                new EventSequence([$this->callA, $this->callB], $this->callVerifierFactory),
+            ]
         );
     }
 
@@ -398,19 +398,19 @@ class EventOrderVerifierTest extends TestCase
         $this->expectException('InvalidArgumentException', 'Cannot verify event order with empty results.');
 
         $this->subject->inOrderSequence(
-            array(
-                new EventSequence(array($this->callC), $this->callVerifierFactory),
-                new EventSequence(array($this->callB, $this->callA), $this->callVerifierFactory),
-                new EventSequence(array($this->callC), $this->callVerifierFactory),
-                new EventSequence(array(), $this->callVerifierFactory),
-            )
+            [
+                new EventSequence([$this->callC], $this->callVerifierFactory),
+                new EventSequence([$this->callB, $this->callA], $this->callVerifierFactory),
+                new EventSequence([$this->callC], $this->callVerifierFactory),
+                new EventSequence([], $this->callVerifierFactory),
+            ]
         );
     }
 
     public function testInOrderSequenceFailureEmptyResult()
     {
         $this->expectException('InvalidArgumentException', 'Cannot verify event order with empty results.');
-        $this->subject->inOrderSequence(array(new EventSequence(array(), $this->callVerifierFactory)));
+        $this->subject->inOrderSequence([new EventSequence([], $this->callVerifierFactory)]);
     }
 
     public function testInOrderSequenceFailureInvalidArgument()
@@ -419,7 +419,7 @@ class EventOrderVerifierTest extends TestCase
             'InvalidArgumentException',
             'Cannot verify event order with supplied value 111.'
         );
-        $this->subject->inOrderSequence(array(111));
+        $this->subject->inOrderSequence([111]);
     }
 
     public function testInOrderSequenceFailureInvalidArgumentObject()
@@ -428,7 +428,7 @@ class EventOrderVerifierTest extends TestCase
             'InvalidArgumentException',
             'Cannot verify event order with supplied value #0{}.'
         );
-        $this->subject->inOrderSequence(array((object) array()));
+        $this->subject->inOrderSequence([(object) []]);
     }
 
     public function testCheckAnyOrder()
@@ -442,15 +442,15 @@ class EventOrderVerifierTest extends TestCase
     public function testAnyOrder()
     {
         $this->assertEquals(
-            new EventSequence(array($this->callA), $this->callVerifierFactory),
+            new EventSequence([$this->callA], $this->callVerifierFactory),
             $this->subject->anyOrder($this->callA)
         );
         $this->assertEquals(
-            new EventSequence(array($this->callA, $this->callB, $this->callC), $this->callVerifierFactory),
+            new EventSequence([$this->callA, $this->callB, $this->callC], $this->callVerifierFactory),
             $this->subject->anyOrder($this->callA, $this->callB, $this->callC)
         );
         $this->assertEquals(
-            new EventSequence(array($this->callA, $this->callB, $this->callC), $this->callVerifierFactory),
+            new EventSequence([$this->callA, $this->callB, $this->callC], $this->callVerifierFactory),
             $this->subject->anyOrder($this->callC, $this->callB, $this->callA)
         );
     }
@@ -466,29 +466,29 @@ class EventOrderVerifierTest extends TestCase
 
     public function testCheckAnyOrderSequence()
     {
-        $this->assertTrue((bool) $this->subject->checkAnyOrderSequence(array($this->callA)));
+        $this->assertTrue((bool) $this->subject->checkAnyOrderSequence([$this->callA]));
         $this->assertTrue(
-            (bool) $this->subject->checkAnyOrderSequence(array($this->callA, $this->callB, $this->callC))
+            (bool) $this->subject->checkAnyOrderSequence([$this->callA, $this->callB, $this->callC])
         );
         $this->assertTrue(
-            (bool) $this->subject->checkAnyOrderSequence(array($this->callC, $this->callB, $this->callA))
+            (bool) $this->subject->checkAnyOrderSequence([$this->callC, $this->callB, $this->callA])
         );
-        $this->assertFalse((bool) $this->subject->checkAnyOrderSequence(array()));
+        $this->assertFalse((bool) $this->subject->checkAnyOrderSequence([]));
     }
 
     public function testAnyOrderSequence()
     {
         $this->assertEquals(
-            new EventSequence(array($this->callA), $this->callVerifierFactory),
-            $this->subject->anyOrderSequence(array($this->callA))
+            new EventSequence([$this->callA], $this->callVerifierFactory),
+            $this->subject->anyOrderSequence([$this->callA])
         );
         $this->assertEquals(
-            new EventSequence(array($this->callA, $this->callB, $this->callC), $this->callVerifierFactory),
-            $this->subject->anyOrderSequence(array($this->callA, $this->callB, $this->callC))
+            new EventSequence([$this->callA, $this->callB, $this->callC], $this->callVerifierFactory),
+            $this->subject->anyOrderSequence([$this->callA, $this->callB, $this->callC])
         );
         $this->assertEquals(
-            new EventSequence(array($this->callA, $this->callB, $this->callC), $this->callVerifierFactory),
-            $this->subject->anyOrderSequence(array($this->callC, $this->callB, $this->callA))
+            new EventSequence([$this->callA, $this->callB, $this->callC], $this->callVerifierFactory),
+            $this->subject->anyOrderSequence([$this->callC, $this->callB, $this->callA])
         );
     }
 
@@ -498,7 +498,7 @@ class EventOrderVerifierTest extends TestCase
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             'Expected events. No events recorded.'
         );
-        $this->subject->anyOrderSequence(array());
+        $this->subject->anyOrderSequence([]);
     }
 
     public function testInstance()

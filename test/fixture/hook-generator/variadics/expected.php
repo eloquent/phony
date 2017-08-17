@@ -8,7 +8,7 @@ function functionName(
     ...$a2
 ) {
     $argumentCount = \func_num_args();
-    $arguments = array();
+    $arguments = [];
 
     if ($argumentCount > 0) {
         $arguments[] = $a0;

@@ -40,7 +40,7 @@ class SpyDataWithGeneratorsTest extends TestCase
 
         $this->callA = $this->callFactory->create();
         $this->callB = $this->callFactory->create();
-        $this->calls = array($this->callA, $this->callB);
+        $this->calls = [$this->callA, $this->callB];
 
         $this->callFactory->reset();
     }
@@ -77,7 +77,7 @@ class SpyDataWithGeneratorsTest extends TestCase
         $generatorSpyB = $this->generatorSpyFactory->create($expectedCallB, $generatorB);
         $expectedCallB->setResponseEvent($this->callEventFactory->createReturned($generatorB));
         iterator_to_array($generatorSpyB);
-        $expected = array($expectedCallA, $expectedCallB);
+        $expected = [$expectedCallA, $expectedCallB];
 
         $this->assertEquals($expected, $spy->allCalls());
     }

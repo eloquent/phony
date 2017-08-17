@@ -24,11 +24,11 @@ class CallDataWithGeneratorsTest extends TestCase
         $this->callFactory = new TestCallFactory();
         $this->eventFactory = $this->callFactory->eventFactory();
         $this->callback = 'implode';
-        $this->arguments = new Arguments(array('a', 'b'));
+        $this->arguments = new Arguments(['a', 'b']);
         $this->calledEvent = $this->eventFactory->createCalled($this->callback, $this->arguments);
         $this->subject = new CallData($this->index, $this->calledEvent);
 
-        $this->events = array($this->calledEvent);
+        $this->events = [$this->calledEvent];
 
         $this->generator = GeneratorFactory::createEmpty();
         $this->generatedEvent = $this->eventFactory->createReturned($this->generator);
@@ -48,7 +48,7 @@ class CallDataWithGeneratorsTest extends TestCase
         $this->assertTrue($this->subject->isIterable());
         $this->assertTrue($this->subject->isGenerator());
         $this->assertSame($this->returnValue, $this->subject->generatorReturnValue());
-        $this->assertSame(array(null, $this->returnValue), $this->subject->generatorResponse());
+        $this->assertSame([null, $this->returnValue], $this->subject->generatorResponse());
     }
 
     public function testResponseMethodsWithGeneratorException()
@@ -58,12 +58,12 @@ class CallDataWithGeneratorsTest extends TestCase
 
         $this->assertTrue($this->subject->isIterable());
         $this->assertTrue($this->subject->isGenerator());
-        $this->assertSame(array($this->exception, null), $this->subject->generatorResponse());
+        $this->assertSame([$this->exception, null], $this->subject->generatorResponse());
     }
 
     public function testGeneratorResponseFailureWithNonGeneratorReturn()
     {
-        $this->subject->setResponseEvent($this->eventFactory->createReturned(array()));
+        $this->subject->setResponseEvent($this->eventFactory->createReturned([]));
         $this->subject->setEndEvent($this->eventFactory->createConsumed());
 
         $this->assertTrue($this->subject->isIterable());

@@ -47,7 +47,7 @@ class StubFactoryTest extends TestCase
     public function testCreate()
     {
         $callback = function () { return 'a'; };
-        $self = (object) array();
+        $self = (object) [];
         $defaultAnswerCallback = function ($stub) { $stub->forwards(); };
         $expected = new StubData(
             $callback,

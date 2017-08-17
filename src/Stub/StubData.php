@@ -92,9 +92,9 @@ class StubData extends AbstractWrappedInvocable implements Stub
         $this->emptyValueFactory = $emptyValueFactory;
         $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
 
-        $this->secondaryRequests = array();
-        $this->answers = array();
-        $this->rules = array();
+        $this->secondaryRequests = [];
+        $this->answers = [];
+        $this->rules = [];
 
         $this->setSelf($self);
     }
@@ -210,7 +210,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      */
     public function callsWith(
         $callback,
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -282,7 +282,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      */
     public function callsArgumentWith(
         $index = 0,
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = false,
         $suffixArgumentsObject = false,
         $suffixArguments = false
@@ -315,7 +315,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
 
                 return $invoker->callWith($callback, $finalArguments);
             },
-            array(),
+            [],
             true,
             true,
             false
@@ -354,7 +354,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
             function ($arguments) use ($index, $value) {
                 $arguments->set($index, $value);
             },
-            array(),
+            [],
             false,
             true,
             false
@@ -391,7 +391,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      */
     public function doesWith(
         $callback,
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -418,7 +418,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
             ),
             $this->secondaryRequests
         );
-        $this->secondaryRequests = array();
+        $this->secondaryRequests = [];
 
         return $this;
     }
@@ -434,7 +434,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      * @return $this This stub.
      */
     public function forwards(
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -480,7 +480,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
 
                 return $invoker->callWith($callback, $finalArguments);
             },
-            array(),
+            [],
             true,
             true,
             false
@@ -528,7 +528,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
 
                     return $value;
                 },
-                array(),
+                [],
                 false,
                 false,
                 false
@@ -544,7 +544,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
                 function () use ($value) {
                     return $value;
                 },
-                array(),
+                [],
                 false,
                 false,
                 false
@@ -570,7 +570,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
             function ($arguments) use ($index) {
                 return $arguments->get($index);
             },
-            array(),
+            [],
             false,
             true,
             false
@@ -588,7 +588,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
             function ($self) {
                 return $self;
             },
-            array(),
+            [],
             true,
             false,
             false
@@ -610,7 +610,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
                 function () {
                     throw new Exception();
                 },
-                array(),
+                [],
                 false,
                 false,
                 false
@@ -628,7 +628,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
                 function () use ($exception) {
                     throw $exception;
                 },
-                array(),
+                [],
                 false,
                 false,
                 false
@@ -647,17 +647,17 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */
-    public function generates($values = array())
+    public function generates($values = [])
     {
         $builder = $this->generatorAnswerBuilderFactory->create($this);
-        $this->doesWith($builder->answer(), array(), true, true, false);
+        $this->doesWith($builder->answer(), [], true, true, false);
 
         foreach (func_get_args() as $index => $values) {
             if ($index > 0) {
                 $builder->returns();
 
                 $builder = $this->generatorAnswerBuilderFactory->create($this);
-                $this->doesWith($builder->answer(), array(), true, true, false);
+                $this->doesWith($builder->answer(), [], true, true, false);
             }
 
             $builder->yieldsFrom($values);
@@ -675,7 +675,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
     {
         if (!empty($this->secondaryRequests)) {
             call_user_func($this->defaultAnswerCallback, $this);
-            $this->secondaryRequests = array();
+            $this->secondaryRequests = [];
         }
 
         if (!empty($this->answers)) {
@@ -685,13 +685,13 @@ class StubData extends AbstractWrappedInvocable implements Stub
                 $this->criteria = null;
             } else {
                 $rule = new StubRule(
-                    array($this->matcherFactory->wildcard()),
+                    [$this->matcherFactory->wildcard()],
                     $this->answers
                 );
             }
 
             array_unshift($this->rules, $rule);
-            $this->answers = array();
+            $this->answers = [];
         }
 
         if (null !== $this->criteria) {
@@ -712,7 +712,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      * @return mixed           The result of invocation.
      * @throws Exception|Error If an error occurs.
      */
-    public function invokeWith($arguments = array())
+    public function invokeWith($arguments = [])
     {
         $this->closeRule();
 

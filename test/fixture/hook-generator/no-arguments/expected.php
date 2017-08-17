@@ -5,7 +5,7 @@ namespace Foo\Bar;
 function functionName()
 {
     $argumentCount = \func_num_args();
-    $arguments = array();
+    $arguments = [];
 
     for ($i = 0; $i < $argumentCount; ++$i) {
         $arguments[] = \func_get_arg($i);

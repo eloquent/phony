@@ -136,7 +136,7 @@ class FunctionHookManager
         }
 
         self::$hooks[$key] =
-            array('callback' => $callback, 'signature' => $signature);
+            ['callback' => $callback, 'signature' => $signature];
 
         return $replaced;
     }
@@ -152,7 +152,7 @@ class FunctionHookManager
         }
     }
 
-    public static $hooks = array();
+    public static $hooks = [];
     private static $instance;
     private $signatureInspector;
     private $hookGenerator;

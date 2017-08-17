@@ -24,11 +24,11 @@ class CallDataTest extends TestCase
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callback = 'implode';
-        $this->arguments = new Arguments(array('a', 'b'));
+        $this->arguments = new Arguments(['a', 'b']);
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
         $this->subject = new CallData($this->index, $this->calledEvent);
 
-        $this->events = array($this->calledEvent);
+        $this->events = [$this->calledEvent];
 
         $this->returnValue = 'ab';
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
@@ -44,10 +44,10 @@ class CallDataTest extends TestCase
         $this->assertSame(1, $this->subject->callCount());
         $this->assertSame(1, count($this->subject));
         $this->assertNull($this->subject->responseEvent());
-        $this->assertSame(array(), $this->subject->iterableEvents());
+        $this->assertSame([], $this->subject->iterableEvents());
         $this->assertNull($this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
-        $this->assertSame(array($this->subject), $this->subject->allCalls());
+        $this->assertSame([$this->subject], $this->subject->allCalls());
         $this->assertSame($this->events, $this->subject->allEvents());
         $this->assertFalse($this->subject->hasResponded());
         $this->assertFalse($this->subject->isIterable());
@@ -104,7 +104,7 @@ class CallDataTest extends TestCase
     {
         $this->subject->setResponseEvent($this->returnedEvent);
 
-        $this->assertSame(array(null, $this->returnValue), $this->subject->response());
+        $this->assertSame([null, $this->returnValue], $this->subject->response());
     }
 
     public function testResponseWithThrewResponse()
@@ -115,7 +115,7 @@ class CallDataTest extends TestCase
         $this->subject->setResponseEvent($threwEvent);
         $this->subject->setEndEvent($threwEvent);
 
-        $this->assertSame(array($exception, null), $this->subject->response());
+        $this->assertSame([$exception, null], $this->subject->response());
     }
 
     public function testResponseFailureNoResponse()
@@ -152,7 +152,7 @@ class CallDataTest extends TestCase
         $this->iterableEventA = $this->callEventFactory->createProduced('a', 'b');
         $this->iterableEventB = $this->callEventFactory->createProduced('c', 'd');
         $this->consumedEvent = $this->callEventFactory->createConsumed();
-        $this->iterableEvents = array($this->iterableEventA, $this->iterableEventB);
+        $this->iterableEvents = [$this->iterableEventA, $this->iterableEventB];
         $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setResponseEvent($this->returnedEvent);
         $this->subject->addIterableEvent($this->iterableEventA);
@@ -168,7 +168,7 @@ class CallDataTest extends TestCase
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
         $this->iterableEventA = $this->callEventFactory->createProduced('a', 'b');
         $this->iterableEventB = $this->callEventFactory->createProduced('c', 'd');
-        $this->iterableEvents = array($this->iterableEventA, $this->iterableEventB);
+        $this->iterableEvents = [$this->iterableEventA, $this->iterableEventB];
         $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setResponseEvent($this->returnedEvent);
         $this->subject->addIterableEvent($this->iterableEventA);
@@ -228,15 +228,15 @@ class CallDataTest extends TestCase
 
     public function testIteration()
     {
-        $this->assertSame(array($this->subject), iterator_to_array($this->subject));
+        $this->assertSame([$this->subject], iterator_to_array($this->subject));
     }
 
     public function testAddIterableEvent()
     {
-        $returnedEvent = $this->callEventFactory->createReturned(array('a' => 'b', 'c' => 'd'));
+        $returnedEvent = $this->callEventFactory->createReturned(['a' => 'b', 'c' => 'd']);
         $iterableEventA = $this->callEventFactory->createProduced('a', 'b');
         $iterableEventB = $this->callEventFactory->createProduced('c', 'd');
-        $iterableEvents = array($iterableEventA, $iterableEventB);
+        $iterableEvents = [$iterableEventA, $iterableEventB];
         $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setResponseEvent($returnedEvent);
         $this->subject->addIterableEvent($iterableEventA);
@@ -255,7 +255,7 @@ class CallDataTest extends TestCase
 
     public function testAddIterableEventFailureAlreadyCompleted()
     {
-        $returnedEvent = $this->callEventFactory->createReturned(array());
+        $returnedEvent = $this->callEventFactory->createReturned([]);
         $endEvent = $this->callEventFactory->createConsumed();
         $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setResponseEvent($returnedEvent);

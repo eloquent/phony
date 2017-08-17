@@ -68,7 +68,7 @@ class AssertionRendererTest extends TestCase
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callA = $this->callFactory->create(
             $this->callEventFactory
-                ->createCalled(array($this->thisObjectA, 'testClassAMethodA'), Arguments::create('a', 'b')),
+                ->createCalled([$this->thisObjectA, 'testClassAMethodA'], Arguments::create('a', 'b')),
             $this->callEventFactory->createReturned('x'),
             null,
             $this->callEventFactory->createReturned('x')
@@ -83,10 +83,10 @@ class AssertionRendererTest extends TestCase
             $this->callEventFactory->createCalled('implode')
         );
         $this->callD = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this->thisObjectB, 'testClassAMethodA'))
+            $this->callEventFactory->createCalled([$this->thisObjectB, 'testClassAMethodA'])
         );
         $this->callE = $this->callFactory->create(
-            $this->callEventFactory->createCalled(array($this->thisObjectC, 'getIterator'))
+            $this->callEventFactory->createCalled([$this->thisObjectC, 'getIterator'])
         );
         $this->callF = $this->callFactory->create(
             $this->callEventFactory
@@ -117,9 +117,9 @@ class AssertionRendererTest extends TestCase
         $matcherA = $this->matcherFactory->equalTo('a');
         $matcherB = $this->matcherFactory->equalTo(111);
 
-        $this->assertSame('<none>', $this->subject->renderMatchers(array()));
-        $this->assertSame('"a"', $this->subject->renderMatchers(array($matcherA)));
-        $this->assertSame('"a", 111', $this->subject->renderMatchers(array($matcherA, $matcherB)));
+        $this->assertSame('<none>', $this->subject->renderMatchers([]));
+        $this->assertSame('"a"', $this->subject->renderMatchers([$matcherA]));
+        $this->assertSame('"a", 111', $this->subject->renderMatchers([$matcherA, $matcherB]));
     }
 
     public function testInstance()

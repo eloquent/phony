@@ -18,13 +18,13 @@ class FeatureDetectorTest extends TestCase
 {
     protected function setUp()
     {
-        $this->features = array(
+        $this->features = [
             'a' => function () { return true; },
             'b' => function () { return false; },
             'c' => function () { return true; },
             'd' => function () { return false; },
-        );
-        $this->supported = array('c' => false, 'd' => true);
+        ];
+        $this->supported = ['c' => false, 'd' => true];
         $this->subject = new FeatureDetector();
     }
 
@@ -39,21 +39,21 @@ class FeatureDetectorTest extends TestCase
     public function testConstructorDefaults()
     {
         $this->assertEquals($this->subject->standardFeatures(), $this->subject->features());
-        $this->assertSame(array(), $this->subject->supported());
+        $this->assertSame([], $this->subject->supported());
     }
 
     public function testAddFeature()
     {
-        $this->subject = new FeatureDetector(array());
+        $this->subject = new FeatureDetector([]);
         $this->subject->addFeature('e', 'is_object');
         $this->subject->addFeature('f', 'is_string');
 
-        $this->assertSame(array('e' => 'is_object', 'f' => 'is_string'), $this->subject->features());
+        $this->assertSame(['e' => 'is_object', 'f' => 'is_string'], $this->subject->features());
         $this->assertTrue($this->subject->isSupported('e'));
         $this->assertTrue($this->subject->isSupported('e'));
         $this->assertFalse($this->subject->isSupported('f'));
         $this->assertFalse($this->subject->isSupported('f'));
-        $this->assertSame(array('e' => true, 'f' => false), $this->subject->supported());
+        $this->assertSame(['e' => true, 'f' => false], $this->subject->supported());
     }
 
     public function testIsSupported()
@@ -68,7 +68,7 @@ class FeatureDetectorTest extends TestCase
         $this->assertFalse($this->subject->isSupported('c'));
         $this->assertTrue($this->subject->isSupported('d'));
         $this->assertTrue($this->subject->isSupported('d'));
-        $this->assertSame(array('c' => false, 'd' => true, 'a' => true, 'b' => false), $this->subject->supported());
+        $this->assertSame(['c' => false, 'd' => true, 'a' => true, 'b' => false], $this->subject->supported());
     }
 
     public function testIsSupportedFailureUndefined()
@@ -224,15 +224,15 @@ class FeatureDetectorTest extends TestCase
 
     public function testCheckVersionIncluded()
     {
-        $this->assertTrue($this->checkVersionIncluded('5.4.3', array()));
-        $this->assertTrue($this->checkVersionIncluded('5.4.3', array('4')));
-        $this->assertTrue($this->checkVersionIncluded('5.4.3', array('5.3')));
-        $this->assertTrue($this->checkVersionIncluded('5.4.3', array('5.4.2')));
-        $this->assertTrue($this->checkVersionIncluded('5.4.3', array('5.4.3.2')));
+        $this->assertTrue($this->checkVersionIncluded('5.4.3', []));
+        $this->assertTrue($this->checkVersionIncluded('5.4.3', ['4']));
+        $this->assertTrue($this->checkVersionIncluded('5.4.3', ['5.3']));
+        $this->assertTrue($this->checkVersionIncluded('5.4.3', ['5.4.2']));
+        $this->assertTrue($this->checkVersionIncluded('5.4.3', ['5.4.3.2']));
 
-        $this->assertFalse($this->checkVersionIncluded('5.4.3', array('5')));
-        $this->assertFalse($this->checkVersionIncluded('5.4.3', array('5.4')));
-        $this->assertFalse($this->checkVersionIncluded('5.4.3', array('5.4.3')));
+        $this->assertFalse($this->checkVersionIncluded('5.4.3', ['5']));
+        $this->assertFalse($this->checkVersionIncluded('5.4.3', ['5.4']));
+        $this->assertFalse($this->checkVersionIncluded('5.4.3', ['5.4.3']));
     }
 
     protected function checkVersionIncluded($version, $exclude)

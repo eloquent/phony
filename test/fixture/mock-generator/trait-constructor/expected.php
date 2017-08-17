@@ -19,13 +19,13 @@ implements \Eloquent\Phony\Mock\Mock
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array(
+            [
                 __CLASS__,
                 '_callTrait_' .
                     \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
                     $name,
-            ),
+            ],
             $arguments->all()
         );
     }
@@ -34,10 +34,10 @@ implements \Eloquent\Phony\Mock\Mock
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         \call_user_func_array(
-            array(
+            [
                 $this,
                 '_callTrait_Eloquent¦Phony¦Test¦TestTraitD»__construct',
-            ),
+            ],
             $arguments->all()
         );
     }
@@ -48,22 +48,22 @@ implements \Eloquent\Phony\Mock\Mock
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array(
+            [
                 $this,
                 '_callTrait_' .
                     \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
                     $name,
-            ),
+            ],
             $arguments->all()
         );
     }
 
-    private static $_uncallableMethods = array();
+    private static $_uncallableMethods = [];
     private static $_traitMethods = array (
   '__construct' => 'Eloquent\\Phony\\Test\\TestTraitD',
 );
-    private static $_customMethods = array();
+    private static $_customMethods = [];
     private static $_staticHandle;
     private $_handle;
 }

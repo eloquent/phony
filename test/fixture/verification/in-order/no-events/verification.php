@@ -3,4 +3,4 @@
 use Eloquent\Phony\Test\Phony;
 
 // verification
-Phony::inOrderSequence(array());
+Phony::inOrderSequence([]);

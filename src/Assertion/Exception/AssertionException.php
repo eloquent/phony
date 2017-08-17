@@ -41,7 +41,7 @@ final class AssertionException extends Exception
         $call = static::tracePhonyCall($traceProperty->getValue($exception));
 
         if ($call) {
-            $traceProperty->setValue($exception, array($call));
+            $traceProperty->setValue($exception, [$call]);
             $fileProperty->setValue(
                 $exception,
                 isset($call['file']) ? $call['file'] : null
@@ -51,7 +51,7 @@ final class AssertionException extends Exception
                 isset($call['line']) ? $call['line'] : null
             );
         } else {
-            $traceProperty->setValue($exception, array());
+            $traceProperty->setValue($exception, []);
             $fileProperty->setValue($exception, null);
             $lineProperty->setValue($exception, null);
         }

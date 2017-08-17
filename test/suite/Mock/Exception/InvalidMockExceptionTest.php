@@ -28,7 +28,7 @@ class InvalidMockExceptionTest extends TestCase
 
     public function testExceptionWithObject()
     {
-        $value = (object) array();
+        $value = (object) [];
         $exception = new InvalidMockException($value);
 
         $this->assertSame($value, $exception->value());

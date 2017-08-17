@@ -29,7 +29,7 @@ class VerificationTest extends TestCase
     public function generateData()
     {
         $fixturePath = __DIR__ . '/../fixture/verification';
-        $data = array();
+        $data = [];
 
         foreach (scandir($fixturePath) as $verification) {
             if ('.' === $verification[0]) {
@@ -46,7 +46,7 @@ class VerificationTest extends TestCase
                     continue;
                 }
 
-                $data[$verification . ' - ' . $testName] = array($verification, $testName);
+                $data[$verification . ' - ' . $testName] = [$verification, $testName];
             }
         }
 

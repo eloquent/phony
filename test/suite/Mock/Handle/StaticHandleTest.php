@@ -40,11 +40,11 @@ class StaticHandleTest extends TestCase
 {
     protected function setUp()
     {
-        $this->state = (object) array(
-            'stubs' => (object) array(),
+        $this->state = (object) [
+            'stubs' => (object) [],
             'defaultAnswerCallback' => 'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback',
             'isRecording' => true,
-        );
+        ];
         $this->stubFactory = StubFactory::instance();
         $this->objectSequencer = new Sequencer();
         $this->invocableInspector = new InvocableInspector();
@@ -226,7 +226,7 @@ class StaticHandleTest extends TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->assertEquals(new EventSequence(array(), $this->callVerifierFactory), $this->subject->noInteraction());
+        $this->assertEquals(new EventSequence([], $this->callVerifierFactory), $this->subject->noInteraction());
     }
 
     public function testNoInteractionFailure()
@@ -318,11 +318,11 @@ class StaticHandleTest extends TestCase
     public function testStubbingWithCustomMethod()
     {
         $this->mockBuilder = $this->mockBuilderFactory->create(
-            array(
+            [
                 'static methodA' => function () {
                     return implode(func_get_args());
                 },
-            )
+            ]
         );
         $this->class = $this->mockBuilder->build(true);
         $className = $this->class->getName();

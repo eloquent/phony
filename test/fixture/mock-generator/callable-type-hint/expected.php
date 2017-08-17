@@ -8,7 +8,7 @@ implements \Eloquent\Phony\Mock\Mock
         callable $a1 = null
     ) {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         if ($argumentCount > 0) {
             $arguments[] = $a0;
@@ -23,7 +23,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (!$this->_handle) {
             $result = \call_user_func_array(
-                array($this, 'parent::' . 'methodA'),
+                [$this, 'parent::' . 'methodA'],
                 $arguments
             );
 
@@ -37,9 +37,9 @@ implements \Eloquent\Phony\Mock\Mock
         return $result;
     }
 
-    private static $_uncallableMethods = array();
-    private static $_traitMethods = array();
-    private static $_customMethods = array();
+    private static $_uncallableMethods = [];
+    private static $_traitMethods = [];
+    private static $_customMethods = [];
     private static $_staticHandle;
     private $_handle;
 }

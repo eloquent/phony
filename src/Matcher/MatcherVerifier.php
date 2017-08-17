@@ -97,8 +97,8 @@ class MatcherVerifier
     public function explain(array $matchers, array $arguments)
     {
         $isMatch = true;
-        $matcherMatches = array();
-        $argumentMatches = array();
+        $matcherMatches = [];
+        $argumentMatches = [];
         $argumentCount = count($arguments);
         $index = 0;
 

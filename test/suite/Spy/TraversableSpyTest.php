@@ -21,7 +21,7 @@ class TraversableSpyTest extends TestCase
     {
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->array = array('a' => 'b', 'c' => 'd');
+        $this->array = ['a' => 'b', 'c' => 'd'];
         $this->value = new ArrayObject($this->array);
         $this->call = $this->callFactory->create(
             $this->callEventFactory->createCalled(),

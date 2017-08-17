@@ -100,7 +100,7 @@ class CallVerifierFactory
      */
     public function fromCalls(array $calls)
     {
-        $verifiers = array();
+        $verifiers = [];
 
         foreach ($calls as $call) {
             $verifiers[] = new CallVerifier(

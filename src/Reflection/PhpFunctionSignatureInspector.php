@@ -64,11 +64,11 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
         );
 
         if (!$isMatch) {
-            return array();
+            return [];
         }
 
         $parameters = $function->getParameters();
-        $signature = array();
+        $signature = [];
         $index = -1;
 
         foreach ($matches as $match) {
@@ -143,7 +143,7 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
             }
 
             $signature[$match[5]] =
-                array($typehint, $byReference, $variadic, $defaultValue);
+                [$typehint, $byReference, $variadic, $defaultValue];
         }
 
         return $signature;

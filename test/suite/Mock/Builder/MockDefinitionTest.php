@@ -29,14 +29,14 @@ class MockDefinitionTest extends TestCase
         $this->isTraitSupported = $this->featureDetector->isSupported('trait');
         $this->isRelaxedKeywordsSupported = $this->featureDetector->isSupported('parser.relaxed-keywords');
 
-        $this->typeNames = array(
+        $this->typeNames = [
             'Countable',
             'Eloquent\Phony\Test\TestClassB',
             'Eloquent\Phony\Test\TestInterfaceA',
             'Eloquent\Phony\Test\TestInterfaceB',
             'Iterator',
-        );
-        $this->typeNamesTraits = array(
+        ];
+        $this->typeNamesTraits = [
             'Countable',
             'Eloquent\Phony\Test\TestClassB',
             'Eloquent\Phony\Test\TestInterfaceA',
@@ -44,18 +44,18 @@ class MockDefinitionTest extends TestCase
             'Eloquent\Phony\Test\TestTraitA',
             'Eloquent\Phony\Test\TestTraitB',
             'Iterator',
-        );
+        ];
         $this->parentClassName = 'Eloquent\Phony\Test\TestClassB';
-        $this->interfaceNames = array(
+        $this->interfaceNames = [
             'Countable',
             'Eloquent\Phony\Test\TestInterfaceA',
             'Eloquent\Phony\Test\TestInterfaceB',
             'Iterator',
-        );
-        $this->traitNames = array(
+        ];
+        $this->traitNames = [
             'Eloquent\Phony\Test\TestTraitA',
             'Eloquent\Phony\Test\TestTraitB',
-        );
+        ];
 
         $this->callbackA = function () {};
         $this->callbackB = function () {};
@@ -74,25 +74,25 @@ class MockDefinitionTest extends TestCase
 
     protected function setUpWith($typeNames)
     {
-        $this->types = array();
+        $this->types = [];
 
         foreach ($typeNames as $typeName) {
             $this->types[strtolower($typeName)] = new ReflectionClass($typeName);
         }
 
-        $this->customMethods = array(
-            'methodA' => array($this->callbackA, $this->callbackReflectorA),
-            'methodB' => array($this->callbackB, $this->callbackReflectorB),
-            'methodC' => array($this->callbackC, $this->callbackReflectorC),
-        );
-        $this->customProperties = array('a' => 'b', 'c' => 'd');
-        $this->customStaticMethods = array(
-            'methodD' => array($this->callbackD, $this->callbackReflectorD),
-            'methodE' => array($this->callbackE, $this->callbackReflectorE),
-            'methodF' => array($this->callbackF, $this->callbackReflectorF),
-        );
-        $this->customStaticProperties = array('e' => 'f', 'g' => 'h');
-        $this->customConstants = array('i' => 'j', 'k' => 'l');
+        $this->customMethods = [
+            'methodA' => [$this->callbackA, $this->callbackReflectorA],
+            'methodB' => [$this->callbackB, $this->callbackReflectorB],
+            'methodC' => [$this->callbackC, $this->callbackReflectorC],
+        ];
+        $this->customProperties = ['a' => 'b', 'c' => 'd'];
+        $this->customStaticMethods = [
+            'methodD' => [$this->callbackD, $this->callbackReflectorD],
+            'methodE' => [$this->callbackE, $this->callbackReflectorE],
+            'methodF' => [$this->callbackF, $this->callbackReflectorF],
+        ];
+        $this->customStaticProperties = ['e' => 'f', 'g' => 'h'];
+        $this->customConstants = ['i' => 'j', 'k' => 'l'];
         $this->className = 'ClassName';
         $this->subject = new MockDefinition(
             $this->types,
@@ -121,7 +121,7 @@ class MockDefinitionTest extends TestCase
         $this->assertSame($this->typeNames, $this->subject->typeNames());
         $this->assertSame($this->parentClassName, $this->subject->parentClassName());
         $this->assertSame($this->interfaceNames, $this->subject->interfaceNames());
-        $this->assertSame(array(), $this->subject->traitNames());
+        $this->assertSame([], $this->subject->traitNames());
     }
 
     public function testConstructorWithTraits()
@@ -149,7 +149,7 @@ class MockDefinitionTest extends TestCase
         $this->setUpWith($this->typeNames);
 
         $expected = new MethodDefinitionCollection(
-            array(
+            [
                 'count' => new RealMethodDefinition(new ReflectionMethod('Countable::count'), 'count'),
                 'current' => new RealMethodDefinition(new ReflectionMethod('Iterator::current'), 'current'),
                 'key' => new RealMethodDefinition(new ReflectionMethod('Iterator::key'), 'key'),
@@ -248,8 +248,8 @@ class MockDefinitionTest extends TestCase
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__callStatic'),
                     '__callStatic'
                 ),
-            ),
-            array()
+            ],
+            []
         );
         $actual = $this->subject->methods();
 
@@ -269,7 +269,7 @@ class MockDefinitionTest extends TestCase
         $this->setUpWith($this->typeNamesTraits);
 
         $expected = new MethodDefinitionCollection(
-            array(
+            [
                 'count' => new RealMethodDefinition(new ReflectionMethod('Countable::count'), 'count'),
                 'current' => new RealMethodDefinition(new ReflectionMethod('Iterator::current'), 'current'),
                 'key' => new RealMethodDefinition(new ReflectionMethod('Iterator::key'), 'key'),
@@ -372,8 +372,8 @@ class MockDefinitionTest extends TestCase
                     new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__callStatic'),
                     '__callStatic'
                 ),
-            ),
-            array(
+            ],
+            [
                 new TraitMethodDefinition(
                     new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA'),
                     'testClassAStaticMethodA'
@@ -394,7 +394,7 @@ class MockDefinitionTest extends TestCase
                     new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA'),
                     'testClassAStaticMethodA'
                 ),
-            )
+            ]
         );
         $actual = $this->subject->methods();
 
@@ -409,14 +409,14 @@ class MockDefinitionTest extends TestCase
         }
 
         $this->setUpWith(
-            array(
+            [
                 'Eloquent\Phony\Test\TestClassF',
                 'Eloquent\Phony\Test\TestInterfaceG',
-            )
+            ]
         );
 
         $expected = new MethodDefinitionCollection(
-            array(
+            [
                 'methodA' => new CustomMethodDefinition(
                     false,
                     'methodA',
@@ -453,8 +453,8 @@ class MockDefinitionTest extends TestCase
                     function () {},
                     new ReflectionFunction(function () {})
                 ),
-            ),
-            array()
+            ],
+            []
         );
         $actual = $this->subject->methods();
 
@@ -472,15 +472,15 @@ class MockDefinitionTest extends TestCase
         }
 
         $this->setUpWith(
-            array(
+            [
                 'Eloquent\Phony\Test\TestClassF',
                 'Eloquent\Phony\Test\TestTraitI',
                 'Eloquent\Phony\Test\TestInterfaceG',
-            )
+            ]
         );
 
         $expected = new MethodDefinitionCollection(
-            array(
+            [
                 'methodA' => new CustomMethodDefinition(
                     false,
                     'methodA',
@@ -517,8 +517,8 @@ class MockDefinitionTest extends TestCase
                     function () {},
                     new ReflectionFunction(function () {})
                 ),
-            ),
-            array(
+            ],
+            [
                 new TraitMethodDefinition(
                     new ReflectionMethod('Eloquent\Phony\Test\TestTraitI::testClassFStaticMethodA'),
                     'testClassFStaticMethodA'
@@ -527,7 +527,7 @@ class MockDefinitionTest extends TestCase
                     new ReflectionMethod('Eloquent\Phony\Test\TestTraitI::testClassFMethodA'),
                     'testClassFMethodA'
                 ),
-            )
+            ]
         );
         $actual = $this->subject->methods();
 
@@ -542,12 +542,12 @@ class MockDefinitionTest extends TestCase
         $this->setUpWith($this->typeNames);
         $definitionB = $this->subject;
         $definitionC = new MockDefinition(
-            array(),
-            array(),
-            array(),
-            array(),
-            array(),
-            array(),
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
             null,
             $this->isTraitSupported,
             $this->isRelaxedKeywordsSupported
@@ -567,28 +567,28 @@ class MockDefinitionTest extends TestCase
     public function testIsEqualToWithInequalSignature()
     {
         $definitionA = new MockDefinition(
-            array(),
-            array(
-                'methodA' => array(function ($a, $b) {}, new ReflectionFunction(function ($a, $b) {})),
-            ),
-            array(),
-            array(),
-            array(),
-            array(),
+            [],
+            [
+                'methodA' => [function ($a, $b) {}, new ReflectionFunction(function ($a, $b) {})],
+            ],
+            [],
+            [],
+            [],
+            [],
             null,
             $this->isTraitSupported,
             $this->isRelaxedKeywordsSupported
         );
         $definitionB = new MockDefinition(
-            array(),
-            array(
+            [],
+            [
                 'methodA' =>
-                    array(function ($a, array $b = null) {}, new ReflectionFunction(function ($a, array $b = null) {})),
-            ),
-            array(),
-            array(),
-            array(),
-            array(),
+                    [function ($a, array $b = null) {}, new ReflectionFunction(function ($a, array $b = null) {})],
+            ],
+            [],
+            [],
+            [],
+            [],
             null,
             $this->isTraitSupported,
             $this->isRelaxedKeywordsSupported
@@ -600,28 +600,28 @@ class MockDefinitionTest extends TestCase
     public function testIsEqualToWithInequalSignatureStatic()
     {
         $definitionA = new MockDefinition(
-            array(),
-            array(),
-            array(),
-            array(
-                'methodA' => array(function ($a, $b) {}, new ReflectionFunction(function ($a, $b) {})),
-            ),
-            array(),
-            array(),
+            [],
+            [],
+            [],
+            [
+                'methodA' => [function ($a, $b) {}, new ReflectionFunction(function ($a, $b) {})],
+            ],
+            [],
+            [],
             null,
             $this->isTraitSupported,
             $this->isRelaxedKeywordsSupported
         );
         $definitionB = new MockDefinition(
-            array(),
-            array(),
-            array(),
-            array(
+            [],
+            [],
+            [],
+            [
                 'methodA' =>
-                    array(function ($a, array $b = null) {}, new ReflectionFunction(function ($a, array $b = null) {})),
-            ),
-            array(),
-            array(),
+                    [function ($a, array $b = null) {}, new ReflectionFunction(function ($a, array $b = null) {})],
+            ],
+            [],
+            [],
             null,
             $this->isTraitSupported,
             $this->isRelaxedKeywordsSupported

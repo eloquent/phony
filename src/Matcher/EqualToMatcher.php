@@ -94,7 +94,7 @@ class EqualToMatcher implements Matcher
          * been made in order to avoid infinite recursion when comparing cyclic
          * data structures.
          */
-        $visitedObjects = array();
+        $visitedObjects = [];
 
         /*
          * @var array<string,bool> The set of array comparisons that have been made.
@@ -104,7 +104,7 @@ class EqualToMatcher implements Matcher
          * made in order to avoid infinite recursion when comparing cyclic data
          * structures.
          */
-        $visitedArrays = array();
+        $visitedArrays = [];
 
         /*
          * @var array<&array> Arrays that have been marked with an internal ID.
@@ -112,7 +112,7 @@ class EqualToMatcher implements Matcher
          * In order to detect cyclic arrays we need to mark them with an ID.
          * This ID must be removed upon completion of the comparison.
          */
-        $markedArrays = array();
+        $markedArrays = [];
 
         /*
          * @var array<&array> Stacks of values that are currently being compared.
@@ -127,8 +127,8 @@ class EqualToMatcher implements Matcher
          * Separate stacks are used for left/right to avoid construction of
          * temporary arrays.
          */
-        $leftStack = array();
-        $rightStack = array();
+        $leftStack = [];
+        $rightStack = [];
 
         /*
          * @var int The number of elements on the stacks.

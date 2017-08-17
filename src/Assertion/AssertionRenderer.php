@@ -142,7 +142,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedSubject =
                 $this->bold .
                 $this->exporter->exportCallable($subject->callback()) .
@@ -176,10 +176,10 @@ class AssertionRenderer
                 $renderedResult = $this->pass;
             }
 
-            $renderedCalls = array();
+            $renderedCalls = [];
 
             foreach ($calls as $call) {
-                $renderedArguments = array();
+                $renderedArguments = [];
 
                 foreach ($call->arguments()->all() as $argument) {
                     $renderedArguments[] =
@@ -247,7 +247,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedSubject =
                 $this->bold .
                 $this->exporter->exportCallable($subject->callback()) .
@@ -263,10 +263,10 @@ class AssertionRenderer
         if ($matcherCount > 0) {
             $matcherMatchCounts = array_fill(0, $matcherCount, 0);
         } else {
-            $matcherMatchCounts = array();
+            $matcherMatchCounts = [];
         }
 
-        $callResults = array();
+        $callResults = [];
         $totalCount = 0;
         $matchCount = 0;
 
@@ -289,7 +289,7 @@ class AssertionRenderer
             $callResults[] = $callResult;
         }
 
-        $renderedMatchers = array();
+        $renderedMatchers = [];
         $requiredArgumentCount = 0;
 
         foreach ($matchers as $index => $matcher) {
@@ -370,12 +370,12 @@ class AssertionRenderer
         }
 
         if ($totalCount) {
-            $renderedCalls = array();
+            $renderedCalls = [];
 
             foreach ($calls as $callIndex => $call) {
                 $callResult = $callResults[$callIndex];
                 $arguments = $call->arguments();
-                $renderedArguments = array();
+                $renderedArguments = [];
 
                 if (count($arguments)) {
                     foreach (
@@ -476,7 +476,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -515,7 +515,7 @@ class AssertionRenderer
         $matchCount = 0;
 
         if ($totalCount) {
-            $renderedCalls = array();
+            $renderedCalls = [];
 
             foreach ($calls as $call) {
                 $responseEvent = $call->responseEvent();
@@ -530,7 +530,7 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                $renderedArguments = array();
+                $renderedArguments = [];
 
                 foreach ($call->arguments()->all() as $argument) {
                     $renderedArguments[] =
@@ -592,7 +592,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -633,7 +633,7 @@ class AssertionRenderer
         $matchCount = 0;
 
         if ($totalCount) {
-            $renderedCalls = array();
+            $renderedCalls = [];
 
             foreach ($calls as $call) {
                 $endEvent = $call->endEvent();
@@ -648,7 +648,7 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                $renderedArguments = array();
+                $renderedArguments = [];
 
                 foreach ($call->arguments()->all() as $argument) {
                     $renderedArguments[] =
@@ -665,7 +665,7 @@ class AssertionRenderer
                         $returnValue instanceof Traversable
                     ) {
                         $iterableEvents = $call->iterableEvents();
-                        $renderedIterableEvents = array();
+                        $renderedIterableEvents = [];
 
                         foreach ($iterableEvents as $event) {
                             if ($event instanceof UsedEvent) {
@@ -788,7 +788,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -844,7 +844,7 @@ class AssertionRenderer
         $matchCount = 0;
 
         if ($totalCount) {
-            $renderedCalls = array();
+            $renderedCalls = [];
 
             foreach ($calls as $call) {
                 if ($responseEvent = $call->responseEvent()) {
@@ -871,7 +871,7 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                $renderedArguments = array();
+                $renderedArguments = [];
 
                 foreach ($call->arguments()->all() as $argument) {
                     $renderedArguments[] =
@@ -938,7 +938,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -996,7 +996,7 @@ class AssertionRenderer
         $matchCount = 0;
 
         if ($totalCount) {
-            $renderedCalls = array();
+            $renderedCalls = [];
 
             foreach ($calls as $call) {
                 if ($responseEvent = $call->responseEvent()) {
@@ -1025,7 +1025,7 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                $renderedArguments = array();
+                $renderedArguments = [];
 
                 foreach ($call->arguments()->all() as $argument) {
                     $renderedArguments[] =
@@ -1090,7 +1090,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -1139,7 +1139,7 @@ class AssertionRenderer
         $matchCount = 0;
 
         if ($totalCount) {
-            $renderedCalls = array();
+            $renderedCalls = [];
 
             foreach ($calls as $call) {
                 if ($responseEvent = $call->responseEvent()) {
@@ -1162,7 +1162,7 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                $renderedArguments = array();
+                $renderedArguments = [];
 
                 foreach ($call->arguments()->all() as $argument) {
                     $renderedArguments[] =
@@ -1221,7 +1221,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -1270,7 +1270,7 @@ class AssertionRenderer
         $matchCount = 0;
 
         if ($totalCount) {
-            $renderedCalls = array();
+            $renderedCalls = [];
 
             foreach ($calls as $call) {
                 if ($responseEvent = $call->responseEvent()) {
@@ -1294,7 +1294,7 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                $renderedArguments = array();
+                $renderedArguments = [];
 
                 foreach ($call->arguments()->all() as $argument) {
                     $renderedArguments[] =
@@ -1357,7 +1357,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -1468,7 +1468,7 @@ class AssertionRenderer
             }
         }
 
-        $renderedCalls = array();
+        $renderedCalls = [];
         $matchCount = 0;
 
         foreach ($calls as $call) {
@@ -1487,7 +1487,7 @@ class AssertionRenderer
             }
 
             $isMatch = false;
-            $renderedArguments = array();
+            $renderedArguments = [];
 
             foreach ($call->arguments()->all() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
@@ -1503,7 +1503,7 @@ class AssertionRenderer
                     $returnValue instanceof Traversable
                 ) {
                     $iterableEvents = $call->iterableEvents();
-                    $renderedIterableEvents = array();
+                    $renderedIterableEvents = [];
 
                     foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
@@ -1665,7 +1665,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -1789,7 +1789,7 @@ class AssertionRenderer
             }
         }
 
-        $renderedCalls = array();
+        $renderedCalls = [];
         $matchCount = 0;
 
         foreach ($calls as $call) {
@@ -1808,7 +1808,7 @@ class AssertionRenderer
             }
 
             $isMatchingCall = false;
-            $renderedArguments = array();
+            $renderedArguments = [];
 
             foreach ($call->arguments()->all() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
@@ -1824,7 +1824,7 @@ class AssertionRenderer
                     $returnValue instanceof Traversable
                 ) {
                     $iterableEvents = $call->iterableEvents();
-                    $renderedIterableEvents = array();
+                    $renderedIterableEvents = [];
 
                     foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
@@ -2013,7 +2013,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -2125,7 +2125,7 @@ class AssertionRenderer
             }
         }
 
-        $renderedCalls = array();
+        $renderedCalls = [];
         $matchCount = 0;
 
         foreach ($calls as $call) {
@@ -2144,7 +2144,7 @@ class AssertionRenderer
             }
 
             $isMatch = false;
-            $renderedArguments = array();
+            $renderedArguments = [];
 
             foreach ($call->arguments()->all() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
@@ -2160,7 +2160,7 @@ class AssertionRenderer
                     $returnValue instanceof Traversable
                 ) {
                     $iterableEvents = $call->iterableEvents();
-                    $renderedIterableEvents = array();
+                    $renderedIterableEvents = [];
 
                     foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
@@ -2343,7 +2343,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -2436,7 +2436,7 @@ class AssertionRenderer
             }
         }
 
-        $renderedCalls = array();
+        $renderedCalls = [];
         $matchCount = 0;
 
         foreach ($calls as $call) {
@@ -2451,7 +2451,7 @@ class AssertionRenderer
             }
 
             $isMatchingCall = false;
-            $renderedArguments = array();
+            $renderedArguments = [];
 
             foreach ($call->arguments()->all() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
@@ -2467,7 +2467,7 @@ class AssertionRenderer
                     $returnValue instanceof Traversable
                 ) {
                     $iterableEvents = $call->iterableEvents();
-                    $renderedIterableEvents = array();
+                    $renderedIterableEvents = [];
 
                     foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
@@ -2635,7 +2635,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -2730,7 +2730,7 @@ class AssertionRenderer
             }
         }
 
-        $renderedCalls = array();
+        $renderedCalls = [];
         $matchCount = 0;
 
         foreach ($calls as $call) {
@@ -2745,7 +2745,7 @@ class AssertionRenderer
             }
 
             $isMatchingCall = false;
-            $renderedArguments = array();
+            $renderedArguments = [];
 
             foreach ($call->arguments()->all() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
@@ -2761,7 +2761,7 @@ class AssertionRenderer
                     $returnValue instanceof Traversable
                 ) {
                     $iterableEvents = $call->iterableEvents();
-                    $renderedIterableEvents = array();
+                    $renderedIterableEvents = [];
 
                     foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
@@ -2934,7 +2934,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -3021,7 +3021,7 @@ class AssertionRenderer
             }
         }
 
-        $renderedCalls = array();
+        $renderedCalls = [];
         $matchCount = 0;
 
         foreach ($calls as $call) {
@@ -3036,7 +3036,7 @@ class AssertionRenderer
             }
 
             $isMatchingCall = false;
-            $renderedArguments = array();
+            $renderedArguments = [];
 
             foreach ($call->arguments()->all() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
@@ -3052,7 +3052,7 @@ class AssertionRenderer
                     $returnValue instanceof Traversable
                 ) {
                     $iterableEvents = $call->iterableEvents();
-                    $renderedIterableEvents = array();
+                    $renderedIterableEvents = [];
 
                     foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
@@ -3232,7 +3232,7 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
-            $calls = array($subject);
+            $calls = [$subject];
             $renderedCallee =
                 $this->exporter->exportCallable($subject->callback());
         } else {
@@ -3321,7 +3321,7 @@ class AssertionRenderer
             }
         }
 
-        $renderedCalls = array();
+        $renderedCalls = [];
         $matchCount = 0;
 
         foreach ($calls as $call) {
@@ -3336,7 +3336,7 @@ class AssertionRenderer
             }
 
             $isMatchingCall = false;
-            $renderedArguments = array();
+            $renderedArguments = [];
 
             foreach ($call->arguments()->all() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
@@ -3352,7 +3352,7 @@ class AssertionRenderer
                     $returnValue instanceof Traversable
                 ) {
                     $iterableEvents = $call->iterableEvents();
-                    $renderedIterableEvents = array();
+                    $renderedIterableEvents = [];
 
                     foreach ($iterableEvents as $event) {
                         if ($event instanceof UsedEvent) {
@@ -3551,10 +3551,10 @@ class AssertionRenderer
         }
 
         usort($calls, 'Eloquent\Phony\Call\CallData::compareSequential');
-        $renderedCalls = array();
+        $renderedCalls = [];
 
         foreach ($calls as $index => $call) {
-            $renderedArguments = array();
+            $renderedArguments = [];
 
             foreach ($call->arguments()->all() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument);
@@ -3590,7 +3590,7 @@ class AssertionRenderer
         $to = $this->renderEvents($actual);
 
         $matcher = new DifferenceSequenceMatcher($from, $to);
-        $diff = array();
+        $diff = [];
 
         foreach ($matcher->getOpcodes() as $opcode) {
             list($tag, $i1, $i2, $j1, $j2) = $opcode;
@@ -3617,13 +3617,13 @@ class AssertionRenderer
             }
         }
 
-        $renderedExpected = array();
+        $renderedExpected = [];
 
         foreach ($from as $event) {
             $renderedExpected[] = '    - ' . $event;
         }
 
-        $renderedActual = array();
+        $renderedActual = [];
 
         foreach ($to as $event) {
             $renderedActual[] = '    - ' . $event;
@@ -3662,7 +3662,7 @@ class AssertionRenderer
             return '<none>';
         }
 
-        $rendered = array();
+        $rendered = [];
 
         foreach ($matchers as $matcher) {
             $rendered[] = $matcher->describe($this->exporter);
@@ -3673,12 +3673,12 @@ class AssertionRenderer
 
     private function renderEvents($events)
     {
-        $rendered = array();
+        $rendered = [];
 
         foreach ($events as $event) {
             if ($event instanceof CallEvent) {
                 $call = $event->call();
-                $renderedArguments = array();
+                $renderedArguments = [];
 
                 foreach ($call->arguments()->all() as $argument) {
                     $renderedArguments[] =
@@ -3691,7 +3691,7 @@ class AssertionRenderer
             }
 
             if ($event instanceof Call) {
-                $renderedArguments = array();
+                $renderedArguments = [];
 
                 foreach ($event->arguments()->all() as $argument) {
                     $renderedArguments[] = $this->exporter->export($argument);

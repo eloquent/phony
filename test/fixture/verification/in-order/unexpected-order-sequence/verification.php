@@ -18,12 +18,12 @@ $spyB(3);
 
 // verification
 Phony::inOrderSequence(
-    array(
+    [
         $spyA->calledWith(1),
         $spyA->calledWith(2),
         $spyA->calledWith(3),
         $spyB->calledWith(1),
         $spyB->calledWith(2),
         $spyB->calledWith(3),
-    )
+    ]
 );

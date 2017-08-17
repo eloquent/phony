@@ -20,7 +20,7 @@ class CallRequestTest extends TestCase
     protected function setUp()
     {
         $this->callback = 'implode';
-        $this->arguments = new Arguments(array('a', 'b'));
+        $this->arguments = new Arguments(['a', 'b']);
         $this->prefixSelf = true;
         $this->suffixArgumentsObject = true;
         $this->suffixArguments = false;
@@ -45,7 +45,7 @@ class CallRequestTest extends TestCase
     public function testConstructorWithInstanceHandles()
     {
         $handle = Phony::mock();
-        $this->arguments = new Arguments(array($handle));
+        $this->arguments = new Arguments([$handle]);
         $this->subject = new CallRequest($this->callback, $this->arguments, false, false, false);
 
         $this->assertSame($handle->get(), $this->subject->arguments()->get(0));
@@ -53,16 +53,16 @@ class CallRequestTest extends TestCase
 
     public function finalArgumentsData()
     {
-        $self = (object) array();
+        $self = (object) [];
 
         //                                 arguments        prefixSelf suffixArray suffix self   incoming         expected
-        return array(
-            'No suffix or prefix' => array(array('a', 'b'), false,     false,      false, $self, array('c', 'd'), array('a', 'b')),
-            'Prefix self'         => array(array('a', 'b'), true,      false,      false, $self, array('c', 'd'), array($self, 'a', 'b')),
-            'Suffix array'        => array(array('a', 'b'), false,     true,       false, $self, array('c', 'd'), array('a', 'b', new Arguments(array('c', 'd')))),
-            'Suffix normal'       => array(array('a', 'b'), false,     false,      true,  $self, array('c', 'd'), array('a', 'b', 'c', 'd')),
-            'One with the lot'    => array(array('a', 'b'), true,      true,       true,  $self, array('c', 'd'), array($self, 'a', 'b', new Arguments(array('c', 'd')), 'c', 'd')),
-        );
+        return [
+            'No suffix or prefix' => [['a', 'b'], false,     false,      false, $self, ['c', 'd'], ['a', 'b']],
+            'Prefix self'         => [['a', 'b'], true,      false,      false, $self, ['c', 'd'], [$self, 'a', 'b']],
+            'Suffix array'        => [['a', 'b'], false,     true,       false, $self, ['c', 'd'], ['a', 'b', new Arguments(['c', 'd'])]],
+            'Suffix normal'       => [['a', 'b'], false,     false,      true,  $self, ['c', 'd'], ['a', 'b', 'c', 'd']],
+            'One with the lot'    => [['a', 'b'], true,      true,       true,  $self, ['c', 'd'], [$self, 'a', 'b', new Arguments(['c', 'd']), 'c', 'd']],
+        ];
     }
 
     /**
@@ -89,8 +89,8 @@ class CallRequestTest extends TestCase
         $b = null;
         $c = null;
         $d = null;
-        $arguments = new Arguments(array(&$a, &$b));
-        $incoming = new Arguments(array(&$c, &$d));
+        $arguments = new Arguments([&$a, &$b]);
+        $incoming = new Arguments([&$c, &$d]);
         $this->subject = new CallRequest($this->callback, $arguments, false, false, true);
         $finalArguments = $this->subject->finalArguments(null, $incoming)->all();
         $finalArguments[0] = 'a';
@@ -102,9 +102,9 @@ class CallRequestTest extends TestCase
         $this->assertSame('b', $b);
         $this->assertSame('c', $c);
         $this->assertSame('d', $d);
-        $this->assertSame(array('a', 'b'), $arguments->all());
-        $this->assertSame(array('c', 'd'), $incoming->all());
-        $this->assertSame(array('a', 'b', 'c', 'd'), $finalArguments);
+        $this->assertSame(['a', 'b'], $arguments->all());
+        $this->assertSame(['c', 'd'], $incoming->all());
+        $this->assertSame(['a', 'b', 'c', 'd'], $finalArguments);
     }
 
     public function testFinalArgumentsWithReferenceParametersArray()
@@ -113,8 +113,8 @@ class CallRequestTest extends TestCase
         $b = null;
         $c = null;
         $d = null;
-        $arguments = new Arguments(array(&$a, &$b));
-        $incoming = new Arguments(array(&$c, &$d));
+        $arguments = new Arguments([&$a, &$b]);
+        $incoming = new Arguments([&$c, &$d]);
         $this->subject = new CallRequest($this->callback, $arguments, false, true, false);
         $finalArguments = $this->subject->finalArguments(null, $incoming)->all();
         $finalArguments[2] = $finalArguments[2]->all();
@@ -127,8 +127,8 @@ class CallRequestTest extends TestCase
         $this->assertSame('b', $b);
         $this->assertSame('c', $c);
         $this->assertSame('d', $d);
-        $this->assertSame(array('a', 'b'), $arguments->all());
-        $this->assertSame(array('c', 'd'), $incoming->all());
-        $this->assertSame(array('a', 'b', array('c', 'd')), $finalArguments);
+        $this->assertSame(['a', 'b'], $arguments->all());
+        $this->assertSame(['c', 'd'], $incoming->all());
+        $this->assertSame(['a', 'b', ['c', 'd']], $finalArguments);
     }
 }

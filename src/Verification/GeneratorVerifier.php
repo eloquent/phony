@@ -86,7 +86,7 @@ class GeneratorVerifier extends IterableVerifier
         }
 
         $isCall = $this->subject instanceof Call;
-        $matchingEvents = array();
+        $matchingEvents = [];
         $matchCount = 0;
         $eventCount = 0;
 
@@ -142,15 +142,15 @@ class GeneratorVerifier extends IterableVerifier
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
-            $arguments = array();
+            $arguments = [];
         } else {
             $value = $this->matcherFactory->adapt($value);
-            $arguments = array($value);
+            $arguments = [$value];
         }
 
         if (
             $result =
-                call_user_func_array(array($this, 'checkReceived'), $arguments)
+                call_user_func_array([$this, 'checkReceived'], $arguments)
         ) {
             return $result;
         }
@@ -174,7 +174,7 @@ class GeneratorVerifier extends IterableVerifier
         $cardinality = $this->resetCardinality();
 
         $isCall = $this->subject instanceof Call;
-        $matchingEvents = array();
+        $matchingEvents = [];
         $matchCount = 0;
         $eventCount = 0;
         $isTypeSupported = false;
@@ -338,7 +338,7 @@ class GeneratorVerifier extends IterableVerifier
             $cardinality->assertSingular();
         }
 
-        $matchingEvents = array();
+        $matchingEvents = [];
         $matchCount = 0;
 
         if (0 === func_num_args()) {
@@ -391,15 +391,15 @@ class GeneratorVerifier extends IterableVerifier
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
-            $arguments = array();
+            $arguments = [];
         } else {
             $value = $this->matcherFactory->adapt($value);
-            $arguments = array($value);
+            $arguments = [$value];
         }
 
         if (
             $result =
-                call_user_func_array(array($this, 'checkReturned'), $arguments)
+                call_user_func_array([$this, 'checkReturned'], $arguments)
         ) {
             return $result;
         }
@@ -426,7 +426,7 @@ class GeneratorVerifier extends IterableVerifier
             $cardinality->assertSingular();
         }
 
-        $matchingEvents = array();
+        $matchingEvents = [];
         $matchCount = 0;
         $isTypeSupported = false;
 

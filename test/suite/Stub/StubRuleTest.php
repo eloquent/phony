@@ -22,10 +22,10 @@ class StubRuleTest extends TestCase
     protected function setUp()
     {
         $this->matcherFactory = MatcherFactory::instance();
-        $this->criteria = array($this->matcherFactory->equalTo('a'), $this->matcherFactory->equalTo('b'));
-        $this->answerA = new Answer(new CallRequest('implode', Arguments::create(), false, false, false), array());
-        $this->answerB = new Answer(new CallRequest('implode', Arguments::create(), false, false, false), array());
-        $this->answers = array($this->answerA, $this->answerB);
+        $this->criteria = [$this->matcherFactory->equalTo('a'), $this->matcherFactory->equalTo('b')];
+        $this->answerA = new Answer(new CallRequest('implode', Arguments::create(), false, false, false), []);
+        $this->answerB = new Answer(new CallRequest('implode', Arguments::create(), false, false, false), []);
+        $this->answers = [$this->answerA, $this->answerB];
         $this->subject = new StubRule($this->criteria, $this->answers);
     }
 
@@ -45,7 +45,7 @@ class StubRuleTest extends TestCase
 
     public function testNextFailureUndefined()
     {
-        $this->subject = new StubRule($this->criteria, array());
+        $this->subject = new StubRule($this->criteria, []);
 
         $this->expectException('Eloquent\Phony\Stub\Exception\UndefinedAnswerException');
         $this->subject->next();

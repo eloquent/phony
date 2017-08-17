@@ -92,7 +92,7 @@ interface Stub extends WrappedInvocable
      */
     public function callsWith(
         $callback,
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -131,7 +131,7 @@ interface Stub extends WrappedInvocable
      */
     public function callsArgumentWith(
         $index = 0,
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = false,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -177,7 +177,7 @@ interface Stub extends WrappedInvocable
      */
     public function doesWith(
         $callback,
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -194,7 +194,7 @@ interface Stub extends WrappedInvocable
      * @return $this This stub.
      */
     public function forwards(
-        $arguments = array(),
+        $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
         $suffixArguments = true
@@ -248,7 +248,7 @@ interface Stub extends WrappedInvocable
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */
-    public function generates($values = array());
+    public function generates($values = []);
 
     /**
      * Close any existing rule.

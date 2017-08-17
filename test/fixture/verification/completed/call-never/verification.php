@@ -6,7 +6,7 @@ use Eloquent\Phony\Test\Phony;
 $stub = Phony::stub()
     ->setLabel('label')
     ->setUseIterableSpies(true)
-    ->returns(array('aardvark', 'bonobo', 'chameleon'));
+    ->returns(['aardvark', 'bonobo', 'chameleon']);
 foreach ($stub() as $value) {
     if ('bonobo' === $value) {
         break;

@@ -39,17 +39,17 @@ class MockFactoryTest extends TestCase
     public function testCreateMockClass()
     {
         $builder = $this->builderFactory->create(
-            array(
+            [
                 'Eloquent\Phony\Test\TestClassB',
-                array(
+                [
                     'static methodA' => function () {
                         return 'static custom ' . implode(func_get_args());
                     },
                     'methodB' => function () {
                         return 'custom ' . implode(func_get_args());
                     },
-                ),
-            )
+                ],
+            ]
         );
         $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateMockClass');
         $actual = $this->subject->createMockClass($builder->definition());
@@ -106,17 +106,17 @@ class MockFactoryTest extends TestCase
     public function testCreateFullMock()
     {
         $builder = $this->builderFactory->create(
-            array(
+            [
                 'Eloquent\Phony\Test\TestClassB',
-                array(
+                [
                     'static methodA' => function () {
                         return 'static custom ' . implode(func_get_args());
                     },
                     'methodB' => function () {
                         return 'custom ' . implode(func_get_args());
                     },
-                ),
-            )
+                ],
+            ]
         );
         $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateFullMock');
         $actual = $this->subject->createFullMock($builder->build());
@@ -140,17 +140,17 @@ class MockFactoryTest extends TestCase
     public function testCreatePartialMock()
     {
         $builder = $this->builderFactory->create(
-            array(
+            [
                 'Eloquent\Phony\Test\TestClassB',
-                array(
+                [
                     'static methodA' => function () {
                         return 'static custom ' . implode(func_get_args());
                     },
                     'methodB' => function () {
                         return 'custom ' . implode(func_get_args());
                     },
-                ),
-            )
+                ],
+            ]
         );
         $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMock');
         $actual = $this->subject->createPartialMock($builder->build());
@@ -177,9 +177,9 @@ class MockFactoryTest extends TestCase
         $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMockWithConstructorArgumentsWithReferences');
         $a = 'a';
         $b = 'b';
-        $actual = $this->subject->createPartialMock($builder->build(), array(&$a, &$b));
+        $actual = $this->subject->createPartialMock($builder->build(), [&$a, &$b]);
 
-        $this->assertSame(array('a', 'b'), $actual->constructorArguments);
+        $this->assertSame(['a', 'b'], $actual->constructorArguments);
         $this->assertSame('first', $a);
         $this->assertSame('second', $b);
     }
@@ -194,9 +194,9 @@ class MockFactoryTest extends TestCase
 
         $builder = $this->builderFactory->create('TestClassOldConstructor');
         $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMockWithOldConstructor');
-        $actual = $this->subject->createPartialMock($builder->build(), array('a', 'b'));
+        $actual = $this->subject->createPartialMock($builder->build(), ['a', 'b']);
 
-        $this->assertSame(array('a', 'b'), $actual->constructorArguments);
+        $this->assertSame(['a', 'b'], $actual->constructorArguments);
     }
 
     public function testCreateFullMockWithFinalConstructor()
@@ -220,9 +220,9 @@ class MockFactoryTest extends TestCase
 
         $builder = $this->builderFactory->create('Eloquent\Phony\Test\TestClassI');
         $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMockWithFinalConstructor');
-        $actual = $this->subject->createPartialMock($builder->build(), array('a', 'b'));
+        $actual = $this->subject->createPartialMock($builder->build(), ['a', 'b']);
 
-        $this->assertSame(array('a', 'b'), $actual->constructorArguments);
+        $this->assertSame(['a', 'b'], $actual->constructorArguments);
     }
 
     public function testInstance()

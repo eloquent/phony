@@ -36,7 +36,7 @@ class CallFactoryWithGeneratorsTest extends TestCase
     public function testRecordWithGeneratedEvents()
     {
         $callback = function () { return; yield null; };
-        $arguments = Arguments::create(array('a', 'b'));
+        $arguments = Arguments::create(['a', 'b']);
         $generator = call_user_func($callback);
         $spy = $this->spyFactory->create();
         $expected = new CallData(0, $this->eventFactory->createCalled($spy, $arguments));
@@ -45,7 +45,7 @@ class CallFactoryWithGeneratorsTest extends TestCase
         $actual = $this->subject->record($callback, $arguments, $spy);
 
         $this->assertEquals($expected, $actual);
-        $this->assertEquals(array($expected), $spy->allCalls());
+        $this->assertEquals([$expected], $spy->allCalls());
     }
 
     public function testCreateGeneratedEvent()

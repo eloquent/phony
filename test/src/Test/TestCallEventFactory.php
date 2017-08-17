@@ -49,7 +49,7 @@ class TestCallEventFactory extends CallEventFactory
             $callback = function () {};
         }
         if (!$arguments) {
-            $arguments = new Arguments(array());
+            $arguments = new Arguments([]);
         }
 
         return parent::createCalled($callback, $arguments);

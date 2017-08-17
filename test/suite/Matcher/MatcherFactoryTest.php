@@ -33,7 +33,7 @@ class MatcherFactoryTest extends TestCase
 
         $this->driverA = new TestMatcherDriverA();
         $this->driverB = new TestMatcherDriverB();
-        $this->drivers = array($this->driverA, $this->driverB);
+        $this->drivers = [$this->driverA, $this->driverB];
 
         $this->featureDetector = FeatureDetector::instance();
     }
@@ -43,7 +43,7 @@ class MatcherFactoryTest extends TestCase
         $this->subject = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher, $this->exporter);
         $this->subject->addMatcherDriver($this->driverA);
 
-        $this->assertSame(array($this->driverA), $this->subject->drivers());
+        $this->assertSame([$this->driverA], $this->subject->drivers());
 
         $this->subject->addMatcherDriver($this->driverB);
 
@@ -56,9 +56,9 @@ class MatcherFactoryTest extends TestCase
         $this->subject->addDefaultMatcherDrivers();
 
         $this->assertSame(
-            array(
+            [
                 HamcrestMatcherDriver::instance(),
-            ),
+            ],
             $this->subject->drivers()
         );
     }
@@ -71,12 +71,12 @@ class MatcherFactoryTest extends TestCase
         $this->assertTrue($this->subject->isMatcher(new EqualToMatcher('a', true, $this->exporter)));
         $this->assertTrue($this->subject->isMatcher(new TestMatcherA()));
         $this->assertTrue($this->subject->isMatcher(new TestMatcherB()));
-        $this->assertFalse($this->subject->isMatcher((object) array()));
+        $this->assertFalse($this->subject->isMatcher((object) []));
     }
 
     public function testAdapt()
     {
-        $value = (object) array('key' => 'value');
+        $value = (object) ['key' => 'value'];
         $matcher = new EqualToMatcher($value, true, $this->exporter);
         $adaptedValue = $this->subject->adapt($value);
 
@@ -117,9 +117,9 @@ class MatcherFactoryTest extends TestCase
         $this->subject->addMatcherDriver($this->driverB);
 
         $valueB = new EqualToMatcher('b', true, $this->exporter);
-        $valueC = (object) array();
+        $valueC = (object) [];
         $valueD = Phony::mock();
-        $values = array(
+        $values = [
             'a',
             $valueB,
             $valueC,
@@ -127,9 +127,9 @@ class MatcherFactoryTest extends TestCase
             new TestMatcherA(),
             '*',
             '~',
-        );
+        ];
         $actual = $this->subject->adaptAll($values);
-        $expected = array(
+        $expected = [
             new EqualToMatcher('a', true, $this->exporter),
             $valueB,
             new EqualToMatcher($valueC, true, $this->exporter),
@@ -137,7 +137,7 @@ class MatcherFactoryTest extends TestCase
             new EqualToMatcher('a', false, $this->exporter),
             WildcardMatcher::instance(),
             $this->anyMatcher,
-        );
+        ];
 
         $this->assertEquals($expected, $actual);
     }
@@ -175,9 +175,9 @@ class MatcherFactoryTest extends TestCase
         $this->assertInstanceOf($class, $instance);
         $this->assertSame($instance, $class::instance());
         $this->assertSame(
-            array(
+            [
                 HamcrestMatcherDriver::instance(),
-            ),
+            ],
             $instance->drivers()
         );
     }

@@ -27,7 +27,7 @@ interface AssertionRecorder
      *
      * @return EventCollection The result.
      */
-    public function createSuccess(array $events = array());
+    public function createSuccess(array $events = []);
 
     /**
      * Record that a successful assertion occurred.

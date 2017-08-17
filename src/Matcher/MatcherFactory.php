@@ -51,8 +51,8 @@ class MatcherFactory
         WildcardMatcher $wildcardAnyMatcher,
         Exporter $exporter
     ) {
-        $this->drivers = array();
-        $this->driverIndex = array();
+        $this->drivers = [];
+        $this->driverIndex = [];
         $this->anyMatcher = $anyMatcher;
         $this->wildcardAnyMatcher = $wildcardAnyMatcher;
         $this->exporter = $exporter;
@@ -159,7 +159,7 @@ class MatcherFactory
      */
     public function adaptAll(array $values)
     {
-        $matchers = array();
+        $matchers = [];
 
         foreach ($values as $value) {
             if (

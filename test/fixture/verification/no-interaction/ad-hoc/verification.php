@@ -5,10 +5,10 @@ use Eloquent\Phony\Test\Phony;
 // setup
 $builder = Phony::mockBuilder()
     ->like(
-        array(
+        [
             'methodA' => function () {},
             'methodB' => function () {},
-        )
+        ]
     )
     ->named('PhonyNoInteraction');
 $mock = $builder->get();

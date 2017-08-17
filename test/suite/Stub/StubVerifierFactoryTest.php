@@ -159,11 +159,11 @@ class StubVerifierFactoryTest extends TestCase
     public function testCreateGlobalWithReferenceParameters()
     {
         $actual = $this->subject->createGlobal('preg_match', 'Eloquent\Phony\Test\SpyVerifierFactory');
-        $actual->setsArgument(2, array('a', 'b'));
+        $actual->setsArgument(2, ['a', 'b']);
 
         \Eloquent\Phony\Test\SpyVerifierFactory\preg_match('/./', 'a', $matches);
 
-        $this->assertSame(array('a', 'b'), $matches);
+        $this->assertSame(['a', 'b'], $matches);
     }
 
     public function testCreateGlobalFailureWithNonGlobal()

@@ -110,13 +110,13 @@ class HandleFactory
 
         $handle = new InstanceHandle(
             $mock,
-            (object) array(
+            (object) [
                 'defaultAnswerCallback' =>
                     'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback',
-                'stubs' => (object) array(),
+                'stubs' => (object) [],
                 'isRecording' => true,
                 'label' => $label,
-            ),
+            ],
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->emptyValueFactory,
@@ -171,12 +171,12 @@ class HandleFactory
 
         $handle = new StaticHandle(
             $class,
-            (object) array(
+            (object) [
                 'defaultAnswerCallback' =>
                     'Eloquent\Phony\Stub\StubData::forwardsAnswerCallback',
-                'stubs' => (object) array(),
+                'stubs' => (object) [],
                 'isRecording' => true,
-            ),
+            ],
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->emptyValueFactory,

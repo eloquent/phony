@@ -391,7 +391,7 @@ EOD;
             return;
         }
 
-        $this->_handle->spy('__destruct')->invokeWith(array());
+        $this->_handle->spy('__destruct')->invokeWith([]);
     }
 
 EOD;
@@ -526,7 +526,7 @@ EOD;
 
             $body =
                 "        \$argumentCount = \\func_num_args();\n" .
-                '        $arguments = array();' .
+                '        $arguments = [];' .
                 $argumentPacking .
                 "\n\n        for (\$i = " .
                 $parameterCount .
@@ -551,14 +551,14 @@ EOD;
             if ($isStatic) {
                 $body .=  <<<EOD
             $resultAssign\call_user_func_array(
-                array(__CLASS__, 'parent::' . $nameExported),
+                [__CLASS__, 'parent::' . $nameExported],
                 \$arguments
             );
 EOD;
             } else {
                 $body .=  <<<EOD
             $resultAssign\call_user_func_array(
-                array(\$this, 'parent::' . $nameExported),
+                [\$this, 'parent::' . $nameExported],
                 \$arguments
             );
 EOD;
@@ -747,7 +747,7 @@ EOD;
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array(__CLASS__, 'parent::' . $name),
+            [__CLASS__, 'parent::' . $name],
             $arguments->all()
         );
     }
@@ -764,13 +764,13 @@ EOD;
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array(
+            [
                 __CLASS__,
                 '_callTrait_' .
                     \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
                     $name,
-            ),
+            ],
             $arguments->all()
         );
     }
@@ -808,7 +808,7 @@ EOD;
     ) {
         return \call_user_func_array(
             $methodName,
-            array(\$name, \$arguments->all())
+            [\$name, \$arguments->all()]
         );
     }
 
@@ -823,7 +823,7 @@ EOD;
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array($this, 'parent::' . $name),
+            [$this, 'parent::' . $name],
             $arguments->all()
         );
     }
@@ -844,7 +844,7 @@ EOD;
     ) {
         \$constructor = function () use (\$arguments) {
             \call_user_func_array(
-                array(\$this, 'parent::$constructorName'),
+                [\$this, 'parent::$constructorName'],
                 \$arguments->all()
             );
         };
@@ -861,7 +861,7 @@ EOD;
         \Eloquent\Phony\Call\Arguments \$arguments
     ) {
         \call_user_func_array(
-            array(\$this, 'parent::$constructorName'),
+            [\$this, 'parent::$constructorName'],
             \$arguments->all()
         );
     }
@@ -896,10 +896,10 @@ EOD;
         \Eloquent\Phony\Call\Arguments \$arguments
     ) {
         \call_user_func_array(
-            array(
+            [
                 \$this,
                 '$constructorName',
-            ),
+            ],
             \$arguments->all()
         );
     }
@@ -916,13 +916,13 @@ EOD;
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array(
+            [
                 $this,
                 '_callTrait_' .
                     \str_replace('\\', "\xc2\xa6", $traitName) .
                     "\xc2\xbb" .
                     $name,
-            ),
+            ],
             $arguments->all()
         );
     }
@@ -959,8 +959,8 @@ EOD;
         \Eloquent\Phony\Call\Arguments \$arguments
     ) {
         return \call_user_func_array(
-            array(\$this, $methodName),
-            array(\$name, \$arguments->all())
+            [\$this, $methodName],
+            [\$name, \$arguments->all()]
         );
     }
 
@@ -995,8 +995,8 @@ EOD;
         }
 
         $methods = $definition->methods()->allMethods();
-        $uncallableMethodNames = array();
-        $traitMethodNames = array();
+        $uncallableMethodNames = [];
+        $traitMethodNames = [];
 
         foreach ($methods as $methodName => $method) {
             $methodName = strtolower($methodName);
@@ -1012,7 +1012,7 @@ EOD;
         $source .= "\n    private static \$_uncallableMethods = ";
 
         if (empty($uncallableMethodNames)) {
-            $source .= 'array()';
+            $source .= '[]';
         } else {
             $source .= var_export($uncallableMethodNames, true);
         }
@@ -1020,13 +1020,13 @@ EOD;
         $source .= ";\n    private static \$_traitMethods = ";
 
         if (empty($traitMethodNames)) {
-            $source .= 'array()';
+            $source .= '[]';
         } else {
             $source .= var_export($traitMethodNames, true);
         }
 
         $source .= ";\n" .
-            "    private static \$_customMethods = array();\n" .
+            "    private static \$_customMethods = [];\n" .
             "    private static \$_staticHandle;\n" .
             '    private $_handle;';
 

@@ -34,7 +34,7 @@ class WrappedUncallableMethodTest extends TestCase
         $this->assertSame('testClassAMethodA', $this->subject->name());
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
-        $this->assertSame(array($this->mock, 'testClassAMethodA'), $this->subject->callback());
+        $this->assertSame([$this->mock, 'testClassAMethodA'], $this->subject->callback());
         $this->assertNull($this->subject->label());
     }
 
@@ -49,7 +49,7 @@ class WrappedUncallableMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertNull($this->subject->mock());
         $this->assertSame(
-            array('Eloquent\Phony\Test\TestClassA', 'testClassAStaticMethodA'),
+            ['Eloquent\Phony\Test\TestClassA', 'testClassAStaticMethodA'],
             $this->subject->callback()
         );
         $this->assertNull($this->subject->label());
@@ -71,7 +71,7 @@ class WrappedUncallableMethodTest extends TestCase
 
         $this->assertSame('return-value', $subject('a', 'b'));
         $this->assertSame('return-value', $subject->invoke('a', 'b'));
-        $this->assertSame('return-value', $subject->invokeWith(array('a', 'b')));
+        $this->assertSame('return-value', $subject->invokeWith(['a', 'b']));
         $this->assertSame('return-value', $subject->invokeWith());
     }
 }

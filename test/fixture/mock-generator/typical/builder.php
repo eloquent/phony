@@ -1,12 +1,12 @@
 <?php
 
 $builder = $factory->create(
-    array(
+    [
         'Eloquent\Phony\Test\TestClassB',
         'Iterator',
         'Countable',
         'ArrayAccess',
-        array(
+        [
             'const CONSTANT_A' => 'constantValueA',
             'const CONSTANT_B' => 444,
             'const CONSTANT_C' => null,
@@ -14,9 +14,9 @@ $builder = $factory->create(
             'static methodB' => function (
                 $first = null,
                 $second = 111,
-                $third = array(),
-                $fourth = array('valueA', 'valueB'),
-                $fifth = array('keyA' => 'valueA', 'keyB' => 'valueB')
+                $third = [],
+                $fourth = ['valueA', 'valueB'],
+                $fifth = ['keyA' => 'valueA', 'keyB' => 'valueB']
             ) {},
             'static propertyA' => 'valueA',
             'static propertyB' => 222,
@@ -24,14 +24,14 @@ $builder = $factory->create(
                 Eloquent\Phony\Mock\Mock $phonySelf,
                 Eloquent\Phony\Test\TestClassA $first,
                 Eloquent\Phony\Test\TestClassA $second = null,
-                array $third = array(),
+                array $third = [],
                 array $fourth = null
             ) {},
             'methodD' => function ($phonySelf) {},
             'propertyC' => 'valueC',
             'propertyD' => 333,
-        ),
-    )
+        ],
+    ]
 );
 
 return $builder->named('Phony\Test\MockGeneratorTypical');

@@ -51,7 +51,7 @@ class HamcrestMatcherDriver implements MatcherDriver
      */
     public function matcherClassNames()
     {
-        return array('Hamcrest\Matcher');
+        return ['Hamcrest\Matcher'];
     }
 
     /**

@@ -6,7 +6,7 @@ use Eloquent\Phony\Test\Phony;
 $stub = Phony::stub()
     ->setLabel('label')
     ->setUseIterableSpies(true)
-    ->returns('aardvark', array('aardvark', 'bonobo', 'chameleon'))
+    ->returns('aardvark', ['aardvark', 'bonobo', 'chameleon'])
     ->with('earwig')->throws(new RuntimeException('EARWIG'));
 $stub();
 try {

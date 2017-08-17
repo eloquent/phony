@@ -7,7 +7,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public static function staticMethod() : void
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -15,7 +15,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (!self::$_staticHandle) {
             \call_user_func_array(
-                array(__CLASS__, 'parent::' . 'staticMethod'),
+                [__CLASS__, 'parent::' . 'staticMethod'],
                 $arguments
             );
 
@@ -38,7 +38,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public function method() : void
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -46,7 +46,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (!$this->_handle) {
             \call_user_func_array(
-                array($this, 'parent::' . 'method'),
+                [$this, 'parent::' . 'method'],
                 $arguments
             );
 
@@ -61,7 +61,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public function customMethod() : void
     {
         $argumentCount = \func_num_args();
-        $arguments = array();
+        $arguments = [];
 
         for ($i = 0; $i < $argumentCount; ++$i) {
             $arguments[] = \func_get_arg($i);
@@ -69,7 +69,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (!$this->_handle) {
             \call_user_func_array(
-                array($this, 'parent::' . 'customMethod'),
+                [$this, 'parent::' . 'customMethod'],
                 $arguments
             );
 
@@ -95,7 +95,7 @@ implements \Eloquent\Phony\Mock\Mock,
     ) {
         return \call_user_func_array(
             'parent::__callStatic',
-            array($name, $arguments->all())
+            [$name, $arguments->all()]
         );
     }
 
@@ -104,8 +104,8 @@ implements \Eloquent\Phony\Mock\Mock,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         return \call_user_func_array(
-            array($this, 'parent::__call'),
-            array($name, $arguments->all())
+            [$this, 'parent::__call'],
+            [$name, $arguments->all()]
         );
     }
 
@@ -115,8 +115,8 @@ implements \Eloquent\Phony\Mock\Mock,
   'method' => true,
   '__call' => true,
 );
-    private static $_traitMethods = array();
-    private static $_customMethods = array();
+    private static $_traitMethods = [];
+    private static $_customMethods = [];
     private static $_staticHandle;
     private $_handle;
 }

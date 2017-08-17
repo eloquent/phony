@@ -4,10 +4,10 @@ use Eloquent\Phony\Test\Phony;
 
 // setup
 $stub = Phony::stub()->setLabel('label')->setUseIterableSpies(true);
-$stub->with('aardvark')->returns(array('AARDVARK'));
-$stub->with('bonobo')->generates(array('BONOBO', 'BADGER'));
-$stub->with('chameleon')->generates(array('CHAMELEON'));
-$stub->with('dugong')->returns(array('DUGONG'));
+$stub->with('aardvark')->returns(['AARDVARK']);
+$stub->with('bonobo')->generates(['BONOBO', 'BADGER']);
+$stub->with('chameleon')->generates(['CHAMELEON']);
+$stub->with('dugong')->returns(['DUGONG']);
 iterator_to_array($stub('aardvark'));
 $generator = $stub('bonobo');
 try {

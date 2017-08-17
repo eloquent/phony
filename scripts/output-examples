@@ -10,7 +10,7 @@ require $rootPath . '/vendor/autoload.php';
 Phony::setUseColor(true);
 
 $fixturePath = $rootPath . '/test/fixture/verification';
-$verifications = array();
+$verifications = [];
 
 foreach (scandir($fixturePath) as $verification) {
     if ('.' === $verification[0]) {

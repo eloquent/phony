@@ -33,7 +33,7 @@ class EventSequence implements EventCollection
         array $events,
         CallVerifierFactory $callVerifierFactory
     ) {
-        $calls = array();
+        $calls = [];
 
         foreach ($events as $event) {
             if ($event instanceof Call) {

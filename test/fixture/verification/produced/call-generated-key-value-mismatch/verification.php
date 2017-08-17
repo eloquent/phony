@@ -4,8 +4,8 @@ use Eloquent\Phony\Test\Phony;
 
 // setup
 $stub = Phony::stub()->setLabel('label')->setUseIterableSpies(true);
-$stub->with('aardvark')->generates(array('AARDVARK' => 'MECHA-AARDVARK'));
-$stub->with('bonobo')->generates(array('BONOBO' => 'MECHA-BONOBO'));
+$stub->with('aardvark')->generates(['AARDVARK' => 'MECHA-AARDVARK']);
+$stub->with('bonobo')->generates(['BONOBO' => 'MECHA-BONOBO']);
 iterator_to_array($stub('aardvark'));
 iterator_to_array($stub('bonobo'));
 

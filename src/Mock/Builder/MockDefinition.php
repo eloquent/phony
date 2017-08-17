@@ -57,36 +57,36 @@ class MockDefinition
         $this->isTraitSupported = $isTraitSupported;
         $this->isRelaxedKeywordsSupported = $isRelaxedKeywordsSupported;
 
-        $this->signature = array(
+        $this->signature = [
             'types' => array_keys($types),
-            'customMethods' => array(),
+            'customMethods' => [],
             'customProperties' => $customProperties,
-            'customStaticMethods' => array(),
+            'customStaticMethods' => [],
             'customStaticProperties' => $customStaticProperties,
             'customConstants' => $customConstants,
             'className' => $className,
-        );
+        ];
 
         foreach ($customMethods as $name => $method) {
             list(, $reflector) = $method;
 
-            $this->signature['customMethods'][$name] = array(
+            $this->signature['customMethods'][$name] = [
                 'custom',
                 $reflector->getFileName(),
                 $reflector->getStartLine(),
                 $reflector->getEndLine(),
-            );
+            ];
         }
 
         foreach ($customStaticMethods as $name => $method) {
             list(, $reflector) = $method;
 
-            $this->signature['customStaticMethods'][$name] = array(
+            $this->signature['customStaticMethods'][$name] = [
                 'custom',
                 $reflector->getFileName(),
                 $reflector->getStartLine(),
                 $reflector->getEndLine(),
-            );
+            ];
         }
     }
 
@@ -251,9 +251,9 @@ class MockDefinition
             return;
         }
 
-        $this->typeNames = array();
-        $this->interfaceNames = array();
-        $this->traitNames = array();
+        $this->typeNames = [];
+        $this->interfaceNames = [];
+        $this->traitNames = [];
 
         foreach ($this->types as $type) {
             $this->typeNames[] = $typeName = $type->getName();
@@ -274,8 +274,8 @@ class MockDefinition
             return;
         }
 
-        $methods = array();
-        $unmockable = array();
+        $methods = [];
+        $unmockable = [];
 
         if ($typeName = $this->parentClassName()) {
             $type = $this->types[strtolower($typeName)];
@@ -296,7 +296,7 @@ class MockDefinition
             }
         }
 
-        $traitMethods = array();
+        $traitMethods = [];
 
         foreach ($this->traitNames() as $typeName) {
             $type = $this->types[strtolower($typeName)];

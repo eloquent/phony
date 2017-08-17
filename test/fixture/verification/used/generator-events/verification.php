@@ -18,16 +18,16 @@ $stub = Phony::stub()
             return count($values);
         }
     );
-$stub(array('aardvark', 'bonobo'));
-$generator = $stub(array('aardvark', 'bonobo'));
+$stub(['aardvark', 'bonobo']);
+$generator = $stub(['aardvark', 'bonobo']);
 $generator->send('AARDVARK');
 $generator->send('BONOBO');
-$generator = $stub(array('aardvark'));
+$generator = $stub(['aardvark']);
 try {
     $generator->throw(new RuntimeException('AARDVARK'));
 } catch (RuntimeException $e) {
 }
-$generator = $stub(array('aardvark', 'bonobo'));
+$generator = $stub(['aardvark', 'bonobo']);
 $generator->next();
 
 // verification

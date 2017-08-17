@@ -47,7 +47,7 @@ class WrappedTraitMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame(array($this->mock, 'testClassAMethodB'), $this->subject->callback());
+        $this->assertSame([$this->mock, 'testClassAMethodB'], $this->subject->callback());
         $this->assertNull($this->subject->label());
     }
 
@@ -64,7 +64,7 @@ class WrappedTraitMethodTest extends TestCase
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame(
-            array('Eloquent\Phony\Test\TestTraitA', 'testClassAStaticMethodA'),
+            ['Eloquent\Phony\Test\TestTraitA', 'testClassAStaticMethodA'],
             $this->subject->callback()
         );
         $this->assertNull($this->subject->label());
@@ -94,7 +94,7 @@ class WrappedTraitMethodTest extends TestCase
 
         $this->assertSame('ab', $subject('a', 'b'));
         $this->assertSame('ab', $subject->invoke('a', 'b'));
-        $this->assertSame('ab', $subject->invokeWith(array('a', 'b')));
+        $this->assertSame('ab', $subject->invokeWith(['a', 'b']));
     }
 
     public function testInvokeMethodsWithStatic()
@@ -109,6 +109,6 @@ class WrappedTraitMethodTest extends TestCase
         $subject = new WrappedTraitMethod($callTraitMethod, $traitName, $method, $handle);
         $a = 'a';
 
-        $this->assertSame('ab', $subject->invokeWith(array(&$a, 'b')));
+        $this->assertSame('ab', $subject->invokeWith([&$a, 'b']));
     }
 }

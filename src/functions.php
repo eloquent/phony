@@ -40,7 +40,7 @@ use ReflectionClass;
  *
  * @return MockBuilder The mock builder.
  */
-function mockBuilder($types = array())
+function mockBuilder($types = [])
 {
     return FacadeDriver::instance()->mockBuilderFactory->create($types);
 }
@@ -56,7 +56,7 @@ function mockBuilder($types = array())
  *
  * @return InstanceHandle A handle around the new mock.
  */
-function mock($types = array())
+function mock($types = [])
 {
     $driver = FacadeDriver::instance();
 
@@ -81,7 +81,7 @@ function mock($types = array())
  *
  * @return InstanceHandle A handle around the new mock.
  */
-function partialMock($types = array(), $arguments = array())
+function partialMock($types = [], $arguments = [])
 {
     $driver = FacadeDriver::instance();
 

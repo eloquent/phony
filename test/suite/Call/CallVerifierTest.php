@@ -41,8 +41,8 @@ class CallVerifierTest extends TestCase
         $this->callEventFactory = $this->callFactory->eventFactory();
         $this->callEventFactory->sequencer()->set(111);
         $this->thisValue = new TestClassA();
-        $this->callback = array($this->thisValue, 'testClassAMethodA');
-        $this->arguments = new Arguments(array('a', 'b', 'c'));
+        $this->callback = [$this->thisValue, 'testClassAMethodA'];
+        $this->arguments = new Arguments(['a', 'b', 'c']);
         $this->returnValue = 'abc';
         $this->calledEvent = $this->callEventFactory->createCalled($this->callback, $this->arguments);
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
@@ -85,7 +85,7 @@ class CallVerifierTest extends TestCase
         $this->argumentCount = count($this->arguments);
         $this->matchers = $this->matcherFactory->adaptAll($this->arguments->all());
         $this->otherMatcher = $this->matcherFactory->adapt('d');
-        $this->events = array($this->calledEvent, $this->returnedEvent);
+        $this->events = [$this->calledEvent, $this->returnedEvent];
 
         $this->callFactory->reset();
         $this->exception = new RuntimeException('You done goofed.');
@@ -133,21 +133,21 @@ class CallVerifierTest extends TestCase
         $this->callEventFactory->sequencer()->set(222);
         $this->lateCall = $this->callFactory->create();
 
-        $this->assertionResult = new EventSequence(array($this->call), $this->callVerifierFactory);
+        $this->assertionResult = new EventSequence([$this->call], $this->callVerifierFactory);
         $this->returnedAssertionResult =
-            new EventSequence(array($this->call->responseEvent()), $this->callVerifierFactory);
+            new EventSequence([$this->call->responseEvent()], $this->callVerifierFactory);
         $this->threwAssertionResult =
-            new EventSequence(array($this->callWithException->responseEvent()), $this->callVerifierFactory);
-        $this->emptyAssertionResult = new EventSequence(array(), $this->callVerifierFactory);
+            new EventSequence([$this->callWithException->responseEvent()], $this->callVerifierFactory);
+        $this->emptyAssertionResult = new EventSequence([], $this->callVerifierFactory);
 
         $this->returnedIterableEvent =
-            $this->callEventFactory->createReturned(array('m' => 'n', 'p' => 'q', 'r' => 's', 'u' => 'v'));
+            $this->callEventFactory->createReturned(['m' => 'n', 'p' => 'q', 'r' => 's', 'u' => 'v']);
         $this->iteratorEventA = $this->callEventFactory->createProduced('m', 'n');
         $this->iteratorEventB = $this->callEventFactory->createProduced('p', 'q');
         $this->iteratorEventE = $this->callEventFactory->createProduced('r', 's');
         $this->iteratorEventG = $this->callEventFactory->createProduced('u', 'v');
         $this->iteratorEvents =
-            array($this->iteratorEventA, $this->iteratorEventB, $this->iteratorEventE, $this->iteratorEventG);
+            [$this->iteratorEventA, $this->iteratorEventB, $this->iteratorEventE, $this->iteratorEventG];
         $this->iterableEndEvent = $this->callEventFactory->createConsumed();
         $this->iterableCall = $this->callFactory->create(
             $this->calledEvent,
@@ -155,13 +155,13 @@ class CallVerifierTest extends TestCase
             $this->iteratorEvents,
             $this->iterableEndEvent
         );
-        $this->iterableCallEvents = array(
+        $this->iterableCallEvents = [
             $this->calledEvent,
             $this->returnedIterableEvent,
             $this->iteratorEventA,
             $this->iteratorEventB,
             $this->iterableEndEvent,
-        );
+        ];
         $this->iterableSubject = new CallVerifier(
             $this->iterableCall,
             $this->matcherFactory,
@@ -199,13 +199,13 @@ class CallVerifierTest extends TestCase
         $this->assertSame(2, count($this->subject));
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
-        $this->assertSame(array(), $this->subject->iterableEvents());
+        $this->assertSame([], $this->subject->iterableEvents());
         $this->assertSame($this->returnedEvent, $this->subject->endEvent());
         $this->assertTrue($this->subject->hasEvents());
         $this->assertSame($this->calledEvent, $this->subject->firstEvent());
         $this->assertSame($this->returnedEvent, $this->subject->lastEvent());
         $this->assertSame($this->events, $this->subject->allEvents());
-        $this->assertSame(array($this->call), $this->subject->allCalls());
+        $this->assertSame([$this->call], $this->subject->allCalls());
         $this->assertTrue($this->subject->hasResponded());
         $this->assertFalse($this->subject->isIterable());
         $this->assertFalse($this->subject->isGenerator());
@@ -219,8 +219,8 @@ class CallVerifierTest extends TestCase
         $this->assertSame('b', $this->subject->argument(-2));
         $this->assertSame($this->returnValue, $this->subject->returnValue());
         $this->assertSame($this->exception, $this->subjectWithException->exception());
-        $this->assertSame(array(null, $this->returnValue), $this->subject->response());
-        $this->assertSame(array($this->exception, null), $this->subjectWithException->response());
+        $this->assertSame([null, $this->returnValue], $this->subject->response());
+        $this->assertSame([$this->exception, null], $this->subjectWithException->response());
         $this->assertSame($this->call->index(), $this->subject->index());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertSame($this->calledEvent->time(), $this->subject->time());
@@ -253,15 +253,15 @@ class CallVerifierTest extends TestCase
 
     public function testIteration()
     {
-        $this->assertSame(array($this->call), iterator_to_array($this->subject));
+        $this->assertSame([$this->call], iterator_to_array($this->subject));
     }
 
     public function testAddIterableEvent()
     {
-        $returnedEvent = $this->callEventFactory->createReturned(array('a' => 'b', 'c' => 'd'));
+        $returnedEvent = $this->callEventFactory->createReturned(['a' => 'b', 'c' => 'd']);
         $iterableEventA = $this->callEventFactory->createProduced('a', 'b');
         $iterableEventB = $this->callEventFactory->createProduced('c', 'd');
-        $iterableEvents = array($iterableEventA, $iterableEventB);
+        $iterableEvents = [$iterableEventA, $iterableEventB];
         $this->call = $this->callFactory->create($this->calledEvent, $returnedEvent);
         $this->subject = new CallVerifier(
             $this->call,
@@ -316,17 +316,17 @@ class CallVerifierTest extends TestCase
     public function calledWithData()
     {
         //                                    arguments                  calledWith calledWithWildcard
-        return array(
-            'Exact arguments'        => array(array('a', 'b', 'c'),      true,      true),
-            'First arguments'        => array(array('a', 'b'),           false,     true),
-            'Single argument'        => array(array('a'),                false,     true),
-            'Last arguments'         => array(array('b', 'c'),           false,     false),
-            'Last argument'          => array(array('c'),                false,     false),
-            'Extra arguments'        => array(array('a', 'b', 'c', 'd'), false,     false),
-            'First argument differs' => array(array('d', 'b', 'c'),      false,     false),
-            'Last argument differs'  => array(array('a', 'b', 'd'),      false,     false),
-            'Unused argument'        => array(array('d'),                false,     false),
-        );
+        return [
+            'Exact arguments'        => [['a', 'b', 'c'],      true,      true],
+            'First arguments'        => [['a', 'b'],           false,     true],
+            'Single argument'        => [['a'],                false,     true],
+            'Last arguments'         => [['b', 'c'],           false,     false],
+            'Last argument'          => [['c'],                false,     false],
+            'Extra arguments'        => [['a', 'b', 'c', 'd'], false,     false],
+            'First argument differs' => [['d', 'b', 'c'],      false,     false],
+            'Last argument differs'  => [['a', 'b', 'd'],      false,     false],
+            'Unused argument'        => [['d'],                false,     false],
+        ];
     }
 
     /**
@@ -338,19 +338,19 @@ class CallVerifierTest extends TestCase
 
         $this->assertSame(
             $calledWith,
-            (bool) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array([$this->subject, 'checkCalledWith'], $arguments)
         );
         $this->assertSame(
             $calledWith,
-            (bool) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array([$this->subject, 'checkCalledWith'], $matchers)
         );
         $this->assertSame(
             !$calledWith,
-            (bool) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array([$this->subject->never(), 'checkCalledWith'], $arguments)
         );
         $this->assertSame(
             !$calledWith,
-            (bool) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array([$this->subject->never(), 'checkCalledWith'], $matchers)
         );
 
         $arguments[] = $this->matcherFactory->wildcard();
@@ -358,19 +358,19 @@ class CallVerifierTest extends TestCase
 
         $this->assertSame(
             $calledWithWildcard,
-            (bool) call_user_func_array(array($this->subject, 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array([$this->subject, 'checkCalledWith'], $arguments)
         );
         $this->assertSame(
             $calledWithWildcard,
-            (bool) call_user_func_array(array($this->subject, 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array([$this->subject, 'checkCalledWith'], $matchers)
         );
         $this->assertSame(
             !$calledWithWildcard,
-            (bool) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $arguments)
+            (bool) call_user_func_array([$this->subject->never(), 'checkCalledWith'], $arguments)
         );
         $this->assertSame(
             !$calledWithWildcard,
-            (bool) call_user_func_array(array($this->subject->never(), 'checkCalledWith'), $matchers)
+            (bool) call_user_func_array([$this->subject->never(), 'checkCalledWith'], $matchers)
         );
     }
 
@@ -479,7 +479,7 @@ class CallVerifierTest extends TestCase
         $this->assertEquals($this->returnedAssertionResult, $this->subject->completed());
         $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->completed());
         $this->assertEquals(
-            new EventSequence(array($this->iterableEndEvent), $this->callVerifierFactory),
+            new EventSequence([$this->iterableEndEvent], $this->callVerifierFactory),
             $this->iterableSubject->completed()
         );
         $this->assertEquals($this->emptyAssertionResult, $this->subjectWithNoResponse->never()->completed());
@@ -621,7 +621,7 @@ class CallVerifierTest extends TestCase
     public function testCheckThrewFailureInvalidInputObject()
     {
         $this->expectException('InvalidArgumentException', 'Unable to match exceptions against #0{}.');
-        $this->subjectWithException->checkThrew((object) array());
+        $this->subjectWithException->checkThrew((object) []);
     }
 
     public function testThrew()
@@ -658,7 +658,7 @@ class CallVerifierTest extends TestCase
             $this->assertionRenderer
         );
         $this->threwAssertionResult =
-            new EventSequence(array($this->callWithException->responseEvent()), $this->callVerifierFactory);
+            new EventSequence([$this->callWithException->responseEvent()], $this->callVerifierFactory);
 
         $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->threw());
     }
@@ -759,7 +759,7 @@ class CallVerifierTest extends TestCase
     public function testThrewFailureInvalidInputObject()
     {
         $this->expectException('InvalidArgumentException', 'Unable to match exceptions against #0{}.');
-        $this->subjectWithException->threw((object) array());
+        $this->subjectWithException->threw((object) []);
     }
 
     public function testCardinalityMethods()
@@ -790,11 +790,11 @@ class CallVerifierTest extends TestCase
     public function testIterated()
     {
         $this->assertEquals(
-            $this->iterableVerifierFactory->create($this->iterableCall, array($this->iterableCall)),
+            $this->iterableVerifierFactory->create($this->iterableCall, [$this->iterableCall]),
             $this->iterableSubject->iterated()
         );
         $this->assertEquals(
-            $this->iterableVerifierFactory->create($this->call, array()),
+            $this->iterableVerifierFactory->create($this->call, []),
             $this->subject->never()->iterated()
         );
     }
