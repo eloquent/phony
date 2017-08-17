@@ -10,7 +10,6 @@
     <testsuites>
         <testsuite>
             <directory>test/suite</directory>
-            <directory>test/suite-generators</directory>
         </testsuite>
     </testsuites>
 
