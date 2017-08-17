@@ -314,8 +314,9 @@ class SpyDataTest extends TestCase
     public function testInvokeWithExceptionThrown()
     {
         $exceptions = array(new Exception(), new Exception(), new Exception());
-        $callback = function () use (&$exceptions) {
-            list(, $exception) = each($exceptions);
+        $index = 0;
+        $callback = function () use (&$exceptions, &$index) {
+            $exception = $exceptions[$index++];
             throw $exception;
         };
         $spy = new SpyData(
