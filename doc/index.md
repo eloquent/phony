@@ -4051,12 +4051,8 @@ Example output from [`inOrder()`](#facade.inOrder):
 
 #### Dynamic order verification
 
-In addition to [`inOrder()`](#facade.inOrder) and
-[`anyOrder()`](#facade.anyOrder), there are also
-[`inOrderSequence()`](#facade.inOrderSequence) and
-[`anyOrderSequence()`](#facade.anyOrderSequence) variants that accept any array
-or iterable containing [verification results]. These variants can be used when
-the number of events to verify is dynamic:
+When the number of events to verify is dynamic, the [`...` operator] can be
+used:
 
 ```php
 $calledEvents = [];
@@ -4068,45 +4064,23 @@ foreach ($spies as $spy) {
 }
 
 // with `use function`
-inOrderSequence(
-    [
-        anyOrderSequence($calledEvents),
-        anyOrderSequence($returnedEvents),
-    ]
+inOrder(
+    anyOrder(...$calledEvents),
+    anyOrder(...$returnedEvents)
 );
 
 // without `use function`
-x\inOrderSequence(
-    [
-        x\anyOrderSequence($calledEvents),
-        x\anyOrderSequence($returnedEvents),
-    ]
+x\inOrder(
+    x\anyOrder(...$calledEvents),
+    x\anyOrder(...$returnedEvents)
 );
 
 // static
-Phony::inOrderSequence(
-    [
-        Phony::anyOrderSequence($calledEvents),
-        Phony::anyOrderSequence($returnedEvents),
-    ]
+Phony::inOrder(
+    Phony::anyOrder(...$calledEvents),
+    Phony::anyOrder(...$returnedEvents)
 );
 ```
-
-Note that [`inOrder()`](#facade.inOrder), [`anyOrder()`](#facade.anyOrder),
-[`inOrderSequence()`](#facade.inOrderSequence), and
-[`anyOrderSequence()`](#facade.anyOrderSequence) can be used together in
-whatever fashion is most appropriate for the situation:
-
-```php
-inOrder(
-    anyOrderSequence($calledEvents),
-    anyOrderSequence($returnedEvents),
-);
-```
-
-Example output from [`inOrderSequence()`](#facade.inOrderSequence):
-
-![Example output from inOrderSequence()][facade-in-order-sequence-image]
 
 #### Order verification caveats
 
@@ -4818,12 +4792,8 @@ functions or static methods depending on the method of importing:
 - [`wildcard()`](#facade.wildcard)
 - [`inOrder()`](#facade.inOrder)
 - [`checkInOrder()`](#facade.checkInOrder)
-- [`inOrderSequence()`](#facade.inOrderSequence)
-- [`checkInOrderSequence()`](#facade.checkInOrderSequence)
 - [`anyOrder()`](#facade.anyOrder)
 - [`checkAnyOrder()`](#facade.checkAnyOrder)
-- [`anyOrderSequence()`](#facade.anyOrderSequence)
-- [`checkAnyOrderSequence()`](#facade.checkAnyOrderSequence)
 - [`setUseColor()`](#facade.setUseColor)
 - [`setExportDepth()`](#facade.setExportDepth)
 
@@ -5030,38 +5000,6 @@ Checks if the supplied events happened in chronological order.
 
 *See [Order verification], [Check verification].*
 
-<a name="facade.inOrderSequence" />
-
-----
-
-> *[verification][verification-api]* [**inOrderSequence**](#facade.inOrderSequence)($events) *(with [use function])*
-> throws [AssertionException]<br />
-> *[verification][verification-api]* x\\[**inOrderSequence**](#facade.inOrderSequence)($events) *(without [use function])*
-> throws [AssertionException]<br />
-> *[verification][verification-api]* Phony::[**inOrderSequence**](#facade.inOrderSequence)($events) *(static)*
-> throws [AssertionException]
-
-Throws an exception unless the supplied event sequence happened in chronological
-order.
-
-*Each value in `$events` should be an event, or a [verification result].*
-
-*See [Dynamic order verification].*
-
-<a name="facade.checkInOrderSequence" />
-
-----
-
-> *[verification][verification-api]|null* [**checkInOrderSequence**](#facade.checkInOrderSequence)($events) *(with [use function])*<br />
-> *[verification][verification-api]|null* x\\[**checkInOrderSequence**](#facade.checkInOrderSequence)($events) *(without [use function])*<br />
-> *[verification][verification-api]|null* Phony::[**checkInOrderSequence**](#facade.checkInOrderSequence)($events) *(static)*
-
-Checks if the supplied event sequence happened in chronological order.
-
-*Each value in `$events` should be an event, or a [verification result].*
-
-*See [Dynamic order verification], [Check verification].*
-
 <a name="facade.anyOrder" />
 
 ----
@@ -5092,38 +5030,6 @@ Checks that at least one event is supplied.
 *Each value in `$events` should be an event, or a [verification result].*
 
 *See [Order verification], [Check verification].*
-
-<a name="facade.anyOrderSequence" />
-
-----
-
-> *[verification][verification-api]* [**anyOrderSequence**](#facade.anyOrderSequence)($events) *(with [use function])*
-> throws [AssertionException]<br />
-> *[verification][verification-api]* x\\[**anyOrderSequence**](#facade.anyOrderSequence)($events) *(without [use function])*
-> throws [AssertionException]<br />
-> *[verification][verification-api]* Phony::[**anyOrderSequence**](#facade.anyOrderSequence)($events) *(static)*
-> throws [AssertionException]
-
-Throws an exception unless the supplied event sequence contains at least one
-event.
-
-*Each value in `$events` should be an event, or a [verification result].*
-
-*See [Dynamic order verification].*
-
-<a name="facade.checkAnyOrderSequence" />
-
-----
-
-> *[verification][verification-api]|null* [**checkAnyOrderSequence**](#facade.checkAnyOrderSequence)($events) *(with [use function])*<br />
-> *[verification][verification-api]|null* x\\[**checkAnyOrderSequence**](#facade.checkAnyOrderSequence)($events) *(without [use function])*<br />
-> *[verification][verification-api]|null* Phony::[**checkAnyOrderSequence**](#facade.checkAnyOrderSequence)($events) *(static)*
-
-Checks if the supplied event sequence contains at least one event.
-
-*Each value in `$events` should be an event, or a [verification result].*
-
-*See [Dynamic order verification], [Check verification].*
 
 <a name="facade.setUseColor" />
 
@@ -7509,12 +7415,8 @@ See also:
 - [`$handle->checkNoInteraction()`](#handle.checkNoInteraction)
 - [`inOrder()`](#facade.inOrder)
 - [`checkInOrder()`](#facade.checkInOrder)
-- [`inOrderSequence()`](#facade.inOrderSequence)
-- [`checkInOrderSequence()`](#facade.checkInOrderSequence)
 - [`anyOrder()`](#facade.anyOrder)
 - [`checkAnyOrder()`](#facade.checkAnyOrder)
-- [`anyOrderSequence()`](#facade.anyOrderSequence)
-- [`checkAnyOrderSequence()`](#facade.checkAnyOrderSequence)
 
 <a name="verification.hasCalls" />
 
@@ -8526,7 +8428,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [call-returned-image]: img/verification/returned/call-value-mismatch.svg
 [call-threw-image]: img/verification/threw/call-value-mismatch.svg
 [facade-in-order-image]: img/verification/in-order/unexpected-order.svg
-[facade-in-order-sequence-image]: img/verification/in-order/unexpected-order-sequence.svg
 [handle-no-interaction-image]: img/verification/no-interaction/parent-class.svg
 [mock-label-image]: img/verification/called-with/mock-label.svg
 [spy-called-image]: img/verification/called/no-calls.svg

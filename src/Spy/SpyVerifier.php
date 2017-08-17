@@ -401,9 +401,9 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
      */
-    public function invoke()
+    public function invoke(...$arguments)
     {
-        return $this->spy->invokeWith(func_get_args());
+        return $this->spy->invokeWith($arguments);
     }
 
     /**
@@ -414,9 +414,9 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
      */
-    public function __invoke()
+    public function __invoke(...$arguments)
     {
-        return $this->spy->invokeWith(func_get_args());
+        return $this->spy->invokeWith($arguments);
     }
 
     /**
@@ -458,15 +458,15 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     /**
      * Checks if called with the supplied arguments.
      *
-     * @param mixed ...$argument The arguments.
+     * @param mixed ...$arguments The arguments.
      *
      * @return EventCollection|null The result.
      */
-    public function checkCalledWith()
+    public function checkCalledWith(...$arguments)
     {
         $cardinality = $this->resetCardinality();
 
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers = $this->matcherFactory->adaptAll($arguments);
         $calls = $this->spy->allCalls();
         $matchingEvents = [];
         $totalCount = count($calls);
@@ -490,20 +490,17 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     /**
      * Throws an exception unless called with the supplied arguments.
      *
-     * @param mixed ...$argument The arguments.
+     * @param mixed ...$arguments The arguments.
      *
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function calledWith()
+    public function calledWith(...$arguments)
     {
         $cardinality = $this->cardinality;
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers = $this->matcherFactory->adaptAll($arguments);
 
-        if (
-            $result =
-                call_user_func_array([$this, 'checkCalledWith'], $matchers)
-        ) {
+        if ($result = $this->checkCalledWith(...$matchers)) {
             return $result;
         }
 
@@ -674,10 +671,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
             $arguments = [$value];
         }
 
-        if (
-            $result =
-                call_user_func_array([$this, 'checkReturned'], $arguments)
-        ) {
+        if ($result = $this->checkReturned(...$arguments)) {
             return $result;
         }
 

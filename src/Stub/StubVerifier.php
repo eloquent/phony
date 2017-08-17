@@ -159,13 +159,13 @@ class StubVerifier extends SpyVerifier implements Stub
     /**
      * Modify the current criteria to match the supplied arguments.
      *
-     * @param mixed ...$argument The arguments.
+     * @param mixed ...$arguments The arguments.
      *
      * @return $this This stub.
      */
-    public function with()
+    public function with(...$arguments)
     {
-        call_user_func_array([$this->stub, 'with'], func_get_args());
+        $this->stub->with(...$arguments);
 
         return $this;
     }
@@ -175,14 +175,13 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable $callback               The callback.
-     * @param callable ...$additionalCallbacks Additional callbacks.
+     * @param callable ...$callbacks The callbacks.
      *
      * @return $this This stub.
      */
-    public function calls(callable $callback)
+    public function calls(callable ...$callbacks)
     {
-        call_user_func_array([$this->stub, 'calls'], func_get_args());
+        $this->stub->calls(...$callbacks);
 
         return $this;
     }
@@ -226,14 +225,13 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param int $index                The argument index.
-     * @param int ...$additionalIndices Additional argument indices to call.
+     * @param int ...$indices The argument indices.
      *
      * @return $this This stub.
      */
-    public function callsArgument($index = 0)
+    public function callsArgument(...$indices)
     {
-        call_user_func_array([$this->stub, 'callsArgument'], func_get_args());
+        $this->stub->callsArgument(...$indices);
 
         return $this;
     }
@@ -301,14 +299,13 @@ class StubVerifier extends SpyVerifier implements Stub
     /**
      * Add a callback as an answer.
      *
-     * @param callable $callback               The callback.
-     * @param callable ...$additionalCallbacks Additional callbacks for subsequent invocations.
+     * @param callable ...$callbacks The callbacks.
      *
      * @return $this This stub.
      */
-    public function does(callable $callback)
+    public function does(callable ...$callbacks)
     {
-        call_user_func_array([$this->stub, 'does'], func_get_args());
+        $this->stub->does(...$callbacks);
 
         return $this;
     }
@@ -371,14 +368,13 @@ class StubVerifier extends SpyVerifier implements Stub
     /**
      * Add an answer that returns a value.
      *
-     * @param mixed $value               The return value.
-     * @param mixed ...$additionalValues Additional return values for subsequent invocations.
+     * @param mixed ...$values The return values.
      *
      * @return $this This stub.
      */
-    public function returns($value = null)
+    public function returns(...$values)
     {
-        call_user_func_array([$this->stub, 'returns'], func_get_args());
+        $this->stub->returns(...$values);
 
         return $this;
     }
@@ -415,14 +411,13 @@ class StubVerifier extends SpyVerifier implements Stub
     /**
      * Add an answer that throws an exception.
      *
-     * @param Throwable|string|null $exception               The exception, or message, or null to throw a generic exception.
-     * @param Throwable|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
+     * @param Throwable|string|null ...$exceptions The exceptions, or messages, or nulls to throw generic exceptions.
      *
      * @return $this This stub.
      */
-    public function throws($exception = null)
+    public function throws(...$exceptions)
     {
-        call_user_func_array([$this->stub, 'throws'], func_get_args());
+        $this->stub->throws(...$exceptions);
 
         return $this;
     }
@@ -431,17 +426,16 @@ class StubVerifier extends SpyVerifier implements Stub
      * Add an answer that returns a generator, and return a builder for
      * customizing the generator's behavior.
      *
-     * @param mixed<mixed,mixed> $values              A set of keys and values to yield.
-     * @param mixed<mixed,mixed> ...$additionalValues Additional sets of keys and values to yield, for subsequent invocations.
+     * @param mixed<mixed,mixed> ...$values Sets of keys and values to yield.
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */
-    public function generates($values = [])
+    public function generates(...$values)
     {
         $builder = $this->generatorAnswerBuilderFactory->create($this);
         $this->stub->doesWith($builder->answer(), [], true, true, false);
 
-        foreach (func_get_args() as $index => $values) {
+        foreach ($values as $index => $subValues) {
             if ($index > 0) {
                 $builder->returns();
 
@@ -450,7 +444,7 @@ class StubVerifier extends SpyVerifier implements Stub
                     ->doesWith($builder->answer(), [], true, true, false);
             }
 
-            $builder->yieldsFrom($values);
+            $builder->yieldsFrom($subValues);
         }
 
         return $builder;

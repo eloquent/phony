@@ -104,7 +104,7 @@ class FeatureDetector
             }
 
             $this->supported[$feature] =
-                (bool) call_user_func($this->features[$feature], $this);
+                (bool) $this->features[$feature]($this);
         }
 
         return $this->supported[$feature];

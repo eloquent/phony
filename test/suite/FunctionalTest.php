@@ -1402,4 +1402,13 @@ class FunctionalTest extends TestCase
         $this->assertSame('#0[#1[], #2[~3]]', $this->exporter->export($valueA));
         $this->assertSame('#0[#0{}, #1{~3}]', $this->exporter->export($valueB));
     }
+
+    public function testReturnsVariadic()
+    {
+        $stub = x\stub()->returns('a')->returns()->returns('b');
+
+        $this->assertSame('a', $stub());
+        $this->assertNull($stub());
+        $this->assertSame('b', $stub());
+    }
 }

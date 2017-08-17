@@ -51,14 +51,13 @@ class GeneratorAnswerBuilder
     /**
      * Add a callback to be called as part of the answer.
      *
-     * @param callable $callback               The callback.
-     * @param callable ...$additionalCallbacks Additional callbacks.
+     * @param callable ...$callbacks The callbacks.
      *
      * @return $this This builder.
      */
-    public function calls(callable $callback)
+    public function calls(callable ...$callbacks)
     {
-        foreach (func_get_args() as $callback) {
+        foreach ($callbacks as $callback) {
             $this->callsWith($callback);
         }
 
@@ -112,15 +111,14 @@ class GeneratorAnswerBuilder
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param int $index                The argument index.
-     * @param int ...$additionalIndices Additional argument indices to call.
+     * @param int ...$indices The argument indices.
      *
      * @return $this This builder.
      */
-    public function callsArgument($index = 0)
+    public function callsArgument(...$indices)
     {
-        if ($arguments = func_get_args()) {
-            foreach ($arguments as $index) {
+        if ($indices) {
+            foreach ($indices as $index) {
                 $this->callsArgumentWith($index);
             }
         } else {
@@ -299,15 +297,19 @@ class GeneratorAnswerBuilder
     /**
      * End the generator by returning a value.
      *
-     * @param mixed $value               The return value.
-     * @param mixed ...$additionalValues Additional return values for subsequent invocations.
+     * @param mixed ...$values The return values.
      *
      * @return Stub             The stub.
      * @throws RuntimeException If the current runtime does not support the supplied return value.
      */
-    public function returns($value = null)
+    public function returns(...$values)
     {
-        $argumentCount = func_num_args();
+        if (empty($values)) {
+            $values = [null];
+        }
+
+        $value = $values[0];
+        $argumentCount = count($values);
         $copies = [];
 
         for ($i = 1; $i < $argumentCount; ++$i) {
@@ -326,7 +328,7 @@ class GeneratorAnswerBuilder
             $this->stub
                 ->doesWith($copies[$i]->answer(), [], true, true, false);
 
-            $copies[$i]->returns(func_get_arg($i));
+            $copies[$i]->returns($values[$i]);
         }
 
         return $this->stub;
@@ -364,14 +366,18 @@ class GeneratorAnswerBuilder
     /**
      * End the generator by throwing an exception.
      *
-     * @param Throwable|string|null $exception               The exception, or message, or null to throw a generic exception.
-     * @param Throwable|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
+     * @param Throwable|string|null ...$exceptions The exceptions, or messages, or nulls to throw generic exceptions.
      *
      * @return Stub The stub.
      */
-    public function throws($exception = null)
+    public function throws(...$exceptions)
     {
-        $argumentCount = func_num_args();
+        if (empty($exceptions)) {
+            $exceptions = [new Exception()];
+        }
+
+        $exception = $exceptions[0];
+        $argumentCount = count($exceptions);
         $copies = [];
 
         for ($i = 1; $i < $argumentCount; ++$i) {
@@ -382,8 +388,6 @@ class GeneratorAnswerBuilder
             $exception = new Exception($exception);
         } elseif ($exception instanceof InstanceHandle) {
             $exception = $exception->get();
-        } elseif (!$exception) {
-            $exception = new Exception();
         }
 
         $this->exception = $exception;
@@ -392,7 +396,7 @@ class GeneratorAnswerBuilder
             $this->stub
                 ->doesWith($copies[$i]->answer(), [], true, true, false);
 
-            $copies[$i]->throws(func_get_arg($i));
+            $copies[$i]->throws($exceptions[$i]);
         }
 
         return $this->stub;

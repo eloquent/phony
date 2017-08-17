@@ -5,13 +5,15 @@ namespace Phony\Test;
 class MockGeneratorCustomMethodInvocableObject
 implements \Eloquent\Phony\Mock\Mock
 {
-    public function methodA()
-    {
+    public function methodA(
+        ...$a0
+    ) {
         $argumentCount = \func_num_args();
         $arguments = [];
 
+
         for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+            $arguments[] = $a0[$i - 0];
         }
 
         if (!$this->_handle) {

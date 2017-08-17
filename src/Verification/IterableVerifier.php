@@ -127,7 +127,6 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
     public function checkProduced($keyOrValue = null, $value = null)
     {
         $cardinality = $this->resetCardinality();
-
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
@@ -225,10 +224,7 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
             $arguments = [$key, $value];
         }
 
-        if (
-            $result =
-                call_user_func_array([$this, 'checkProduced'], $arguments)
-        ) {
+        if ($result = $this->checkProduced(...$arguments)) {
             return $result;
         }
 

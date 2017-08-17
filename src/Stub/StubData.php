@@ -160,20 +160,21 @@ class StubData extends AbstractWrappedInvocable implements Stub
     /**
      * Modify the current criteria to match the supplied arguments.
      *
-     * @param mixed ...$argument The arguments.
+     * @param mixed ...$arguments The arguments.
      *
      * @return $this This stub.
      */
-    public function with()
+    public function with(...$arguments)
     {
         $this->closeRule();
 
         if (empty($this->rules)) {
-            call_user_func($this->defaultAnswerCallback, $this);
+            $defaultAnswerCallback = $this->defaultAnswerCallback;
+            $defaultAnswerCallback($this);
             $this->closeRule();
         }
 
-        $this->criteria = $this->matcherFactory->adaptAll(func_get_args());
+        $this->criteria = $this->matcherFactory->adaptAll($arguments);
 
         return $this;
     }
@@ -183,14 +184,13 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable $callback               The callback.
-     * @param callable ...$additionalCallbacks Additional callbacks.
+     * @param callable ...$callbacks The callbacks.
      *
      * @return $this This stub.
      */
-    public function calls(callable $callback)
+    public function calls(callable ...$callbacks)
     {
-        foreach (func_get_args() as $callback) {
+        foreach ($callbacks as $callback) {
             $this->callsWith($callback);
         }
 
@@ -246,15 +246,14 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param int $index                The argument index.
-     * @param int ...$additionalIndices Additional argument indices to call.
+     * @param int ...$indices The argument indices.
      *
      * @return $this This stub.
      */
-    public function callsArgument($index = 0)
+    public function callsArgument(...$indices)
     {
-        if ($arguments = func_get_args()) {
-            foreach ($arguments as $index) {
+        if ($indices) {
+            foreach ($indices as $index) {
                 $this->callsArgumentWith($index);
             }
         } else {
@@ -364,14 +363,13 @@ class StubData extends AbstractWrappedInvocable implements Stub
     /**
      * Add a callback as an answer.
      *
-     * @param callable $callback               The callback.
-     * @param callable ...$additionalCallbacks Additional callbacks for subsequent invocations.
+     * @param callable $callbacks The callbacks.
      *
      * @return $this This stub.
      */
-    public function does(callable $callback)
+    public function does(callable ...$callbacks)
     {
-        foreach (func_get_args() as $callback) {
+        foreach ($callbacks as $callback) {
             $this->doesWith($callback);
         }
 
@@ -490,14 +488,13 @@ class StubData extends AbstractWrappedInvocable implements Stub
     /**
      * Add an answer that returns a value.
      *
-     * @param mixed $value               The return value.
-     * @param mixed ...$additionalValues Additional return values for subsequent invocations.
+     * @param mixed ...$values The return values.
      *
      * @return $this This stub.
      */
-    public function returns($value = null)
+    public function returns(...$values)
     {
-        if (0 === func_num_args()) {
+        if (empty($values)) {
             $callback = $this->callback;
             $invocableInspector = $this->invocableInspector;
             $emptyValueFactory = $this->emptyValueFactory;
@@ -535,7 +532,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
             );
         }
 
-        foreach (func_get_args() as $value) {
+        foreach ($values as $value) {
             if ($value instanceof InstanceHandle) {
                 $value = $value->get();
             }
@@ -598,14 +595,13 @@ class StubData extends AbstractWrappedInvocable implements Stub
     /**
      * Add an answer that throws an exception.
      *
-     * @param Throwable|string|null $exception               The exception, or message, or null to throw a generic exception.
-     * @param Throwable|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
+     * @param Throwable|string|null ...$exceptions The exceptions, or messages, or nulls to throw generic exceptions.
      *
      * @return $this This stub.
      */
-    public function throws($exception = null)
+    public function throws(...$exceptions)
     {
-        if (0 === func_num_args()) {
+        if (empty($exceptions)) {
             return $this->doesWith(
                 function () {
                     throw new Exception();
@@ -617,7 +613,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
             );
         }
 
-        foreach (func_get_args() as $exception) {
+        foreach ($exceptions as $exception) {
             if (is_string($exception)) {
                 $exception = new Exception($exception);
             } elseif ($exception instanceof InstanceHandle) {
@@ -642,17 +638,16 @@ class StubData extends AbstractWrappedInvocable implements Stub
      * Add an answer that returns a generator, and return a builder for
      * customizing the generator's behavior.
      *
-     * @param mixed<mixed,mixed> $values              A set of keys and values to yield.
-     * @param mixed<mixed,mixed> ...$additionalValues Additional sets of keys and values to yield, for subsequent invocations.
+     * @param mixed<mixed,mixed> ...$values Sets of keys and values to yield.
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */
-    public function generates($values = [])
+    public function generates(...$values)
     {
         $builder = $this->generatorAnswerBuilderFactory->create($this);
         $this->doesWith($builder->answer(), [], true, true, false);
 
-        foreach (func_get_args() as $index => $values) {
+        foreach ($values as $index => $subValues) {
             if ($index > 0) {
                 $builder->returns();
 
@@ -660,7 +655,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
                 $this->doesWith($builder->answer(), [], true, true, false);
             }
 
-            $builder->yieldsFrom($values);
+            $builder->yieldsFrom($subValues);
         }
 
         return $builder;
@@ -674,7 +669,8 @@ class StubData extends AbstractWrappedInvocable implements Stub
     public function closeRule()
     {
         if (!empty($this->secondaryRequests)) {
-            call_user_func($this->defaultAnswerCallback, $this);
+            $defaultAnswerCallback = $this->defaultAnswerCallback;
+            $defaultAnswerCallback($this);
             $this->secondaryRequests = [];
         }
 
@@ -717,7 +713,8 @@ class StubData extends AbstractWrappedInvocable implements Stub
         $this->closeRule();
 
         if (empty($this->rules)) {
-            call_user_func($this->defaultAnswerCallback, $this);
+            $defaultAnswerCallback = $this->defaultAnswerCallback;
+            $defaultAnswerCallback($this);
             $this->closeRule();
         }
 

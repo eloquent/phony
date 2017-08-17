@@ -193,10 +193,10 @@ function restoreGlobalFunctions()
  *
  * @return EventCollection|null The result.
  */
-function checkInOrder()
+function checkInOrder(...$events)
 {
     return FacadeDriver::instance()->eventOrderVerifier
-        ->checkInOrderSequence(func_get_args());
+        ->checkInOrder(...$events);
 }
 
 /**
@@ -208,38 +208,9 @@ function checkInOrder()
  * @return EventCollection The result.
  * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
  */
-function inOrder()
+function inOrder(...$events)
 {
-    return FacadeDriver::instance()->eventOrderVerifier
-        ->inOrderSequence(func_get_args());
-}
-
-/**
- * Checks if the supplied event sequence happened in chronological order.
- *
- * @param mixed<Event|EventCollection> $events The event sequence.
- *
- * @return EventCollection|null The result.
- */
-function checkInOrderSequence($events)
-{
-    return FacadeDriver::instance()->eventOrderVerifier
-        ->checkInOrderSequence($events);
-}
-
-/**
- * Throws an exception unless the supplied event sequence happened in
- * chronological order.
- *
- * @param mixed<Event|EventCollection> $events The event sequence.
- *
- * @return EventCollection The result.
- * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
- */
-function inOrderSequence($events)
-{
-    return
-        FacadeDriver::instance()->eventOrderVerifier->inOrderSequence($events);
+    return FacadeDriver::instance()->eventOrderVerifier->inOrder(...$events);
 }
 
 /**
@@ -250,10 +221,10 @@ function inOrderSequence($events)
  * @return EventCollection|null     The result.
  * @throws InvalidArgumentException If invalid input is supplied.
  */
-function checkAnyOrder()
+function checkAnyOrder(...$events)
 {
     return FacadeDriver::instance()->eventOrderVerifier
-        ->checkAnyOrderSequence(func_get_args());
+        ->checkAnyOrder(...$events);
 }
 
 /**
@@ -265,40 +236,9 @@ function checkAnyOrder()
  * @throws InvalidArgumentException If invalid input is supplied.
  * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
  */
-function anyOrder()
+function anyOrder(...$events)
 {
-    return FacadeDriver::instance()->eventOrderVerifier
-        ->anyOrderSequence(func_get_args());
-}
-
-/**
- * Checks if the supplied event sequence contains at least one event.
- *
- * @param mixed<Event|EventCollection> $events The event sequence.
- *
- * @return EventCollection|null     The result.
- * @throws InvalidArgumentException If invalid input is supplied.
- */
-function checkAnyOrderSequence($events)
-{
-    return FacadeDriver::instance()->eventOrderVerifier
-        ->checkAnyOrderSequence($events);
-}
-
-/**
- * Throws an exception unless the supplied event sequence contains at least
- * one event.
- *
- * @param mixed<Event|EventCollection> $events The event sequence.
- *
- * @return EventCollection          The result.
- * @throws InvalidArgumentException If invalid input is supplied.
- * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
- */
-function anyOrderSequence($events)
-{
-    return
-        FacadeDriver::instance()->eventOrderVerifier->anyOrderSequence($events);
+    return FacadeDriver::instance()->eventOrderVerifier->anyOrder(...$events);
 }
 
 /**

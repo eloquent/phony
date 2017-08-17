@@ -322,14 +322,6 @@ class PhonyTest extends TestCase
         $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
         $this->assertEquals([$this->eventA, $this->eventB], $result->allEvents());
 
-        $this->assertTrue((bool) Phony::checkInOrderSequence([$this->eventA, $this->eventB]));
-        $this->assertFalse((bool) Phony::checkInOrderSequence([$this->eventB, $this->eventA]));
-
-        $result = Phony::inOrderSequence([$this->eventA, $this->eventB]);
-
-        $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
-        $this->assertEquals([$this->eventA, $this->eventB], $result->allEvents());
-
         $this->assertTrue((bool) Phony::checkAnyOrder($this->eventA, $this->eventB));
         $this->assertFalse((bool) Phony::checkAnyOrder());
 
@@ -338,14 +330,7 @@ class PhonyTest extends TestCase
         $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
         $this->assertEquals([$this->eventA, $this->eventB], $result->allEvents());
 
-        $this->assertTrue((bool) Phony::checkAnyOrderSequence([$this->eventA, $this->eventB]));
-        $this->assertFalse((bool) Phony::checkAnyOrderSequence([]));
         $this->assertFalse((bool) Phony::checkAnyOrder());
-
-        $result = Phony::anyOrderSequence([$this->eventA, $this->eventB]);
-
-        $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
-        $this->assertEquals([$this->eventA, $this->eventB], $result->allEvents());
     }
 
     public function testInOrderMethodFailure()
@@ -354,22 +339,10 @@ class PhonyTest extends TestCase
         Phony::inOrder($this->eventB, $this->eventA);
     }
 
-    public function testInOrderSequenceMethodFailure()
-    {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        Phony::inOrderSequence([$this->eventB, $this->eventA]);
-    }
-
     public function testAnyOrderMethodFailure()
     {
         $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         Phony::anyOrder();
-    }
-
-    public function testAnyOrderSequenceMethodFailure()
-    {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        Phony::anyOrderSequence([]);
     }
 
     public function testEventOrderFunctions()
@@ -382,14 +355,6 @@ class PhonyTest extends TestCase
         $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
         $this->assertEquals([$this->eventA, $this->eventB], $result->allEvents());
 
-        $this->assertTrue((bool) checkInOrderSequence([$this->eventA, $this->eventB]));
-        $this->assertFalse((bool) checkInOrderSequence([$this->eventB, $this->eventA]));
-
-        $result = inOrderSequence([$this->eventA, $this->eventB]);
-
-        $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
-        $this->assertEquals([$this->eventA, $this->eventB], $result->allEvents());
-
         $this->assertTrue((bool) checkAnyOrder($this->eventA, $this->eventB));
         $this->assertFalse((bool) checkAnyOrder());
 
@@ -398,14 +363,7 @@ class PhonyTest extends TestCase
         $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
         $this->assertEquals([$this->eventA, $this->eventB], $result->allEvents());
 
-        $this->assertTrue((bool) checkAnyOrderSequence([$this->eventA, $this->eventB]));
-        $this->assertFalse((bool) checkAnyOrderSequence([]));
         $this->assertFalse((bool) checkAnyOrder());
-
-        $result = anyOrderSequence([$this->eventA, $this->eventB]);
-
-        $this->assertInstanceOf('Eloquent\Phony\Event\EventSequence', $result);
-        $this->assertEquals([$this->eventA, $this->eventB], $result->allEvents());
     }
 
     public function testInOrderFunctionFailure()
@@ -414,22 +372,10 @@ class PhonyTest extends TestCase
         inOrder($this->eventB, $this->eventA);
     }
 
-    public function testInOrderSequenceFunctionFailure()
-    {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        inOrderSequence([$this->eventB, $this->eventA]);
-    }
-
     public function testAnyOrderFunctionFailure()
     {
         $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         anyOrder();
-    }
-
-    public function testAnyOrderSequenceFunctionFailure()
-    {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        anyOrderSequence([]);
     }
 
     public function testAny()

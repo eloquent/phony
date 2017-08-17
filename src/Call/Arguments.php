@@ -29,9 +29,9 @@ class Arguments implements Countable, IteratorAggregate
      *
      * @return Arguments The arguments object.
      */
-    public static function create()
+    public static function create(...$arguments)
     {
-        return new self(func_get_args());
+        return new self($arguments);
     }
 
     /**

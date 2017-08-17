@@ -195,10 +195,9 @@ abstract class AbstractFacade
      *
      * @return EventCollection|null The result.
      */
-    public static function checkInOrder()
+    public static function checkInOrder(...$events)
     {
-        return static::driver()->eventOrderVerifier
-            ->checkInOrderSequence(func_get_args());
+        return static::driver()->eventOrderVerifier->checkInOrder(...$events);
     }
 
     /**
@@ -210,37 +209,9 @@ abstract class AbstractFacade
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public static function inOrder()
+    public static function inOrder(...$events)
     {
-        return static::driver()->eventOrderVerifier
-            ->inOrderSequence(func_get_args());
-    }
-
-    /**
-     * Checks if the supplied event sequence happened in chronological order.
-     *
-     * @param mixed<Event|EventCollection> $events The event sequence.
-     *
-     * @return EventCollection|null The result.
-     */
-    public static function checkInOrderSequence($events)
-    {
-        return
-            static::driver()->eventOrderVerifier->checkInOrderSequence($events);
-    }
-
-    /**
-     * Throws an exception unless the supplied event sequence happened in
-     * chronological order.
-     *
-     * @param mixed<Event|EventCollection> $events The event sequence.
-     *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
-     */
-    public static function inOrderSequence($events)
-    {
-        return static::driver()->eventOrderVerifier->inOrderSequence($events);
+        return static::driver()->eventOrderVerifier->inOrder(...$events);
     }
 
     /**
@@ -251,10 +222,9 @@ abstract class AbstractFacade
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If invalid input is supplied.
      */
-    public static function checkAnyOrder()
+    public static function checkAnyOrder(...$events)
     {
-        return static::driver()->eventOrderVerifier
-            ->checkAnyOrderSequence(func_get_args());
+        return static::driver()->eventOrderVerifier->checkAnyOrder(...$events);
     }
 
     /**
@@ -266,39 +236,9 @@ abstract class AbstractFacade
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public static function anyOrder()
+    public static function anyOrder(...$events)
     {
-        return static::driver()->eventOrderVerifier
-            ->anyOrderSequence(func_get_args());
-    }
-
-    /**
-     * Checks if the supplied event sequence contains at least one event.
-     *
-     * @param mixed<Event|EventCollection> $events The event sequence.
-     *
-     * @return EventCollection|null     The result.
-     * @throws InvalidArgumentException If invalid input is supplied.
-     */
-    public static function checkAnyOrderSequence($events)
-    {
-        return static::driver()->eventOrderVerifier
-            ->checkAnyOrderSequence($events);
-    }
-
-    /**
-     * Throws an exception unless the supplied event sequence contains at least
-     * one event.
-     *
-     * @param mixed<Event|EventCollection> $events The event sequence.
-     *
-     * @return EventCollection          The result.
-     * @throws InvalidArgumentException If invalid input is supplied.
-     * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
-     */
-    public static function anyOrderSequence($events)
-    {
-        return static::driver()->eventOrderVerifier->anyOrderSequence($events);
+        return static::driver()->eventOrderVerifier->anyOrder(...$events);
     }
 
     /**

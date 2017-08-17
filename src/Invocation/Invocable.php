@@ -39,7 +39,7 @@ interface Invocable
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
      */
-    public function invoke();
+    public function invoke(...$arguments);
 
     /**
      * Invoke this object.
@@ -49,5 +49,5 @@ interface Invocable
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
      */
-    public function __invoke();
+    public function __invoke(...$arguments);
 }

@@ -25,13 +25,13 @@ class TestInvocable implements Invocable
         return [__FUNCTION__, $arguments->all()];
     }
 
-    public function invoke()
+    public function invoke(...$arguments)
     {
-        return [__FUNCTION__, func_get_args()];
+        return [__FUNCTION__, $arguments];
     }
 
-    public function __invoke()
+    public function __invoke(...$arguments)
     {
-        return [__FUNCTION__, func_get_args()];
+        return [__FUNCTION__, $arguments];
     }
 }

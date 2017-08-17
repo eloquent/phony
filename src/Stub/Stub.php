@@ -58,23 +58,22 @@ interface Stub extends WrappedInvocable
     /**
      * Modify the current criteria to match the supplied arguments.
      *
-     * @param mixed ...$argument The arguments.
+     * @param mixed ...$arguments The arguments.
      *
      * @return $this This stub.
      */
-    public function with();
+    public function with(...$arguments);
 
     /**
      * Add a callback to be called as part of an answer.
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable $callback               The callback.
-     * @param callable ...$additionalCallbacks Additional callbacks.
+     * @param callable ...$callbacks The callbacks.
      *
      * @return $this This stub.
      */
-    public function calls(callable $callback);
+    public function calls(callable ...$callbacks);
 
     /**
      * Add a callback to be called as part of an answer.
@@ -105,12 +104,11 @@ interface Stub extends WrappedInvocable
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param int $index                The argument index.
-     * @param int ...$additionalIndices Additional argument indices to call.
+     * @param int ...$indices The argument indices.
      *
      * @return $this This stub.
      */
-    public function callsArgument($index = 0);
+    public function callsArgument(...$indices);
 
     /**
      * Add an argument callback to be called as part of an answer.
@@ -156,12 +154,11 @@ interface Stub extends WrappedInvocable
     /**
      * Add a callback as an answer.
      *
-     * @param callable $callback               The callback.
-     * @param callable ...$additionalCallbacks Additional callbacks for subsequent invocations.
+     * @param callable ...$callbacks The callbacks.
      *
      * @return $this This stub.
      */
-    public function does(callable $callback);
+    public function does(callable ...$callbacks);
 
     /**
      * Add a callback as an answer.
@@ -202,12 +199,11 @@ interface Stub extends WrappedInvocable
     /**
      * Add an answer that returns a value.
      *
-     * @param mixed $value               The return value.
-     * @param mixed ...$additionalValues Additional return values for subsequent invocations.
+     * @param mixed ...$values The return values.
      *
      * @return $this This stub.
      */
-    public function returns($value = null);
+    public function returns(...$values);
 
     /**
      * Add an answer that returns an argument.
@@ -231,23 +227,21 @@ interface Stub extends WrappedInvocable
     /**
      * Add an answer that throws an exception.
      *
-     * @param Throwable|string|null $exception               The exception, or message, or null to throw a generic exception.
-     * @param Throwable|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
+     * @param Throwable|string|null ...$exceptions The exceptions, or messages, or nulls to throw generic exceptions.
      *
      * @return $this This stub.
      */
-    public function throws($exception = null);
+    public function throws(...$exceptions);
 
     /**
      * Add an answer that returns a generator, and return a builder for
      * customizing the generator's behavior.
      *
-     * @param mixed<mixed,mixed> $values              A set of keys and values to yield.
-     * @param mixed<mixed,mixed> ...$additionalValues Additional sets of keys and values to yield, for subsequent invocations.
+     * @param mixed<mixed,mixed> ...$values Sets of keys and values to yield.
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */
-    public function generates($values = []);
+    public function generates(...$values);
 
     /**
      * Close any existing rule.

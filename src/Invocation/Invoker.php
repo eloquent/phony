@@ -48,7 +48,9 @@ class Invoker
             return $callback->invokeWith($arguments);
         }
 
-        return call_user_func_array($callback, $arguments->all());
+        $arguments = $arguments->all();
+
+        return $callback(...$arguments);
     }
 
     private static $instance;

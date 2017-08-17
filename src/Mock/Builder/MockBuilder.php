@@ -135,31 +135,30 @@ class MockBuilder
      * definition. If only a single type is being mocked, the class name or
      * definition can be passed without being wrapped in an array.
      *
-     * @param mixed $type     A type, or types to add.
-     * @param mixed ...$types Additional types to add.
+     * @param mixed ...$types Types to add.
      *
      * @return $this         This builder.
      * @throws MockException If invalid input is supplied, or this builder is already finalized.
      */
-    public function like($type)
+    public function like(...$types)
     {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
         }
 
-        $types = [];
+        $final = [];
 
-        foreach (func_get_args() as $type) {
+        foreach ($types as $type) {
             if (is_array($type)) {
                 if (!empty($type)) {
                     if (array_values($type) === $type) {
-                        $types = array_merge($types, $type);
+                        $final = array_merge($final, $type);
                     } else {
-                        $types[] = $type;
+                        $final[] = $type;
                     }
                 }
             } else {
-                $types[] = $type;
+                $final[] = $type;
             }
         }
 
@@ -174,7 +173,7 @@ class MockBuilder
         $parentClassName = null;
         $definitions = [];
 
-        foreach ($types as $type) {
+        foreach ($final as $type) {
             if (is_string($type)) {
                 try {
                     $type = new ReflectionClass($type);
@@ -525,10 +524,10 @@ class MockBuilder
      * @return Mock          The mock instance.
      * @throws MockException If the mock generation fails.
      */
-    public function partial()
+    public function partial(...$arguments)
     {
         $this->mock = $this->factory
-            ->createPartialMock($this->build(), func_get_args());
+            ->createPartialMock($this->build(), $arguments);
 
         return $this->mock;
     }

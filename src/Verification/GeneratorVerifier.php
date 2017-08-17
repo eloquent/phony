@@ -73,7 +73,6 @@ class GeneratorVerifier extends IterableVerifier
     public function checkReceived($value = null)
     {
         $cardinality = $this->resetCardinality();
-
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
@@ -136,7 +135,6 @@ class GeneratorVerifier extends IterableVerifier
     public function received($value = null)
     {
         $cardinality = $this->cardinality;
-
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
@@ -146,10 +144,7 @@ class GeneratorVerifier extends IterableVerifier
             $arguments = [$value];
         }
 
-        if (
-            $result =
-                call_user_func_array([$this, 'checkReceived'], $arguments)
-        ) {
+        if ($result = $this->checkReceived(...$arguments)) {
             return $result;
         }
 
@@ -395,10 +390,7 @@ class GeneratorVerifier extends IterableVerifier
             $arguments = [$value];
         }
 
-        if (
-            $result =
-                call_user_func_array([$this, 'checkReturned'], $arguments)
-        ) {
+        if ($result = $this->checkReturned(...$arguments)) {
             return $result;
         }
 

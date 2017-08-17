@@ -116,9 +116,9 @@ class InstanceHandle extends AbstractHandle
      *
      * @return $this This handle.
      */
-    public function construct()
+    public function construct(...$arguments)
     {
-        return $this->constructWith(func_get_args());
+        return $this->constructWith($arguments);
     }
 
     /**

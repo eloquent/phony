@@ -576,16 +576,15 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Checks if called with the supplied arguments.
      *
-     * @param mixed ...$argument The arguments.
+     * @param mixed ...$arguments The arguments.
      *
      * @return EventCollection|null        The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function checkCalledWith()
+    public function checkCalledWith(...$arguments)
     {
         $cardinality = $this->resetCardinality()->assertSingular();
-
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers = $this->matcherFactory->adaptAll($arguments);
 
         list($matchCount, $matchingEvents) = $this->matchIf(
             $this->call,
@@ -607,15 +606,12 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function calledWith()
+    public function calledWith(...$arguments)
     {
         $cardinality = $this->cardinality;
-        $matchers = $this->matcherFactory->adaptAll(func_get_args());
+        $matchers = $this->matcherFactory->adaptAll($arguments);
 
-        if (
-            $result =
-                call_user_func_array([$this, 'checkCalledWith'], $matchers)
-        ) {
+        if ($result = $this->checkCalledWith(...$matchers)) {
             return $result;
         }
 
@@ -774,10 +770,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
             $arguments = [$value];
         }
 
-        if (
-            $result =
-                call_user_func_array([$this, 'checkReturned'], $arguments)
-        ) {
+        if ($result = $this->checkReturned(...$arguments)) {
             return $result;
         }
 

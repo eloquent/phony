@@ -61,35 +61,7 @@ class EventOrderVerifier
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If invalid input is supplied.
      */
-    public function checkInOrder()
-    {
-        return $this->checkInOrderSequence(func_get_args());
-    }
-
-    /**
-     * Throws an exception unless the supplied events happened in chronological
-     * order.
-     *
-     * @param Event|EventCollection ...$events The events.
-     *
-     * @return EventCollection          The result.
-     * @throws InvalidArgumentException If invalid input is supplied.
-     * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
-     */
-    public function inOrder()
-    {
-        return $this->inOrderSequence(func_get_args());
-    }
-
-    /**
-     * Checks if the supplied event sequence happened in chronological order.
-     *
-     * @param mixed<Event|EventCollection> $events The event sequence.
-     *
-     * @return EventCollection|null     The result.
-     * @throws InvalidArgumentException If invalid input is supplied.
-     */
-    public function checkInOrderSequence($events)
+    public function checkInOrder(...$events)
     {
         if (!count($events)) {
             return null;
@@ -149,18 +121,18 @@ class EventOrderVerifier
     }
 
     /**
-     * Throws an exception unless the supplied event sequence happened in
-     * chronological order.
+     * Throws an exception unless the supplied events happened in chronological
+     * order.
      *
-     * @param mixed<Event|EventCollection> $events The event sequence.
+     * @param Event|EventCollection ...$events The events.
      *
      * @return EventCollection          The result.
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function inOrderSequence($events)
+    public function inOrder(...$events)
     {
-        if ($result = $this->checkInOrderSequence($events)) {
+        if ($result = $this->checkInOrder(...$events)) {
             return $result;
         }
 
@@ -180,9 +152,14 @@ class EventOrderVerifier
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If invalid input is supplied.
      */
-    public function checkAnyOrder()
+    public function checkAnyOrder(...$events)
     {
-        return $this->checkAnyOrderSequence(func_get_args());
+        if (!count($events)) {
+            return null;
+        }
+
+        return $this->assertionRecorder
+            ->createSuccess($this->mergeEvents($events));
     }
 
     /**
@@ -194,42 +171,9 @@ class EventOrderVerifier
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function anyOrder()
+    public function anyOrder(...$events)
     {
-        return $this->anyOrderSequence(func_get_args());
-    }
-
-    /**
-     * Checks if the supplied event sequence contains at least one event.
-     *
-     * @param mixed<Event|EventCollection> $events The event sequence.
-     *
-     * @return EventCollection|null     The result.
-     * @throws InvalidArgumentException If invalid input is supplied.
-     */
-    public function checkAnyOrderSequence($events)
-    {
-        if (!count($events)) {
-            return null;
-        }
-
-        return $this->assertionRecorder
-            ->createSuccess($this->mergeEvents($events));
-    }
-
-    /**
-     * Throws an exception unless the supplied event sequence contains at least
-     * one event.
-     *
-     * @param mixed<Event|EventCollection> $events The event sequence.
-     *
-     * @return EventCollection          The result.
-     * @throws InvalidArgumentException If invalid input is supplied.
-     * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
-     */
-    public function anyOrderSequence($events)
-    {
-        if ($result = $this->checkAnyOrderSequence($events)) {
+        if ($result = $this->checkAnyOrder(...$events)) {
             return $result;
         }
 

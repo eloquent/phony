@@ -26,9 +26,9 @@ abstract class AbstractInvocable implements Invocable
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
      */
-    public function invoke()
+    public function invoke(...$arguments)
     {
-        return $this->invokeWith(func_get_args());
+        return $this->invokeWith($arguments);
     }
 
     /**
@@ -39,8 +39,8 @@ abstract class AbstractInvocable implements Invocable
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
      */
-    public function __invoke()
+    public function __invoke(...$arguments)
     {
-        return $this->invokeWith(func_get_args());
+        return $this->invokeWith($arguments);
     }
 }
