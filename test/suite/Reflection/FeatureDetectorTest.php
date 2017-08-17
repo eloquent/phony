@@ -147,17 +147,10 @@ class FeatureDetectorTest extends TestCase
         }
     }
 
-    public function testCheckToken()
-    {
-        $this->assertTrue($this->subject->checkToken('return', 'T_RETURN'));
-        $this->assertFalse($this->subject->checkToken('return', 'T_FUNCTION'));
-        $this->assertFalse($this->subject->checkToken('return', 'T_JIBBA_JABBA'));
-    }
-
     public function testCheckStatement()
     {
         $this->assertTrue($this->subject->checkStatement(''));
-        $this->assertTrue($this->subject->checkStatement('return'));
+        $this->assertTrue($this->subject->checkStatement('1 + 1'));
         $this->assertFalse($this->subject->checkStatement('{'));
 
         $error = error_get_last();
@@ -182,29 +175,6 @@ class FeatureDetectorTest extends TestCase
             $this->assertSame(E_USER_NOTICE, $error['type']);
             $this->assertSame('', $error['message']);
         }
-    }
-
-    public function testCheckInternalClass()
-    {
-        $this->assertTrue($this->subject->checkInternalClass('ReflectionClass'));
-        $this->assertFalse($this->subject->checkInternalClass(__CLASS__));
-        $this->assertFalse($this->subject->checkInternalClass('Nonexistent'));
-    }
-
-    public function testCheckInternalMethod()
-    {
-        $this->assertTrue($this->subject->checkInternalMethod('ReflectionClass', 'isInterface'));
-        $this->assertFalse($this->subject->checkInternalMethod(__CLASS__, __FUNCTION__));
-        $this->assertFalse($this->subject->checkInternalMethod('Nonexistent', 'nonexistent'));
-        $this->assertFalse($this->subject->checkInternalMethod('ReflectionClass', 'nonexistent'));
-    }
-
-    public function testUniqueSymbolName()
-    {
-        $actual = $this->subject->uniqueSymbolName();
-
-        $this->assertRegExp('/^_FD_symbol_[[:xdigit:]]{32}$/', $actual);
-        $this->assertNotEquals($actual, $this->subject->uniqueSymbolName());
     }
 
     public function testInstance()

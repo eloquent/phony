@@ -12,10 +12,8 @@
 namespace Eloquent\Phony\Reflection;
 
 use Eloquent\Phony\Reflection\Exception\UndefinedFeatureException;
-use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
-use ReflectionMethod;
 use Throwable;
 
 /**
@@ -121,7 +119,7 @@ class FeatureDetector
     {
         return [
             'parameter.variadic.reference' => function ($detector) {
-                return $detector->checkStatement('function (&...$a) {};', true);
+                return $detector->checkStatement('function (&...$a) {};');
             },
 
             'runtime.hhvm' => function ($detector) {
@@ -173,7 +171,7 @@ class FeatureDetector
                     return false; // @codeCoverageIgnore
                 }
 
-                return $detector->checkStatement('function(?int $a){}', false);
+                return $detector->checkStatement('function(?int $a){}');
             },
 
             'type.object' => function () {
@@ -194,8 +192,7 @@ class FeatureDetector
             'type.void' => function ($detector) {
                 return $detector->checkStatement(
                     '$r=new ReflectionFunction(function():void{});' .
-                        'return $r->getReturnType()->isBuiltin();',
-                    false
+                        'return $r->getReturnType()->isBuiltin();'
                 );
             },
         ];
@@ -220,50 +217,21 @@ class FeatureDetector
     }
 
     /**
-     * Check that a keyword is interpreted as a particular token type.
-     *
-     * @param string $keyword      The keyword.
-     * @param string $constantName The name of the token type constant.
-     *
-     * @return bool True if the keyword is interpreted as expected.
-     */
-    public function checkToken($keyword, $constantName)
-    {
-        if (!defined($constantName)) {
-            return false;
-        }
-
-        $tokens = token_get_all('<?php ' . $keyword);
-
-        return is_array($tokens[1]) &&
-            constant($constantName) === $tokens[1][0];
-    }
-
-    /**
      * Check that the supplied syntax is valid.
      *
-     * @param string $source     The source to check.
-     * @param bool   $useClosure True to wrap the supplied source code in a closure.
+     * @param string $source The source to check.
      *
      * @return bool True if the syntax is valid.
      */
-    public function checkStatement($source, $useClosure = true)
+    public function checkStatement($source)
     {
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
         $result = false;
 
-        if ($useClosure) {
-            try {
-                $result = eval(sprintf('function(){%s;};return true;', $source));
-            } catch (Throwable $e) {
-                // re-thrown after cleanup
-            }
-        } else {
-            try {
-                $result = eval(sprintf('%s;return true;', $source));
-            } catch (Throwable $e) {
-                // re-thrown after cleanup
-            }
+        try {
+            $result = eval(sprintf('%s;return true;', $source));
+        } catch (Throwable $e) {
+            // re-thrown after cleanup
         }
 
         if (false === $result) {
@@ -273,59 +241,6 @@ class FeatureDetector
         error_reporting($reporting);
 
         return true === $result;
-    }
-
-    /**
-     * Check that the specified class is defined by the PHP core, or an
-     * extension.
-     *
-     * @param string $className The class name.
-     *
-     * @return bool True if the class exists, and is internal.
-     */
-    public function checkInternalClass($className)
-    {
-        if (class_exists($className, false)) {
-            $class = new ReflectionClass($className);
-
-            return $class->isInternal();
-        }
-
-        return false;
-    }
-
-    /**
-     * Check that the specified method is defined by the PHP core, or an
-     * extension.
-     *
-     * @param string $className  The class name.
-     * @param string $methodName The class name.
-     *
-     * @return bool True if the method exists, and is internal.
-     */
-    public function checkInternalMethod($className, $methodName)
-    {
-        if (!class_exists($className, false)) {
-            return false;
-        }
-
-        if (method_exists($className, $methodName)) {
-            $method = new ReflectionMethod($className, $methodName);
-
-            return $method->isInternal();
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns a symbol name that is unique for this process execution.
-     *
-     * @return string The symbol name.
-     */
-    public function uniqueSymbolName()
-    {
-        return sprintf('_FD_symbol_%s', md5(uniqid()));
     }
 
     private static $instance;
