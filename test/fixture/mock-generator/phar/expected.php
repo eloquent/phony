@@ -34,10 +34,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'addEmptyDir'],
-                $arguments
-            );
+            $result = parent::addEmptyDir(...$arguments);
 
             return $result;
         }
@@ -68,10 +65,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'addFile'],
-                $arguments
-            );
+            $result = parent::addFile(...$arguments);
 
             return $result;
         }
@@ -102,10 +96,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'addFromString'],
-                $arguments
-            );
+            $result = parent::addFromString(...$arguments);
 
             return $result;
         }
@@ -136,10 +127,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'buildFromDirectory'],
-                $arguments
-            );
+            $result = parent::buildFromDirectory(...$arguments);
 
             return $result;
         }
@@ -170,10 +158,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'buildFromIterator'],
-                $arguments
-            );
+            $result = parent::buildFromIterator(...$arguments);
 
             return $result;
         }
@@ -200,10 +185,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'compressFiles'],
-                $arguments
-            );
+            $result = parent::compressFiles(...$arguments);
 
             return $result;
         }
@@ -225,10 +207,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'decompressFiles'],
-                $arguments
-            );
+            $result = parent::decompressFiles(...$arguments);
 
             return $result;
         }
@@ -259,10 +238,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'compress'],
-                $arguments
-            );
+            $result = parent::compress(...$arguments);
 
             return $result;
         }
@@ -289,10 +265,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'decompress'],
-                $arguments
-            );
+            $result = parent::decompress(...$arguments);
 
             return $result;
         }
@@ -327,10 +300,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'convertToExecutable'],
-                $arguments
-            );
+            $result = parent::convertToExecutable(...$arguments);
 
             return $result;
         }
@@ -365,10 +335,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'convertToData'],
-                $arguments
-            );
+            $result = parent::convertToData(...$arguments);
 
             return $result;
         }
@@ -399,10 +366,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'copy'],
-                $arguments
-            );
+            $result = parent::copy(...$arguments);
 
             return $result;
         }
@@ -424,10 +388,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'count'],
-                $arguments
-            );
+            $result = parent::count(...$arguments);
 
             return $result;
         }
@@ -454,10 +415,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'delete'],
-                $arguments
-            );
+            $result = parent::delete(...$arguments);
 
             return $result;
         }
@@ -479,10 +437,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'delMetadata'],
-                $arguments
-            );
+            $result = parent::delMetadata(...$arguments);
 
             return $result;
         }
@@ -517,10 +472,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'extractTo'],
-                $arguments
-            );
+            $result = parent::extractTo(...$arguments);
 
             return $result;
         }
@@ -542,10 +494,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getAlias'],
-                $arguments
-            );
+            $result = parent::getAlias(...$arguments);
 
             return $result;
         }
@@ -567,10 +516,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getPath'],
-                $arguments
-            );
+            $result = parent::getPath(...$arguments);
 
             return $result;
         }
@@ -592,10 +538,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getMetadata'],
-                $arguments
-            );
+            $result = parent::getMetadata(...$arguments);
 
             return $result;
         }
@@ -617,10 +560,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getModified'],
-                $arguments
-            );
+            $result = parent::getModified(...$arguments);
 
             return $result;
         }
@@ -642,10 +582,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getSignature'],
-                $arguments
-            );
+            $result = parent::getSignature(...$arguments);
 
             return $result;
         }
@@ -667,10 +604,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getStub'],
-                $arguments
-            );
+            $result = parent::getStub(...$arguments);
 
             return $result;
         }
@@ -692,10 +626,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getVersion'],
-                $arguments
-            );
+            $result = parent::getVersion(...$arguments);
 
             return $result;
         }
@@ -717,10 +648,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'hasMetadata'],
-                $arguments
-            );
+            $result = parent::hasMetadata(...$arguments);
 
             return $result;
         }
@@ -742,10 +670,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'isBuffering'],
-                $arguments
-            );
+            $result = parent::isBuffering(...$arguments);
 
             return $result;
         }
@@ -767,10 +692,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'isCompressed'],
-                $arguments
-            );
+            $result = parent::isCompressed(...$arguments);
 
             return $result;
         }
@@ -797,10 +719,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'isFileFormat'],
-                $arguments
-            );
+            $result = parent::isFileFormat(...$arguments);
 
             return $result;
         }
@@ -822,10 +741,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'isWritable'],
-                $arguments
-            );
+            $result = parent::isWritable(...$arguments);
 
             return $result;
         }
@@ -852,10 +768,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'offsetExists'],
-                $arguments
-            );
+            $result = parent::offsetExists(...$arguments);
 
             return $result;
         }
@@ -882,10 +795,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'offsetGet'],
-                $arguments
-            );
+            $result = parent::offsetGet(...$arguments);
 
             return $result;
         }
@@ -916,10 +826,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'offsetSet'],
-                $arguments
-            );
+            $result = parent::offsetSet(...$arguments);
 
             return $result;
         }
@@ -946,10 +853,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'offsetUnset'],
-                $arguments
-            );
+            $result = parent::offsetUnset(...$arguments);
 
             return $result;
         }
@@ -976,10 +880,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'setAlias'],
-                $arguments
-            );
+            $result = parent::setAlias(...$arguments);
 
             return $result;
         }
@@ -1010,10 +911,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'setDefaultStub'],
-                $arguments
-            );
+            $result = parent::setDefaultStub(...$arguments);
 
             return $result;
         }
@@ -1040,10 +938,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'setMetadata'],
-                $arguments
-            );
+            $result = parent::setMetadata(...$arguments);
 
             return $result;
         }
@@ -1074,10 +969,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'setSignatureAlgorithm'],
-                $arguments
-            );
+            $result = parent::setSignatureAlgorithm(...$arguments);
 
             return $result;
         }
@@ -1108,10 +1000,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'setStub'],
-                $arguments
-            );
+            $result = parent::setStub(...$arguments);
 
             return $result;
         }
@@ -1133,10 +1022,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'startBuffering'],
-                $arguments
-            );
+            $result = parent::startBuffering(...$arguments);
 
             return $result;
         }
@@ -1158,10 +1044,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'stopBuffering'],
-                $arguments
-            );
+            $result = parent::stopBuffering(...$arguments);
 
             return $result;
         }
@@ -1188,10 +1071,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'hasChildren'],
-                $arguments
-            );
+            $result = parent::hasChildren(...$arguments);
 
             return $result;
         }
@@ -1213,10 +1093,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getChildren'],
-                $arguments
-            );
+            $result = parent::getChildren(...$arguments);
 
             return $result;
         }
@@ -1238,10 +1115,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getSubPath'],
-                $arguments
-            );
+            $result = parent::getSubPath(...$arguments);
 
             return $result;
         }
@@ -1263,10 +1137,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getSubPathname'],
-                $arguments
-            );
+            $result = parent::getSubPathname(...$arguments);
 
             return $result;
         }
@@ -1288,10 +1159,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'rewind'],
-                $arguments
-            );
+            $result = parent::rewind(...$arguments);
 
             return $result;
         }
@@ -1313,10 +1181,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'next'],
-                $arguments
-            );
+            $result = parent::next(...$arguments);
 
             return $result;
         }
@@ -1338,10 +1203,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'key'],
-                $arguments
-            );
+            $result = parent::key(...$arguments);
 
             return $result;
         }
@@ -1363,10 +1225,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'current'],
-                $arguments
-            );
+            $result = parent::current(...$arguments);
 
             return $result;
         }
@@ -1388,10 +1247,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getFlags'],
-                $arguments
-            );
+            $result = parent::getFlags(...$arguments);
 
             return $result;
         }
@@ -1418,10 +1274,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'setFlags'],
-                $arguments
-            );
+            $result = parent::setFlags(...$arguments);
 
             return $result;
         }
@@ -1443,10 +1296,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getFilename'],
-                $arguments
-            );
+            $result = parent::getFilename(...$arguments);
 
             return $result;
         }
@@ -1468,10 +1318,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getExtension'],
-                $arguments
-            );
+            $result = parent::getExtension(...$arguments);
 
             return $result;
         }
@@ -1498,10 +1345,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getBasename'],
-                $arguments
-            );
+            $result = parent::getBasename(...$arguments);
 
             return $result;
         }
@@ -1523,10 +1367,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'isDot'],
-                $arguments
-            );
+            $result = parent::isDot(...$arguments);
 
             return $result;
         }
@@ -1548,10 +1389,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'valid'],
-                $arguments
-            );
+            $result = parent::valid(...$arguments);
 
             return $result;
         }
@@ -1578,10 +1416,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'seek'],
-                $arguments
-            );
+            $result = parent::seek(...$arguments);
 
             return $result;
         }
@@ -1603,10 +1438,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . '__toString'],
-                $arguments
-            );
+            $result = parent::__toString(...$arguments);
 
             return $result;
         }
@@ -1628,10 +1460,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getPathname'],
-                $arguments
-            );
+            $result = parent::getPathname(...$arguments);
 
             return $result;
         }
@@ -1653,10 +1482,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getPerms'],
-                $arguments
-            );
+            $result = parent::getPerms(...$arguments);
 
             return $result;
         }
@@ -1678,10 +1504,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getInode'],
-                $arguments
-            );
+            $result = parent::getInode(...$arguments);
 
             return $result;
         }
@@ -1703,10 +1526,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getSize'],
-                $arguments
-            );
+            $result = parent::getSize(...$arguments);
 
             return $result;
         }
@@ -1728,10 +1548,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getOwner'],
-                $arguments
-            );
+            $result = parent::getOwner(...$arguments);
 
             return $result;
         }
@@ -1753,10 +1570,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getGroup'],
-                $arguments
-            );
+            $result = parent::getGroup(...$arguments);
 
             return $result;
         }
@@ -1778,10 +1592,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getATime'],
-                $arguments
-            );
+            $result = parent::getATime(...$arguments);
 
             return $result;
         }
@@ -1803,10 +1614,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getMTime'],
-                $arguments
-            );
+            $result = parent::getMTime(...$arguments);
 
             return $result;
         }
@@ -1828,10 +1636,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getCTime'],
-                $arguments
-            );
+            $result = parent::getCTime(...$arguments);
 
             return $result;
         }
@@ -1853,10 +1658,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getType'],
-                $arguments
-            );
+            $result = parent::getType(...$arguments);
 
             return $result;
         }
@@ -1878,10 +1680,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'isReadable'],
-                $arguments
-            );
+            $result = parent::isReadable(...$arguments);
 
             return $result;
         }
@@ -1903,10 +1702,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'isExecutable'],
-                $arguments
-            );
+            $result = parent::isExecutable(...$arguments);
 
             return $result;
         }
@@ -1928,10 +1724,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'isFile'],
-                $arguments
-            );
+            $result = parent::isFile(...$arguments);
 
             return $result;
         }
@@ -1953,10 +1746,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'isDir'],
-                $arguments
-            );
+            $result = parent::isDir(...$arguments);
 
             return $result;
         }
@@ -1978,10 +1768,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'isLink'],
-                $arguments
-            );
+            $result = parent::isLink(...$arguments);
 
             return $result;
         }
@@ -2003,10 +1790,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getLinkTarget'],
-                $arguments
-            );
+            $result = parent::getLinkTarget(...$arguments);
 
             return $result;
         }
@@ -2028,10 +1812,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getRealPath'],
-                $arguments
-            );
+            $result = parent::getRealPath(...$arguments);
 
             return $result;
         }
@@ -2058,10 +1839,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getFileInfo'],
-                $arguments
-            );
+            $result = parent::getFileInfo(...$arguments);
 
             return $result;
         }
@@ -2088,10 +1866,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'getPathInfo'],
-                $arguments
-            );
+            $result = parent::getPathInfo(...$arguments);
 
             return $result;
         }
@@ -2126,10 +1901,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'openFile'],
-                $arguments
-            );
+            $result = parent::openFile(...$arguments);
 
             return $result;
         }
@@ -2156,10 +1928,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'setFileClass'],
-                $arguments
-            );
+            $result = parent::setFileClass(...$arguments);
 
             return $result;
         }
@@ -2186,10 +1955,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'setInfoClass'],
-                $arguments
-            );
+            $result = parent::setInfoClass(...$arguments);
 
             return $result;
         }
@@ -2205,29 +1971,20 @@ implements \Eloquent\Phony\Mock\Mock
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [__CLASS__, 'parent::' . $name],
-            $arguments->all()
-        );
+        return parent::$name(...$arguments->all());
     }
 
     private function _callParent(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [$this, 'parent::' . $name],
-            $arguments->all()
-        );
+        return parent::$name(...$arguments->all());
     }
 
     private function _callParentConstructor(
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        \call_user_func_array(
-            [$this, 'parent::__construct'],
-            $arguments->all()
-        );
+        parent::__construct(...$arguments->all());
     }
 
     private static $_uncallableMethods = [];

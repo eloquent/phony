@@ -22,10 +22,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'methodA'],
-                $arguments
-            );
+            $result = parent::methodA(...$arguments);
 
             return $result;
         }

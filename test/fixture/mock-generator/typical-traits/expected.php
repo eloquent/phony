@@ -51,10 +51,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!self::$_staticHandle) {
-            $result = \call_user_func_array(
-                [__CLASS__, 'parent::' . 'testClassAStaticMethodB'],
-                $arguments
-            );
+            $result = parent::testClassAStaticMethodB(...$arguments);
 
             return $result;
         }
@@ -76,10 +73,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!self::$_staticHandle) {
-            $result = \call_user_func_array(
-                [__CLASS__, 'parent::' . 'testClassBStaticMethodA'],
-                $arguments
-            );
+            $result = parent::testClassBStaticMethodA(...$arguments);
 
             return $result;
         }
@@ -110,10 +104,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!self::$_staticHandle) {
-            $result = \call_user_func_array(
-                [__CLASS__, 'parent::' . 'testClassBStaticMethodB'],
-                $arguments
-            );
+            $result = parent::testClassBStaticMethodB(...$arguments);
 
             return $result;
         }
@@ -135,10 +126,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!self::$_staticHandle) {
-            $result = \call_user_func_array(
-                [__CLASS__, 'parent::' . 'testClassAStaticMethodA'],
-                $arguments
-            );
+            $result = parent::testClassAStaticMethodA(...$arguments);
 
             return $result;
         }
@@ -169,10 +157,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!self::$_staticHandle) {
-            $result = \call_user_func_array(
-                [__CLASS__, 'parent::' . 'methodA'],
-                $arguments
-            );
+            $result = parent::methodA(...$arguments);
 
             return $result;
         }
@@ -222,10 +207,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!self::$_staticHandle) {
-            $result = \call_user_func_array(
-                [__CLASS__, 'parent::' . 'methodB'],
-                $arguments
-            );
+            $result = parent::methodB(...$arguments);
 
             return $result;
         }
@@ -274,10 +256,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'testClassAMethodB'],
-                $arguments
-            );
+            $result = parent::testClassAMethodB(...$arguments);
 
             return $result;
         }
@@ -299,10 +278,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'testClassBMethodA'],
-                $arguments
-            );
+            $result = parent::testClassBMethodA(...$arguments);
 
             return $result;
         }
@@ -333,10 +309,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'testClassBMethodB'],
-                $arguments
-            );
+            $result = parent::testClassBMethodB(...$arguments);
 
             return $result;
         }
@@ -358,10 +331,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'testClassAMethodA'],
-                $arguments
-            );
+            $result = parent::testClassAMethodA(...$arguments);
 
             return $result;
         }
@@ -383,10 +353,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'testTraitBMethodA'],
-                $arguments
-            );
+            $result = parent::testTraitBMethodA(...$arguments);
 
             return $result;
         }
@@ -408,10 +375,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'current'],
-                $arguments
-            );
+            $result = parent::current(...$arguments);
 
             return $result;
         }
@@ -433,10 +397,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'next'],
-                $arguments
-            );
+            $result = parent::next(...$arguments);
 
             return $result;
         }
@@ -458,10 +419,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'key'],
-                $arguments
-            );
+            $result = parent::key(...$arguments);
 
             return $result;
         }
@@ -483,10 +441,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'valid'],
-                $arguments
-            );
+            $result = parent::valid(...$arguments);
 
             return $result;
         }
@@ -508,10 +463,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'rewind'],
-                $arguments
-            );
+            $result = parent::rewind(...$arguments);
 
             return $result;
         }
@@ -533,10 +485,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'count'],
-                $arguments
-            );
+            $result = parent::count(...$arguments);
 
             return $result;
         }
@@ -563,10 +512,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'offsetExists'],
-                $arguments
-            );
+            $result = parent::offsetExists(...$arguments);
 
             return $result;
         }
@@ -593,10 +539,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'offsetGet'],
-                $arguments
-            );
+            $result = parent::offsetGet(...$arguments);
 
             return $result;
         }
@@ -627,10 +570,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'offsetSet'],
-                $arguments
-            );
+            $result = parent::offsetSet(...$arguments);
 
             return $result;
         }
@@ -657,10 +597,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'offsetUnset'],
-                $arguments
-            );
+            $result = parent::offsetUnset(...$arguments);
 
             return $result;
         }
@@ -700,10 +637,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'methodC'],
-                $arguments
-            );
+            $result = parent::methodC(...$arguments);
 
             return $result;
         }
@@ -725,10 +659,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'methodD'],
-                $arguments
-            );
+            $result = parent::methodD(...$arguments);
 
             return $result;
         }
@@ -760,10 +691,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!self::$_staticHandle) {
-            $result = \call_user_func_array(
-                [__CLASS__, 'parent::' . 'testClassAStaticMethodC'],
-                $arguments
-            );
+            $result = parent::testClassAStaticMethodC(...$arguments);
 
             return $result;
         }
@@ -794,10 +722,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!self::$_staticHandle) {
-            $result = \call_user_func_array(
-                [__CLASS__, 'parent::' . 'testClassAStaticMethodD'],
-                $arguments
-            );
+            $result = parent::testClassAStaticMethodD(...$arguments);
 
             return $result;
         }
@@ -819,10 +744,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'testClassAMethodC'],
-                $arguments
-            );
+            $result = parent::testClassAMethodC(...$arguments);
 
             return $result;
         }
@@ -853,10 +775,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'testClassAMethodD'],
-                $arguments
-            );
+            $result = parent::testClassAMethodD(...$arguments);
 
             return $result;
         }
@@ -872,10 +791,7 @@ implements \Eloquent\Phony\Mock\Mock,
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [__CLASS__, 'parent::' . $name],
-            $arguments->all()
-        );
+        return parent::$name(...$arguments->all());
     }
 
     private static function _callTraitStatic(
@@ -883,45 +799,32 @@ implements \Eloquent\Phony\Mock\Mock,
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [
-                __CLASS__,
-                '_callTrait_' .
-                    \str_replace('\\', "\xc2\xa6", $traitName) .
-                    "\xc2\xbb" .
-                    $name,
-            ],
-            $arguments->all()
-        );
+        $name = '_callTrait_' .
+            \str_replace('\\', "\xc2\xa6", $traitName) .
+            "\xc2\xbb" .
+            $name;
+
+        return self::$name(...$arguments->all());
     }
 
     private static function _callMagicStatic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            'parent::__callStatic',
-            [$name, $arguments->all()]
-        );
+        return parent::__callStatic($name, $arguments->all());
     }
 
     private function _callParent(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [$this, 'parent::' . $name],
-            $arguments->all()
-        );
+        return parent::$name(...$arguments->all());
     }
 
     private function _callParentConstructor(
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        \call_user_func_array(
-            [$this, 'parent::__construct'],
-            $arguments->all()
-        );
+        parent::__construct(...$arguments->all());
     }
 
     private function _callTrait(
@@ -929,26 +832,19 @@ implements \Eloquent\Phony\Mock\Mock,
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [
-                $this,
-                '_callTrait_' .
-                    \str_replace('\\', "\xc2\xa6", $traitName) .
-                    "\xc2\xbb" .
-                    $name,
-            ],
-            $arguments->all()
-        );
+        $name = '_callTrait_' .
+            \str_replace('\\', "\xc2\xa6", $traitName) .
+            "\xc2\xbb" .
+            $name;
+
+        return $this->$name(...$arguments->all());
     }
 
     private function _callMagic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [$this, 'parent::__call'],
-            [$name, $arguments->all()]
-        );
+        return parent::__call($name, $arguments->all());
     }
 
     public static $propertyA = 'valueA';

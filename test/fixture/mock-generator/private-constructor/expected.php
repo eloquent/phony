@@ -12,20 +12,14 @@ implements \Eloquent\Phony\Mock\Mock
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [__CLASS__, 'parent::' . $name],
-            $arguments->all()
-        );
+        return parent::$name(...$arguments->all());
     }
 
     private function _callParent(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [$this, 'parent::' . $name],
-            $arguments->all()
-        );
+        return parent::$name(...$arguments->all());
     }
 
     private function _callParentConstructor(

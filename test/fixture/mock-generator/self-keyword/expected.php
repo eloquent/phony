@@ -23,10 +23,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'methodA'],
-                $arguments
-            );
+            $result = parent::methodA(...$arguments);
 
             return $result;
         }
@@ -61,10 +58,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'methodB'],
-                $arguments
-            );
+            $result = parent::methodB(...$arguments);
 
             return $result;
         }
@@ -80,20 +74,14 @@ implements \Eloquent\Phony\Mock\Mock
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [__CLASS__, 'parent::' . $name],
-            $arguments->all()
-        );
+        return parent::$name(...$arguments->all());
     }
 
     private function _callParent(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [$this, 'parent::' . $name],
-            $arguments->all()
-        );
+        return parent::$name(...$arguments->all());
     }
 
     private static $_uncallableMethods = [];

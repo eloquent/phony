@@ -14,10 +14,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!self::$_staticHandle) {
-            \call_user_func_array(
-                [__CLASS__, 'parent::' . 'staticMethod'],
-                $arguments
-            );
+            parent::staticMethod(...$arguments);
 
             return;
         }
@@ -45,10 +42,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            \call_user_func_array(
-                [$this, 'parent::' . 'method'],
-                $arguments
-            );
+            parent::method(...$arguments);
 
             return;
         }
@@ -68,10 +62,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            \call_user_func_array(
-                [$this, 'parent::' . 'customMethod'],
-                $arguments
-            );
+            parent::customMethod(...$arguments);
 
             return;
         }
@@ -93,20 +84,14 @@ implements \Eloquent\Phony\Mock\Mock,
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            'parent::__callStatic',
-            [$name, $arguments->all()]
-        );
+        return parent::__callStatic($name, $arguments->all());
     }
 
     private function _callMagic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [$this, 'parent::__call'],
-            [$name, $arguments->all()]
-        );
+        return parent::__call($name, $arguments->all());
     }
 
     private static $_uncallableMethods = array (

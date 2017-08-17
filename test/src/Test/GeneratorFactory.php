@@ -15,6 +15,6 @@ abstract class GeneratorFactory
 {
     public static function createEmpty()
     {
-        return call_user_func(function () { return; yield null; });
+        return (function () { return; yield null; })();
     }
 }

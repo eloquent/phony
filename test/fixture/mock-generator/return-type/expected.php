@@ -24,10 +24,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'classType'],
-                $arguments
-            );
+            $result = parent::classType(...$arguments);
 
             return $result;
         }
@@ -49,10 +46,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'scalarType'],
-                $arguments
-            );
+            $result = parent::scalarType(...$arguments);
 
             return $result;
         }
@@ -74,10 +68,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'customMethodWithClassType'],
-                $arguments
-            );
+            $result = parent::customMethodWithClassType(...$arguments);
 
             return $result;
         }
@@ -99,10 +90,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'customMethodWithScalarType'],
-                $arguments
-            );
+            $result = parent::customMethodWithScalarType(...$arguments);
 
             return $result;
         }
@@ -128,20 +116,14 @@ implements \Eloquent\Phony\Mock\Mock,
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            'parent::__callStatic',
-            [$name, $arguments->all()]
-        );
+        return parent::__callStatic($name, $arguments->all());
     }
 
     private function _callMagic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [$this, 'parent::__call'],
-            [$name, $arguments->all()]
-        );
+        return parent::__call($name, $arguments->all());
     }
 
     private static $_uncallableMethods = array (

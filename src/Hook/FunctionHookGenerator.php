@@ -119,13 +119,12 @@ class FunctionHookGenerator
         $ret = 'ret' . 'urn';
 
         $renderedName = var_export(strtolower($namespace . '\\' . $name), true);
-        $renderedShortName = var_export($name, true);
         $source .=
             "\n\n    \$name = $renderedName;\n\n    if (" .
             "\n        !isset(\n            " .
             '\Eloquent\Phony\Hook\FunctionHookManager::$hooks[$name]' .
             "['callback']\n        )\n    ) {\n        " .
-            "$ret \call_user_func_array($renderedShortName, \$arguments);" .
+            "$ret \\$name(...\$arguments);" .
             "\n    }\n\n    \$callback =\n        " .
             '\Eloquent\Phony\Hook\FunctionHookManager::$hooks' .
             "[\$name]['callback'];\n\n" .
@@ -133,7 +132,7 @@ class FunctionHookGenerator
             "\Eloquent\Phony\Invocation\Invocable) {\n" .
             "        $ret \$callback->invokeWith(\$arguments);\n" .
             "    }\n\n    " .
-            "$ret \\call_user_func_array(\$callback, \$arguments);\n}\n";
+            "$ret \$callback(...\$arguments);\n}\n";
 
         // @codeCoverageIgnoreStart
         if ("\n" !== PHP_EOL) {

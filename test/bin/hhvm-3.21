@@ -1,0 +1,6 @@
+#!/bin/sh
+docker run -it --rm \
+    -v "${PWD}:/usr/src/phony" \
+    -w /usr/src/phony \
+    -e "PATH=vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
+    hhvm/hhvm:3.21-lts-latest "$@"

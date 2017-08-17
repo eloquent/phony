@@ -31,10 +31,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'method'],
-                $arguments
-            );
+            $result = parent::method(...$arguments);
 
             return $result;
         }
@@ -61,10 +58,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'customMethod'],
-                $arguments
-            );
+            $result = parent::customMethod(...$arguments);
 
             return $result;
         }

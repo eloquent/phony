@@ -538,21 +538,9 @@ EOD;
                 $resultAssign = '$result = ';
             }
 
-            if ($isStatic) {
-                $body .=  <<<EOD
-            $resultAssign\call_user_func_array(
-                [__CLASS__, 'parent::' . $nameExported],
-                \$arguments
-            );
+            $body .=  <<<EOD
+            ${resultAssign}parent::$name(...\$arguments);
 EOD;
-            } else {
-                $body .=  <<<EOD
-            $resultAssign\call_user_func_array(
-                [\$this, 'parent::' . $nameExported],
-                \$arguments
-            );
-EOD;
-            }
 
             if ($isVoidReturn) {
                 $body .=
@@ -733,10 +721,7 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [__CLASS__, 'parent::' . $name],
-            $arguments->all()
-        );
+        return parent::$name(...$arguments->all());
     }
 
 EOD;
@@ -750,23 +735,19 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [
-                __CLASS__,
-                '_callTrait_' .
-                    \str_replace('\\', "\xc2\xa6", $traitName) .
-                    "\xc2\xbb" .
-                    $name,
-            ],
-            $arguments->all()
-        );
+        $name = '_callTrait_' .
+            \str_replace('\\', "\xc2\xa6", $traitName) .
+            "\xc2\xbb" .
+            $name;
+
+        return self::$name(...$arguments->all());
     }
 
 EOD;
         }
 
         if (null !== ($name = $methods->methodName('__callstatic'))) {
-            $methodName = "'parent::__callStatic'";
+            $methodName = null;
 
             if ($hasTraits) {
                 $methodsByName = $methods->staticMethods();
@@ -778,7 +759,7 @@ EOD;
                     $traitName = $methodsByName[$name]
                         ->method()->getDeclaringClass()->getName();
                     $methodName = var_export(
-                        'self::_callTrait_' .
+                        '_callTrait_' .
                             \str_replace('\\', "\xc2\xa6", $traitName) .
                             "\xc2\xbb" .
                             $name,
@@ -787,19 +768,31 @@ EOD;
                 }
             }
 
-            $source .= <<<EOD
+            if (null === $methodName) {
+                $source .= <<<'EOD'
+
+    private static function _callMagicStatic(
+        $name,
+        \Eloquent\Phony\Call\Arguments $arguments
+    ) {
+        return parent::__callStatic($name, $arguments->all());
+    }
+
+EOD;
+            } else {
+                $source .= <<<EOD
 
     private static function _callMagicStatic(
         \$name,
         \Eloquent\Phony\Call\Arguments \$arguments
     ) {
-        return \call_user_func_array(
-            $methodName,
-            [\$name, \$arguments->all()]
-        );
+        \$methodName = $methodName;
+
+        return self::\$methodName(\$name, \$arguments->all());
     }
 
 EOD;
+            }
         }
 
         if ($hasParentClass) {
@@ -809,10 +802,7 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [$this, 'parent::' . $name],
-            $arguments->all()
-        );
+        return parent::$name(...$arguments->all());
     }
 
 EOD;
@@ -845,10 +835,7 @@ EOD;
     private function _callParentConstructor(
         \Eloquent\Phony\Call\Arguments \$arguments
     ) {
-        \call_user_func_array(
-            [\$this, 'parent::$constructorName'],
-            \$arguments->all()
-        );
+        parent::$constructorName(...\$arguments->all());
     }
 
 EOD;
@@ -880,13 +867,7 @@ EOD;
     private function _callParentConstructor(
         \Eloquent\Phony\Call\Arguments \$arguments
     ) {
-        \call_user_func_array(
-            [
-                \$this,
-                '$constructorName',
-            ],
-            \$arguments->all()
-        );
+        \$this->$constructorName(...\$arguments->all());
     }
 
 EOD;
@@ -900,23 +881,19 @@ EOD;
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [
-                $this,
-                '_callTrait_' .
-                    \str_replace('\\', "\xc2\xa6", $traitName) .
-                    "\xc2\xbb" .
-                    $name,
-            ],
-            $arguments->all()
-        );
+        $name = '_callTrait_' .
+            \str_replace('\\', "\xc2\xa6", $traitName) .
+            "\xc2\xbb" .
+            $name;
+
+        return $this->$name(...$arguments->all());
     }
 
 EOD;
         }
 
         if (null !== ($name = $methods->methodName('__call'))) {
-            $methodName = "'parent::__call'";
+            $methodName = null;
 
             if ($hasTraits) {
                 $methodsByName = $methods->methods();
@@ -937,19 +914,31 @@ EOD;
                 }
             }
 
-            $source .= <<<EOD
+            if (null === $methodName) {
+                $source .= <<<'EOD'
+
+    private function _callMagic(
+        $name,
+        \Eloquent\Phony\Call\Arguments $arguments
+    ) {
+        return parent::__call($name, $arguments->all());
+    }
+
+EOD;
+            } else {
+                $source .= <<<EOD
 
     private function _callMagic(
         \$name,
         \Eloquent\Phony\Call\Arguments \$arguments
     ) {
-        return \call_user_func_array(
-            [\$this, $methodName],
-            [\$name, \$arguments->all()]
-        );
+        \$methodName = $methodName;
+
+        return \$this->\$methodName(\$name, \$arguments->all());
     }
 
 EOD;
+            }
         }
 
         return $source;

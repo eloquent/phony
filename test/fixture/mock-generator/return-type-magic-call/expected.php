@@ -27,20 +27,14 @@ implements \Eloquent\Phony\Mock\Mock
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            'parent::__callStatic',
-            [$name, $arguments->all()]
-        );
+        return parent::__callStatic($name, $arguments->all());
     }
 
     private function _callMagic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [$this, 'parent::__call'],
-            [$name, $arguments->all()]
-        );
+        return parent::__call($name, $arguments->all());
     }
 
     private static $_uncallableMethods = [];

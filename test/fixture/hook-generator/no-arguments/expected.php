@@ -18,7 +18,7 @@ function functionName()
             \Eloquent\Phony\Hook\FunctionHookManager::$hooks[$name]['callback']
         )
     ) {
-        return \call_user_func_array('functionName', $arguments);
+        return \functionName(...$arguments);
     }
 
     $callback =
@@ -28,5 +28,5 @@ function functionName()
         return $callback->invokeWith($arguments);
     }
 
-    return \call_user_func_array($callback, $arguments);
+    return $callback(...$arguments);
 }

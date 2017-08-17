@@ -25,10 +25,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'methodA'],
-                $arguments
-            );
+            $result = parent::methodA(...$arguments);
 
             return $result;
         }
@@ -60,10 +57,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'methodB'],
-                $arguments
-            );
+            $result = parent::methodB(...$arguments);
 
             return $result;
         }
@@ -95,10 +89,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'methodC'],
-                $arguments
-            );
+            $result = parent::methodC(...$arguments);
 
             return $result;
         }

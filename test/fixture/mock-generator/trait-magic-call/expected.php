@@ -36,26 +36,21 @@ implements \Eloquent\Phony\Mock\Mock
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [
-                __CLASS__,
-                '_callTrait_' .
-                    \str_replace('\\', "\xc2\xa6", $traitName) .
-                    "\xc2\xbb" .
-                    $name,
-            ],
-            $arguments->all()
-        );
+        $name = '_callTrait_' .
+            \str_replace('\\', "\xc2\xa6", $traitName) .
+            "\xc2\xbb" .
+            $name;
+
+        return self::$name(...$arguments->all());
     }
 
     private static function _callMagicStatic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            'self::_callTrait_Eloquent¦Phony¦Test¦TestTraitJ»__callStatic',
-            [$name, $arguments->all()]
-        );
+        $methodName = '_callTrait_Eloquent¦Phony¦Test¦TestTraitJ»__callStatic';
+
+        return self::$methodName($name, $arguments->all());
     }
 
     private function _callTrait(
@@ -63,26 +58,21 @@ implements \Eloquent\Phony\Mock\Mock
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [
-                $this,
-                '_callTrait_' .
-                    \str_replace('\\', "\xc2\xa6", $traitName) .
-                    "\xc2\xbb" .
-                    $name,
-            ],
-            $arguments->all()
-        );
+        $name = '_callTrait_' .
+            \str_replace('\\', "\xc2\xa6", $traitName) .
+            "\xc2\xbb" .
+            $name;
+
+        return $this->$name(...$arguments->all());
     }
 
     private function _callMagic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [$this, '_callTrait_Eloquent¦Phony¦Test¦TestTraitJ»__call'],
-            [$name, $arguments->all()]
-        );
+        $methodName = '_callTrait_Eloquent¦Phony¦Test¦TestTraitJ»__call';
+
+        return $this->$methodName($name, $arguments->all());
     }
 
     private static $_uncallableMethods = [];

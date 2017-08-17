@@ -18,28 +18,18 @@ implements \Eloquent\Phony\Mock\Mock
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [
-                __CLASS__,
-                '_callTrait_' .
-                    \str_replace('\\', "\xc2\xa6", $traitName) .
-                    "\xc2\xbb" .
-                    $name,
-            ],
-            $arguments->all()
-        );
+        $name = '_callTrait_' .
+            \str_replace('\\', "\xc2\xa6", $traitName) .
+            "\xc2\xbb" .
+            $name;
+
+        return self::$name(...$arguments->all());
     }
 
     private function _callParentConstructor(
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        \call_user_func_array(
-            [
-                $this,
-                '_callTrait_Eloquent¦Phony¦Test¦TestTraitD»__construct',
-            ],
-            $arguments->all()
-        );
+        $this->_callTrait_Eloquent¦Phony¦Test¦TestTraitD»__construct(...$arguments->all());
     }
 
     private function _callTrait(
@@ -47,16 +37,12 @@ implements \Eloquent\Phony\Mock\Mock
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [
-                $this,
-                '_callTrait_' .
-                    \str_replace('\\', "\xc2\xa6", $traitName) .
-                    "\xc2\xbb" .
-                    $name,
-            ],
-            $arguments->all()
-        );
+        $name = '_callTrait_' .
+            \str_replace('\\', "\xc2\xa6", $traitName) .
+            "\xc2\xbb" .
+            $name;
+
+        return $this->$name(...$arguments->all());
     }
 
     private static $_uncallableMethods = [];

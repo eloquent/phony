@@ -38,10 +38,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!self::$_staticHandle) {
-            $result = \call_user_func_array(
-                [__CLASS__, 'parent::' . 'testClassAStaticMethodA'],
-                $arguments
-            );
+            $result = parent::testClassAStaticMethodA(...$arguments);
 
             return $result;
         }
@@ -80,10 +77,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'testClassAMethodB'],
-                $arguments
-            );
+            $result = parent::testClassAMethodB(...$arguments);
 
             return $result;
         }
@@ -105,10 +99,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'testTraitBMethodA'],
-                $arguments
-            );
+            $result = parent::testTraitBMethodA(...$arguments);
 
             return $result;
         }
@@ -130,10 +121,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = \call_user_func_array(
-                [$this, 'parent::' . 'testTraitCMethodA'],
-                $arguments
-            );
+            $result = parent::testTraitCMethodA(...$arguments);
 
             return $result;
         }
@@ -150,16 +138,12 @@ implements \Eloquent\Phony\Mock\Mock
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [
-                __CLASS__,
-                '_callTrait_' .
-                    \str_replace('\\', "\xc2\xa6", $traitName) .
-                    "\xc2\xbb" .
-                    $name,
-            ],
-            $arguments->all()
-        );
+        $name = '_callTrait_' .
+            \str_replace('\\', "\xc2\xa6", $traitName) .
+            "\xc2\xbb" .
+            $name;
+
+        return self::$name(...$arguments->all());
     }
 
     private function _callTrait(
@@ -167,16 +151,12 @@ implements \Eloquent\Phony\Mock\Mock
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        return \call_user_func_array(
-            [
-                $this,
-                '_callTrait_' .
-                    \str_replace('\\', "\xc2\xa6", $traitName) .
-                    "\xc2\xbb" .
-                    $name,
-            ],
-            $arguments->all()
-        );
+        $name = '_callTrait_' .
+            \str_replace('\\', "\xc2\xa6", $traitName) .
+            "\xc2\xbb" .
+            $name;
+
+        return $this->$name(...$arguments->all());
     }
 
     private static $_uncallableMethods = array (
