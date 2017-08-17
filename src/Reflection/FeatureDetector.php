@@ -51,6 +51,14 @@ class FeatureDetector
 
         $this->features = $features;
         $this->supported = $supported;
+
+        $this->isErrorClearLastSupported = function_exists('error_clear_last');
+
+        // @codeCoverageIgnoreStart
+        $this->nullErrorHandler = function () {
+            return false;
+        };
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -120,6 +128,11 @@ class FeatureDetector
         return [
             'parameter.variadic.reference' => function ($detector) {
                 return $detector->checkStatement('function (&...$a) {};');
+            },
+
+           'parameter.variadic.type' => function ($detector) {
+                return $detector
+                    ->checkStatement('function (stdClass ...$a) {};');
             },
 
             'runtime.hhvm' => function ($detector) {
@@ -235,7 +248,15 @@ class FeatureDetector
         }
 
         if (false === $result) {
-            error_clear_last();
+            if ($this->isErrorClearLastSupported) {
+                error_clear_last();
+                // @codeCoverageIgnoreStart
+            } else {
+                set_error_handler($this->nullErrorHandler);
+                @trigger_error('');
+                restore_error_handler();
+            }
+            // @codeCoverageIgnoreEnd
         }
 
         error_reporting($reporting);
@@ -247,4 +268,6 @@ class FeatureDetector
     private $features;
     private $supported;
     private $runtime;
+    private $isErrorClearLastSupported;
+    private $nullErrorHandler;
 }

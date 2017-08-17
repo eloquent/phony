@@ -228,6 +228,10 @@ class EmptyValueFactoryTest extends TestCase
      */
     public function testFromTypeWithThrowableType($type)
     {
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestIncomplete('Broken under HHVM.');
+        }
+
         if (!class_exists($type) && !interface_exists($type)) {
             $this->markTestSkipped("Requires $type.");
         }

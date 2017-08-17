@@ -179,7 +179,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function calls(callable ...$callbacks)
+    public function calls(...$callbacks)
     {
         $this->stub->calls(...$callbacks);
 
@@ -303,7 +303,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function does(callable ...$callbacks)
+    public function does(...$callbacks)
     {
         $this->stub->does(...$callbacks);
 

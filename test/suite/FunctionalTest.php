@@ -122,6 +122,10 @@ class FunctionalTest extends TestCase
 
     public function testVariadicParameterMockingWithType()
     {
+        if (!$this->featureDetector->isSupported('parameter.variadic.type')) {
+            $this->markTestSkipped('Requires type hint support for variadic parameters.');
+        }
+
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithVariadicParameterWithType');
         $handle->method->does(
             function () {
@@ -624,6 +628,10 @@ class FunctionalTest extends TestCase
 
     public function testIterableInterfaceMockingWithPDOStatement()
     {
+        if ($this->featureDetector->isSupported('runtime.hhvm')) {
+            $this->markTestIncomplete('Broken under HHVM.');
+        }
+
         $this->assertInstanceOf('PDOStatement', x\mock('PDOStatement')->get());
     }
 

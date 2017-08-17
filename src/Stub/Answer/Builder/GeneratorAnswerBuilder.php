@@ -55,7 +55,7 @@ class GeneratorAnswerBuilder
      *
      * @return $this This builder.
      */
-    public function calls(callable ...$callbacks)
+    public function calls(...$callbacks)
     {
         foreach ($callbacks as $callback) {
             $this->callsWith($callback);

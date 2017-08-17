@@ -188,7 +188,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function calls(callable ...$callbacks)
+    public function calls(...$callbacks)
     {
         foreach ($callbacks as $callback) {
             $this->callsWith($callback);
@@ -367,7 +367,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function does(callable ...$callbacks)
+    public function does(...$callbacks)
     {
         foreach ($callbacks as $callback) {
             $this->doesWith($callback);
