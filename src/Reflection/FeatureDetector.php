@@ -432,6 +432,21 @@ class FeatureDetector
                 return $detector->checkStatement('function(?int $a){}', false);
             },
 
+            'type.object' => function () {
+                try {
+                    $function =
+                        new ReflectionFunction(function (object $a) {});
+                    $parameters = $function->getParameters();
+                    $result = null === $parameters[0]->getClass();
+                    // @codeCoverageIgnoreStart
+                } catch (ReflectionException $e) {
+                    $result = false;
+                }
+                // @codeCoverageIgnoreEnd
+
+                return $result;
+            },
+
             'type.void' => function ($detector) {
                 // @codeCoverageIgnoreStart
                 if (!$detector->isSupported('return.type')) {

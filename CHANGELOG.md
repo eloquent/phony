@@ -2,12 +2,8 @@
 
 ## Next release
 
-```
-. "object" (in any case) can no longer be used as a class name.
-. The "object" type annotation is now supported. (https://wiki.php.net/rfc/object-typehint)
-. The each() function has been deprecated, use a foreach loop instead.
-. The $errcontext error handler argument has been deprecated. However, using it does not trigger a deprecation warning for technical reasons.
-```
+- **[BC BREAK]** PHP 5 is no longer supported.
+- **[IMPROVED]** Support for PHP 7.2 features, including the `object` typehint.
 
 ## 1.0.1 (2017-07-04)
 

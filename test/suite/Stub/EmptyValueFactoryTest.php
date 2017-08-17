@@ -66,6 +66,19 @@ class EmptyValueFactoryTest extends TestCase
         $this->assertSame('{}', json_encode($actual));
     }
 
+    public function testFromTypeWithObject()
+    {
+        $actual = $this->subject->fromType($this->createType('object'));
+
+        if ($this->featureDetector->isSupported('type.object')) {
+            $this->assertSame(array(), (array) $actual);
+            $this->assertSame('{}', json_encode($actual));
+        } else {
+            $this->assertInstanceOf('object', $actual);
+            $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
+        }
+    }
+
     public function testFromTypeWithCallable()
     {
         $actual = $this->subject->fromType($this->createType('callable'));
@@ -291,7 +304,7 @@ class EmptyValueFactoryTest extends TestCase
         $this->assertSame(0, count($actual));
     }
 
-    public function testFromTypeWithObject()
+    public function testFromTypeWithClass()
     {
         $type = 'Eloquent\Phony\Test\TestClassA';
         $actual = $this->subject->fromType($this->createType($type));

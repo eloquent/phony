@@ -35,6 +35,7 @@
         },
         "files": [
             "test/src/ClassA.php",
+            "test/src/object.php",
             "test/src/TestClass.php"
         ]
     },

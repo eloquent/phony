@@ -43,6 +43,8 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
             ->isSupported('type.callable');
         $this->isIterableTypeHintSupported = $featureDetector
             ->isSupported('type.iterable');
+        $this->isObjectTypeHintSupported = $featureDetector
+            ->isSupported('type.object');
     }
 
     /**
@@ -87,6 +89,10 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
                 (
                     !$this->isIterableTypeHintSupported ||
                     'iterable ' !== $typehint
+                ) &&
+                (
+                    !$this->isObjectTypeHintSupported ||
+                    'object ' !== $typehint
                 )
             ) {
                 if (!$this->isScalarTypeHintSupported) {
@@ -148,4 +154,5 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
     private $isScalarTypeHintSupported;
     private $isCallableTypeHintSupported;
     private $isIterableTypeHintSupported;
+    private $isObjectTypeHintSupported;
 }

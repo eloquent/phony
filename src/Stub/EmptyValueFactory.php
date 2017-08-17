@@ -44,6 +44,8 @@ class EmptyValueFactory
     {
         $this->isReturnTypeSupported =
             $featureDetector->isSupported('return.type');
+        $this->isObjectTypeSupported =
+            $featureDetector->isSupported('type.object');
     }
 
     /**
@@ -104,6 +106,15 @@ class EmptyValueFactory
             case 'iterable':
                 return array();
 
+            case 'object':
+                // @codeCoverageIgnoreStart
+                if (!$this->isObjectTypeSupported) {
+                    break;
+                }
+                // @codeCoverageIgnoreEnd
+
+                // fall through to stdclass behavior
+
             case 'stdclass':
                 return (object) array();
 
@@ -153,4 +164,5 @@ class EmptyValueFactory
     private $stubVerifierFactory;
     private $mockBuilderFactory;
     private $isReturnTypeSupported;
+    private $isObjectTypeSupported;
 }
