@@ -22,10 +22,6 @@ class EmptyValueFactoryTest extends TestCase
 {
     protected function setUp()
     {
-        if (!class_exists('ReflectionType')) {
-            $this->markTestSkipped('Requires reflection types.');
-        }
-
         $this->featureDetector = FeatureDetector::instance();
         $this->subject = new EmptyValueFactory($this->featureDetector);
         $this->subject->setStubVerifierFactory(StubVerifierFactory::instance());

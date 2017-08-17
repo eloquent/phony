@@ -1218,10 +1218,12 @@ class FunctionalTest extends TestCase
         $this->assertSame($expected, $this->exporter->export($value, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesRepeatedWrappers()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $inner = x\mock('ClassA')->setLabel('mock-label');
         $value = [$inner, $inner];
         $this->exporter->reset();
@@ -1232,10 +1234,12 @@ class FunctionalTest extends TestCase
         );
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesReferenceTypes()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $array = [];
         $object = (object) [];
         $wrapper = x\spy('implode')->setLabel('spy-label');
@@ -1249,10 +1253,12 @@ class FunctionalTest extends TestCase
         $this->assertSame('#0[spy#1(implode)[spy-label], &1()]', $this->exporter->export($valueC, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesExcludeWrapperValue()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $inner = x\mock();
         $value = [$inner, $inner];
         $this->exporter->reset();
@@ -1260,10 +1266,12 @@ class FunctionalTest extends TestCase
         $this->assertSame('#0[handle#0(PhonyMock_0#1{}[0]), &0()]', $this->exporter->export($value, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesIdentifierPersistenceObjects()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $a = (object) [];
         $b = (object) [];
         $c = x\mock();
@@ -1275,10 +1283,12 @@ class FunctionalTest extends TestCase
         $this->assertSame('#0[#1{}, #0{}, &1{}, handle#2(PhonyMock_0#3{}[0])]', $this->exporter->export($valueB, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesIdentifierPersistenceArrays()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $a = [];
         $b = [];
         $valueA = [&$a, &$b, &$a];
@@ -1289,10 +1299,12 @@ class FunctionalTest extends TestCase
         $this->assertSame('#0[#1[], #2[], &1[]]', $this->exporter->export($valueB, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesRecursiveValues()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $recursiveArray = [];
         $recursiveArray[] = &$recursiveArray;
         $recursiveObject = (object) [];
@@ -1303,10 +1315,12 @@ class FunctionalTest extends TestCase
         $this->assertSame('#0{a: &0{}}', $this->exporter->export($recursiveObject, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesMocks()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $handle = x\mock('ClassA')->setLabel('mock-label');
         $mock = $handle->get();
         $this->exporter->reset();
@@ -1315,10 +1329,12 @@ class FunctionalTest extends TestCase
         $this->assertSame('handle#1(PhonyMock_ClassA_0#0{}[mock-label])', $this->exporter->export($handle, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesStaticHandle()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $handle = x\mock('ClassA')->setLabel('mock-label');
         $staticHandle = x\onStatic($handle);
         $this->exporter->reset();
@@ -1326,30 +1342,36 @@ class FunctionalTest extends TestCase
         $this->assertSame('static-handle#0(PhonyMock_ClassA_0)', $this->exporter->export($staticHandle, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesStubs()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $stub = x\stub('implode')->setLabel('stub-label');
         $this->exporter->reset();
 
         $this->assertSame('stub#0(implode)[stub-label]', $this->exporter->export($stub, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesAnonymousStubs()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $stub = x\stub()->setLabel('stub-label');
         $this->exporter->reset();
 
         $this->assertSame('stub#0[stub-label]', $this->exporter->export($stub, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesMockStubs()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $handle = x\mock('ClassA')->setLabel('mock-label');
         $staticHandle = x\onStatic($handle);
         $stubA = $handle->methodA->setLabel('stub-label');
@@ -1360,30 +1382,36 @@ class FunctionalTest extends TestCase
         $this->assertSame('stub#1(ClassA::staticMethodA)[stub-label]', $this->exporter->export($stubB, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesSpies()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $spy = x\spy('implode')->setLabel('spy-label');
         $this->exporter->reset();
 
         $this->assertSame('spy#0(implode)[spy-label]', $this->exporter->export($spy, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesAnonymousSpies()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $spy = x\spy()->setLabel('spy-label');
         $this->exporter->reset();
 
         $this->assertSame('spy#0[spy-label]', $this->exporter->export($spy, -1));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testExporterExamplesMethodSpies()
     {
-        $this->markTestSkipped('Requires process isolation to actually work.');
-
         $object = new ClassA();
         $spyA = x\spy([$object, 'methodA'])->setLabel('spy-label');
         $spyB = x\spy(['ClassA', 'staticMethodA'])->setLabel('spy-label');

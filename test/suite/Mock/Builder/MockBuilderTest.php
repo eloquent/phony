@@ -345,10 +345,6 @@ class MockBuilderTest extends TestCase
 
     public function testAddMethod()
     {
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM treats closures as inequal when created in different classes.');
-        }
-
         $this->setUpWith([]);
         $callback = function () {};
         $callbackReflector = new ReflectionFunction($callback);
@@ -375,10 +371,6 @@ class MockBuilderTest extends TestCase
 
     public function testAddStaticMethod()
     {
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM treats closures as inequal when created in different classes.');
-        }
-
         $this->setUpWith([]);
         $callback = function () {};
         $callbackReflector = new ReflectionFunction($callback);
@@ -697,10 +689,6 @@ class MockBuilderTest extends TestCase
      */
     public function testBuildDateTimes($typeNames, $expectedTypes, $expectedNonTypes)
     {
-        if (!interface_exists('DateTimeInterface')) {
-            $this->markTestSkipped('Requires DateTimeInterface interface.');
-        }
-
         $this->setUpWith($typeNames);
 
         $this->assertTypes($expectedTypes, $expectedNonTypes, $this->subject->build());

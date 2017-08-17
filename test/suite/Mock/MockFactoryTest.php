@@ -181,10 +181,6 @@ class MockFactoryTest extends TestCase
 
     public function testCreateFullMockWithFinalConstructor()
     {
-        if (!method_exists('ReflectionClass', 'newInstanceWithoutConstructor')) {
-            $this->markTestSkipped('Requires constructor bypassing.');
-        }
-
         $builder = $this->builderFactory->create('Eloquent\Phony\Test\TestClassI');
         $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateFullMockWithFinalConstructor');
         $actual = $this->subject->createFullMock($builder->build());
@@ -194,10 +190,6 @@ class MockFactoryTest extends TestCase
 
     public function testCreatePartialMockWithFinalConstructor()
     {
-        if (!method_exists('ReflectionClass', 'newInstanceWithoutConstructor')) {
-            $this->markTestSkipped('Requires constructor bypassing.');
-        }
-
         $builder = $this->builderFactory->create('Eloquent\Phony\Test\TestClassI');
         $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMockWithFinalConstructor');
         $actual = $this->subject->createPartialMock($builder->build(), ['a', 'b']);

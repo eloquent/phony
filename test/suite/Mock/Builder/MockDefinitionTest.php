@@ -134,10 +134,6 @@ class MockDefinitionTest extends TestCase
 
     public function testMethods()
     {
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM treats closures as inequal when created in different classes.');
-        }
-
         $this->setUpWith($this->typeNames);
 
         $expected = new MethodDefinitionCollection(
@@ -251,10 +247,6 @@ class MockDefinitionTest extends TestCase
 
     public function testMethodsWithTraits()
     {
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM treats closures as inequal when created in different classes.');
-        }
-
         $this->setUpWith($this->typeNamesTraits);
 
         $expected = new MethodDefinitionCollection(
@@ -393,10 +385,6 @@ class MockDefinitionTest extends TestCase
 
     public function testMethodsWithFinalMethods()
     {
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM treats closures as inequal when created in different classes.');
-        }
-
         $this->setUpWith(
             [
                 'Eloquent\Phony\Test\TestClassF',
@@ -453,10 +441,6 @@ class MockDefinitionTest extends TestCase
 
     public function testMethodsWithFinalMethodsAndTraits()
     {
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('HHVM treats closures as inequal when created in different classes.');
-        }
-
         $this->setUpWith(
             [
                 'Eloquent\Phony\Test\TestClassF',
