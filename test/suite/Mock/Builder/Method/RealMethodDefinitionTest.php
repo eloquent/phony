@@ -11,10 +11,10 @@
 
 namespace Eloquent\Phony\Mock\Builder\Method;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
-class RealMethodDefinitionTest extends PHPUnit_Framework_TestCase
+class RealMethodDefinitionTest extends TestCase
 {
     public function testConstructorWithPublicStatic()
     {

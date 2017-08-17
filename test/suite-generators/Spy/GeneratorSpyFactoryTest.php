@@ -14,11 +14,11 @@ namespace Eloquent\Phony\Spy;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 
-class GeneratorSpyFactoryTest extends PHPUnit_Framework_TestCase
+class GeneratorSpyFactoryTest extends TestCase
 {
     protected function setUp()
     {

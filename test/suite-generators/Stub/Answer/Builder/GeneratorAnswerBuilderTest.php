@@ -20,9 +20,9 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Test\TupleIterator;
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
+class GeneratorAnswerBuilderTest extends TestCase
 {
     protected function setUp()
     {
@@ -463,7 +463,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires no support for generator return values.');
         }
 
-        $this->setExpectedException(
+        $this->expectException(
             'RuntimeException',
             'The current runtime does not support the supplied generator return value.'
         );
@@ -526,7 +526,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
         $arguments = Arguments::create();
         $generator = call_user_func($this->answer, $this->self, $arguments);
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         iterator_to_array($generator);
     }
 
@@ -536,7 +536,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires no support for generator return values.');
         }
 
-        $this->setExpectedException(
+        $this->expectException(
             'RuntimeException',
             'The current runtime does not support generator return values.'
         );
@@ -564,7 +564,7 @@ class GeneratorAnswerBuilderTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Requires no support for generator return values.');
         }
 
-        $this->setExpectedException(
+        $this->expectException(
             'RuntimeException',
             'The current runtime does not support generator return values.'
         );

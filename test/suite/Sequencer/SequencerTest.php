@@ -11,10 +11,10 @@
 
 namespace Eloquent\Phony\Sequencer;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class SequencerTest extends PHPUnit_Framework_TestCase
+class SequencerTest extends TestCase
 {
     protected function setUp()
     {

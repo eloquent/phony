@@ -16,12 +16,12 @@ use Eloquent\Phony\Mock\Builder\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\TraitMethodDefinition;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 
-class MockDefinitionTest extends PHPUnit_Framework_TestCase
+class MockDefinitionTest extends TestCase
 {
     protected function setUp()
     {

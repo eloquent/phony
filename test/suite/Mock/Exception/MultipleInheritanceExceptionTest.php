@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class MultipleInheritanceExceptionTest extends PHPUnit_Framework_TestCase
+class MultipleInheritanceExceptionTest extends TestCase
 {
     public function testException()
     {

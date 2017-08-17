@@ -18,10 +18,10 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class StubFactoryTest extends PHPUnit_Framework_TestCase
+class StubFactoryTest extends TestCase
 {
     protected function setUp()
     {

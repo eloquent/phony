@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Reflection\Exception;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class UndefinedFeatureExceptionTest extends PHPUnit_Framework_TestCase
+class UndefinedFeatureExceptionTest extends TestCase
 {
     public function testException()
     {

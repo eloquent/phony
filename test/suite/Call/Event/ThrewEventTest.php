@@ -13,9 +13,9 @@ namespace Eloquent\Phony\Call\Event;
 
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ThrewEventTest extends PHPUnit_Framework_TestCase
+class ThrewEventTest extends TestCase
 {
     protected function setUp()
     {

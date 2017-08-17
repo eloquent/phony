@@ -28,10 +28,10 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
+class StubVerifierFactoryTest extends TestCase
 {
     protected function setUp()
     {
@@ -168,7 +168,7 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateGlobalFailureWithNonGlobal()
     {
-        $this->setExpectedException(
+        $this->expectException(
             'InvalidArgumentException',
             'Only functions in the global namespace are supported.'
         );
@@ -177,13 +177,13 @@ class StubVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateGlobalFailureEmptyNamespace()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The supplied namespace must not be empty.');
+        $this->expectException('InvalidArgumentException', 'The supplied namespace must not be empty.');
         $this->subject->createGlobal('implode', '');
     }
 
     public function testCreateGlobalFailureGlobalNamespace()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The supplied namespace must not be empty.');
+        $this->expectException('InvalidArgumentException', 'The supplied namespace must not be empty.');
         $this->subject->createGlobal('implode', '\\');
     }
 

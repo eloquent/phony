@@ -14,11 +14,11 @@ namespace Eloquent\Phony\Call\Event;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClock;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 
-class CallEventFactoryTest extends PHPUnit_Framework_TestCase
+class CallEventFactoryTest extends TestCase
 {
     protected function setUp()
     {

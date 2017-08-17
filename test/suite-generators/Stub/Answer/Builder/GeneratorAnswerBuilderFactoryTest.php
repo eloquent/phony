@@ -15,10 +15,10 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\StubFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class GeneratorAnswerBuilderFactoryTest extends PHPUnit_Framework_TestCase
+class GeneratorAnswerBuilderFactoryTest extends TestCase
 {
     protected function setUp()
     {

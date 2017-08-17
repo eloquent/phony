@@ -12,12 +12,12 @@
 namespace Eloquent\Phony\Reflection;
 
 use Eloquent\Phony\Invocation\InvocableInspector;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 
-class PhpFunctionSignatureInspectorTest extends PHPUnit_Framework_TestCase
+class PhpFunctionSignatureInspectorTest extends TestCase
 {
     const CONSTANT_A = 'a';
 

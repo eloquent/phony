@@ -14,9 +14,9 @@ namespace Eloquent\Phony\Call;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class CallDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
+class CallDataWithGeneratorsTest extends TestCase
 {
     protected function setUp()
     {
@@ -69,7 +69,7 @@ class CallDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->isIterable());
         $this->assertFalse($this->subject->isGenerator());
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
         $this->subject->generatorResponse();
     }
 
@@ -80,7 +80,7 @@ class CallDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->subject->isIterable());
         $this->assertTrue($this->subject->isGenerator());
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
         $this->subject->generatorResponse();
     }
 
@@ -89,7 +89,7 @@ class CallDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->subject->isIterable());
         $this->assertFalse($this->subject->isGenerator());
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
         $this->subject->generatorResponse();
     }
 
@@ -98,7 +98,7 @@ class CallDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->subject->setResponseEvent($this->generatedEvent);
         $this->subject->setEndEvent($this->threwEvent);
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
         $this->subject->generatorReturnValue();
     }
 
@@ -107,7 +107,7 @@ class CallDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->subject->setResponseEvent($this->generatedEvent);
         $this->subject->setEndEvent($this->returnedEvent);
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
         $this->subject->generatorException();
     }
 }

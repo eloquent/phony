@@ -12,9 +12,9 @@
 namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Test\TestExternalMatcher;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class WrappedMatcherTest extends PHPUnit_Framework_TestCase
+class WrappedMatcherTest extends TestCase
 {
     protected function setUp()
     {

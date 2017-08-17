@@ -27,10 +27,10 @@ use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
+class CallVerifierWithGeneratorsTest extends TestCase
 {
     protected function setUp()
     {
@@ -257,7 +257,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testReturnedFailureWithGenerator()
     {
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->generatorSubject->returned(null);
     }
 
@@ -279,7 +279,7 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
             $this->assertionRenderer
         );
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->generatorSubject->threw();
     }
 
@@ -307,25 +307,25 @@ class CallVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
 
     public function testGeneratedFailure()
     {
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->generated();
     }
 
     public function testGeneratedFailureNever()
     {
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->generatorSubject->never()->generated();
     }
 
     public function testGeneratedFailureWithException()
     {
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subjectWithException->generated();
     }
 
     public function testGeneratedFailureNeverResponded()
     {
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subjectWithNoResponse->generated();
     }
 }

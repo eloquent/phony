@@ -12,9 +12,9 @@
 namespace Eloquent\Phony\Mock\Exception;
 
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class InvalidTypeExceptionTest extends PHPUnit_Framework_TestCase
+class InvalidTypeExceptionTest extends TestCase
 {
     public function testException()
     {

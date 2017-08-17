@@ -13,12 +13,12 @@ namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 
-class EmptyValueFactoryTest extends PHPUnit_Framework_TestCase
+class EmptyValueFactoryTest extends TestCase
 {
     protected function setUp()
     {

@@ -11,8 +11,9 @@
 
 use Eloquent\Phony as x;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use PHPUnit\Framework\TestCase;
 
-class EdgeCaseTest extends PHPUnit_Framework_TestCase
+class EdgeCaseTest extends TestCase
 {
     protected function setUp()
     {

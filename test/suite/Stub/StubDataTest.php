@@ -23,9 +23,9 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class StubDataTest extends PHPUnit_Framework_TestCase
+class StubDataTest extends TestCase
 {
     protected function setUp()
     {
@@ -986,7 +986,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
         $adaptable = Phony::mock('RuntimeException');
         $this->subject->throws($adaptable);
 
-        $this->setExpectedException('RuntimeException');
+        $this->expectException('RuntimeException');
         call_user_func($this->subject);
     }
 
@@ -1096,7 +1096,7 @@ class StubDataTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->with();
 
-        $this->setExpectedException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+        $this->expectException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
         $this->subject->closeRule();
     }
 

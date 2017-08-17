@@ -33,10 +33,10 @@ use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestClassH;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
-class StaticHandleTest extends PHPUnit_Framework_TestCase
+class StaticHandleTest extends TestCase
 {
     protected function setUp()
     {
@@ -178,7 +178,7 @@ class StaticHandleTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
         $this->subject->stub('nonexistent');
     }
 
@@ -196,7 +196,7 @@ class StaticHandleTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
         $this->subject->nonexistent;
     }
 
@@ -237,7 +237,7 @@ class StaticHandleTest extends PHPUnit_Framework_TestCase
         $className::testClassAStaticMethodB('c', 'd');
         $className::testClassAStaticMethodA('e', 'f');
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->noInteraction();
     }
 
@@ -296,7 +296,7 @@ class StaticHandleTest extends PHPUnit_Framework_TestCase
         $this->setUpWith('Eloquent\Phony\Test\TestClassF');
         $this->subject->partial();
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\FinalMethodStubException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\FinalMethodStubException');
         $this->subject->testClassFStaticMethodA;
     }
 

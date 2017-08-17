@@ -20,9 +20,9 @@ use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class StubVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
+class StubVerifierWithGeneratorsTest extends TestCase
 {
     protected function setUp()
     {

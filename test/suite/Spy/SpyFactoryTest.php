@@ -14,10 +14,10 @@ namespace Eloquent\Phony\Spy;
 use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Sequencer\Sequencer;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class SpyFactoryTest extends PHPUnit_Framework_TestCase
+class SpyFactoryTest extends TestCase
 {
     protected function setUp()
     {

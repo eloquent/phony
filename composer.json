@@ -12,14 +12,14 @@
         }
     ],
     "require": {
-        "php": ">=5.3"
+        "php": ">=7"
     },
     "require-dev": {
         "ext-pdo": "*",
         "errors/exceptions": "^0.2",
         "hamcrest/hamcrest-php": "^2",
         "icecave/semver": "^3",
-        "phpunit/phpunit": "^4"
+        "phpunit/phpunit": "^6"
     },
     "autoload": {
         "psr-4": {
@@ -40,7 +40,7 @@
     },
     "config": {
         "platform": {
-            "php": "5.3.99999"
+            "php": "7.0.99999"
         }
     }
 }

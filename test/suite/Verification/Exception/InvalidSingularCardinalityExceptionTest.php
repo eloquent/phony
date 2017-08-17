@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Verification\Exception;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class InvalidSingularCardinalityExceptionTest extends PHPUnit_Framework_TestCase
+class InvalidSingularCardinalityExceptionTest extends TestCase
 {
     public function testException()
     {

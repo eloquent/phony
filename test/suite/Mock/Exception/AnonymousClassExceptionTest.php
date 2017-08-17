@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class AnonymousClassExceptionTest extends PHPUnit_Framework_TestCase
+class AnonymousClassExceptionTest extends TestCase
 {
     public function testException()
     {

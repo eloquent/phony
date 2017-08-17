@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Hook\Exception;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class FunctionExistsExceptionTest extends PHPUnit_Framework_TestCase
+class FunctionExistsExceptionTest extends TestCase
 {
     public function testException()
     {

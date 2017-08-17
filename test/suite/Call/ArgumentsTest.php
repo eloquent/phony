@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Call;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ArgumentsTest extends PHPUnit_Framework_TestCase
+class ArgumentsTest extends TestCase
 {
     protected function setUp()
     {
@@ -61,13 +61,13 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
 
     public function testSetFailureTooHigh()
     {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->set(111, 'value');
     }
 
     public function testSetFailureTooLow()
     {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->set(-111, 'value');
     }
 
@@ -75,7 +75,7 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Arguments(array());
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->set('value');
     }
 
@@ -108,13 +108,13 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
 
     public function testGetFailureTooHigh()
     {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->get(111);
     }
 
     public function testGetFailureTooLow()
     {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->get(-111);
     }
 
@@ -122,7 +122,7 @@ class ArgumentsTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new Arguments(array());
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
         $this->subject->get();
     }
 

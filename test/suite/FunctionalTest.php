@@ -17,8 +17,9 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestInvocable;
+use PHPUnit\Framework\TestCase;
 
-class FunctionalTest extends PHPUnit_Framework_TestCase
+class FunctionalTest extends TestCase
 {
     protected function setUp()
     {
@@ -256,7 +257,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $handle = x\mock('Eloquent\Phony\Test\TestInterfaceWithReturnType');
         $handle->scalarType->returns('<string>');
 
-        $this->setExpectedException('TypeError');
+        $this->expectException('TypeError');
         $handle->get()->scalarType();
     }
 
@@ -1004,7 +1005,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
 
         $instance = eval('return new class {};');
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\AnonymousClassException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\AnonymousClassException');
         x\mock(get_class($instance));
     }
 
@@ -1038,7 +1039,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
     {
         $stub = x\stub()->with();
 
-        $this->setExpectedException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+        $this->expectException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
         $stub();
     }
 
@@ -1126,7 +1127,7 @@ class FunctionalTest extends PHPUnit_Framework_TestCase
         $mock = $builder->get();
         $handle = x\on($mock)->setLabel('label');
 
-        $this->setExpectedException(
+        $this->expectException(
             'Eloquent\Phony\Assertion\Exception\AssertionException',
             'PhonyTestAdHocMocksWithMagicSelfOutput[label]->test'
         );

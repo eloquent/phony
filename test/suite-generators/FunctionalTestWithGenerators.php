@@ -11,7 +11,7 @@
 
 use Eloquent\Phony\Phpunit as x;
 
-class FunctionalTestWithGenerators extends PHPUnit_Framework_TestCase
+class FunctionalTestWithGenerators extends TestCase
 {
     public function testYieldByReferenceSupport()
     {

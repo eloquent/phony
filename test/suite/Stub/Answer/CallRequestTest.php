@@ -13,9 +13,9 @@ namespace Eloquent\Phony\Stub\Answer;
 
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Phony;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class CallRequestTest extends PHPUnit_Framework_TestCase
+class CallRequestTest extends TestCase
 {
     protected function setUp()
     {

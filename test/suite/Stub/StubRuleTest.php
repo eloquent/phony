@@ -15,9 +15,9 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Answer\CallRequest;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class StubRuleTest extends PHPUnit_Framework_TestCase
+class StubRuleTest extends TestCase
 {
     protected function setUp()
     {
@@ -47,7 +47,7 @@ class StubRuleTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new StubRule($this->criteria, array());
 
-        $this->setExpectedException('Eloquent\Phony\Stub\Exception\UndefinedAnswerException');
+        $this->expectException('Eloquent\Phony\Stub\Exception\UndefinedAnswerException');
         $this->subject->next();
     }
 }

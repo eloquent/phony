@@ -12,9 +12,9 @@
 namespace Eloquent\Phony\Stub\Exception;
 
 use Eloquent\Phony\Matcher\MatcherFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class UnusedStubCriteriaExceptionTest extends PHPUnit_Framework_TestCase
+class UnusedStubCriteriaExceptionTest extends TestCase
 {
     public function testException()
     {

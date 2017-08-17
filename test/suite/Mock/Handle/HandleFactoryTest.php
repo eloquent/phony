@@ -18,11 +18,11 @@ use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionProperty;
 
-class HandleFactoryTest extends PHPUnit_Framework_TestCase
+class HandleFactoryTest extends TestCase
 {
     protected function setUp()
     {
@@ -86,7 +86,7 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testInstanceHandleFailureInvalid()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidMockException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\InvalidMockException');
         $this->subject->instanceHandle(null);
     }
 
@@ -155,25 +155,25 @@ class HandleFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testStaticHandleFailureUndefinedClass()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\NonMockClassException');
         $this->subject->staticHandle('Undefined');
     }
 
     public function testStaticHandleFailureNonMockClass()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\NonMockClassException');
         $this->subject->staticHandle(new ReflectionClass('stdClass'));
     }
 
     public function testStaticHandleFailureNonMockClassString()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\NonMockClassException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\NonMockClassException');
         $this->subject->staticHandle('Countable');
     }
 
     public function testStaticHandleFailureInvalid()
     {
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\InvalidMockClassException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\InvalidMockClassException');
         $this->subject->staticHandle(null);
     }
 

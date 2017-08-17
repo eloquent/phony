@@ -13,10 +13,10 @@ namespace Eloquent\Phony\Integration;
 
 use Eloquent\Phony\Matcher\WrappedMatcher;
 use Hamcrest\Util;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class HamcrestMatcherDriverTest extends PHPUnit_Framework_TestCase
+class HamcrestMatcherDriverTest extends TestCase
 {
     protected function setUp()
     {

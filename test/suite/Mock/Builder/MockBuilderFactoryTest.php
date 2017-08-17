@@ -15,10 +15,10 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class MockBuilderFactoryTest extends PHPUnit_Framework_TestCase
+class MockBuilderFactoryTest extends TestCase
 {
     protected function setUp()
     {

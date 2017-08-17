@@ -14,12 +14,12 @@ namespace Eloquent\Phony\Invocation;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestInvocable;
 use Eloquent\Phony\Test\TestWrappedInvocable;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 
-class InvocableInspectorTest extends PHPUnit_Framework_TestCase
+class InvocableInspectorTest extends TestCase
 {
     protected function setUp()
     {
@@ -60,13 +60,13 @@ class InvocableInspectorTest extends PHPUnit_Framework_TestCase
 
     public function testCallbackReflectorFailure()
     {
-        $this->setExpectedException('ReflectionException');
+        $this->expectException('ReflectionException');
         $this->subject->callbackReflector(111);
     }
 
     public function testCallbackReflectorFailureObject()
     {
-        $this->setExpectedException('ReflectionException', 'Invalid callback.');
+        $this->expectException('ReflectionException', 'Invalid callback.');
         $this->subject->callbackReflector((object) array());
     }
 

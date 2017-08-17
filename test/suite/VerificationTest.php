@@ -14,10 +14,10 @@ namespace Eloquent\Phony;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\Phony as TestPhony;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class VerificationTest extends PHPUnit_Framework_TestCase
+class VerificationTest extends TestCase
 {
     protected function setUp()
     {
@@ -82,7 +82,7 @@ class VerificationTest extends PHPUnit_Framework_TestCase
 
             $this->assertSame($expected, $actual);
 
-            $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+            $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
             throw $e;
         }
     }

@@ -11,10 +11,10 @@
 
 namespace Eloquent\Phony\Clock;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class SystemClockTest extends PHPUnit_Framework_TestCase
+class SystemClockTest extends TestCase
 {
     protected function setUp()
     {

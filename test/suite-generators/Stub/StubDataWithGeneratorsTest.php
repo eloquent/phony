@@ -17,9 +17,9 @@ use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class StubDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
+class StubDataWithGeneratorsTest extends TestCase
 {
     protected function setUp()
     {

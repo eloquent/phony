@@ -12,9 +12,9 @@
 namespace Eloquent\Phony\Hook\Exception;
 
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class FunctionHookGenerationFailedExceptionTest extends PHPUnit_Framework_TestCase
+class FunctionHookGenerationFailedExceptionTest extends TestCase
 {
     protected function setUp()
     {

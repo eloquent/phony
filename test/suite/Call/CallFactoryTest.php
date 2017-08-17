@@ -16,11 +16,11 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Test\TestCallEventFactory;
 use Error;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 
-class CallFactoryTest extends PHPUnit_Framework_TestCase
+class CallFactoryTest extends TestCase
 {
     protected function setUp()
     {

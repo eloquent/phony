@@ -16,10 +16,10 @@ use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class MockGeneratorTest extends PHPUnit_Framework_TestCase
+class MockGeneratorTest extends TestCase
 {
     protected function setUp()
     {

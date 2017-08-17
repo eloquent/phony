@@ -12,9 +12,9 @@
 namespace Eloquent\Phony\Call\Event;
 
 use Eloquent\Phony\Test\TestCallFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ProducedEventTest extends PHPUnit_Framework_TestCase
+class ProducedEventTest extends TestCase
 {
     protected function setUp()
     {

@@ -30,10 +30,10 @@ use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
+class SpyVerifierWithGeneratorsTest extends TestCase
 {
     protected function setUp()
     {
@@ -172,7 +172,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->addCall($this->generatorCall);
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->returned(null);
     }
 
@@ -187,7 +187,7 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
         );
         $this->subject->addCall($this->generatorCall);
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->threw();
     }
 
@@ -225,13 +225,13 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testGeneratedFailure()
     {
         $this->subject->setCalls($this->calls);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->generated();
     }
 
     public function testGeneratedFailureWithNoCalls()
     {
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->generated();
     }
 
@@ -260,20 +260,20 @@ class SpyVerifierWithGeneratorsTest extends PHPUnit_Framework_TestCase
     public function testAlwaysGeneratedFailure()
     {
         $this->subject->setCalls($this->calls);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->generated();
     }
 
     public function testAlwaysGeneratedFailureWithNoMatcher()
     {
         $this->subject->setCalls($this->calls);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->generated();
     }
 
     public function testAlwaysGeneratedFailureWithNoCalls()
     {
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->generated();
     }
 }

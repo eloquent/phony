@@ -22,10 +22,10 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
+class SpyVerifierFactoryTest extends TestCase
 {
     protected function setUp()
     {
@@ -134,7 +134,7 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateGlobalFailureWithNonGlobal()
     {
-        $this->setExpectedException(
+        $this->expectException(
             'InvalidArgumentException',
             'Only functions in the global namespace are supported.'
         );
@@ -143,13 +143,13 @@ class SpyVerifierFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateGlobalFailureEmptyNamespace()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The supplied namespace must not be empty.');
+        $this->expectException('InvalidArgumentException', 'The supplied namespace must not be empty.');
         $this->subject->createGlobal('implode', '');
     }
 
     public function testCreateGlobalFailureGlobalNamespace()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The supplied namespace must not be empty.');
+        $this->expectException('InvalidArgumentException', 'The supplied namespace must not be empty.');
         $this->subject->createGlobal('implode', '\\');
     }
 

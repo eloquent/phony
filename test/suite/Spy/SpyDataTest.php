@@ -16,9 +16,9 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class SpyDataTest extends PHPUnit_Framework_TestCase
+class SpyDataTest extends TestCase
 {
     protected function setUp()
     {
@@ -163,7 +163,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls(array());
 
-        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->firstEvent();
     }
 
@@ -178,7 +178,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls(array());
 
-        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->lastEvent();
     }
 
@@ -193,7 +193,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
 
     public function testEventAtFailure()
     {
-        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->eventAt();
     }
 
@@ -208,7 +208,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls(array());
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->firstCall();
     }
 
@@ -223,7 +223,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->setCalls(array());
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->lastCall();
     }
 
@@ -238,7 +238,7 @@ class SpyDataTest extends PHPUnit_Framework_TestCase
 
     public function testCallAtFailure()
     {
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->callAt();
     }
 

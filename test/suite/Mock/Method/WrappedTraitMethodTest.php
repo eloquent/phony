@@ -14,10 +14,10 @@ namespace Eloquent\Phony\Mock\Method;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
-class WrappedTraitMethodTest extends PHPUnit_Framework_TestCase
+class WrappedTraitMethodTest extends TestCase
 {
     protected function setUp()
     {

@@ -12,9 +12,9 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Test\TestCallFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ArraySpyTest extends PHPUnit_Framework_TestCase
+class ArraySpyTest extends TestCase
 {
     protected function setUp()
     {

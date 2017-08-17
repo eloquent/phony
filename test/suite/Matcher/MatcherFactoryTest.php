@@ -19,10 +19,10 @@ use Eloquent\Phony\Test\TestMatcherA;
 use Eloquent\Phony\Test\TestMatcherB;
 use Eloquent\Phony\Test\TestMatcherDriverA;
 use Eloquent\Phony\Test\TestMatcherDriverB;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class MatcherFactoryTest extends PHPUnit_Framework_TestCase
+class MatcherFactoryTest extends TestCase
 {
     protected function setUp()
     {
@@ -50,9 +50,6 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->drivers, $this->subject->drivers());
     }
 
-    /**
-     * @requires PHP 5.4.0-dev
-     */
     public function testAddDefaultMatcherDrivers()
     {
         $this->subject = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher, $this->exporter);
@@ -166,9 +163,6 @@ class MatcherFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->subject->wildcard(null, 111, 222));
     }
 
-    /**
-     * @requires PHP 5.4.0-dev
-     */
     public function testInstance()
     {
         $class = get_class($this->subject);

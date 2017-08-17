@@ -12,10 +12,10 @@
 namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\InlineExporter;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class WildcardMatcherTest extends PHPUnit_Framework_TestCase
+class WildcardMatcherTest extends TestCase
 {
     protected function setUp()
     {

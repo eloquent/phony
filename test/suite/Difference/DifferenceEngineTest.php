@@ -12,10 +12,10 @@
 namespace Eloquent\Phony\Difference;
 
 use Eloquent\Phony\Reflection\FeatureDetector;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class DifferenceEngineTest extends PHPUnit_Framework_TestCase
+class DifferenceEngineTest extends TestCase
 {
     protected function setUp()
     {

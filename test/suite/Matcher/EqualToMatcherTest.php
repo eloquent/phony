@@ -20,9 +20,9 @@ use Eloquent\Phony\Test\Properties\TestDerivedClassB;
 use Eloquent\Phony\Test\Properties\TestDerivedClassWithTraitA;
 use Eloquent\Phony\Test\Properties\TestDerivedClassWithTraitB;
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class EqualToMatcherTest extends PHPUnit_Framework_TestCase
+class EqualToMatcherTest extends TestCase
 {
     protected function setUp($value = '<string>')
     {
@@ -100,9 +100,6 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @requires PHP 5.4.0-dev
-     */
     public function testMatchesEqualWithTraits()
     {
         $left = new TestDerivedClassWithTraitA();
@@ -233,9 +230,6 @@ class EqualToMatcherTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($matcher->matches($left));
     }
 
-    /**
-     * @requires PHP 5.4.0-dev
-     */
     public function testMatchesNotEqualWithTraits()
     {
         $left = new TestDerivedClassWithTraitA();

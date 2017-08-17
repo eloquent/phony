@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Mock\Exception;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class InvalidClassNameExceptionTest extends PHPUnit_Framework_TestCase
+class InvalidClassNameExceptionTest extends TestCase
 {
     public function testException()
     {

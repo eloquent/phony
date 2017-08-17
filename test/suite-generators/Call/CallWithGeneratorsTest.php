@@ -13,13 +13,13 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 /**
  * @covers \Eloquent\Phony\Call\CallData
  */
-class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
+class CallWithGeneratorsTest extends TestCase
 {
     protected function setUp()
     {
@@ -200,7 +200,7 @@ class CallWithGeneratorsTest extends PHPUnit_Framework_TestCase
         $this->subject->setResponseEvent($generatedEvent);
         $this->subject->setEndEvent($endEvent);
 
-        $this->setExpectedException('InvalidArgumentException', 'Call already completed.');
+        $this->expectException('InvalidArgumentException', 'Call already completed.');
         $this->subject->addIterableEvent($this->callEventFactory->createReceived('e'));
     }
 }

@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Stub\Exception;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class UndefinedAnswerExceptionTest extends PHPUnit_Framework_TestCase
+class UndefinedAnswerExceptionTest extends TestCase
 {
     public function testException()
     {

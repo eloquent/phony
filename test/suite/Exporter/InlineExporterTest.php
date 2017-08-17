@@ -22,12 +22,12 @@ use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\TestClassE;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 use TestClass;
 
-class InlineExporterTest extends PHPUnit_Framework_TestCase
+class InlineExporterTest extends TestCase
 {
     protected function setUp()
     {

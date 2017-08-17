@@ -15,9 +15,9 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class SpyDataWithGeneratorsTest extends PHPUnit_Framework_TestCase
+class SpyDataWithGeneratorsTest extends TestCase
 {
     protected function setUp()
     {

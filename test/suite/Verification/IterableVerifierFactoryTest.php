@@ -17,10 +17,10 @@ use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Test\TestCallFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class IterableVerifierFactoryTest extends PHPUnit_Framework_TestCase
+class IterableVerifierFactoryTest extends TestCase
 {
     protected function setUp()
     {

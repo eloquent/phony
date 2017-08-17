@@ -12,9 +12,9 @@
 namespace Eloquent\Phony\Event\Exception;
 
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class UndefinedEventExceptionTest extends PHPUnit_Framework_TestCase
+class UndefinedEventExceptionTest extends TestCase
 {
     public function testException()
     {

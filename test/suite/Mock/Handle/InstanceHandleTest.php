@@ -33,10 +33,10 @@ use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestClassH;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
-class InstanceHandleTest extends PHPUnit_Framework_TestCase
+class InstanceHandleTest extends TestCase
 {
     protected function setUp()
     {
@@ -189,7 +189,7 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
         $this->subject->stub('nonexistent');
     }
 
@@ -207,7 +207,7 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith('Eloquent\Phony\Test\TestClassA');
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
         $this->subject->nonexistent;
     }
 
@@ -246,7 +246,7 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
         $this->mock->testClassAMethodB('c', 'd');
         $this->mock->testClassAMethodA('e', 'f');
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->noInteraction();
     }
 
@@ -365,7 +365,7 @@ class InstanceHandleTest extends PHPUnit_Framework_TestCase
         $this->setUpWith('Eloquent\Phony\Test\TestClassF');
         $this->subject->partial();
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\FinalMethodStubException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\FinalMethodStubException');
         $this->subject->testClassFMethodA;
     }
 

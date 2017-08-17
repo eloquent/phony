@@ -18,10 +18,10 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class CallVerifierFactoryTest extends PHPUnit_Framework_TestCase
+class CallVerifierFactoryTest extends TestCase
 {
     protected function setUp()
     {

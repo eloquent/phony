@@ -11,11 +11,11 @@
 
 namespace Eloquent\Phony\Mock\Builder\Method;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionFunction;
 use ReflectionMethod;
 
-class MethodDefinitionCollectionTest extends PHPUnit_Framework_TestCase
+class MethodDefinitionCollectionTest extends TestCase
 {
     protected function setUp()
     {

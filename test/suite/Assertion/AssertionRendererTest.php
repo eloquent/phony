@@ -24,11 +24,11 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\Cardinality;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 
-class AssertionRendererTest extends PHPUnit_Framework_TestCase
+class AssertionRendererTest extends TestCase
 {
     protected function setUp()
     {

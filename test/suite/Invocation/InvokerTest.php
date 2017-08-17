@@ -13,10 +13,10 @@ namespace Eloquent\Phony\Invocation;
 
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Test\TestInvocable;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class InvokerTest extends PHPUnit_Framework_TestCase
+class InvokerTest extends TestCase
 {
     protected function setUp()
     {

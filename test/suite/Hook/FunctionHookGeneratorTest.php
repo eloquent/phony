@@ -13,10 +13,10 @@ namespace Eloquent\Phony\Hook;
 
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class FunctionHookGeneratorTest extends PHPUnit_Framework_TestCase
+class FunctionHookGeneratorTest extends TestCase
 {
     protected function setUp()
     {

@@ -13,10 +13,10 @@ namespace Eloquent\Phony\Hook;
 
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Test\TestFunctionHookGenerator;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class FunctionHookManagerTest extends PHPUnit_Framework_TestCase
+class FunctionHookManagerTest extends TestCase
 {
     protected function setUp()
     {
@@ -67,7 +67,7 @@ class FunctionHookManagerTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->defineFunction($this->name, $this->namespace, function ($a = null) {});
 
-        $this->setExpectedException('Eloquent\Phony\Hook\Exception\FunctionSignatureMismatchException');
+        $this->expectException('Eloquent\Phony\Hook\Exception\FunctionSignatureMismatchException');
         $this->subject->defineFunction($this->name, $this->namespace, function () {});
     }
 
@@ -77,7 +77,7 @@ class FunctionHookManagerTest extends PHPUnit_Framework_TestCase
             eval("namespace $this->namespace;\nfunction existant () {}");
         }
 
-        $this->setExpectedException('Eloquent\Phony\Hook\Exception\FunctionExistsException');
+        $this->expectException('Eloquent\Phony\Hook\Exception\FunctionExistsException');
         $this->subject->defineFunction('existant', $this->namespace, function () {});
     }
 
@@ -86,7 +86,7 @@ class FunctionHookManagerTest extends PHPUnit_Framework_TestCase
         $this->hookGenerator = new TestFunctionHookGenerator('{');
         $this->subject = new FunctionHookManager($this->functionSignatureInspector, $this->hookGenerator);
 
-        $this->setExpectedException('Eloquent\Phony\Hook\Exception\FunctionHookGenerationFailedException');
+        $this->expectException('Eloquent\Phony\Hook\Exception\FunctionHookGenerationFailedException');
         $this->subject->defineFunction($this->name, $this->namespace, function () {});
     }
 

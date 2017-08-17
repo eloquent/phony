@@ -15,13 +15,13 @@ use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Test\TestCallEventFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 /**
  * @covers \Eloquent\Phony\Call\CallFactory
  */
-class CallFactoryWithGeneratorsTest extends PHPUnit_Framework_TestCase
+class CallFactoryWithGeneratorsTest extends TestCase
 {
     protected function setUp()
     {

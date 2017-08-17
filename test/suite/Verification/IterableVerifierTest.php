@@ -28,10 +28,10 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class IterableVerifierTest extends PHPUnit_Framework_TestCase
+class IterableVerifierTest extends TestCase
 {
     protected function setUp()
     {
@@ -244,7 +244,7 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->firstEvent();
     }
 
@@ -259,7 +259,7 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->lastEvent();
     }
 
@@ -276,7 +276,7 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->setExpectedException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
         $this->subject->eventAt();
     }
 
@@ -291,7 +291,7 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->firstCall();
     }
 
@@ -306,7 +306,7 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->lastCall();
     }
 
@@ -322,7 +322,7 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith(array());
 
-        $this->setExpectedException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
         $this->subject->callAt(0);
     }
 
@@ -392,7 +392,7 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith($this->nonIterableCalls);
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->used();
     }
 
@@ -404,7 +404,7 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
         );
         $this->setUpWith(array($this->iteratorCall));
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->used();
     }
 
@@ -412,7 +412,7 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith($this->calls);
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->used();
     }
 
@@ -420,7 +420,7 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->setUpWith($this->calls);
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->never()->used();
     }
 
@@ -514,49 +514,49 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     public function testProducedFailureNoIterablesNoMatchers()
     {
         $this->setUpWith($this->typicalCalls);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->produced();
     }
 
     public function testProducedFailureNoIterablesValueOnly()
     {
         $this->setUpWith($this->typicalCalls);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->produced('x');
     }
 
     public function testProducedFailureNoIterablesKeyAndValue()
     {
         $this->setUpWith($this->typicalCalls);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->produced('x', 'y');
     }
 
     public function testProducedFailureValueMismatch()
     {
         $this->setUpWith($this->typicalCallsPlusIteratorCall);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->produced('x');
     }
 
     public function testProducedFailureKeyValueMismatch()
     {
         $this->setUpWith($this->typicalCallsPlusIteratorCall);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->produced('x', 'y');
     }
 
     public function testProducedFailureAlways()
     {
         $this->setUpWith($this->typicalCallsPlusIteratorCall);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->produced('n');
     }
 
     public function testProducedFailureNever()
     {
         $this->setUpWith($this->typicalCallsPlusIteratorCall);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->never()->produced('n');
     }
 
@@ -631,7 +631,7 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
     public function testConsumedFailureNonIterables()
     {
         $this->setUpWith($this->nonIterableCalls);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->consumed();
     }
 
@@ -643,21 +643,21 @@ class IterableVerifierTest extends PHPUnit_Framework_TestCase
             $this->iteratorEvents
         );
         $this->setUpWith(array($this->iteratorCall));
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->consumed();
     }
 
     public function testConsumedFailureAlways()
     {
         $this->setUpWith($this->calls);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->always()->consumed();
     }
 
     public function testConsumedFailureNever()
     {
         $this->setUpWith($this->calls);
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
         $this->subject->never()->consumed();
     }
 

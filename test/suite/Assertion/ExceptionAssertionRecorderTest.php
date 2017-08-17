@@ -14,10 +14,10 @@ namespace Eloquent\Phony\Assertion;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Event\EventSequence;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class ExceptionAssertionRecorderTest extends PHPUnit_Framework_TestCase
+class ExceptionAssertionRecorderTest extends TestCase
 {
     protected function setUp()
     {
@@ -53,7 +53,7 @@ class ExceptionAssertionRecorderTest extends PHPUnit_Framework_TestCase
     {
         $description = 'description';
 
-        $this->setExpectedException('Eloquent\Phony\Assertion\Exception\AssertionException', $description);
+        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException', $description);
         $this->subject->createFailure($description);
     }
 

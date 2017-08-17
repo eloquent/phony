@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Hook\Exception;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class FunctionSignatureMismatchExceptionTest extends PHPUnit_Framework_TestCase
+class FunctionSignatureMismatchExceptionTest extends TestCase
 {
     public function testException()
     {

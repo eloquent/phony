@@ -24,9 +24,9 @@ use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class StubVerifierTest extends PHPUnit_Framework_TestCase
+class StubVerifierTest extends TestCase
 {
     protected function setUp()
     {
@@ -976,7 +976,7 @@ class StubVerifierTest extends PHPUnit_Framework_TestCase
     {
         $this->subject->with();
 
-        $this->setExpectedException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+        $this->expectException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
         $this->subject->closeRule();
     }
 

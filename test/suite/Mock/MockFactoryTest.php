@@ -18,10 +18,10 @@ use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestMockGenerator;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class MockFactoryTest extends PHPUnit_Framework_TestCase
+class MockFactoryTest extends TestCase
 {
     protected function setUp()
     {
@@ -72,7 +72,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $builderB->named($builderA->className());
         $reporting = error_reporting();
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\ClassExistsException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\ClassExistsException');
         try {
             $this->subject->createMockClass($builderB->definition());
         } catch (ClassExistsException $e) {
@@ -93,7 +93,7 @@ class MockFactoryTest extends PHPUnit_Framework_TestCase
         $builder = $this->builderFactory->create();
         $reporting = error_reporting();
 
-        $this->setExpectedException('Eloquent\Phony\Mock\Exception\MockGenerationFailedException');
+        $this->expectException('Eloquent\Phony\Mock\Exception\MockGenerationFailedException');
         try {
             $this->subject->createMockClass($builder->definition());
         } catch (MockGenerationFailedException $e) {

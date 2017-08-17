@@ -11,10 +11,10 @@
 
 namespace Eloquent\Phony\Matcher;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class MatcherVerifierTest extends PHPUnit_Framework_TestCase
+class MatcherVerifierTest extends TestCase
 {
     protected function setUp()
     {

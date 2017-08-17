@@ -14,10 +14,10 @@ namespace Eloquent\Phony\Spy;
 use ArrayIterator;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestIteratorAggregate;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class IterableSpyFactoryTest extends PHPUnit_Framework_TestCase
+class IterableSpyFactoryTest extends TestCase
 {
     protected function setUp()
     {
@@ -126,7 +126,7 @@ class IterableSpyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->call = $this->callFactory->create();
 
-        $this->setExpectedException('InvalidArgumentException', 'Unsupported iterable of type NULL.');
+        $this->expectException('InvalidArgumentException', 'Unsupported iterable of type NULL.');
         $this->subject->create($this->call, null);
     }
 
@@ -134,7 +134,7 @@ class IterableSpyFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->call = $this->callFactory->create();
 
-        $this->setExpectedException('InvalidArgumentException', "Unsupported iterable of type 'stdClass'.");
+        $this->expectException('InvalidArgumentException', "Unsupported iterable of type 'stdClass'.");
         $this->subject->create($this->call, (object) array());
     }
 

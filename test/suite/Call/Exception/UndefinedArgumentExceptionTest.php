@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Call\Exception;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class UndefinedArgumentExceptionTest extends PHPUnit_Framework_TestCase
+class UndefinedArgumentExceptionTest extends TestCase
 {
     public function testException()
     {

@@ -11,9 +11,9 @@
 
 namespace Eloquent\Phony\Assertion\Exception;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class AssertionExceptionTest extends PHPUnit_Framework_TestCase
+class AssertionExceptionTest extends TestCase
 {
     public function testException()
     {

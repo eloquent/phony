@@ -11,10 +11,10 @@
 
 namespace Eloquent\Phony\Reflection;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class FeatureDetectorTest extends PHPUnit_Framework_TestCase
+class FeatureDetectorTest extends TestCase
 {
     protected function setUp()
     {
@@ -75,7 +75,7 @@ class FeatureDetectorTest extends PHPUnit_Framework_TestCase
     {
         $this->subject = new FeatureDetector($this->features, $this->supported);
 
-        $this->setExpectedException('Eloquent\Phony\Reflection\Exception\UndefinedFeatureException');
+        $this->expectException('Eloquent\Phony\Reflection\Exception\UndefinedFeatureException');
         $this->subject->isSupported('x');
     }
 

@@ -12,9 +12,9 @@
 namespace Eloquent\Phony\Stub\Answer;
 
 use Eloquent\Phony\Call\Arguments;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class AnswerTest extends PHPUnit_Framework_TestCase
+class AnswerTest extends TestCase
 {
     protected function setUp()
     {
