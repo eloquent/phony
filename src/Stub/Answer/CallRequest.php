@@ -29,7 +29,7 @@ class CallRequest
      * @param bool      $suffixArguments       True if the arguments should be appended individually.
      */
     public function __construct(
-        $callback,
+        callable $callback,
         Arguments $arguments,
         $prefixSelf,
         $suffixArgumentsObject,

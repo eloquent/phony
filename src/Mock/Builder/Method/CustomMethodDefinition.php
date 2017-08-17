@@ -29,7 +29,7 @@ class CustomMethodDefinition implements MethodDefinition
     public function __construct(
         $isStatic,
         $name,
-        $callback,
+        callable $callback,
         ReflectionFunctionAbstract $method
     ) {
         $this->isStatic = $isStatic;

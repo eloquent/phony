@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Event\Exception;
 
 use Exception;
+use Throwable;
 
 /**
  * No event is defined for the requested index.
@@ -22,9 +23,9 @@ final class UndefinedEventException extends Exception
      * Construct a new undefined event exception.
      *
      * @param int            $index The index.
-     * @param Exception|null $cause The cause, if available.
+     * @param Throwable|null $cause The cause, if available.
      */
-    public function __construct($index, Exception $cause = null)
+    public function __construct($index, Throwable $cause = null)
     {
         $this->index = $index;
 

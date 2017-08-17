@@ -13,7 +13,6 @@ namespace Eloquent\Phony\Spy\Detail;
 
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CallEventFactory;
-use Exception;
 use Generator;
 use Throwable;
 
@@ -66,8 +65,6 @@ abstract class GeneratorSpyFactoryDetailHhvm
                 }
             } catch (Throwable $thrown) {
                 // re-thrown after recording
-            } catch (Exception $thrown) {
-                // re-thrown after recording
             }
 
             if ($thrown) {
@@ -93,7 +90,7 @@ abstract class GeneratorSpyFactoryDetailHhvm
                 $call->addIterableEvent(
                     $callEventFactory->createReceived($received)
                 );
-            } catch (Exception $receivedException) {
+            } catch (Throwable $receivedException) {
                 $call->addIterableEvent(
                     $callEventFactory
                         ->createReceivedException($receivedException)

@@ -13,7 +13,7 @@ namespace Eloquent\Phony\Assertion;
 
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
-use Exception;
+use Throwable;
 
 /**
  * The interface implemented by assertion recorders.
@@ -43,7 +43,7 @@ interface AssertionRecorder
      *
      * @param string $description The failure description.
      *
-     * @throws Exception If this recorder throws exceptions.
+     * @throws Throwable If this recorder throws exceptions.
      */
     public function createFailure($description);
 }

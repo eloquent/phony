@@ -36,9 +36,8 @@ use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Verification\Cardinality;
-use Error;
-use Exception;
 use Generator;
+use Throwable;
 use Traversable;
 
 /**
@@ -2621,9 +2620,9 @@ class AssertionRenderer
     /**
      * Render a failed generator receivedException() verification.
      *
-     * @param Spy|Call                            $subject     The subject.
-     * @param Cardinality                         $cardinality The cardinality.
-     * @param Matcher|Exception|Error|string|null $type        The type of exception.
+     * @param Spy|Call                      $subject     The subject.
+     * @param Cardinality                   $cardinality The cardinality.
+     * @param Matcher|Throwable|string|null $type        The type of exception.
      *
      * @return string The rendered failure message.
      */
@@ -3218,9 +3217,9 @@ class AssertionRenderer
     /**
      * Render a failed generator threw() verification.
      *
-     * @param Spy|Call                            $subject     The subject.
-     * @param Cardinality                         $cardinality The cardinality.
-     * @param Matcher|Exception|Error|string|null $type        The type of exception.
+     * @param Spy|Call                      $subject     The subject.
+     * @param Cardinality                   $cardinality The cardinality.
+     * @param Matcher|Throwable|string|null $type        The type of exception.
      *
      * @return string The rendered failure message.
      */

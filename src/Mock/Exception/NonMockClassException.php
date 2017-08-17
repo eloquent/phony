@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Exception;
 
 use Exception;
+use Throwable;
 
 /**
  * The supplied class is not a mock class.
@@ -23,9 +24,9 @@ final class NonMockClassException extends Exception implements
      * Construct a non-mock class exception.
      *
      * @param string         $className The class name.
-     * @param Exception|null $cause     The cause, if available.
+     * @param Throwable|null $cause     The cause, if available.
      */
-    public function __construct($className, Exception $cause = null)
+    public function __construct($className, Throwable $cause = null)
     {
         $this->className = $className;
 

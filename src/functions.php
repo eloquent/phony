@@ -25,9 +25,9 @@ use Eloquent\Phony\Mock\Handle\StaticHandle;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Spy\SpyVerifier;
 use Eloquent\Phony\Stub\StubVerifier;
-use Exception;
 use InvalidArgumentException;
 use ReflectionClass;
+use Throwable;
 
 /**
  * Create a new mock builder.
@@ -124,7 +124,7 @@ function onStatic($class)
  *
  * @return SpyVerifier The new spy.
  */
-function spy($callback = null)
+function spy(callable $callback = null)
 {
     return FacadeDriver::instance()->spyVerifierFactory
         ->createFromCallback($callback);
@@ -152,7 +152,7 @@ function spyGlobal($function, $namespace)
  *
  * @return StubVerifier The new stub.
  */
-function stub($callback = null)
+function stub(callable $callback = null)
 {
     return FacadeDriver::instance()->stubVerifierFactory
         ->createFromCallback($callback);
@@ -206,7 +206,7 @@ function checkInOrder()
  * @param Event|EventCollection ...$events The events.
  *
  * @return EventCollection The result.
- * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+ * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
  */
 function inOrder()
 {
@@ -234,7 +234,7 @@ function checkInOrderSequence($events)
  * @param mixed<Event|EventCollection> $events The event sequence.
  *
  * @return EventCollection The result.
- * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+ * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
  */
 function inOrderSequence($events)
 {
@@ -263,7 +263,7 @@ function checkAnyOrder()
  *
  * @return EventCollection          The result.
  * @throws InvalidArgumentException If invalid input is supplied.
- * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+ * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
  */
 function anyOrder()
 {
@@ -293,7 +293,7 @@ function checkAnyOrderSequence($events)
  *
  * @return EventCollection          The result.
  * @throws InvalidArgumentException If invalid input is supplied.
- * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+ * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
  */
 function anyOrderSequence($events)
 {

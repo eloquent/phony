@@ -15,8 +15,7 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Clock\Clock;
 use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Sequencer\Sequencer;
-use Error;
-use Exception;
+use Throwable;
 
 /**
  * Creates call events.
@@ -60,7 +59,7 @@ class CallEventFactory
      *
      * @return CalledEvent The newly created event.
      */
-    public function createCalled($callback, Arguments $arguments)
+    public function createCalled(callable $callback, Arguments $arguments)
     {
         return new CalledEvent(
             $this->sequencer->next(),
@@ -89,11 +88,11 @@ class CallEventFactory
     /**
      * Create a new 'thrown' event.
      *
-     * @param Exception|Error $exception The thrown exception.
+     * @param Throwable $exception The thrown exception.
      *
      * @return ThrewEvent The newly created event.
      */
-    public function createThrew($exception)
+    public function createThrew(Throwable $exception)
     {
         return new ThrewEvent(
             $this->sequencer->next(),
@@ -149,11 +148,11 @@ class CallEventFactory
     /**
      * Create a new 'received exception' event.
      *
-     * @param Exception|Error $exception The received exception.
+     * @param Throwable $exception The received exception.
      *
      * @return ReceivedExceptionEvent The newly created event.
      */
-    public function createReceivedException($exception)
+    public function createReceivedException(Throwable $exception)
     {
         return new ReceivedExceptionEvent(
             $this->sequencer->next(),

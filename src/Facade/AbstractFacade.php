@@ -24,9 +24,9 @@ use Eloquent\Phony\Mock\Handle\StaticHandle;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Spy\SpyVerifier;
 use Eloquent\Phony\Stub\StubVerifier;
-use Exception;
 use InvalidArgumentException;
 use ReflectionClass;
+use Throwable;
 
 /**
  * INTERNAL USE ONLY. An abstract base class for implementing facades.
@@ -127,7 +127,7 @@ abstract class AbstractFacade
      *
      * @return SpyVerifier The new spy.
      */
-    public static function spy($callback = null)
+    public static function spy(callable $callback = null)
     {
         return
             static::driver()->spyVerifierFactory->createFromCallback($callback);
@@ -155,7 +155,7 @@ abstract class AbstractFacade
      *
      * @return StubVerifier The new stub.
      */
-    public static function stub($callback = null)
+    public static function stub(callable $callback = null)
     {
         return static::driver()->stubVerifierFactory
             ->createFromCallback($callback);
@@ -208,7 +208,7 @@ abstract class AbstractFacade
      * @param Event|EventCollection ...$events The events.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public static function inOrder()
     {
@@ -236,7 +236,7 @@ abstract class AbstractFacade
      * @param mixed<Event|EventCollection> $events The event sequence.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public static function inOrderSequence($events)
     {
@@ -264,7 +264,7 @@ abstract class AbstractFacade
      *
      * @return EventCollection          The result.
      * @throws InvalidArgumentException If invalid input is supplied.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public static function anyOrder()
     {
@@ -294,7 +294,7 @@ abstract class AbstractFacade
      *
      * @return EventCollection          The result.
      * @throws InvalidArgumentException If invalid input is supplied.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public static function anyOrderSequence($events)
     {

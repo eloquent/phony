@@ -15,6 +15,7 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorYieldFromIteration;
 use Eloquent\Phony\Stub\Answer\CallRequest;
+use Throwable;
 
 /**
  * A detail class for generator answer builders.
@@ -26,7 +27,7 @@ abstract class GeneratorAnswerBuilderDetail
      *
      * @param array<tuple<bool,mixed,bool,mixed,array<CallRequest>>> &$iterations      The iteration details.
      * @param array<CallRequest>                                     &$requests        The call requests
-     * @param Exception|Error|null                                   &$exception       The exception to throw.
+     * @param Throwable|null                                         &$exception       The exception to throw.
      * @param mixed                                                  &$returnValue     The return value.
      * @param int|null                                               &$returnsArgument The index of the argument to return.
      * @param bool                                                   &$returnsSelf     True if the self value should be returned.
@@ -37,7 +38,7 @@ abstract class GeneratorAnswerBuilderDetail
     public static function answer(
         array &$iterations,
         array &$requests,
-        &$exception,
+        Throwable &$exception = null,
         &$returnValue,
         &$returnsArgument,
         &$returnsSelf,

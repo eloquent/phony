@@ -14,9 +14,8 @@ namespace Eloquent\Phony\Mock\Method;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Mock\Handle\Handle;
-use Error;
-use Exception;
 use ReflectionMethod;
+use Throwable;
 
 /**
  * A wrapper that allows calling of the parent magic method in mocks.
@@ -117,8 +116,8 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      *
      * @param Arguments|array $arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
     public function invokeWith($arguments = [])
     {

@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use InvalidArgumentException;
+use Throwable;
 
 /**
  * Checks and asserts the order of events.
@@ -73,7 +74,7 @@ class EventOrderVerifier
      *
      * @return EventCollection          The result.
      * @throws InvalidArgumentException If invalid input is supplied.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function inOrder()
     {
@@ -155,7 +156,7 @@ class EventOrderVerifier
      *
      * @return EventCollection          The result.
      * @throws InvalidArgumentException If invalid input is supplied.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function inOrderSequence($events)
     {
@@ -191,7 +192,7 @@ class EventOrderVerifier
      *
      * @return EventCollection          The result.
      * @throws InvalidArgumentException If invalid input is supplied.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function anyOrder()
     {
@@ -224,7 +225,7 @@ class EventOrderVerifier
      *
      * @return EventCollection          The result.
      * @throws InvalidArgumentException If invalid input is supplied.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function anyOrderSequence($events)
     {

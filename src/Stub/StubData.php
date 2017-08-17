@@ -24,8 +24,8 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
-use Error;
 use Exception;
+use Throwable;
 
 /**
  * Provides canned answers to function or method invocations.
@@ -67,10 +67,10 @@ class StubData extends AbstractWrappedInvocable implements Stub
      * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
      */
     public function __construct(
-        $callback,
+        callable $callback = null,
         $self,
         $label,
-        $defaultAnswerCallback,
+        callable $defaultAnswerCallback,
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,
         Invoker $invoker,
@@ -150,7 +150,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function setDefaultAnswerCallback($defaultAnswerCallback)
+    public function setDefaultAnswerCallback(callable $defaultAnswerCallback)
     {
         $this->defaultAnswerCallback = $defaultAnswerCallback;
 
@@ -188,7 +188,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function calls($callback)
+    public function calls(callable $callback)
     {
         foreach (func_get_args() as $callback) {
             $this->callsWith($callback);
@@ -209,7 +209,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      * @param bool            $suffixArguments       True if the arguments should be appended individually.
      */
     public function callsWith(
-        $callback,
+        callable $callback,
         $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
@@ -369,7 +369,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function does($callback)
+    public function does(callable $callback)
     {
         foreach (func_get_args() as $callback) {
             $this->doesWith($callback);
@@ -390,7 +390,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      * @return $this This stub.
      */
     public function doesWith(
-        $callback,
+        callable $callback,
         $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
@@ -598,8 +598,8 @@ class StubData extends AbstractWrappedInvocable implements Stub
     /**
      * Add an answer that throws an exception.
      *
-     * @param Exception|Error|string|null $exception               The exception, or message, or null to throw a generic exception.
-     * @param Exception|Error|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
+     * @param Throwable|string|null $exception               The exception, or message, or null to throw a generic exception.
+     * @param Throwable|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
      *
      * @return $this This stub.
      */
@@ -709,8 +709,8 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @param Arguments|array $arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
     public function invokeWith($arguments = [])
     {

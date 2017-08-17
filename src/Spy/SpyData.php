@@ -21,10 +21,9 @@ use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Invocation\Invoker;
-use Error;
-use Exception;
 use Generator;
 use Iterator;
+use Throwable;
 use Traversable;
 
 /**
@@ -43,7 +42,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * @param IterableSpyFactory  $iterableSpyFactory  The iterable spy factory to use.
      */
     public function __construct(
-        $callback,
+        callable $callback = null,
         $label,
         CallFactory $callFactory,
         Invoker $invoker,
@@ -352,8 +351,8 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @param Arguments|array $arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
     public function invokeWith($arguments = [])
     {

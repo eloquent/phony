@@ -32,8 +32,6 @@ use Eloquent\Phony\Verification\GeneratorVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifier;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
-use Error;
-use Exception;
 use Generator;
 use InvalidArgumentException;
 use Iterator;
@@ -462,7 +460,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Get the thrown exception.
      *
-     * @return Exception|Error            The thrown exception.
+     * @return Throwable                  The thrown exception.
      * @throws UndefinedResponseException If this call has not yet thrown an exception.
      */
     public function exception()
@@ -473,7 +471,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Get the exception thrown from the generator.
      *
-     * @return Exception|Error            The thrown exception.
+     * @return Throwable                  The thrown exception.
      * @throws UndefinedResponseException If this call has not yet thrown an exception via generator.
      */
     public function generatorException()
@@ -484,8 +482,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Get the response.
      *
-     * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
-     * @throws UndefinedResponseException        If this call has not yet responded.
+     * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException  If this call has not yet responded.
      */
     public function response()
     {
@@ -495,8 +493,8 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Get the response from the generator.
      *
-     * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
-     * @throws UndefinedResponseException        If this call has not yet responded via generator.
+     * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException  If this call has not yet responded via generator.
      */
     public function generatorResponse()
     {
@@ -607,7 +605,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return EventCollection             The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
-     * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledWith()
     {
@@ -651,7 +649,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return EventCollection             The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
-     * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function responded()
     {
@@ -690,7 +688,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return EventCollection             The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
-     * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function completed()
     {
@@ -762,7 +760,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return EventCollection             The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
-     * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function returned($value = null)
     {
@@ -792,7 +790,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
     /**
      * Checks if an exception of the supplied type was thrown.
      *
-     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection|null        The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
@@ -833,7 +831,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
                 $type = $type->get();
             }
 
-            if ($type instanceof Throwable || $type instanceof Exception) {
+            if ($type instanceof Throwable) {
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->equalTo($type, true);
             } elseif ($this->matcherFactory->isMatcher($type)) {
@@ -868,12 +866,12 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * Throws an exception unless this call threw an exception of the supplied
      * type.
      *
-     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection             The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws InvalidArgumentException    If the type is invalid.
-     * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function threw($type = null)
     {
@@ -883,7 +881,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
             $type = $type->get();
         }
 
-        if ($type instanceof Throwable || $type instanceof Exception) {
+        if ($type instanceof Throwable) {
             $type = $this->matcherFactory->equalTo($type, true);
         } elseif ($this->matcherFactory->isMatcher($type)) {
             $type = $this->matcherFactory->adapt($type);
@@ -933,7 +931,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return GeneratorVerifier           The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
-     * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function generated()
     {
@@ -983,7 +981,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return IterableVerifier            The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
-     * @throws Exception                   If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function iterated()
     {

@@ -14,7 +14,6 @@ namespace Eloquent\Phony\Call;
 use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\SpyData;
-use Exception;
 use Throwable;
 
 /**
@@ -63,7 +62,7 @@ class CallFactory
      * @return CallData The newly created call.
      */
     public function record(
-        $callback,
+        callable $callback,
         Arguments $arguments,
         SpyData $spy
     ) {
@@ -81,10 +80,8 @@ class CallFactory
         try {
             $returnValue = $this->invoker->callWith($callback, $arguments);
         } catch (Throwable $exception) {
-            // @codeCoverageIgnoreStart
-        } catch (Exception $exception) {
+            // handled below
         }
-        // @codeCoverageIgnoreEnd
 
         if ($exception) {
             $responseEvent = $this->eventFactory->createThrew($exception);

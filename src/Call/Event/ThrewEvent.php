@@ -11,8 +11,7 @@
 
 namespace Eloquent\Phony\Call\Event;
 
-use Error;
-use Exception;
+use Throwable;
 
 /**
  * Represents the end of a call by throwing an exception.
@@ -22,11 +21,11 @@ class ThrewEvent extends AbstractCallEvent implements ResponseEvent
     /**
      * Construct a 'threw' event.
      *
-     * @param int             $sequenceNumber The sequence number.
-     * @param float           $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param Exception|Error $exception      The thrown exception.
+     * @param int       $sequenceNumber The sequence number.
+     * @param float     $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param Throwable $exception      The thrown exception.
      */
-    public function __construct($sequenceNumber, $time, $exception)
+    public function __construct($sequenceNumber, $time, Throwable $exception)
     {
         parent::__construct($sequenceNumber, $time);
 
@@ -36,7 +35,7 @@ class ThrewEvent extends AbstractCallEvent implements ResponseEvent
     /**
      * Get the thrown exception.
      *
-     * @return Exception|Error The thrown exception.
+     * @return Throwable The thrown exception.
      */
     public function exception()
     {

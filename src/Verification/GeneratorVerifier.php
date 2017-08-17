@@ -22,8 +22,6 @@ use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Spy\Spy;
-use Error;
-use Exception;
 use InvalidArgumentException;
 use Throwable;
 
@@ -133,7 +131,7 @@ class GeneratorVerifier extends IterableVerifier
      * @param mixed $value The value.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function received($value = null)
     {
@@ -164,7 +162,7 @@ class GeneratorVerifier extends IterableVerifier
     /**
      * Checks if the subject received an exception of the supplied type.
      *
-     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If the type is invalid.
@@ -232,7 +230,7 @@ class GeneratorVerifier extends IterableVerifier
                 $type = $type->get();
             }
 
-            if ($type instanceof Throwable || $type instanceof Exception) {
+            if ($type instanceof Throwable) {
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->equalTo($type, true);
             } elseif ($this->matcherFactory->isMatcher($type)) {
@@ -290,11 +288,11 @@ class GeneratorVerifier extends IterableVerifier
      * Throws an exception unless the subject received an exception of the
      * supplied type.
      *
-     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection          The result.
      * @throws InvalidArgumentException If the type is invalid.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function receivedException($type = null)
     {
@@ -304,7 +302,7 @@ class GeneratorVerifier extends IterableVerifier
             $type = $type->get();
         }
 
-        if ($type instanceof Throwable || $type instanceof Exception) {
+        if ($type instanceof Throwable) {
             $type = $this->matcherFactory->equalTo($type, true);
         } elseif ($this->matcherFactory->isMatcher($type)) {
             $type = $this->matcherFactory->adapt($type);
@@ -383,7 +381,7 @@ class GeneratorVerifier extends IterableVerifier
      * @param mixed $value The value.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function returned($value = null)
     {
@@ -413,7 +411,7 @@ class GeneratorVerifier extends IterableVerifier
     /**
      * Checks if an exception of the supplied type was thrown from a generator.
      *
-     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If the type is invalid.
@@ -465,7 +463,7 @@ class GeneratorVerifier extends IterableVerifier
                 $type = $type->get();
             }
 
-            if ($type instanceof Throwable || $type instanceof Exception) {
+            if ($type instanceof Throwable) {
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->equalTo($type, true);
             } elseif ($this->matcherFactory->isMatcher($type)) {
@@ -510,11 +508,11 @@ class GeneratorVerifier extends IterableVerifier
      * Throws an exception unless an exception of the supplied type was thrown
      * from a generator.
      *
-     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection          The result.
      * @throws InvalidArgumentException If the type is invalid.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function threw($type = null)
     {
@@ -524,7 +522,7 @@ class GeneratorVerifier extends IterableVerifier
             $type = $type->get();
         }
 
-        if ($type instanceof Throwable || $type instanceof Exception) {
+        if ($type instanceof Throwable) {
             $type = $this->matcherFactory->equalTo($type, true);
         } elseif ($this->matcherFactory->isMatcher($type)) {
             $type = $this->matcherFactory->adapt($type);

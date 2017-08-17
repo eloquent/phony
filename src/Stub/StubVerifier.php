@@ -23,8 +23,7 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
-use Error;
-use Exception;
+use Throwable;
 
 /**
  * Pairs a stub and a spy, and provides convenience methods for verifying
@@ -126,7 +125,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function setDefaultAnswerCallback($defaultAnswerCallback)
+    public function setDefaultAnswerCallback(callable $defaultAnswerCallback)
     {
         $this->stub->setDefaultAnswerCallback($defaultAnswerCallback);
 
@@ -181,7 +180,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function calls($callback)
+    public function calls(callable $callback)
     {
         call_user_func_array([$this->stub, 'calls'], func_get_args());
 
@@ -202,7 +201,7 @@ class StubVerifier extends SpyVerifier implements Stub
      * @param bool            $suffixArguments       True if the arguments should be appended individually.
      */
     public function callsWith(
-        $callback,
+        callable $callback,
         $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
@@ -307,7 +306,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function does($callback)
+    public function does(callable $callback)
     {
         call_user_func_array([$this->stub, 'does'], func_get_args());
 
@@ -326,7 +325,7 @@ class StubVerifier extends SpyVerifier implements Stub
      * @return $this This stub.
      */
     public function doesWith(
-        $callback,
+        callable $callback,
         $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
@@ -416,8 +415,8 @@ class StubVerifier extends SpyVerifier implements Stub
     /**
      * Add an answer that throws an exception.
      *
-     * @param Exception|Error|string|null $exception               The exception, or message, or null to throw a generic exception.
-     * @param Exception|Error|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
+     * @param Throwable|string|null $exception               The exception, or message, or null to throw a generic exception.
+     * @param Throwable|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
      *
      * @return $this This stub.
      */

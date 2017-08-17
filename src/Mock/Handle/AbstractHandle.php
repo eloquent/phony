@@ -31,6 +31,7 @@ use Eloquent\Phony\Stub\StubVerifierFactory;
 use ReflectionClass;
 use ReflectionMethod;
 use stdClass;
+use Throwable;
 
 /**
  * An abstract base class for implementing handles.
@@ -146,7 +147,7 @@ abstract class AbstractHandle implements Handle
      *
      * @return $this This handle.
      */
-    public function setDefaultAnswerCallback($defaultAnswerCallback)
+    public function setDefaultAnswerCallback(callable $defaultAnswerCallback)
     {
         $this->state->defaultAnswerCallback = $defaultAnswerCallback;
 
@@ -245,7 +246,7 @@ abstract class AbstractHandle implements Handle
      * Throws an exception unless there was no interaction with the mock.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function noInteraction()
     {

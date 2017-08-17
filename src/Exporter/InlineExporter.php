@@ -25,7 +25,6 @@ use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyVerifier;
 use Eloquent\Phony\Stub\Stub;
 use Eloquent\Phony\Stub\StubVerifier;
-use Exception;
 use Generator;
 use ReflectionException;
 use ReflectionFunction;
@@ -265,10 +264,7 @@ class InlineExporter implements Exporter
                         $isStub = false;
                         $isGeneratorSpy = false;
                         $isIterableSpy = false;
-                    } elseif (
-                        $value instanceof Throwable ||
-                        $value instanceof Exception
-                    ) {
+                    } elseif ($value instanceof Throwable) {
                         $isWrapper = false;
                         $isClosure = false;
                         $isException = true;
@@ -646,7 +642,7 @@ class InlineExporter implements Exporter
      *
      * @return string The exported callable.
      */
-    public function exportCallable($callback)
+    public function exportCallable(callable $callback)
     {
         $wrappedCallback = null;
 

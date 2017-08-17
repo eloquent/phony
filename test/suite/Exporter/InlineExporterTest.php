@@ -396,7 +396,10 @@ class InlineExporterTest extends TestCase
             'stub#4[anonymous-stub-verifier]',
             $this->subject->exportCallable($anonymousStubVerifier)
         );
-        $this->assertSame('InlineExporterTest->testExportCallable', $this->subject->exportCallable(__METHOD__));
+        $this->assertSame(
+            'InlineExporterTest->testExportCallable',
+            $this->subject->exportCallable([$this, __FUNCTION__])
+        );
         $this->assertSame(
             'TestClassA->testClassAMethodA',
             $this->subject->exportCallable([$mockA, 'testClassAMethodA'])

@@ -12,8 +12,8 @@
 namespace Eloquent\Phony\Mock\Exception;
 
 use Eloquent\Phony\Mock\Builder\MockDefinition;
-use Error;
 use Exception;
+use Throwable;
 
 /**
  * Mock generation failed.
@@ -28,14 +28,14 @@ final class MockGenerationFailedException extends Exception implements
      * @param MockDefinition           $definition The definition.
      * @param string                   $source     The generated source code.
      * @param array<string,mixed>|null $error      The error details.
-     * @param Exception|Error|null     $cause      The cause, if available.
+     * @param Throwable|null           $cause      The cause, if available.
      */
     public function __construct(
         $className,
         MockDefinition $definition,
         $source,
         array $error = null,
-        $cause = null
+        Throwable $cause = null
     ) {
         $this->definition = $definition;
         $this->source = $source;

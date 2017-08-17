@@ -11,8 +11,7 @@
 
 namespace Eloquent\Phony\Invocation;
 
-use Error;
-use Exception;
+use Throwable;
 
 /**
  * An abstract base class for implementing invocables.
@@ -24,8 +23,8 @@ abstract class AbstractInvocable implements Invocable
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
     public function invoke()
     {
@@ -37,8 +36,8 @@ abstract class AbstractInvocable implements Invocable
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
     public function __invoke()
     {

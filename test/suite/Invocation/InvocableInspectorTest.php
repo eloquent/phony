@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Invocation;
 
 use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestInvocable;
 use Eloquent\Phony\Test\TestWrappedInvocable;
 use PHPUnit\Framework\TestCase;
@@ -39,10 +40,13 @@ class InvocableInspectorTest extends TestCase
             $this->subject->callbackReflector([$this, __FUNCTION__])
         );
         $this->assertEquals(
-            new ReflectionMethod(__METHOD__),
-            $this->subject->callbackReflector([__CLASS__, __FUNCTION__])
+            new ReflectionMethod(TestClassA::class . '::testClassAStaticMethodA'),
+            $this->subject->callbackReflector([TestClassA::class, 'testClassAStaticMethodA'])
         );
-        $this->assertEquals(new ReflectionMethod(__METHOD__), $this->subject->callbackReflector(__METHOD__));
+        $this->assertEquals(
+            new ReflectionMethod(TestClassA::class . '::testClassAStaticMethodA'),
+            $this->subject->callbackReflector(TestClassA::class . '::testClassAStaticMethodA')
+        );
         $this->assertEquals(new ReflectionFunction('implode'), $this->subject->callbackReflector('implode'));
         $this->assertEquals(
             new ReflectionFunction($this->callback),
@@ -56,18 +60,6 @@ class InvocableInspectorTest extends TestCase
             new ReflectionFunction($this->callback),
             $this->subject->callbackReflector($this->wrappedInvocable)
         );
-    }
-
-    public function testCallbackReflectorFailure()
-    {
-        $this->expectException('ReflectionException');
-        $this->subject->callbackReflector(111);
-    }
-
-    public function testCallbackReflectorFailureObject()
-    {
-        $this->expectException('ReflectionException', 'Invalid callback.');
-        $this->subject->callbackReflector((object) []);
     }
 
     public function testCallbackReturnType()

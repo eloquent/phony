@@ -12,8 +12,7 @@
 namespace Eloquent\Phony\Invocation;
 
 use Eloquent\Phony\Call\Arguments;
-use Error;
-use Exception;
+use Throwable;
 
 /**
  * Invokes callbacks, maintaining reference parameters.
@@ -40,10 +39,10 @@ class Invoker
      * @param callable  $callback  The callback.
      * @param Arguments $arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
-    public function callWith($callback, Arguments $arguments)
+    public function callWith(callable $callback, Arguments $arguments)
     {
         if ($callback instanceof Invocable) {
             return $callback->invokeWith($arguments);

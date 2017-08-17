@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Exception;
 
 use Exception;
+use Throwable;
 
 /**
  * Unable to add the supplied type.
@@ -23,9 +24,9 @@ final class InvalidTypeException extends Exception implements
      * Construct a new invalid type exception.
      *
      * @param mixed          $type  The type.
-     * @param Exception|null $cause The cause, if available.
+     * @param Throwable|null $cause The cause, if available.
      */
-    public function __construct($type, Exception $cause = null)
+    public function __construct($type, Throwable $cause = null)
     {
         $this->type = $type;
 

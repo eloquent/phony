@@ -16,9 +16,7 @@ use Eloquent\Phony\Hook\Exception\FunctionHookException;
 use Eloquent\Phony\Hook\Exception\FunctionHookGenerationFailedException;
 use Eloquent\Phony\Hook\Exception\FunctionSignatureMismatchException;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
-use Exception;
 use ParseError;
-use ParseException;
 use Throwable;
 
 /**
@@ -67,7 +65,7 @@ class FunctionHookManager
      * @return callback|null         The replaced callback, or null if no callback was set.
      * @throws FunctionHookException If the function hook generation fails.
      */
-    public function defineFunction($name, $namespace, $callback)
+    public function defineFunction($name, $namespace, callable $callback)
     {
         $signature = $this->signatureInspector->callbackSignature($callback);
         $fullName = $namespace . '\\' . $name;
@@ -102,17 +100,7 @@ class FunctionHookManager
                     $e
                 );
                 // @codeCoverageIgnoreStart
-            } catch (ParseException $e) {
-                $error = new FunctionHookGenerationFailedException(
-                    $fullName,
-                    $callback,
-                    $source,
-                    error_get_last(),
-                    $e
-                );
             } catch (Throwable $error) {
-                // re-thrown after cleanup
-            } catch (Exception $error) {
                 // re-thrown after cleanup
             }
             // @codeCoverageIgnoreEnd

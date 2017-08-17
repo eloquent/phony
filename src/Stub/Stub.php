@@ -14,8 +14,7 @@ namespace Eloquent\Phony\Stub;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\WrappedInvocable;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
-use Error;
-use Exception;
+use Throwable;
 
 /**
  * The interface implemented by stubs.
@@ -47,7 +46,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function setDefaultAnswerCallback($defaultAnswerCallback);
+    public function setDefaultAnswerCallback(callable $defaultAnswerCallback);
 
     /**
      * Get the default answer callback.
@@ -75,7 +74,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function calls($callback);
+    public function calls(callable $callback);
 
     /**
      * Add a callback to be called as part of an answer.
@@ -91,7 +90,7 @@ interface Stub extends WrappedInvocable
      * @param bool            $suffixArguments       True if the arguments should be appended individually.
      */
     public function callsWith(
-        $callback,
+        callable $callback,
         $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
@@ -162,7 +161,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function does($callback);
+    public function does(callable $callback);
 
     /**
      * Add a callback as an answer.
@@ -176,7 +175,7 @@ interface Stub extends WrappedInvocable
      * @return $this This stub.
      */
     public function doesWith(
-        $callback,
+        callable $callback,
         $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
@@ -232,8 +231,8 @@ interface Stub extends WrappedInvocable
     /**
      * Add an answer that throws an exception.
      *
-     * @param Exception|Error|string|null $exception               The exception, or message, or null to throw a generic exception.
-     * @param Exception|Error|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
+     * @param Throwable|string|null $exception               The exception, or message, or null to throw a generic exception.
+     * @param Throwable|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
      *
      * @return $this This stub.
      */

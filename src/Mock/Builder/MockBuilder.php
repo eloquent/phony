@@ -247,7 +247,7 @@ class MockBuilder
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
      */
-    public function addMethod($name, $callback = null)
+    public function addMethod($name, callable $callback = null)
     {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
@@ -293,7 +293,7 @@ class MockBuilder
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
      */
-    public function addStaticMethod($name, $callback = null)
+    public function addStaticMethod($name, callable $callback = null)
     {
         if ($this->isFinalized) {
             throw new FinalizedMockException();

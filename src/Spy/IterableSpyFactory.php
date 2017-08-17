@@ -48,8 +48,8 @@ class IterableSpyFactory
     /**
      * Create a new iterable spy.
      *
-     * @param Call              $call     The call from which the iterable originated.
-     * @param Traversable|array $iterable The iterable.
+     * @param Call     $call     The call from which the iterable originated.
+     * @param iterable $iterable The iterable.
      *
      * @return Traversable              The newly created iterable spy.
      * @throws InvalidArgumentException If the supplied iterable is invalid.

@@ -14,9 +14,8 @@ namespace Eloquent\Phony\Mock\Method;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Handle\Handle;
-use Error;
-use Exception;
 use ReflectionMethod;
+use Throwable;
 
 /**
  * A wrapper for custom methods.
@@ -32,7 +31,7 @@ class WrappedCustomMethod extends AbstractWrappedMethod
      * @param Invoker          $invoker        The invoker to use.
      */
     public function __construct(
-        $customCallback,
+        callable $customCallback,
         ReflectionMethod $method,
         Handle $handle,
         Invoker $invoker
@@ -60,8 +59,8 @@ class WrappedCustomMethod extends AbstractWrappedMethod
      *
      * @param Arguments|array $arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
     public function invokeWith($arguments = [])
     {

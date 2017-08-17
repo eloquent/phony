@@ -15,9 +15,9 @@ use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Stub\StubVerifier;
-use Exception;
 use ReflectionClass;
 use stdClass;
+use Throwable;
 
 /**
  * The interface implemented by handles.
@@ -72,7 +72,7 @@ interface Handle
      *
      * @return $this This handle.
      */
-    public function setDefaultAnswerCallback($defaultAnswerCallback);
+    public function setDefaultAnswerCallback(callable $defaultAnswerCallback);
 
     /**
      * Get the default answer callback.
@@ -115,7 +115,7 @@ interface Handle
      * Throws an exception unless there was no interaction with the mock.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function noInteraction();
 

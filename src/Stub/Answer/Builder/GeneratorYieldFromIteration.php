@@ -15,8 +15,6 @@ use Eloquent\Phony\Stub\Answer\CallRequest;
 
 /**
  * Represents an iteration of a generator that ends in a yield from.
- *
- * @codeCoverageIgnore
  */
 class GeneratorYieldFromIteration
 {

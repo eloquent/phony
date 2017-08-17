@@ -15,7 +15,6 @@ use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Spy\IterableSpy;
-use Exception;
 use Generator;
 use Throwable;
 
@@ -265,8 +264,7 @@ class EqualToMatcher implements Matcher
          */
 
         $leftIsMock = $left instanceof Mock;
-        $leftIsException =
-            $left instanceof Throwable || $left instanceof Exception;
+        $leftIsException = $left instanceof Throwable;
 
         $left = (array) $left;
         unset($left["\0gcdata"]);
@@ -292,8 +290,7 @@ class EqualToMatcher implements Matcher
         }
 
         $rightIsMock = $right instanceof Mock;
-        $rightIsException =
-            $right instanceof Throwable || $right instanceof Exception;
+        $rightIsException = $right instanceof Throwable;
 
         $right = (array) $right;
         unset($right["\0gcdata"]);

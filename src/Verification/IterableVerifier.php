@@ -20,7 +20,7 @@ use Eloquent\Phony\Call\Event\UsedEvent;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Spy\Spy;
-use Exception;
+use Throwable;
 
 /**
  * Checks and asserts the behavior of iterables.
@@ -88,7 +88,7 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
      * Throws an exception unless iteration of the subject commenced.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function used()
     {
@@ -205,7 +205,7 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
      * @param mixed $value      The value.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function produced($keyOrValue = null, $value = null)
     {
@@ -280,7 +280,7 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
      * Throws an exception unless the subject was completely consumed.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function consumed()
     {

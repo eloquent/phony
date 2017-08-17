@@ -127,9 +127,8 @@ class EmptyValueFactory
 
                 return $fn();
 
-            // @codeCoverageIgnoreStart
-
             case 'void':
+            // @codeCoverageIgnoreStart
             case 'hh\mixed':
                 return null;
         }

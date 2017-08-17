@@ -12,7 +12,6 @@
 namespace Eloquent\Phony\Reflection;
 
 use Eloquent\Phony\Reflection\Exception\UndefinedFeatureException;
-use Exception;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
@@ -54,12 +53,6 @@ class FeatureDetector
 
         $this->features = $features;
         $this->supported = $supported;
-
-        // @codeCoverageIgnoreStart
-        $this->nullErrorHandler = function () {
-            return false;
-        };
-        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -71,7 +64,7 @@ class FeatureDetector
      * @param string   $feature  The feature.
      * @param callable $callback The feature detection callback.
      */
-    public function addFeature($feature, $callback)
+    public function addFeature($feature, callable $callback)
     {
         $this->features[$feature] = $callback;
     }
@@ -263,18 +256,14 @@ class FeatureDetector
             try {
                 $result = eval(sprintf('function(){%s;};return true;', $source));
             } catch (Throwable $e) {
-                // @codeCoverageIgnoreStart
-            } catch (Exception $e) {
+                // re-thrown after cleanup
             }
-            // @codeCoverageIgnoreEnd
         } else {
             try {
                 $result = eval(sprintf('%s;return true;', $source));
             } catch (Throwable $e) {
-                // @codeCoverageIgnoreStart
-            } catch (Exception $e) {
+                // re-thrown after cleanup
             }
-            // @codeCoverageIgnoreEnd
         }
 
         if (false === $result) {
@@ -343,5 +332,4 @@ class FeatureDetector
     private $features;
     private $supported;
     private $runtime;
-    private $nullErrorHandler;
 }

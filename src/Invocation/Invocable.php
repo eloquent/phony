@@ -12,8 +12,7 @@
 namespace Eloquent\Phony\Invocation;
 
 use Eloquent\Phony\Call\Arguments;
-use Error;
-use Exception;
+use Throwable;
 
 /**
  * The interface implemented by invocables.
@@ -27,8 +26,8 @@ interface Invocable
      *
      * @param Arguments|array $arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
     public function invokeWith($arguments = []);
 
@@ -37,8 +36,8 @@ interface Invocable
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
     public function invoke();
 
@@ -47,8 +46,8 @@ interface Invocable
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
     public function __invoke();
 }

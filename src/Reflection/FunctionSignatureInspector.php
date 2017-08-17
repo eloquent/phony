@@ -64,7 +64,7 @@ abstract class FunctionSignatureInspector
      *
      * @return array<string,array<string>> The callback signature.
      */
-    public function callbackSignature($callback)
+    public function callbackSignature(callable $callback)
     {
         return $this->signature(
             $this->invocableInspector->callbackReflector($callback)

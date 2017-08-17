@@ -11,8 +11,8 @@
 
 namespace Eloquent\Phony\Hook\Exception;
 
-use Error;
 use Exception;
+use Throwable;
 
 /**
  * Mock generation failed.
@@ -27,14 +27,14 @@ final class FunctionHookGenerationFailedException extends Exception implements
      * @param callable                 $callback     The callback.
      * @param string                   $source       The generated source code.
      * @param array<string,mixed>|null $error        The error details.
-     * @param Exception|Error|null     $cause        The cause, if available.
+     * @param Throwable|null           $cause        The cause, if available.
      */
     public function __construct(
         $functionName,
-        $callback,
+        callable $callback,
         $source,
         array $error = null,
-        $cause = null
+        Throwable $cause = null
     ) {
         $this->functionName = $functionName;
         $this->callback = $callback;

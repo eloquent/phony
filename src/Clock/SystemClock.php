@@ -35,7 +35,7 @@ class SystemClock implements Clock
      *
      * @param callable $microtime The implementation of microtime() to use.
      */
-    public function __construct($microtime)
+    public function __construct(callable $microtime)
     {
         $this->microtime = $microtime;
     }

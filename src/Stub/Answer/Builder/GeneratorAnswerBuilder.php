@@ -20,6 +20,7 @@ use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Stub;
 use Exception;
 use RuntimeException;
+use Throwable;
 
 /**
  * Builds generator stub answers.
@@ -55,7 +56,7 @@ class GeneratorAnswerBuilder
      *
      * @return $this This builder.
      */
-    public function calls($callback)
+    public function calls(callable $callback)
     {
         foreach (func_get_args() as $callback) {
             $this->callsWith($callback);
@@ -76,7 +77,7 @@ class GeneratorAnswerBuilder
      * @param bool            $suffixArguments       True if the arguments should be appended individually.
      */
     public function callsWith(
-        $callback,
+        callable $callback,
         $arguments = [],
         $prefixSelf = null,
         $suffixArgumentsObject = false,
@@ -363,8 +364,8 @@ class GeneratorAnswerBuilder
     /**
      * End the generator by throwing an exception.
      *
-     * @param Exception|Error|string|null $exception               The exception, or message, or null to throw a generic exception.
-     * @param Exception|Error|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
+     * @param Throwable|string|null $exception               The exception, or message, or null to throw a generic exception.
+     * @param Throwable|string      ...$additionalExceptions Additional exceptions, or messages, for subsequent invocations.
      *
      * @return Stub The stub.
      */

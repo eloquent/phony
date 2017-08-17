@@ -29,7 +29,7 @@ class CalledEvent extends AbstractCallEvent
     public function __construct(
         $sequenceNumber,
         $time,
-        $callback,
+        callable $callback,
         Arguments $arguments
     ) {
         parent::__construct($sequenceNumber, $time);

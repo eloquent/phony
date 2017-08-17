@@ -19,9 +19,8 @@ use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
-use Error;
-use Exception;
 use InvalidArgumentException;
+use Throwable;
 
 /**
  * The interface implemented by calls.
@@ -122,7 +121,7 @@ interface Call extends Event, EventCollection
     /**
      * Get the thrown exception.
      *
-     * @return Exception|Error            The thrown exception.
+     * @return Throwable                  The thrown exception.
      * @throws UndefinedResponseException If this call has not yet thrown an exception.
      */
     public function exception();
@@ -130,7 +129,7 @@ interface Call extends Event, EventCollection
     /**
      * Get the exception thrown from the generator.
      *
-     * @return Exception|Error            The thrown exception.
+     * @return Throwable                  The thrown exception.
      * @throws UndefinedResponseException If this call has not yet thrown an exception via generator.
      */
     public function generatorException();
@@ -138,16 +137,16 @@ interface Call extends Event, EventCollection
     /**
      * Get the response.
      *
-     * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
-     * @throws UndefinedResponseException        If this call has not yet responded.
+     * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException  If this call has not yet responded.
      */
     public function response();
 
     /**
      * Get the response from the generator.
      *
-     * @return tuple<Exception|Error|null,mixed> A 2-tuple of thrown exception or null, and return value.
-     * @throws UndefinedResponseException        If this call has not yet responded via generator.
+     * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException  If this call has not yet responded via generator.
      */
     public function generatorResponse();
 

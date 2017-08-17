@@ -42,7 +42,7 @@ class TestCallEventFactory extends CallEventFactory
     }
 
     public function createCalled(
-        $callback = null,
+        callable $callback = null,
         Arguments $arguments = null
     ) {
         if (!$callback) {

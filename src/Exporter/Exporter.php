@@ -46,5 +46,5 @@ interface Exporter
      *
      * @return string The exported callable.
      */
-    public function exportCallable($callback);
+    public function exportCallable(callable $callback);
 }

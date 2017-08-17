@@ -31,8 +31,6 @@ use Eloquent\Phony\Verification\GeneratorVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifier;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
-use Error;
-use Exception;
 use Generator;
 use InvalidArgumentException;
 use Iterator;
@@ -387,8 +385,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @param Arguments|array $arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
     public function invokeWith($arguments = [])
     {
@@ -400,8 +398,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
     public function invoke()
     {
@@ -413,8 +411,8 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return mixed           The result of invocation.
-     * @throws Exception|Error If an error occurs.
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
      */
     public function __invoke()
     {
@@ -442,7 +440,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * Throws an exception unless called.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function called()
     {
@@ -495,7 +493,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @param mixed ...$argument The arguments.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledWith()
     {
@@ -545,7 +543,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * Throws an exception unless this spy responded.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function responded()
     {
@@ -590,7 +588,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * Throws an exception unless this spy completed.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function completed()
     {
@@ -662,7 +660,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @param mixed $value The value.
      *
      * @return EventCollection The result.
-     * @throws Exception       If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function returned($value = null)
     {
@@ -692,7 +690,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     /**
      * Checks if an exception of the supplied type was thrown.
      *
-     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If the type is invalid.
@@ -742,7 +740,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
                 $type = $type->get();
             }
 
-            if ($type instanceof Throwable || $type instanceof Exception) {
+            if ($type instanceof Throwable) {
                 $isTypeSupported = true;
                 $type = $this->matcherFactory->equalTo($type, true);
             } elseif ($this->matcherFactory->isMatcher($type)) {
@@ -783,11 +781,11 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     /**
      * Throws an exception unless an exception of the supplied type was thrown.
      *
-     * @param Matcher|Exception|Error|string|null $type An exception to match, the type of exception, or null for any exception.
+     * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
      * @return EventCollection          The result.
      * @throws InvalidArgumentException If the type is invalid.
-     * @throws Exception                If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function threw($type = null)
     {
@@ -797,7 +795,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
             $type = $type->get();
         }
 
-        if ($type instanceof Throwable || $type instanceof Exception) {
+        if ($type instanceof Throwable) {
             $type = $this->matcherFactory->equalTo($type, true);
         } elseif ($this->matcherFactory->isMatcher($type)) {
             $type = $this->matcherFactory->adapt($type);
@@ -852,7 +850,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * Throws an exception unless this spy returned a generator.
      *
      * @return GeneratorVerifier The result.
-     * @throws Exception         If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable         If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function generated()
     {
@@ -906,7 +904,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * Throws an exception unless this spy returned an iterable.
      *
      * @return IterableVerifier The result.
-     * @throws Exception        If the assertion fails, and the assertion recorder throws exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function iterated()
     {

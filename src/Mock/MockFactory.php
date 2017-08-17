@@ -18,9 +18,7 @@ use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Exception\MockGenerationFailedException;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
-use Exception;
 use ParseError;
-use ParseException;
 use ReflectionClass;
 use Throwable;
 
@@ -109,17 +107,7 @@ class MockFactory
                 $e
             );
             // @codeCoverageIgnoreStart
-        } catch (ParseException $e) {
-            $error = new MockGenerationFailedException(
-                $className,
-                $definition,
-                $source,
-                error_get_last(),
-                $e
-            );
         } catch (Throwable $error) {
-            // re-thrown after cleanup
-        } catch (Exception $error) {
             // re-thrown after cleanup
         }
         // @codeCoverageIgnoreEnd

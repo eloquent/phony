@@ -79,16 +79,20 @@ class StubFactory
      *
      * @param callable|null $callback              The callback, or null to create an anonymous stub.
      * @param mixed         $self                  The self value.
-     * @param callable      $defaultAnswerCallback The callback to use when creating a default answer.
+     * @param callable|null $defaultAnswerCallback The callback to use when creating a default answer.
      *
      * @return Stub The newly created stub.
      */
     public function create(
-        $callback = null,
+        callable $callback = null,
         $self = null,
-        $defaultAnswerCallback =
-            'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback'
+        callable $defaultAnswerCallback = null
     ) {
+        if (null === $defaultAnswerCallback) {
+            $defaultAnswerCallback =
+                'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback';
+        }
+
         return new StubData(
             $callback,
             $self,
