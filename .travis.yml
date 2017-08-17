@@ -40,18 +40,18 @@ deploy:
       script: make publish
       skip_cleanup: true
       on:
-          php: '7.2'
+          php: '7.1'
           branch: master
     - provider: script
       script: make publish
       skip_cleanup: true
       on:
-          php: '7.2'
+          php: '7.1'
           tags: true
 
 env:
     global:
-        - ELOQUENT_PUBLISH_VERSION=7.2
+        - ELOQUENT_PUBLISH_VERSION=7.1
         - secure: "ZACO936IO20LK1BfiDoOVgy+1NpeghXM5vk+9p2kf/9VhithSqSOipoCj4KxasVjAYi2XMQjUNTsoAgLZc7yaHlBYVEZrHpMylzD6Hp9a9K56z/bPEZlPjjLRzbsYMtF1OzKormLOfJIt0aNyJfGcgdD2+uyRUvuL0+z+0toQro="
 
 cache:
