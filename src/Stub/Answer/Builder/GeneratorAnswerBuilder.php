@@ -117,12 +117,12 @@ class GeneratorAnswerBuilder
      */
     public function callsArgument(...$indices)
     {
-        if ($indices) {
+        if (empty($indices)) {
+            $this->callsArgumentWith(0);
+        } else {
             foreach ($indices as $index) {
                 $this->callsArgumentWith($index);
             }
-        } else {
-            $this->callsArgumentWith(0);
         }
 
         return $this;

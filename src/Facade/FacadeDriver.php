@@ -127,8 +127,7 @@ class FacadeDriver
         );
         $generatorAnswerBuilderFactory = new GeneratorAnswerBuilderFactory(
             $invocableInspector,
-            $invoker,
-            $featureDetector
+            $invoker
         );
         $stubLabelSequence = Sequencer::sequence('stub-label');
         $this->sequences[] = $stubLabelSequence;

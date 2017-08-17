@@ -400,7 +400,6 @@ EOD;
         foreach ($methods as $method) {
             $name = $method->name();
             $nameLower = strtolower($name);
-            $nameExported = var_export($name, true);
             $methodReflector = $method->method();
 
             switch ($nameLower) {
