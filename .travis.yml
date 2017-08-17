@@ -16,6 +16,11 @@ matrix:
           dist: trusty
           group: edge
           env: HHVMPHP7=1
+        - php: hhvm-3.21
+          sudo: required
+          dist: trusty
+          group: edge
+          env: HHVMPHP7=1
         - php: hhvm-nightly
           sudo: required
           dist: trusty
