@@ -1,6 +1,6 @@
 test: install
 	php --version
-	PHP_ERROR_EXCEPTION_DEPRECATIONS=1 vendor/bin/phpunit --no-coverage
+	PHP_ERROR_EXCEPTION_DEPRECATIONS=1 vendor/bin/phpunit --no-coverage --testdox
 
 coverage: install
 	phpdbg --version
