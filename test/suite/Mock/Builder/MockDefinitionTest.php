@@ -11,11 +11,21 @@
 
 namespace Eloquent\Phony\Mock\Builder;
 
+use Countable;
 use Eloquent\Phony\Mock\Builder\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\TraitMethodDefinition;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Test\TestClassB;
+use Eloquent\Phony\Test\TestClassF;
+use Eloquent\Phony\Test\TestInterfaceA;
+use Eloquent\Phony\Test\TestInterfaceB;
+use Eloquent\Phony\Test\TestInterfaceG;
+use Eloquent\Phony\Test\TestTraitA;
+use Eloquent\Phony\Test\TestTraitB;
+use Eloquent\Phony\Test\TestTraitI;
+use Iterator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionFunction;
@@ -28,31 +38,31 @@ class MockDefinitionTest extends TestCase
         $this->featureDetector = new FeatureDetector();
 
         $this->typeNames = [
-            'Countable',
-            'Eloquent\Phony\Test\TestClassB',
-            'Eloquent\Phony\Test\TestInterfaceA',
-            'Eloquent\Phony\Test\TestInterfaceB',
-            'Iterator',
+            Countable::class,
+            TestClassB::class,
+            TestInterfaceA::class,
+            TestInterfaceB::class,
+            Iterator::class,
         ];
         $this->typeNamesTraits = [
-            'Countable',
-            'Eloquent\Phony\Test\TestClassB',
-            'Eloquent\Phony\Test\TestInterfaceA',
-            'Eloquent\Phony\Test\TestInterfaceB',
-            'Eloquent\Phony\Test\TestTraitA',
-            'Eloquent\Phony\Test\TestTraitB',
-            'Iterator',
+            Countable::class,
+            TestClassB::class,
+            TestInterfaceA::class,
+            TestInterfaceB::class,
+            TestTraitA::class,
+            TestTraitB::class,
+            Iterator::class,
         ];
-        $this->parentClassName = 'Eloquent\Phony\Test\TestClassB';
+        $this->parentClassName = TestClassB::class;
         $this->interfaceNames = [
-            'Countable',
-            'Eloquent\Phony\Test\TestInterfaceA',
-            'Eloquent\Phony\Test\TestInterfaceB',
-            'Iterator',
+            Countable::class,
+            TestInterfaceA::class,
+            TestInterfaceB::class,
+            Iterator::class,
         ];
         $this->traitNames = [
-            'Eloquent\Phony\Test\TestTraitA',
-            'Eloquent\Phony\Test\TestTraitB',
+            TestTraitA::class,
+            TestTraitB::class,
         ];
 
         $this->callbackA = function () {};
@@ -184,60 +194,60 @@ class MockDefinitionTest extends TestCase
                 'next' => new RealMethodDefinition(new ReflectionMethod('Iterator::next'), 'next'),
                 'rewind' => new RealMethodDefinition(new ReflectionMethod('Iterator::rewind'), 'rewind'),
                 'testClassAMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAMethodA'),
                     'testClassAMethodA'
                 ),
                 'testClassAMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAMethodB'),
                     'testClassAMethodB'
                 ),
                 'testClassAMethodC' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodC'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAMethodC'),
                     'testClassAMethodC'
                 ),
                 'testClassAMethodD' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodD'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAMethodD'),
                     'testClassAMethodD'
                 ),
                 'testClassAStaticMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAStaticMethodA'),
                     'testClassAStaticMethodA'
                 ),
                 'testClassAStaticMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAStaticMethodB'),
                     'testClassAStaticMethodB'
                 ),
                 'testClassAStaticMethodC' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodC'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAStaticMethodC'),
                     'testClassAStaticMethodC'
                 ),
                 'testClassAStaticMethodD' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodD'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAStaticMethodD'),
                     'testClassAStaticMethodD'
                 ),
                 'testClassBMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodA'),
+                    new ReflectionMethod(TestClassB::class . '::testClassBMethodA'),
                     'testClassBMethodA'
                 ),
                 'testClassBMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodB'),
+                    new ReflectionMethod(TestClassB::class . '::testClassBMethodB'),
                     'testClassBMethodB'
                 ),
                 'testClassBStaticMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodA'),
+                    new ReflectionMethod(TestClassB::class . '::testClassBStaticMethodA'),
                     'testClassBStaticMethodA'
                 ),
                 'testClassBStaticMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB'),
+                    new ReflectionMethod(TestClassB::class . '::testClassBStaticMethodB'),
                     'testClassBStaticMethodB'
                 ),
                 'valid' => new RealMethodDefinition(new ReflectionMethod('Iterator::valid'), 'valid'),
                 '__call' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__call'),
+                    new ReflectionMethod(TestClassB::class . '::__call'),
                     '__call'
                 ),
                 '__callStatic' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__callStatic'),
+                    new ReflectionMethod(TestClassB::class . '::__callStatic'),
                     '__callStatic'
                 ),
             ],
@@ -301,86 +311,86 @@ class MockDefinitionTest extends TestCase
                 'next' => new RealMethodDefinition(new ReflectionMethod('Iterator::next'), 'next'),
                 'rewind' => new RealMethodDefinition(new ReflectionMethod('Iterator::rewind'), 'rewind'),
                 'testClassAMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodA'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAMethodA'),
                     'testClassAMethodA'
                 ),
                 'testClassAMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodB'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAMethodB'),
                     'testClassAMethodB'
                 ),
                 'testClassAMethodC' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodC'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAMethodC'),
                     'testClassAMethodC'
                 ),
                 'testClassAMethodD' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAMethodD'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAMethodD'),
                     'testClassAMethodD'
                 ),
                 'testTraitBMethodA' => new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testTraitBMethodA'),
+                    new ReflectionMethod(TestTraitB::class . '::testTraitBMethodA'),
                     'testTraitBMethodA'
                 ),
                 'testClassAStaticMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodA'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAStaticMethodA'),
                     'testClassAStaticMethodA'
                 ),
                 'testClassAStaticMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAStaticMethodB'),
                     'testClassAStaticMethodB'
                 ),
                 'testClassAStaticMethodC' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodC'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAStaticMethodC'),
                     'testClassAStaticMethodC'
                 ),
                 'testClassAStaticMethodD' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodD'),
+                    new ReflectionMethod(TestClassB::class . '::testClassAStaticMethodD'),
                     'testClassAStaticMethodD'
                 ),
                 'testClassBMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodA'),
+                    new ReflectionMethod(TestClassB::class . '::testClassBMethodA'),
                     'testClassBMethodA'
                 ),
                 'testClassBMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBMethodB'),
+                    new ReflectionMethod(TestClassB::class . '::testClassBMethodB'),
                     'testClassBMethodB'
                 ),
                 'testClassBStaticMethodA' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodA'),
+                    new ReflectionMethod(TestClassB::class . '::testClassBStaticMethodA'),
                     'testClassBStaticMethodA'
                 ),
                 'testClassBStaticMethodB' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassBStaticMethodB'),
+                    new ReflectionMethod(TestClassB::class . '::testClassBStaticMethodB'),
                     'testClassBStaticMethodB'
                 ),
                 'valid' => new RealMethodDefinition(new ReflectionMethod('Iterator::valid'), 'valid'),
                 '__call' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__call'),
+                    new ReflectionMethod(TestClassB::class . '::__call'),
                     '__call'
                 ),
                 '__callStatic' => new RealMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestClassB::__callStatic'),
+                    new ReflectionMethod(TestClassB::class . '::__callStatic'),
                     '__callStatic'
                 ),
             ],
             [
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA'),
+                    new ReflectionMethod(TestTraitA::class . '::testClassAStaticMethodA'),
                     'testClassAStaticMethodA'
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB'),
+                    new ReflectionMethod(TestTraitA::class . '::testClassAMethodB'),
                     'testClassAMethodB'
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAMethodB'),
+                    new ReflectionMethod(TestTraitB::class . '::testClassAMethodB'),
                     'testClassAMethodB'
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testTraitBMethodA'),
+                    new ReflectionMethod(TestTraitB::class . '::testTraitBMethodA'),
                     'testTraitBMethodA'
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitB::testClassAStaticMethodA'),
+                    new ReflectionMethod(TestTraitB::class . '::testClassAStaticMethodA'),
                     'testClassAStaticMethodA'
                 ),
             ]
@@ -399,8 +409,8 @@ class MockDefinitionTest extends TestCase
 
         $this->setUpWith(
             [
-                'Eloquent\Phony\Test\TestClassF',
-                'Eloquent\Phony\Test\TestInterfaceG',
+                TestClassF::class,
+                TestInterfaceG::class,
             ]
         );
 
@@ -459,9 +469,9 @@ class MockDefinitionTest extends TestCase
 
         $this->setUpWith(
             [
-                'Eloquent\Phony\Test\TestClassF',
-                'Eloquent\Phony\Test\TestTraitI',
-                'Eloquent\Phony\Test\TestInterfaceG',
+                TestClassF::class,
+                TestTraitI::class,
+                TestInterfaceG::class,
             ]
         );
 
@@ -506,11 +516,11 @@ class MockDefinitionTest extends TestCase
             ],
             [
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitI::testClassFStaticMethodA'),
+                    new ReflectionMethod(TestTraitI::class . '::testClassFStaticMethodA'),
                     'testClassFStaticMethodA'
                 ),
                 new TraitMethodDefinition(
-                    new ReflectionMethod('Eloquent\Phony\Test\TestTraitI::testClassFMethodA'),
+                    new ReflectionMethod(TestTraitI::class . '::testClassFMethodA'),
                     'testClassFMethodA'
                 ),
             ]

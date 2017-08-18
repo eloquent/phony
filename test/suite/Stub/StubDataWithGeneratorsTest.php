@@ -16,7 +16,9 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Generator;
 use PHPUnit\Framework\TestCase;
 
 class StubDataWithGeneratorsTest extends TestCase
@@ -147,15 +149,15 @@ class StubDataWithGeneratorsTest extends TestCase
         $generator = call_user_func($this->subject);
         $actual = iterator_to_array($generator);
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder', $builder);
-        $this->assertInstanceOf('Generator', $generator);
+        $this->assertInstanceOf(GeneratorAnswerBuilder::class, $builder);
+        $this->assertInstanceOf(Generator::class, $generator);
         $this->assertSame($this->subject, $builder->returns());
         $this->assertSame(['a' => 'b', 0 => 'c'], $actual);
 
         $generator = call_user_func($this->subject);
         $actual = iterator_to_array($generator);
 
-        $this->assertInstanceOf('Generator', $generator);
+        $this->assertInstanceOf(Generator::class, $generator);
         $this->assertSame($this->subject, $builder->returns());
         $this->assertSame(['a' => 'b', 0 => 'c'], $actual);
     }
@@ -167,7 +169,7 @@ class StubDataWithGeneratorsTest extends TestCase
         $actualB = iterator_to_array(call_user_func($this->subject));
         $actualC = iterator_to_array(call_user_func($this->subject));
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder', $builder);
+        $this->assertInstanceOf(GeneratorAnswerBuilder::class, $builder);
         $this->assertSame(['a'], $actualA);
         $this->assertSame(['b'], $actualB);
         $this->assertSame(['b'], $actualC);

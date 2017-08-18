@@ -11,6 +11,9 @@
 
 namespace Eloquent\Phony\Assertion\Exception;
 
+use Eloquent\Phony as TestNamespace;
+use Eloquent\Phony\ClassA;
+use Eloquent\Phony\ClassB;
 use PHPUnit\Framework\TestCase;
 
 class AssertionExceptionTest extends TestCase
@@ -34,13 +37,13 @@ class AssertionExceptionTest extends TestCase
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'methodA',
-                        'class' =>  'Eloquent\Phony\ClassA',
+                        'class' =>  ClassA::class,
                     ],
                     [
                         'file' => '/path/to/file/b',
                         'line' => 222,
                         'function' => 'methodB',
-                        'class' =>  'Eloquent\Phony\ClassB',
+                        'class' =>  ClassB::class,
                     ],
                     [
                         'file' => '/path/to/file/c',
@@ -53,7 +56,7 @@ class AssertionExceptionTest extends TestCase
                     'file' => '/path/to/file/b',
                     'line' => 222,
                     'function' => 'methodB',
-                    'class' =>  'Eloquent\Phony\ClassB',
+                    'class' =>  ClassB::class,
                 ],
             ],
 
@@ -63,12 +66,12 @@ class AssertionExceptionTest extends TestCase
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'methodA',
-                        'class' =>  'Eloquent\Phony\ClassA',
+                        'class' =>  ClassA::class,
                     ],
                     [
                         'file' => '/path/to/file/b',
                         'line' => 222,
-                        'function' => 'Eloquent\Phony\functionB',
+                        'function' => TestNamespace::class . '\functionB',
                     ],
                     [
                         'file' => '/path/to/file/c',
@@ -79,7 +82,7 @@ class AssertionExceptionTest extends TestCase
                 [
                     'file' => '/path/to/file/b',
                     'line' => 222,
-                    'function' => 'Eloquent\Phony\functionB',
+                    'function' => TestNamespace::class . '\functionB',
                 ],
             ],
 
@@ -89,18 +92,18 @@ class AssertionExceptionTest extends TestCase
                         'file' => '/path/to/file/a',
                         'line' => 111,
                         'function' => 'methodA',
-                        'class' =>  'Eloquent\Phony\ClassA',
+                        'class' =>  ClassA::class,
                     ],
                     [
                         'file' => '/path/to/file/b',
                         'line' => 222,
-                        'function' => 'Eloquent\Phony\functionB',
+                        'function' => TestNamespace::class . '\functionB',
                     ],
                 ],
                 [
                     'file' => '/path/to/file/b',
                     'line' => 222,
-                    'function' => 'Eloquent\Phony\functionB',
+                    'function' => TestNamespace::class . '\functionB',
                 ],
             ],
 

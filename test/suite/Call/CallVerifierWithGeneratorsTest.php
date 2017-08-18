@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Exporter\InlineExporter;
@@ -27,6 +28,7 @@ use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
+use Generator;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -196,7 +198,7 @@ class CallVerifierWithGeneratorsTest extends TestCase
         $this->assertTrue($this->generatorSubject->hasCompleted());
         $this->assertSame($this->callback, $this->generatorSubject->callback());
         $this->assertSame($this->arguments, $this->generatorSubject->arguments());
-        $this->assertInstanceOf('Generator', $this->generatorSubject->returnValue());
+        $this->assertInstanceOf(Generator::class, $this->generatorSubject->returnValue());
         $this->assertNull($this->generatorSubject->generatorReturnValue());
         $this->assertSame([null, null], $this->generatorSubject->generatorResponse());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->generatorSubject->sequenceNumber());
@@ -257,7 +259,7 @@ class CallVerifierWithGeneratorsTest extends TestCase
 
     public function testReturnedFailureWithGenerator()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->generatorSubject->returned(null);
     }
 
@@ -279,7 +281,7 @@ class CallVerifierWithGeneratorsTest extends TestCase
             $this->assertionRenderer
         );
 
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->generatorSubject->threw();
     }
 
@@ -307,25 +309,25 @@ class CallVerifierWithGeneratorsTest extends TestCase
 
     public function testGeneratedFailure()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->generated();
     }
 
     public function testGeneratedFailureNever()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->generatorSubject->never()->generated();
     }
 
     public function testGeneratedFailureWithException()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithException->generated();
     }
 
     public function testGeneratedFailureNeverResponded()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithNoResponse->generated();
     }
 }

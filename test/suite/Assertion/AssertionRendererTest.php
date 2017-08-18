@@ -24,6 +24,7 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\Cardinality;
+use IteratorAggregate;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
@@ -52,13 +53,13 @@ class AssertionRendererTest extends TestCase
 
         $mockBuilderFactory = MockBuilderFactory::instance();
 
-        $mockBuilder = $mockBuilderFactory->create('Eloquent\Phony\Test\TestClassA');
+        $mockBuilder = $mockBuilderFactory->create(TestClassA::class);
         $this->thisObjectB = $mockBuilder->get();
         $this->thisObjectBHandle = $this->handleFactory->instanceHandle($this->thisObjectB);
         $this->thisObjectBHandle->setLabel('label');
         $this->thisObjectB->testClassAMethodA();
 
-        $mockBuilder = $mockBuilderFactory->create('IteratorAggregate');
+        $mockBuilder = $mockBuilderFactory->create(IteratorAggregate::class);
         $mockBuilder->named('PhonyMockAssertionRendererTestIteratorAggregate');
         $this->thisObjectC = $mockBuilder->get();
         $this->thisObjectCHandle = $this->handleFactory->instanceHandle($this->thisObjectC);

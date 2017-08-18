@@ -166,7 +166,7 @@ class MockGenerator
             $source .= "\nextends \\" . $parentClassName;
         }
 
-        array_unshift($interfaceNames, 'Eloquent\Phony\Mock\Mock');
+        array_unshift($interfaceNames, Mock::class);
         $source .= "\nimplements \\" .
             implode(",\n           \\", $interfaceNames);
 

@@ -1,8 +1,10 @@
 <?php
 
+use Eloquent\Phony\Test\TestInterfaceWithKeywordMethods;
+
 $builder = $factory->create(
     [
-        'Eloquent\Phony\Test\TestInterfaceWithKeywordMethods',
+        TestInterfaceWithKeywordMethods::class,
         [
             'throw' => function () {},
         ],

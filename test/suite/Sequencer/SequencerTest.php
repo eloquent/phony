@@ -50,7 +50,7 @@ class SequencerTest extends TestCase
 
     public function testSequence()
     {
-        $reflector = new ReflectionClass('Eloquent\Phony\Sequencer\Sequencer');
+        $reflector = new ReflectionClass(Sequencer::class);
         $property = $reflector->getProperty('instances');
         $property->setAccessible(true);
         $instances = $property->getValue(null);
@@ -58,8 +58,8 @@ class SequencerTest extends TestCase
         $instanceA = Sequencer::sequence('a');
         $instanceB = Sequencer::sequence('b');
 
-        $this->assertInstanceOf('Eloquent\Phony\Sequencer\Sequencer', $instanceA);
-        $this->assertInstanceOf('Eloquent\Phony\Sequencer\Sequencer', $instanceB);
+        $this->assertInstanceOf(Sequencer::class, $instanceA);
+        $this->assertInstanceOf(Sequencer::class, $instanceB);
         $this->assertSame($instanceA, Sequencer::sequence('a'));
         $this->assertSame($instanceB, Sequencer::sequence('b'));
         $this->assertNotSame($instanceA, $instanceB);

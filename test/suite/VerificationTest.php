@@ -82,7 +82,7 @@ class VerificationTest extends TestCase
 
             $this->assertSame($expected, $actual);
 
-            $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+            $this->expectException(AssertionException::class);
             throw $e;
         }
     }

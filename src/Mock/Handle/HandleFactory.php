@@ -21,6 +21,7 @@ use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Exception\NonMockClassException;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Stub\EmptyValueFactory;
+use Eloquent\Phony\Stub\StubData;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use ReflectionClass;
@@ -112,7 +113,7 @@ class HandleFactory
             $mock,
             (object) [
                 'defaultAnswerCallback' =>
-                    'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback',
+                    [StubData::class, 'returnsEmptyAnswerCallback'],
                 'stubs' => (object) [],
                 'isRecording' => true,
                 'label' => $label,
@@ -158,7 +159,7 @@ class HandleFactory
             throw new InvalidMockClassException($class);
         }
 
-        if (!$class->isSubclassOf('Eloquent\Phony\Mock\Mock')) {
+        if (!$class->isSubclassOf(Mock::class)) {
             throw new NonMockClassException($class->getName());
         }
 
@@ -173,7 +174,7 @@ class HandleFactory
             $class,
             (object) [
                 'defaultAnswerCallback' =>
-                    'Eloquent\Phony\Stub\StubData::forwardsAnswerCallback',
+                    [StubData::class, 'forwardsAnswerCallback'],
                 'stubs' => (object) [],
                 'isRecording' => true,
             ],

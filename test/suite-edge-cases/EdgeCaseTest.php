@@ -11,6 +11,7 @@
 
 use Eloquent\Phony as x;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Test\EdgeCase as TestNamespace;
 use PHPUnit\Framework\TestCase;
 
 class EdgeCaseTest extends TestCase
@@ -130,10 +131,6 @@ class EdgeCaseTest extends TestCase
      */
     public function testTypes($typeName)
     {
-        // echo "class $typeName\n";
-        // ob_flush();
-        // echo x\mockBuilder($typeName)->source();
-
         $handle = x\mock($typeName);
         $mock = $handle->get();
 
@@ -163,10 +160,7 @@ class EdgeCaseTest extends TestCase
      */
     public function testFunctions($functionName)
     {
-        // echo "function $functionName\n";
-        // ob_flush();
-
-        $stub = x\stubGlobal($functionName, 'Eloquent\Phony\Test\EdgeCase');
+        $stub = x\stubGlobal($functionName, TestNamespace::class);
 
         $this->assertTrue((bool) $stub);
     }

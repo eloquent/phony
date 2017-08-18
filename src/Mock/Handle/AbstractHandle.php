@@ -25,6 +25,7 @@ use Eloquent\Phony\Mock\Method\WrappedUncallableMethod;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Stub\EmptyValueFactory;
+use Eloquent\Phony\Stub\StubData;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifier;
 use Eloquent\Phony\Stub\StubVerifierFactory;
@@ -122,7 +123,7 @@ abstract class AbstractHandle implements Handle
     public function full()
     {
         $this->state->defaultAnswerCallback =
-            'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback';
+            [StubData::class, 'returnsEmptyAnswerCallback'];
 
         return $this;
     }
@@ -135,7 +136,7 @@ abstract class AbstractHandle implements Handle
     public function partial()
     {
         $this->state->defaultAnswerCallback =
-            'Eloquent\Phony\Stub\StubData::forwardsAnswerCallback';
+            [StubData::class, 'forwardsAnswerCallback'];
 
         return $this;
     }

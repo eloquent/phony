@@ -678,7 +678,7 @@ class InlineExporter implements Exporter
         $class = $reflector->getDeclaringClass();
         $name = $reflector->getName();
 
-        if ($class->implementsInterface('Eloquent\Phony\Mock\Mock')) {
+        if ($class->implementsInterface(Mock::class)) {
             if (
                 ($parentClass = $class->getParentClass()) &&
                 $parentClass->hasMethod($name)

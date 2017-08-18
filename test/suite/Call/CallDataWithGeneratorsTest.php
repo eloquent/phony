@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call;
 
+use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
@@ -69,7 +70,7 @@ class CallDataWithGeneratorsTest extends TestCase
         $this->assertTrue($this->subject->isIterable());
         $this->assertFalse($this->subject->isGenerator());
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException(UndefinedResponseException::class);
         $this->subject->generatorResponse();
     }
 
@@ -80,7 +81,7 @@ class CallDataWithGeneratorsTest extends TestCase
         $this->assertTrue($this->subject->isIterable());
         $this->assertTrue($this->subject->isGenerator());
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException(UndefinedResponseException::class);
         $this->subject->generatorResponse();
     }
 
@@ -89,7 +90,7 @@ class CallDataWithGeneratorsTest extends TestCase
         $this->assertFalse($this->subject->isIterable());
         $this->assertFalse($this->subject->isGenerator());
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException(UndefinedResponseException::class);
         $this->subject->generatorResponse();
     }
 
@@ -98,7 +99,7 @@ class CallDataWithGeneratorsTest extends TestCase
         $this->subject->setResponseEvent($this->generatedEvent);
         $this->subject->setEndEvent($this->threwEvent);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException(UndefinedResponseException::class);
         $this->subject->generatorReturnValue();
     }
 
@@ -107,7 +108,7 @@ class CallDataWithGeneratorsTest extends TestCase
         $this->subject->setResponseEvent($this->generatedEvent);
         $this->subject->setEndEvent($this->returnedEvent);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException(UndefinedResponseException::class);
         $this->subject->generatorException();
     }
 }

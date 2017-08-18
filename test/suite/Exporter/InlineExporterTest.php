@@ -20,8 +20,12 @@ use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Spy\SpyVerifierFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
+use Eloquent\Phony\Test\Properties\TestBaseClass;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
+use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassE;
+use Eloquent\Phony\Test\TestInterfaceA;
+use Eloquent\Phony\Test\TestTraitA;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
@@ -146,10 +150,7 @@ class InlineExporterTest extends TestCase
     {
         $value = new TestClassE();
 
-        $this->assertSame(
-            'Eloquent\Phony\Test\TestClassE#0{privateProperty: "private"}',
-            $this->subject->export($value)
-        );
+        $this->assertSame(TestClassE::class . '#0{privateProperty: "private"}', $this->subject->export($value));
     }
 
     public function testExportInaccessibleIneritedProperties()
@@ -160,22 +161,22 @@ class InlineExporterTest extends TestCase
             !$this->featureDetector->isSupported('runtime.hhvm') &&
             version_compare(PHP_VERSION, '5.4.x', '>=')
         ) {
-            $expected = 'Eloquent\Phony\Test\Properties\TestDerivedClassA#0{' .
+            $expected = TestDerivedClassA::class . '#0{' .
                 'derivedPublic: "<derived-public>", ' .
                 'derivedPrivate: "<derived-private>", ' .
                 'basePrivate: "<derived-base-private>", ' .
                 'derivedProtected: "<derived-protected>", ' .
                 'basePublic: "<base-public>", ' .
                 'baseProtected: "<base-protected>", ' .
-                'Eloquent\Phony\Test\Properties\TestBaseClass.basePrivate: "<base-private>"}';
+                TestBaseClass::class . '.basePrivate: "<base-private>"}';
         } else {
-            $expected = 'Eloquent\Phony\Test\Properties\TestDerivedClassA#0{' .
+            $expected = TestDerivedClassA::class . '#0{' .
                 'derivedPublic: "<derived-public>", ' .
                 'derivedPrivate: "<derived-private>", ' .
                 'basePrivate: "<derived-base-private>", ' .
                 'derivedProtected: "<derived-protected>", ' .
                 'basePublic: "<base-public>", ' .
-                'Eloquent\Phony\Test\Properties\TestBaseClass.basePrivate: "<base-private>", ' .
+                TestBaseClass::class . '.basePrivate: "<base-private>", ' .
                 'baseProtected: "<base-protected>"}';
         }
 
@@ -229,7 +230,7 @@ class InlineExporterTest extends TestCase
 
     public function testExportMocks()
     {
-        $builder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\Properties\TestBaseClass')
+        $builder = $this->mockBuilderFactory->create(TestBaseClass::class)
             ->named('PhonyMockInlineExporterExportMocks');
         $mock = $builder->get();
         $handle = Phony::on($mock)->setLabel('label');
@@ -277,14 +278,14 @@ class InlineExporterTest extends TestCase
         $anonymous = $this->stubFactory->create()->setLabel('anonymous');
         $verifier = $this->stubVerifierFactory->createFromCallback('implode')->setLabel('verifier');
         $anonymousVerifier = $this->stubVerifierFactory->createFromCallback()->setLabel('anonymous-verifier');
-        $builderA = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassA')
+        $builderA = $this->mockBuilderFactory->create(TestClassA::class)
             ->named('PhonyMockInlineExporterExportSpiesA');
         $mockA = $builderA->get();
         $handleA = Phony::on($mockA)->setLabel('label');
         $handleA->testClassAMethodA->setLabel('method');
         $staticHandleA = Phony::onStatic($mockA);
         $staticHandleA->testClassAStaticMethodA->setLabel('static-method');
-        $builderB = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestInterfaceA')
+        $builderB = $this->mockBuilderFactory->create(TestInterfaceA::class)
             ->named('PhonyMockInlineExporterExportSpiesB');
         $mockB = $builderB->get();
         $handleB = Phony::on($mockB)->setLabel('label');
@@ -364,14 +365,14 @@ class InlineExporterTest extends TestCase
         $anonymousStub = $this->stubFactory->create()->setLabel('anonymous-stub');
         $stubVerifier = $this->stubVerifierFactory->createFromCallback('implode')->setLabel('stub-verifier');
         $anonymousStubVerifier = $this->stubVerifierFactory->createFromCallback()->setLabel('anonymous-stub-verifier');
-        $builderA = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassA')
+        $builderA = $this->mockBuilderFactory->create(TestClassA::class)
             ->named('PhonyMockInlineExporterExportCallableA')
             ->addMethod('method')
             ->addStaticMethod('staticMethod');
         $mockA = $builderA->get();
         $handleA = Phony::on($mockA)->setLabel('parent-class');
         $staticHandleA = Phony::onStatic($handleA);
-        $builderB = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestInterfaceA')
+        $builderB = $this->mockBuilderFactory->create(TestInterfaceA::class)
             ->named('PhonyMockInlineExporterExportCallableB');
         $mockB = $builderB->get();
         $handleB = Phony::on($mockB)->setLabel('interface');
@@ -448,7 +449,7 @@ class InlineExporterTest extends TestCase
 
     public function testExportCallableWithTraits()
     {
-        $builderA = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestTraitA')
+        $builderA = $this->mockBuilderFactory->create(TestTraitA::class)
             ->named('PhonyMockInlineExporterExportCallableWithTraitsA');
         $mockA = $builderA->get();
         $handleA = Phony::on($mockA)->setLabel('trait');

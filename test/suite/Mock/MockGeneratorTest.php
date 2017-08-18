@@ -11,13 +11,19 @@
 
 namespace Eloquent\Phony\Mock;
 
+use Countable;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Test\TestClassB;
+use Eloquent\Phony\Test\TestTraitA;
+use Eloquent\Phony\Test\TestTraitB;
+use Iterator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use stdClass;
 
 class MockGeneratorTest extends TestCase
 {
@@ -31,12 +37,12 @@ class MockGeneratorTest extends TestCase
 
     public function classNameData()
     {
-        //                                      types                                    expected
+        //                                 types                                expected
         return [
-            'Anonymous'                => [[],                                 'PhonyMock_0'],
-            'Extends class'            => [['stdClass'],                       'PhonyMock_stdClass_0'],
-            'Extends namespaced class' => [['Eloquent\Phony\Test\TestClassB'], 'PhonyMock_TestClassB_0'],
-            'Inherits interface'       => [['Iterator', 'Countable'],          'PhonyMock_Iterator_0'],
+            'Anonymous'                => [[],                                  'PhonyMock_0'],
+            'Extends class'            => [[stdClass::class],                   'PhonyMock_stdClass_0'],
+            'Extends namespaced class' => [[TestClassB::class],                 'PhonyMock_TestClassB_0'],
+            'Inherits interface'       => [[Iterator::class, Countable::class], 'PhonyMock_Iterator_0'],
         ];
     }
 
@@ -62,8 +68,8 @@ class MockGeneratorTest extends TestCase
     public function testClassNameWithTraits()
     {
         $this->types = [
-            new ReflectionClass('Eloquent\Phony\Test\TestTraitA'),
-            new ReflectionClass('Eloquent\Phony\Test\TestTraitB'),
+            new ReflectionClass(TestTraitA::class),
+            new ReflectionClass(TestTraitB::class),
         ];
         $definition = new MockDefinition(
             $this->types,

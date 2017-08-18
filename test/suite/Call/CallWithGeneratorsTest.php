@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
+use Generator;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -65,7 +67,7 @@ class CallWithGeneratorsTest extends TestCase
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
-        $this->assertInstanceOf('Generator', $this->subject->returnValue());
+        $this->assertInstanceOf(Generator::class, $this->subject->returnValue());
         $this->assertEquals($generatedEvent->time(), $this->subject->responseTime());
         $this->assertEquals($endEvent->time(), $this->subject->endTime());
     }
@@ -100,7 +102,7 @@ class CallWithGeneratorsTest extends TestCase
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
-        $this->assertInstanceOf('Generator', $this->subject->returnValue());
+        $this->assertInstanceOf(Generator::class, $this->subject->returnValue());
         $this->assertSame($exception, $this->subject->generatorException());
         $this->assertEquals($generatedEvent->time(), $this->subject->responseTime());
         $this->assertEquals($endEvent->time(), $this->subject->endTime());
@@ -133,7 +135,7 @@ class CallWithGeneratorsTest extends TestCase
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
-        $this->assertInstanceOf('Generator', $this->subject->returnValue());
+        $this->assertInstanceOf(Generator::class, $this->subject->returnValue());
         $this->assertEquals($generatedEvent->time(), $this->subject->responseTime());
         $this->assertNull($this->subject->endTime());
     }
@@ -160,7 +162,7 @@ class CallWithGeneratorsTest extends TestCase
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
-        $this->assertInstanceOf('Generator', $this->subject->returnValue());
+        $this->assertInstanceOf(Generator::class, $this->subject->returnValue());
         $this->assertEquals($generatedEvent->time(), $this->subject->responseTime());
         $this->assertNull($this->subject->endTime());
     }
@@ -200,7 +202,7 @@ class CallWithGeneratorsTest extends TestCase
         $this->subject->setResponseEvent($generatedEvent);
         $this->subject->setEndEvent($endEvent);
 
-        $this->expectException('InvalidArgumentException', 'Call already completed.');
+        $this->expectException(InvalidArgumentException::class, 'Call already completed.');
         $this->subject->addIterableEvent($this->callEventFactory->createReceived('e'));
     }
 }

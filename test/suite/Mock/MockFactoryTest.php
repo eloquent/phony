@@ -16,6 +16,9 @@ use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Exception\MockGenerationFailedException;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\TestClassB;
+use Eloquent\Phony\Test\TestClassI;
 use Eloquent\Phony\Test\TestMockGenerator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -36,7 +39,7 @@ class MockFactoryTest extends TestCase
     {
         $builder = $this->builderFactory->create(
             [
-                'Eloquent\Phony\Test\TestClassB',
+                TestClassB::class,
                 [
                     'static methodA' => function () {
                         return 'static custom ' . implode(func_get_args());
@@ -52,9 +55,9 @@ class MockFactoryTest extends TestCase
         $protectedMethod = $actual->getMethod('testClassAStaticMethodC');
         $protectedMethod->setAccessible(true);
 
-        $this->assertInstanceOf('ReflectionClass', $actual);
-        $this->assertTrue($actual->implementsInterface('Eloquent\Phony\Mock\Mock'));
-        $this->assertTrue($actual->isSubclassOf('Eloquent\Phony\Test\TestClassB'));
+        $this->assertInstanceOf(ReflectionClass::class, $actual);
+        $this->assertTrue($actual->implementsInterface(Mock::class));
+        $this->assertTrue($actual->isSubclassOf(TestClassB::class));
         $this->assertSame($actual, $this->subject->createMockClass($builder->definition()));
         $this->assertSame('ab', PhonyMockFactoryTestCreateMockClass::testClassAStaticMethodA('a', 'b'));
         $this->assertSame('protected ab', $protectedMethod->invoke(null, 'a', 'b'));
@@ -68,7 +71,7 @@ class MockFactoryTest extends TestCase
         $builderB->named($builderA->className());
         $reporting = error_reporting();
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\ClassExistsException');
+        $this->expectException(ClassExistsException::class);
         try {
             $this->subject->createMockClass($builderB->definition());
         } catch (ClassExistsException $e) {
@@ -88,7 +91,7 @@ class MockFactoryTest extends TestCase
         $builder = $this->builderFactory->create();
         $reporting = error_reporting();
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\MockGenerationFailedException');
+        $this->expectException(MockGenerationFailedException::class);
         try {
             $this->subject->createMockClass($builder->definition());
         } catch (MockGenerationFailedException $e) {
@@ -102,7 +105,7 @@ class MockFactoryTest extends TestCase
     {
         $builder = $this->builderFactory->create(
             [
-                'Eloquent\Phony\Test\TestClassB',
+                TestClassB::class,
                 [
                     'static methodA' => function () {
                         return 'static custom ' . implode(func_get_args());
@@ -121,8 +124,8 @@ class MockFactoryTest extends TestCase
         $protectedStaticMethod = $class->getMethod('testClassAStaticMethodC');
         $protectedStaticMethod->setAccessible(true);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
-        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
+        $this->assertInstanceOf(Mock::class, $actual);
+        $this->assertInstanceOf(TestClassB::class, $actual);
         $this->assertSame('0', $this->handleFactory->instanceHandle($actual)->label());
         $this->assertNull($actual->testClassAMethodA('a', 'b'));
         $this->assertNull($protectedMethod->invoke($actual, 'a', 'b'));
@@ -136,7 +139,7 @@ class MockFactoryTest extends TestCase
     {
         $builder = $this->builderFactory->create(
             [
-                'Eloquent\Phony\Test\TestClassB',
+                TestClassB::class,
                 [
                     'static methodA' => function () {
                         return 'static custom ' . implode(func_get_args());
@@ -155,8 +158,8 @@ class MockFactoryTest extends TestCase
         $protectedStaticMethod = $class->getMethod('testClassAStaticMethodC');
         $protectedStaticMethod->setAccessible(true);
 
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
-        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
+        $this->assertInstanceOf(Mock::class, $actual);
+        $this->assertInstanceOf(TestClassB::class, $actual);
         $this->assertSame('0', $this->handleFactory->instanceHandle($actual)->label());
         $this->assertSame('ab', $actual->testClassAMethodA('a', 'b'));
         $this->assertSame('protected ab', $protectedMethod->invoke($actual, 'a', 'b'));
@@ -168,7 +171,7 @@ class MockFactoryTest extends TestCase
 
     public function testCreatePartialMockWithConstructorArgumentsWithReferences()
     {
-        $builder = $this->builderFactory->create('Eloquent\Phony\Test\TestClassA');
+        $builder = $this->builderFactory->create(TestClassA::class);
         $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMockWithConstructorArgumentsWithReferences');
         $a = 'a';
         $b = 'b';
@@ -181,7 +184,7 @@ class MockFactoryTest extends TestCase
 
     public function testCreateFullMockWithFinalConstructor()
     {
-        $builder = $this->builderFactory->create('Eloquent\Phony\Test\TestClassI');
+        $builder = $this->builderFactory->create(TestClassI::class);
         $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreateFullMockWithFinalConstructor');
         $actual = $this->subject->createFullMock($builder->build());
 
@@ -190,7 +193,7 @@ class MockFactoryTest extends TestCase
 
     public function testCreatePartialMockWithFinalConstructor()
     {
-        $builder = $this->builderFactory->create('Eloquent\Phony\Test\TestClassI');
+        $builder = $this->builderFactory->create(TestClassI::class);
         $builder->named(__NAMESPACE__ . '\PhonyMockFactoryTestCreatePartialMockWithFinalConstructor');
         $actual = $this->subject->createPartialMock($builder->build(), ['a', 'b']);
 

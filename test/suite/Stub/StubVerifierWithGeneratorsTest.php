@@ -17,9 +17,11 @@ use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\SpyFactory;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
+use Generator;
 use PHPUnit\Framework\TestCase;
 
 class StubVerifierWithGeneratorsTest extends TestCase
@@ -152,8 +154,8 @@ class StubVerifierWithGeneratorsTest extends TestCase
         $generator = call_user_func($this->subject);
         $actual = iterator_to_array($generator);
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder', $builder);
-        $this->assertInstanceOf('Generator', $generator);
+        $this->assertInstanceOf(GeneratorAnswerBuilder::class, $builder);
+        $this->assertInstanceOf(Generator::class, $generator);
         $this->assertSame($this->subject, $builder->returns());
         $this->assertSame(['a' => 'b', 0 => 'c'], $actual);
     }
@@ -164,7 +166,7 @@ class StubVerifierWithGeneratorsTest extends TestCase
         $actualA = iterator_to_array(call_user_func($this->subject));
         $actualB = iterator_to_array(call_user_func($this->subject));
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder', $builder);
+        $this->assertInstanceOf(GeneratorAnswerBuilder::class, $builder);
         $this->assertSame(['a'], $actualA);
         $this->assertSame(['b'], $actualB);
     }

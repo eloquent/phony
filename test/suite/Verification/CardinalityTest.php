@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Verification;
 
+use Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException;
+use Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException;
 use PHPUnit\Framework\TestCase;
 
 class CardinalityTest extends TestCase
@@ -43,31 +45,31 @@ class CardinalityTest extends TestCase
 
     public function testConstructorFailureNegativeMin()
     {
-        $this->expectException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
+        $this->expectException(InvalidCardinalityStateException::class);
         new Cardinality(-1);
     }
 
     public function testConstructorFailureNegativeMax()
     {
-        $this->expectException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
+        $this->expectException(InvalidCardinalityStateException::class);
         new Cardinality(0, -1);
     }
 
     public function testConstructorFailureInvalidMinMax()
     {
-        $this->expectException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
+        $this->expectException(InvalidCardinalityStateException::class);
         new Cardinality($this->maximum, $this->minimum);
     }
 
     public function testConstructorFailureInvalidIsAlways()
     {
-        $this->expectException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
+        $this->expectException(InvalidCardinalityStateException::class);
         new Cardinality(0, 0, true);
     }
 
     public function testConstructorFailureInvalidIsAny()
     {
-        $this->expectException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
+        $this->expectException(InvalidCardinalityStateException::class);
         new Cardinality(0, null);
     }
 
@@ -89,7 +91,7 @@ class CardinalityTest extends TestCase
     {
         $this->subject = new Cardinality(0, 0);
 
-        $this->expectException('Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException');
+        $this->expectException(InvalidCardinalityStateException::class);
         $this->subject->setIsAlways(true);
     }
 
@@ -142,7 +144,7 @@ class CardinalityTest extends TestCase
     {
         $this->subject = new Cardinality(2);
 
-        $this->expectException('Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException');
+        $this->expectException(InvalidSingularCardinalityException::class);
         $this->subject->assertSingular();
     }
 
@@ -150,7 +152,7 @@ class CardinalityTest extends TestCase
     {
         $this->subject = new Cardinality(0, 2);
 
-        $this->expectException('Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException');
+        $this->expectException(InvalidSingularCardinalityException::class);
         $this->subject->assertSingular();
     }
 }

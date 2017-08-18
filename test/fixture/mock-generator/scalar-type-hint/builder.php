@@ -1,8 +1,10 @@
 <?php
 
+use Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint;
+
 $builder = $factory->create(
     [
-        'Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint',
+        TestInterfaceWithScalarTypeHint::class,
         [
             'customMethod' => function (int $int) {}
         ],

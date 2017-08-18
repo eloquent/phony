@@ -1,13 +1,17 @@
 <?php
 
+use Eloquent\Phony\Test\TestClassB;
+use Eloquent\Phony\Test\TestTraitA;
+use Eloquent\Phony\Test\TestTraitB;
+
 $builder = $factory->create(
     [
-        'Eloquent\Phony\Test\TestClassB',
-        'Iterator',
-        'Countable',
-        'ArrayAccess',
-        'Eloquent\Phony\Test\TestTraitA',
-        'Eloquent\Phony\Test\TestTraitB',
+        TestClassB::class,
+        Iterator::class,
+        Countable::class,
+        ArrayAccess::class,
+        TestTraitA::class,
+        TestTraitB::class,
         [
             'const CONSTANT_A' => 'constantValueA',
             'const CONSTANT_B' => 444,

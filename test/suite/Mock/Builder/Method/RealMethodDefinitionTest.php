@@ -11,6 +11,8 @@
 
 namespace Eloquent\Phony\Mock\Builder\Method;
 
+use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\TestInterfaceA;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
@@ -18,7 +20,7 @@ class RealMethodDefinitionTest extends TestCase
 {
     public function testConstructorWithPublicStatic()
     {
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodA');
+        $this->method = new ReflectionMethod(TestClassA::class . '::testClassAStaticMethodA');
         $this->name = 'name';
         $this->subject = new RealMethodDefinition($this->method, $this->name);
 
@@ -33,7 +35,7 @@ class RealMethodDefinitionTest extends TestCase
 
     public function testConstructorWithPublicNonStatic()
     {
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodA');
+        $this->method = new ReflectionMethod(TestClassA::class . '::testClassAMethodA');
         $this->name = 'name';
         $this->subject = new RealMethodDefinition($this->method, $this->name);
 
@@ -48,7 +50,7 @@ class RealMethodDefinitionTest extends TestCase
 
     public function testConstructorWithProtectedStatic()
     {
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodC');
+        $this->method = new ReflectionMethod(TestClassA::class . '::testClassAStaticMethodC');
         $this->name = 'name';
         $this->subject = new RealMethodDefinition($this->method, $this->name);
 
@@ -63,7 +65,7 @@ class RealMethodDefinitionTest extends TestCase
 
     public function testConstructorWithProtectedNonStatic()
     {
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodC');
+        $this->method = new ReflectionMethod(TestClassA::class . '::testClassAMethodC');
         $this->name = 'name';
         $this->subject = new RealMethodDefinition($this->method, $this->name);
 
@@ -78,7 +80,7 @@ class RealMethodDefinitionTest extends TestCase
 
     public function testConstructorWithUncallable()
     {
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestInterfaceA::testClassAMethodA');
+        $this->method = new ReflectionMethod(TestInterfaceA::class . '::testClassAMethodA');
         $this->name = 'name';
         $this->subject = new RealMethodDefinition($this->method, $this->name);
 

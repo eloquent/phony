@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Call;
 
+use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ArgumentsTest extends TestCase
@@ -61,13 +62,13 @@ class ArgumentsTest extends TestCase
 
     public function testSetFailureTooHigh()
     {
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException(UndefinedArgumentException::class);
         $this->subject->set(111, 'value');
     }
 
     public function testSetFailureTooLow()
     {
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException(UndefinedArgumentException::class);
         $this->subject->set(-111, 'value');
     }
 
@@ -75,7 +76,7 @@ class ArgumentsTest extends TestCase
     {
         $this->subject = new Arguments([]);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException(UndefinedArgumentException::class);
         $this->subject->set('value');
     }
 
@@ -108,13 +109,13 @@ class ArgumentsTest extends TestCase
 
     public function testGetFailureTooHigh()
     {
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException(UndefinedArgumentException::class);
         $this->subject->get(111);
     }
 
     public function testGetFailureTooLow()
     {
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException(UndefinedArgumentException::class);
         $this->subject->get(-111);
     }
 
@@ -122,7 +123,7 @@ class ArgumentsTest extends TestCase
     {
         $this->subject = new Arguments([]);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException(UndefinedArgumentException::class);
         $this->subject->get();
     }
 

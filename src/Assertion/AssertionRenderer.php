@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Assertion;
 
 use Eloquent\Phony\Call\Call;
+use Eloquent\Phony\Call\CallData;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\CallEvent;
 use Eloquent\Phony\Call\Event\ConsumedEvent;
@@ -3549,7 +3550,7 @@ class AssertionRenderer
             $renderedHandle .= '[static]';
         }
 
-        usort($calls, 'Eloquent\Phony\Call\CallData::compareSequential');
+        usort($calls, [CallData::class, 'compareSequential']);
         $renderedCalls = [];
 
         foreach ($calls as $index => $call) {

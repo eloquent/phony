@@ -12,16 +12,47 @@
 namespace Eloquent\Phony\Mock\Builder;
 
 use ArrayIterator;
+use ArrayObject;
+use Countable;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
+use Eloquent\Phony\Mock\Exception\FinalClassException;
+use Eloquent\Phony\Mock\Exception\FinalizedMockException;
+use Eloquent\Phony\Mock\Exception\InvalidClassNameException;
+use Eloquent\Phony\Mock\Exception\InvalidDefinitionException;
+use Eloquent\Phony\Mock\Exception\InvalidTypeException;
+use Eloquent\Phony\Mock\Exception\MultipleInheritanceException;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Mock\MockGenerator;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\TestClassB;
+use Eloquent\Phony\Test\TestClassI;
+use Eloquent\Phony\Test\TestFinalClass;
+use Eloquent\Phony\Test\TestInterfaceA;
+use Eloquent\Phony\Test\TestInterfaceC;
+use Eloquent\Phony\Test\TestInterfaceF;
+use Eloquent\Phony\Test\TestInterfaceH;
+use Eloquent\Phony\Test\TestTraitA;
+use Eloquent\Phony\Test\TestTraitB;
+use Error;
+use Exception;
+use Iterator;
+use IteratorAggregate;
+use Nonexistent;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionFunction;
+use Reflector;
+use Serializable;
+use Throwable;
+use Traversable;
 
 class MockBuilderTest extends TestCase
 {
@@ -31,18 +62,18 @@ class MockBuilderTest extends TestCase
         $this->featureDetector = new FeatureDetector();
 
         $this->typeNames = [
-            'Eloquent\Phony\Test\TestClassB',
-            'Eloquent\Phony\Test\TestInterfaceA',
-            'Iterator',
-            'Countable',
+            TestClassB::class,
+            TestInterfaceA::class,
+            Iterator::class,
+            Countable::class,
         ];
         $this->typeNamesTraits = [
-            'Eloquent\Phony\Test\TestClassB',
-            'Eloquent\Phony\Test\TestInterfaceA',
-            'Iterator',
-            'Countable',
-            'Eloquent\Phony\Test\TestTraitA',
-            'Eloquent\Phony\Test\TestTraitB',
+            TestClassB::class,
+            TestInterfaceA::class,
+            Iterator::class,
+            Countable::class,
+            TestTraitA::class,
+            TestTraitB::class,
         ];
 
         $this->callbackA = function () {};
@@ -166,14 +197,14 @@ class MockBuilderTest extends TestCase
     {
         $this->setUpWith(
             [
-                'Eloquent\Phony\Test\TestClassB',
-                'Eloquent\Phony\Test\TestInterfaceA',
-                'Iterator',
-                'Countable',
-                'Eloquent\Phony\Test\TestClassB',
-                'Eloquent\Phony\Test\TestInterfaceA',
-                'Iterator',
-                'Countable',
+                TestClassB::class,
+                TestInterfaceA::class,
+                Iterator::class,
+                Countable::class,
+                TestClassB::class,
+                TestInterfaceA::class,
+                Iterator::class,
+                Countable::class,
             ]
         );
 
@@ -184,17 +215,17 @@ class MockBuilderTest extends TestCase
     {
         $this->setUpWith(
             [
-                'Eloquent\Phony\Test\TestClassB',
-                'Eloquent\Phony\Test\TestInterfaceA',
-                'Iterator',
-                'Countable',
-                'Eloquent\Phony\Test\TestTraitA',
-                'Eloquent\Phony\Test\TestTraitB',
-                'Eloquent\Phony\Test\TestClassB',
-                'Iterator',
-                'Countable',
-                'Eloquent\Phony\Test\TestTraitA',
-                'Eloquent\Phony\Test\TestTraitB',
+                TestClassB::class,
+                TestInterfaceA::class,
+                Iterator::class,
+                Countable::class,
+                TestTraitA::class,
+                TestTraitB::class,
+                TestClassB::class,
+                Iterator::class,
+                Countable::class,
+                TestTraitA::class,
+                TestTraitB::class,
             ]
         );
 
@@ -207,25 +238,25 @@ class MockBuilderTest extends TestCase
 
     public function testConstructorFailureUndefinedClass()
     {
-        $this->expectException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
-        $this->setUpWith(['Nonexistent']);
+        $this->expectException(InvalidTypeException::class);
+        $this->setUpWith([Nonexistent::class]);
     }
 
     public function testConstructorFailureFinalClass()
     {
-        $this->expectException('Eloquent\Phony\Mock\Exception\FinalClassException');
-        $this->setUpWith(['Eloquent\Phony\Test\TestFinalClass']);
+        $this->expectException(FinalClassException::class);
+        $this->setUpWith([TestFinalClass::class]);
     }
 
     public function testConstructorFailureMultipleInheritance()
     {
-        $this->expectException('Eloquent\Phony\Mock\Exception\MultipleInheritanceException');
-        $this->setUpWith(['Eloquent\Phony\Test\TestClassB', 'ArrayIterator']);
+        $this->expectException(MultipleInheritanceException::class);
+        $this->setUpWith([TestClassB::class, ArrayIterator::class]);
     }
 
     public function testConstructorFailureInvalidType()
     {
-        $this->expectException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
+        $this->expectException(InvalidTypeException::class);
         $this->setUpWith([1]);
     }
 
@@ -255,9 +286,9 @@ class MockBuilderTest extends TestCase
     public function testLikeWithString()
     {
         $builder = $this->setUpWith([]);
-        $typeNames = ['Iterator', 'Countable', 'Serializable'];
+        $typeNames = [Iterator::class, Countable::class, Serializable::class];
 
-        $this->assertSame($builder, $builder->like('Iterator', ['Countable', 'Serializable']));
+        $this->assertSame($builder, $builder->like(Iterator::class, [Countable::class, Serializable::class]));
         $this->assertEquals($this->typesFor($typeNames), $builder->types());
     }
 
@@ -265,39 +296,39 @@ class MockBuilderTest extends TestCase
     {
         $this->setUpWith([]);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
-        $this->subject->like('Nonexistent');
+        $this->expectException(InvalidTypeException::class);
+        $this->subject->like(Nonexistent::class);
     }
 
     public function testLikeFailureFinalClass()
     {
         $this->setUpWith([]);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\FinalClassException');
-        $this->subject->like('Eloquent\Phony\Test\TestFinalClass');
+        $this->expectException(FinalClassException::class);
+        $this->subject->like(TestFinalClass::class);
     }
 
     public function testLikeFailureMultipleInheritance()
     {
         $this->setUpWith([]);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\MultipleInheritanceException');
-        $this->subject->like('Eloquent\Phony\Test\TestClassB', 'ArrayIterator');
+        $this->expectException(MultipleInheritanceException::class);
+        $this->subject->like(TestClassB::class, ArrayIterator::class);
     }
 
     public function testLikeFailureMultipleInheritanceOnSubsequentCall()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\MultipleInheritanceException');
-        $this->subject->like('Eloquent\Phony\Test\TestClassB', 'ArrayIterator');
+        $this->expectException(MultipleInheritanceException::class);
+        $this->subject->like(TestClassB::class, ArrayIterator::class);
     }
 
     public function testLikeFailureInvalidType()
     {
         $this->setUpWith([]);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
+        $this->expectException(InvalidTypeException::class);
         $this->subject->like(1);
     }
 
@@ -305,7 +336,7 @@ class MockBuilderTest extends TestCase
     {
         $this->setUpWith([]);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\InvalidTypeException');
+        $this->expectException(InvalidTypeException::class);
         $this->subject->like(new ArrayIterator());
     }
 
@@ -314,7 +345,7 @@ class MockBuilderTest extends TestCase
         $this->setUpWith([]);
         $this->subject->finalize();
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\FinalizedMockException');
+        $this->expectException(FinalizedMockException::class);
         $this->subject->like('ClassName');
     }
 
@@ -370,7 +401,7 @@ class MockBuilderTest extends TestCase
     {
         $this->setUpWith([]);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\InvalidDefinitionException');
+        $this->expectException(InvalidDefinitionException::class);
         $this->subject->like([1 => 'propertyA', 2 => 'valueA']);
     }
 
@@ -400,7 +431,7 @@ class MockBuilderTest extends TestCase
         $this->setUpWith([]);
         $this->subject->finalize();
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\FinalizedMockException');
+        $this->expectException(FinalizedMockException::class);
         $this->subject->addMethod('methodA', function () {});
     }
 
@@ -430,7 +461,7 @@ class MockBuilderTest extends TestCase
         $this->setUpWith([]);
         $this->subject->finalize();
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\FinalizedMockException');
+        $this->expectException(FinalizedMockException::class);
         $this->subject->addStaticMethod('methodA', function () {});
     }
 
@@ -452,7 +483,7 @@ class MockBuilderTest extends TestCase
         $this->setUpWith([]);
         $this->subject->finalize();
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\FinalizedMockException');
+        $this->expectException(FinalizedMockException::class);
         $this->subject->addProperty('propertyA');
     }
 
@@ -474,7 +505,7 @@ class MockBuilderTest extends TestCase
         $this->setUpWith([]);
         $this->subject->finalize();
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\FinalizedMockException');
+        $this->expectException(FinalizedMockException::class);
         $this->subject->addStaticProperty('propertyA');
     }
 
@@ -495,7 +526,7 @@ class MockBuilderTest extends TestCase
         $this->setUpWith([]);
         $this->subject->finalize();
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\FinalizedMockException');
+        $this->expectException(FinalizedMockException::class);
         $this->subject->addConstant('CONSTANT_NAME', 'value');
     }
 
@@ -515,7 +546,7 @@ class MockBuilderTest extends TestCase
     {
         $this->setUpWith([]);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\InvalidClassNameException');
+        $this->expectException(InvalidClassNameException::class);
         $this->subject->named('1');
     }
 
@@ -523,7 +554,7 @@ class MockBuilderTest extends TestCase
     {
         $this->setUpWith([]);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\InvalidClassNameException');
+        $this->expectException(InvalidClassNameException::class);
         $this->subject->named("abc\x7fdef");
     }
 
@@ -532,7 +563,7 @@ class MockBuilderTest extends TestCase
         $this->setUpWith([]);
         $this->subject->finalize();
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\FinalizedMockException');
+        $this->expectException(FinalizedMockException::class);
         $this->subject->named('AnotherClassName');
     }
 
@@ -554,9 +585,9 @@ class MockBuilderTest extends TestCase
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
-        $this->assertInstanceOf('ReflectionClass', $actual);
-        $this->assertTrue($actual->implementsInterface('Eloquent\Phony\Mock\Mock'));
-        $this->assertTrue($actual->isSubclassOf('Eloquent\Phony\Test\TestClassB'));
+        $this->assertInstanceOf(ReflectionClass::class, $actual);
+        $this->assertTrue($actual->implementsInterface(Mock::class));
+        $this->assertTrue($actual->isSubclassOf(TestClassB::class));
         $this->assertSame($actual, $this->subject->build());
     }
 
@@ -564,49 +595,49 @@ class MockBuilderTest extends TestCase
     {
         return [
             'Traversable' => [
-                'Traversable',
-                ['Traversable', 'Iterator'],
-                ['IteratorAggregate'],
+                Traversable::class,
+                [Traversable::class, Iterator::class],
+                [IteratorAggregate::class],
             ],
             'Iterator' => [
-                'Iterator',
-                ['Traversable', 'Iterator'],
-                ['IteratorAggregate'],
+                Iterator::class,
+                [Traversable::class, Iterator::class],
+                [IteratorAggregate::class],
             ],
             'IteratorAggregate' => [
-                'IteratorAggregate',
-                ['Traversable', 'IteratorAggregate'],
-                ['Iterator'],
+                IteratorAggregate::class,
+                [Traversable::class, IteratorAggregate::class],
+                [Iterator::class],
             ],
             'Traversable + Iterator' => [
-                ['Traversable', 'Iterator'],
-                ['Traversable', 'Iterator'],
-                ['IteratorAggregate'],
+                [Traversable::class, Iterator::class],
+                [Traversable::class, Iterator::class],
+                [IteratorAggregate::class],
             ],
             'Traversable + IteratorAggregate' => [
-                ['Traversable', 'IteratorAggregate'],
-                ['Traversable', 'IteratorAggregate'],
-                ['Iterator'],
+                [Traversable::class, IteratorAggregate::class],
+                [Traversable::class, IteratorAggregate::class],
+                [Iterator::class],
             ],
             'Traversable child' => [
-                'Eloquent\Phony\Test\TestInterfaceC',
-                ['Traversable', 'Iterator'],
-                ['IteratorAggregate'],
+                TestInterfaceC::class,
+                [Traversable::class, Iterator::class],
+                [IteratorAggregate::class],
             ],
             'Traversable child + Iterator' => [
-                ['Iterator', 'Eloquent\Phony\Test\TestInterfaceC'],
-                ['Traversable', 'Iterator'],
-                ['IteratorAggregate'],
+                [Iterator::class, TestInterfaceC::class],
+                [Traversable::class, Iterator::class],
+                [IteratorAggregate::class],
             ],
             'Traversable child + IteratorAggregate' => [
-                ['IteratorAggregate', 'Eloquent\Phony\Test\TestInterfaceC'],
-                ['Traversable', 'IteratorAggregate'],
-                ['Iterator'],
+                [IteratorAggregate::class, TestInterfaceC::class],
+                [Traversable::class, IteratorAggregate::class],
+                [Iterator::class],
             ],
             'ArrayObject' => [
-                'ArrayObject',
-                ['Traversable', 'IteratorAggregate'],
-                ['Iterator'],
+                ArrayObject::class,
+                [Traversable::class, IteratorAggregate::class],
+                [Iterator::class],
             ],
         ];
     }
@@ -625,44 +656,44 @@ class MockBuilderTest extends TestCase
     {
         return [
             'Throwable' => [
-                'Throwable',
-                ['Throwable', 'Exception'],
-                ['Error'],
+                Throwable::class,
+                [Throwable::class, Exception::class],
+                [Error::class],
             ],
             'Exception' => [
-                'Exception',
-                ['Throwable', 'Exception'],
-                ['Error'],
+                Exception::class,
+                [Throwable::class, Exception::class],
+                [Error::class],
             ],
             'Error' => [
-                'Error',
-                ['Throwable', 'Error'],
-                ['Exception'],
+                Error::class,
+                [Throwable::class, Error::class],
+                [Exception::class],
             ],
             'Throwable + Exception' => [
-                ['Throwable', 'Exception'],
-                ['Throwable', 'Exception'],
-                ['Error'],
+                [Throwable::class, Exception::class],
+                [Throwable::class, Exception::class],
+                [Error::class],
             ],
             'Throwable + Error' => [
-                ['Throwable', 'Error'],
-                ['Throwable', 'Error'],
-                ['Exception'],
+                [Throwable::class, Error::class],
+                [Throwable::class, Error::class],
+                [Exception::class],
             ],
             'Throwable child' => [
-                'Eloquent\Phony\Test\TestInterfaceF',
-                ['Throwable', 'Exception'],
-                ['Error'],
+                TestInterfaceF::class,
+                [Throwable::class, Exception::class],
+                [Error::class],
             ],
             'Throwable child + Exception' => [
-                ['Exception', 'Eloquent\Phony\Test\TestInterfaceF'],
-                ['Throwable', 'Exception'],
-                ['Error'],
+                [Exception::class, TestInterfaceF::class],
+                [Throwable::class, Exception::class],
+                [Error::class],
             ],
             'Throwable child + Error' => [
-                ['Error', 'Eloquent\Phony\Test\TestInterfaceF'],
-                ['Throwable', 'Error'],
-                ['Exception'],
+                [Error::class, TestInterfaceF::class],
+                [Throwable::class, Error::class],
+                [Exception::class],
             ],
         ];
     }
@@ -681,44 +712,44 @@ class MockBuilderTest extends TestCase
     {
         return [
             'DateTimeInterface' => [
-                'DateTimeInterface',
-                ['DateTimeInterface', 'DateTimeImmutable'],
-                ['DateTime'],
+                DateTimeInterface::class,
+                [DateTimeInterface::class, DateTimeImmutable::class],
+                [DateTime::class],
             ],
             'DateTimeImmutable' => [
-                'DateTimeImmutable',
-                ['DateTimeInterface', 'DateTimeImmutable'],
-                ['DateTime'],
+                DateTimeImmutable::class,
+                [DateTimeInterface::class, DateTimeImmutable::class],
+                [DateTime::class],
             ],
             'DateTime' => [
-                'DateTime',
-                ['DateTimeInterface', 'DateTime'],
-                ['DateTimeImmutable'],
+                DateTime::class,
+                [DateTimeInterface::class, DateTime::class],
+                [DateTimeImmutable::class],
             ],
             'DateTimeInterface + DateTimeImmutable' => [
-                ['DateTimeInterface', 'DateTimeImmutable'],
-                ['DateTimeInterface', 'DateTimeImmutable'],
-                ['DateTime'],
+                [DateTimeInterface::class, DateTimeImmutable::class],
+                [DateTimeInterface::class, DateTimeImmutable::class],
+                [DateTime::class],
             ],
             'DateTimeInterface + DateTime' => [
-                ['DateTimeInterface', 'DateTime'],
-                ['DateTimeInterface', 'DateTime'],
-                ['DateTimeImmutable'],
+                [DateTimeInterface::class, DateTime::class],
+                [DateTimeInterface::class, DateTime::class],
+                [DateTimeImmutable::class],
             ],
             'DateTimeInterface child' => [
-                'Eloquent\Phony\Test\TestInterfaceH',
-                ['DateTimeInterface', 'DateTimeImmutable'],
-                ['DateTime'],
+                TestInterfaceH::class,
+                [DateTimeInterface::class, DateTimeImmutable::class],
+                [DateTime::class],
             ],
             'DateTimeInterface child + DateTimeImmutable' => [
-                ['DateTimeImmutable', 'Eloquent\Phony\Test\TestInterfaceH'],
-                ['DateTimeInterface', 'DateTimeImmutable'],
-                ['DateTime'],
+                [DateTimeImmutable::class, TestInterfaceH::class],
+                [DateTimeInterface::class, DateTimeImmutable::class],
+                [DateTime::class],
             ],
             'DateTimeInterface child + DateTime' => [
-                ['DateTime', 'Eloquent\Phony\Test\TestInterfaceH'],
-                ['DateTimeInterface', 'DateTime'],
-                ['DateTimeImmutable'],
+                [DateTime::class, TestInterfaceH::class],
+                [DateTimeInterface::class, DateTime::class],
+                [DateTimeImmutable::class],
             ],
         ];
     }
@@ -735,18 +766,18 @@ class MockBuilderTest extends TestCase
 
     public function testBuildWithReflectorInterface()
     {
-        $this->setUpWith('Reflector');
+        $this->setUpWith(Reflector::class);
         $actual = $this->subject->build();
 
-        $this->assertTrue($actual->implementsInterface('Reflector'));
+        $this->assertTrue($actual->implementsInterface(Reflector::class));
     }
 
     public function testBuildWithFinalConstructor()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassI');
+        $this->setUpWith(TestClassI::class);
         $actual = $this->subject->build();
 
-        $this->assertTrue($actual->isSubclassOf('Eloquent\Phony\Test\TestClassI'));
+        $this->assertTrue($actual->isSubclassOf(TestClassI::class));
     }
 
     public function testBuildFailureClassExists()
@@ -782,8 +813,8 @@ class MockBuilderTest extends TestCase
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
-        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $actual);
+        $this->assertInstanceOf(Mock::class, $actual);
+        $this->assertInstanceOf(TestClassB::class, $actual);
         $this->assertSame($actual, $this->subject->get());
     }
 
@@ -794,8 +825,8 @@ class MockBuilderTest extends TestCase
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $first);
-        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
+        $this->assertInstanceOf(Mock::class, $first);
+        $this->assertInstanceOf(TestClassB::class, $first);
         $this->assertSame(['a', 'b'], $first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
@@ -813,8 +844,8 @@ class MockBuilderTest extends TestCase
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $first);
-        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
+        $this->assertInstanceOf(Mock::class, $first);
+        $this->assertInstanceOf(TestClassB::class, $first);
         $this->assertSame(['a', 'b'], $first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
@@ -846,8 +877,8 @@ class MockBuilderTest extends TestCase
 
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $first);
-        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassB', $first);
+        $this->assertInstanceOf(Mock::class, $first);
+        $this->assertInstanceOf(TestClassB::class, $first);
         $this->assertNull($first->constructorArguments);
         $this->assertSame($first, $this->subject->get());
 
@@ -884,7 +915,7 @@ EOD;
     {
         $first = null;
         $second = null;
-        $builder = $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $builder = $this->setUpWith(TestClassA::class);
         $builder->partialWith([&$first, &$second]);
 
         $this->assertSame('first', $first);

@@ -19,6 +19,7 @@ use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
@@ -976,7 +977,7 @@ class StubVerifierTest extends TestCase
     {
         $this->subject->with();
 
-        $this->expectException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+        $this->expectException(UnusedStubCriteriaException::class);
         $this->subject->closeRule();
     }
 

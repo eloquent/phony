@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Stub\Answer\Builder;
 
 use ArrayIterator;
 use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Phony;
@@ -21,6 +22,7 @@ use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Test\TupleIterator;
 use Exception;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class GeneratorAnswerBuilderTest extends TestCase
 {
@@ -475,7 +477,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $arguments = Arguments::create();
         $generator = call_user_func($this->answer, $this->self, $arguments);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedArgumentException');
+        $this->expectException(UndefinedArgumentException::class);
         iterator_to_array($generator);
     }
 
@@ -507,13 +509,13 @@ class GeneratorAnswerBuilderTest extends TestCase
         } catch (Exception $actual) {
         }
 
-        $this->assertInstanceOf('Exception', $actual);
+        $this->assertInstanceOf(Exception::class, $actual);
         $this->assertSame(['a', 'b'], $values);
     }
 
     public function testThrowsWithInstanceHandles()
     {
-        $handle = Phony::mock('RuntimeException');
+        $handle = Phony::mock(RuntimeException::class);
         $this->subject->throws($handle);
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 

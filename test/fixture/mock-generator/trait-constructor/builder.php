@@ -1,7 +1,7 @@
 <?php
 
-$builder = $factory->create(
-    'Eloquent\Phony\Test\TestTraitD'
-);
+use Eloquent\Phony\Test\TestTraitD;
+
+$builder = $factory->create(TestTraitD::class);
 
 return $builder->named('MockGeneratorTraitConstructor');

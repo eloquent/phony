@@ -11,12 +11,84 @@
 
 namespace Eloquent\Phony\Stub;
 
+use AppendIterator;
+use ArithmeticError;
+use ArrayAccess;
+use ArrayIterator;
+use AssertionError;
+use BadFunctionCallException;
+use BadMethodCallException;
+use CachingIterator;
+use CallbackFilterIterator;
+use Closure;
+use Countable;
+use DirectoryIterator;
+use DivisionByZeroError;
+use DomainException;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\TestInterfaceWithReturnType;
+use EmptyIterator;
+use Error;
+use ErrorException;
+use Exception;
+use FilesystemIterator;
+use FilterIterator;
+use Generator;
+use GlobIterator;
+use InfiniteIterator;
+use InvalidArgumentException;
+use Iterator;
+use IteratorIterator;
+use LengthException;
+use LimitIterator;
+use LogicException;
+use MultipleIterator;
+use NoRewindIterator;
+use object;
+use OuterIterator;
+use OutOfBoundsException;
+use OutOfRangeException;
+use OverflowException;
+use ParentIterator;
+use ParseError;
+use PDOException;
+use PharException;
 use PHPUnit\Framework\TestCase;
+use RangeException;
+use RecursiveArrayIterator;
+use RecursiveCachingIterator;
+use RecursiveCallbackFilterIterator;
+use RecursiveDirectoryIterator;
+use RecursiveFilterIterator;
+use RecursiveIterator;
+use RecursiveIteratorIterator;
+use RecursiveRegexIterator;
+use RecursiveTreeIterator;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
+use RegexIterator;
+use RuntimeException;
+use SeekableIterator;
+use SplDoublyLinkedList;
+use SplFixedArray;
+use SplHeap;
+use SplMaxHeap;
+use SplMinHeap;
+use SplObjectStorage;
+use SplPriorityQueue;
+use SplQueue;
+use SplStack;
+use stdClass;
+use Throwable;
+use Traversable;
+use TypeError;
+use UnderflowException;
+use UnexpectedValueException;
 
 class EmptyValueFactoryTest extends TestCase
 {
@@ -56,7 +128,7 @@ class EmptyValueFactoryTest extends TestCase
 
     public function testFromTypeWithStdClass()
     {
-        $actual = $this->subject->fromType($this->createType('stdClass'));
+        $actual = $this->subject->fromType($this->createType(stdClass::class));
 
         $this->assertSame([], (array) $actual);
         $this->assertSame('{}', json_encode($actual));
@@ -70,8 +142,8 @@ class EmptyValueFactoryTest extends TestCase
             $this->assertSame([], (array) $actual);
             $this->assertSame('{}', json_encode($actual));
         } else {
-            $this->assertInstanceOf('object', $actual);
-            $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
+            $this->assertInstanceOf(object::class, $actual);
+            $this->assertInstanceOf(Mock::class, $actual);
         }
     }
 
@@ -79,15 +151,15 @@ class EmptyValueFactoryTest extends TestCase
     {
         $actual = $this->subject->fromType($this->createType('callable'));
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertInstanceOf(StubVerifier::class, $actual);
         $this->assertNull($actual());
     }
 
     public function testFromTypeWithClosure()
     {
-        $actual = $this->subject->fromType($this->createType('Closure'));
+        $actual = $this->subject->fromType($this->createType(Closure::class));
 
-        $this->assertInstanceOf('Closure', $actual);
+        $this->assertInstanceOf(Closure::class, $actual);
         $this->assertNull($actual());
     }
 
@@ -122,39 +194,35 @@ class EmptyValueFactoryTest extends TestCase
     public function fromTypeWithIteratorTypeData()
     {
         $types = [
-            'AppendIterator',
-            'ArrayIterator',
-            'CachingIterator',
-            'CallbackFilterIterator',
-            'DirectoryIterator',
-            'DirectoryIterator',
-            'EmptyIterator',
-            'FilesystemIterator',
-            'FilesystemIterator',
-            'FilterIterator',
-            'GlobIterator',
-            'GlobIterator',
-            'InfiniteIterator',
-            'Iterator',
-            'IteratorIterator',
-            'LimitIterator',
-            'MultipleIterator',
-            'NoRewindIterator',
-            'OuterIterator',
-            'ParentIterator',
-            'RecursiveArrayIterator',
-            'RecursiveCachingIterator',
-            'RecursiveCallbackFilterIterator',
-            'RecursiveDirectoryIterator',
-            'RecursiveDirectoryIterator',
-            'RecursiveFilterIterator',
-            'RecursiveIterator',
-            'RecursiveIteratorIterator',
-            'RecursiveRegexIterator',
-            'RecursiveTreeIterator',
-            'RegexIterator',
-            'SeekableIterator',
-            'Traversable',
+            AppendIterator::class,
+            ArrayIterator::class,
+            CachingIterator::class,
+            CallbackFilterIterator::class,
+            DirectoryIterator::class,
+            EmptyIterator::class,
+            FilesystemIterator::class,
+            FilterIterator::class,
+            GlobIterator::class,
+            InfiniteIterator::class,
+            Iterator::class,
+            IteratorIterator::class,
+            LimitIterator::class,
+            MultipleIterator::class,
+            NoRewindIterator::class,
+            OuterIterator::class,
+            ParentIterator::class,
+            RecursiveArrayIterator::class,
+            RecursiveCachingIterator::class,
+            RecursiveCallbackFilterIterator::class,
+            RecursiveDirectoryIterator::class,
+            RecursiveFilterIterator::class,
+            RecursiveIterator::class,
+            RecursiveIteratorIterator::class,
+            RecursiveRegexIterator::class,
+            RecursiveTreeIterator::class,
+            RegexIterator::class,
+            SeekableIterator::class,
+            Traversable::class,
         ];
         $data = [];
 
@@ -173,46 +241,46 @@ class EmptyValueFactoryTest extends TestCase
         $actual = $this->subject->fromType($this->createType($type));
 
         $this->assertInstanceOf($type, $actual);
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
+        $this->assertInstanceOf(Mock::class, $actual);
         $this->assertSame([], iterator_to_array($actual));
     }
 
     public function testFromTypeWithGenerator()
     {
-        $actual = $this->subject->fromType($this->createType('Generator'));
+        $actual = $this->subject->fromType($this->createType(Generator::class));
 
-        $this->assertInstanceOf('Generator', $actual);
+        $this->assertInstanceOf(Generator::class, $actual);
         $this->assertSame([], iterator_to_array($actual));
     }
 
     public function fromTypeWithThrowableTypeData()
     {
         $types = [
-            'ArithmeticError',
-            'AssertionError',
-            'BadFunctionCallException',
-            'BadMethodCallException',
-            'DivisionByZeroError',
-            'DomainException',
-            'Error',
-            'ErrorException',
-            'Exception',
-            'InvalidArgumentException',
-            'LengthException',
-            'LogicException',
-            'OutOfBoundsException',
-            'OutOfRangeException',
-            'OverflowException',
-            'ParseError',
-            'PharException',
-            'PDOException',
-            'RangeException',
-            'ReflectionException',
-            'RuntimeException',
-            'Throwable',
-            'TypeError',
-            'UnderflowException',
-            'UnexpectedValueException',
+            ArithmeticError::class,
+            AssertionError::class,
+            BadFunctionCallException::class,
+            BadMethodCallException::class,
+            DivisionByZeroError::class,
+            DomainException::class,
+            Error::class,
+            ErrorException::class,
+            Exception::class,
+            InvalidArgumentException::class,
+            LengthException::class,
+            LogicException::class,
+            OutOfBoundsException::class,
+            OutOfRangeException::class,
+            OverflowException::class,
+            ParseError::class,
+            PharException::class,
+            PDOException::class,
+            RangeException::class,
+            ReflectionException::class,
+            RuntimeException::class,
+            Throwable::class,
+            TypeError::class,
+            UnderflowException::class,
+            UnexpectedValueException::class,
         ];
         $data = [];
 
@@ -235,7 +303,7 @@ class EmptyValueFactoryTest extends TestCase
         $actual = $this->subject->fromType($this->createType($type));
 
         $this->assertInstanceOf($type, $actual);
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
+        $this->assertInstanceOf(Mock::class, $actual);
         $this->assertSame('', (string) $actual->getMessage());
         $this->assertSame(0, (int) $actual->getCode());
         $this->assertNull($actual->getPrevious());
@@ -244,15 +312,15 @@ class EmptyValueFactoryTest extends TestCase
     public function fromTypeWithCollectionTypeData()
     {
         $types = [
-            'SplDoublyLinkedList',
-            'SplFixedArray',
-            'SplHeap',
-            'SplMaxHeap',
-            'SplMinHeap',
-            'SplObjectStorage',
-            'SplPriorityQueue',
-            'SplQueue',
-            'SplStack',
+            SplDoublyLinkedList::class,
+            SplFixedArray::class,
+            SplHeap::class,
+            SplMaxHeap::class,
+            SplMinHeap::class,
+            SplObjectStorage::class,
+            SplPriorityQueue::class,
+            SplQueue::class,
+            SplStack::class,
         ];
         $data = [];
 
@@ -271,38 +339,38 @@ class EmptyValueFactoryTest extends TestCase
         $actual = $this->subject->fromType($this->createType($type));
 
         $this->assertInstanceOf($type, $actual);
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
+        $this->assertInstanceOf(Mock::class, $actual);
         $this->assertSame([], iterator_to_array($actual));
         $this->assertSame(0, count($actual));
     }
 
     public function testFromTypeWithArrayAccess()
     {
-        $type = 'ArrayAccess';
+        $type = ArrayAccess::class;
         $actual = $this->subject->fromType($this->createType($type));
 
         $this->assertInstanceOf($type, $actual);
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
+        $this->assertInstanceOf(Mock::class, $actual);
         $this->assertFalse(isset($actual[0]));
     }
 
     public function testFromTypeWithCountable()
     {
-        $type = 'Countable';
+        $type = Countable::class;
         $actual = $this->subject->fromType($this->createType($type));
 
         $this->assertInstanceOf($type, $actual);
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
+        $this->assertInstanceOf(Mock::class, $actual);
         $this->assertSame(0, count($actual));
     }
 
     public function testFromTypeWithClass()
     {
-        $type = 'Eloquent\Phony\Test\TestClassA';
+        $type = TestClassA::class;
         $actual = $this->subject->fromType($this->createType($type));
 
         $this->assertInstanceOf($type, $actual);
-        $this->assertInstanceOf('Eloquent\Phony\Mock\Mock', $actual);
+        $this->assertInstanceOf(Mock::class, $actual);
     }
 
     public function testFromTypeWithNullableType()
@@ -316,9 +384,9 @@ class EmptyValueFactoryTest extends TestCase
 
     public function testFromFunctionWithClassType()
     {
-        $function = new ReflectionMethod('Eloquent\Phony\Test\TestInterfaceWithReturnType', 'classType');
+        $function = new ReflectionMethod(TestInterfaceWithReturnType::class, 'classType');
 
-        $this->assertInstanceOf('Eloquent\Phony\Test\TestClassA', $this->subject->fromFunction($function));
+        $this->assertInstanceOf(TestClassA::class, $this->subject->fromFunction($function));
     }
 
     public function testFromFunctionWithScalarType()
@@ -327,7 +395,7 @@ class EmptyValueFactoryTest extends TestCase
             $this->markTestSkipped('Requires non-HHVM runtime.');
         }
 
-        $function = new ReflectionMethod('Eloquent\Phony\Test\TestInterfaceWithReturnType', 'scalarType');
+        $function = new ReflectionMethod(TestInterfaceWithReturnType::class, 'scalarType');
 
         $this->assertSame(0, $this->subject->fromFunction($function));
     }

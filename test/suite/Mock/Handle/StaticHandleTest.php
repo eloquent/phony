@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Difference\DifferenceEngine;
@@ -23,14 +24,25 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Mock\Exception\FinalMethodStubException;
+use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Spy\SpyData;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\EmptyValueFactory;
+use Eloquent\Phony\Stub\StubData;
 use Eloquent\Phony\Stub\StubFactory;
+use Eloquent\Phony\Stub\StubVerifier;
 use Eloquent\Phony\Stub\StubVerifierFactory;
+use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\TestClassB;
+use Eloquent\Phony\Test\TestClassF;
 use Eloquent\Phony\Test\TestClassH;
+use Eloquent\Phony\Test\TestInterfaceA;
+use Eloquent\Phony\Test\TestTraitA;
+use Eloquent\Phony\Test\TestTraitG;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use PHPUnit\Framework\TestCase;
@@ -42,7 +54,7 @@ class StaticHandleTest extends TestCase
     {
         $this->state = (object) [
             'stubs' => (object) [],
-            'defaultAnswerCallback' => 'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback',
+            'defaultAnswerCallback' => [StubData::class, 'returnsEmptyAnswerCallback'],
             'isRecording' => true,
         ];
         $this->stubFactory = StubFactory::instance();
@@ -108,7 +120,7 @@ class StaticHandleTest extends TestCase
 
     public function testFull()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
+        $this->setUpWith(TestClassB::class);
         $className = $this->className;
 
         $this->assertSame($this->subject, $this->subject->full());
@@ -118,7 +130,7 @@ class StaticHandleTest extends TestCase
 
     public function testPartial()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
+        $this->setUpWith(TestClassB::class);
         $className = $this->className;
 
         $this->assertSame($this->subject, $this->subject->partial());
@@ -128,7 +140,7 @@ class StaticHandleTest extends TestCase
 
     public function testProxy()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
         $className = $this->className;
 
         $protectedMethod = new ReflectionMethod($className, 'testClassAStaticMethodC');
@@ -144,7 +156,7 @@ class StaticHandleTest extends TestCase
 
     public function testSetDefaultAnswerCallback()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
         $callbackA = function () {};
         $callbackB = function () {};
 
@@ -156,63 +168,63 @@ class StaticHandleTest extends TestCase
 
     public function testStub()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
         $actual = $this->subject->stub('testClassAStaticMethodA');
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertInstanceOf(StubVerifier::class, $actual);
         $this->assertSame($actual, $this->subject->stub('testClassAStaticMethodA'));
         $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda);
     }
 
     public function testStubWithMagic()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
+        $this->setUpWith(TestClassB::class);
         $actual = $this->subject->stub('nonexistent');
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertInstanceOf(StubVerifier::class, $actual);
         $this->assertSame($actual, $this->subject->stub('nonexistent'));
         $this->assertSame($actual, $this->subject->state()->stubs->nonexistent);
     }
 
     public function testStubFailure()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
+        $this->expectException(UndefinedMethodStubException::class);
         $this->subject->stub('nonexistent');
     }
 
     public function testMagicProperty()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
         $actual = $this->subject->testClassAStaticMethodA;
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertInstanceOf(StubVerifier::class, $actual);
         $this->assertSame($actual, $this->subject->testClassAStaticMethodA);
         $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda);
     }
 
     public function testMagicPropertyFailure()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
+        $this->expectException(UndefinedMethodStubException::class);
         $this->subject->nonexistent;
     }
 
     public function testSpy()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
         $actual = $this->subject->spy('testClassAStaticMethodA');
 
-        $this->assertInstanceOf('Eloquent\Phony\Spy\SpyData', $actual);
+        $this->assertInstanceOf(SpyData::class, $actual);
         $this->assertSame($actual, $this->subject->spy('testClassAStaticMethodA'));
         $this->assertSame($actual, $this->subject->state()->stubs->testclassastaticmethoda->spy());
     }
 
     public function testCheckNoInteraction()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
         $className = $this->subject->className();
 
         $this->assertTrue((bool) $this->subject->checkNoInteraction());
@@ -224,26 +236,26 @@ class StaticHandleTest extends TestCase
 
     public function testNoInteraction()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
 
         $this->assertEquals(new EventSequence([], $this->callVerifierFactory), $this->subject->noInteraction());
     }
 
     public function testNoInteractionFailure()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA', 'PhonyMockStaticStubbingNoInteraction');
+        $this->setUpWith(TestClassA::class, 'PhonyMockStaticStubbingNoInteraction');
         $className = $this->subject->className();
         $className::testClassAStaticMethodA('a', 'b');
         $className::testClassAStaticMethodB('c', 'd');
         $className::testClassAStaticMethodA('e', 'f');
 
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->noInteraction();
     }
 
     public function testStubbingWithParentMethod()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
         $this->subject->partial();
         $className = $this->className;
         $this->subject->testClassAStaticMethodA->with('a', 'b')->returns('x');
@@ -254,7 +266,7 @@ class StaticHandleTest extends TestCase
 
     public function testStubbingWithTraitMethod()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestTraitA');
+        $this->setUpWith(TestTraitA::class);
         $this->subject->partial();
         $className = $this->className;
         $a = 'a';
@@ -267,7 +279,7 @@ class StaticHandleTest extends TestCase
 
     public function testStubbingWithMagicMethod()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
+        $this->setUpWith(TestClassB::class);
         $this->subject->partial();
         $className = $this->className;
         $this->subject->nonexistent->with('a', 'b')->returns('x');
@@ -278,7 +290,7 @@ class StaticHandleTest extends TestCase
 
     public function testStubbingWithNoParentMethod()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
+        $this->setUpWith(TestInterfaceA::class);
         $this->subject->partial();
         $className = $this->className;
         $this->subject->testClassAStaticMethodA->with('a', 'b')->returns('x');
@@ -289,16 +301,16 @@ class StaticHandleTest extends TestCase
 
     public function testStubbingFailureWithFinalMethod()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassF');
+        $this->setUpWith(TestClassF::class);
         $this->subject->partial();
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\FinalMethodStubException');
+        $this->expectException(FinalMethodStubException::class);
         $this->subject->testClassFStaticMethodA;
     }
 
     public function testStubbingWithTraitFinalMethod()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestTraitG');
+        $this->setUpWith(TestTraitG::class);
         $this->subject->partial();
         $className = $this->className;
         $this->subject->testTraitGStaticMethodA->with('a', 'b')->returns('x');
@@ -340,7 +352,7 @@ class StaticHandleTest extends TestCase
 
     public function testStopRecording()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
+        $this->setUpWith(TestInterfaceA::class);
         $className = $this->class->getName();
 
         $className::testClassAStaticMethodA('a', 'b');
@@ -355,7 +367,7 @@ class StaticHandleTest extends TestCase
 
     public function testStartRecording()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
+        $this->setUpWith(TestInterfaceA::class);
         $className = $this->class->getName();
 
         $className::testClassAStaticMethodA('a', 'b');

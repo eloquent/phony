@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Assertion;
 
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Event\EventSequence;
@@ -53,7 +54,7 @@ class ExceptionAssertionRecorderTest extends TestCase
     {
         $description = 'description';
 
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException', $description);
+        $this->expectException(AssertionException::class, $description);
         $this->subject->createFailure($description);
     }
 

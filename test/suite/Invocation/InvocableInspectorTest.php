@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
+use ReflectionType;
 
 class InvocableInspectorTest extends TestCase
 {
@@ -68,12 +69,12 @@ class InvocableInspectorTest extends TestCase
 
         $type = $this->subject->callbackReturnType(eval('return function () : int {};'));
 
-        $this->assertInstanceOf('ReflectionType', $type);
+        $this->assertInstanceOf(ReflectionType::class, $type);
         $this->assertSame('int', strval($type));
 
         $type = $this->subject->callbackReturnType(eval('return function () : stdClass {};'));
 
-        $this->assertInstanceOf('ReflectionType', $type);
+        $this->assertInstanceOf(ReflectionType::class, $type);
         $this->assertSame('stdClass', strval($type));
     }
 

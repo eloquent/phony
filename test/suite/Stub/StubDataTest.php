@@ -20,10 +20,12 @@ use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Exception;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class StubDataTest extends TestCase
 {
@@ -979,10 +981,10 @@ class StubDataTest extends TestCase
 
     public function testThrowsWithInstanceHandles()
     {
-        $adaptable = Phony::mock('RuntimeException');
+        $adaptable = Phony::mock(RuntimeException::class);
         $this->subject->throws($adaptable);
 
-        $this->expectException('RuntimeException');
+        $this->expectException(RuntimeException::class);
         call_user_func($this->subject);
     }
 
@@ -1092,7 +1094,7 @@ class StubDataTest extends TestCase
     {
         $this->subject->with();
 
-        $this->expectException('Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException');
+        $this->expectException(UnusedStubCriteriaException::class);
         $this->subject->closeRule();
     }
 

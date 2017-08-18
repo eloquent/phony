@@ -12,7 +12,11 @@
 namespace Eloquent\Phony\Call;
 
 use ArrayIterator;
+use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Call\Exception\UndefinedResponseException;
+use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Test\TestCallFactory;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -72,7 +76,7 @@ class CallDataTest extends TestCase
         $this->subject = new CallData($this->index, $this->calledEvent);
         $this->subject->setResponseEvent($this->callEventFactory->createThrew($exception));
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException(UndefinedResponseException::class);
         $this->subject->returnValue();
     }
 
@@ -80,7 +84,7 @@ class CallDataTest extends TestCase
     {
         $this->subject = new CallData($this->index, $this->calledEvent);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException(UndefinedResponseException::class);
         $this->subject->returnValue();
     }
 
@@ -88,7 +92,7 @@ class CallDataTest extends TestCase
     {
         $this->subject->setResponseEvent($this->returnedEvent);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException(UndefinedResponseException::class);
         $this->subject->exception();
     }
 
@@ -96,7 +100,7 @@ class CallDataTest extends TestCase
     {
         $this->subject = new CallData($this->index, $this->calledEvent);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException(UndefinedResponseException::class);
         $this->subject->exception();
     }
 
@@ -122,7 +126,7 @@ class CallDataTest extends TestCase
     {
         $this->subject = new CallData($this->index, $this->calledEvent);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedResponseException');
+        $this->expectException(UndefinedResponseException::class);
         $this->subject->response();
     }
 
@@ -199,7 +203,7 @@ class CallDataTest extends TestCase
 
     public function testEventAtFailure()
     {
-        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException(UndefinedEventException::class);
         $this->subject->eventAt(2);
     }
 
@@ -222,7 +226,7 @@ class CallDataTest extends TestCase
 
     public function testCallAtFailure()
     {
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(UndefinedCallException::class);
         $this->subject->callAt(1);
     }
 
@@ -249,7 +253,7 @@ class CallDataTest extends TestCase
 
     public function testAddIterableEventFailureNotIterable()
     {
-        $this->expectException('InvalidArgumentException', 'Not an iterable call.');
+        $this->expectException(InvalidArgumentException::class, 'Not an iterable call.');
         $this->subject->addIterableEvent($this->callEventFactory->createReceived('e'));
     }
 
@@ -261,7 +265,7 @@ class CallDataTest extends TestCase
         $this->subject->setResponseEvent($returnedEvent);
         $this->subject->setEndEvent($endEvent);
 
-        $this->expectException('InvalidArgumentException', 'Call already completed.');
+        $this->expectException(InvalidArgumentException::class, 'Call already completed.');
         $this->subject->addIterableEvent($this->callEventFactory->createProduced('a', 'b'));
     }
 
@@ -278,7 +282,7 @@ class CallDataTest extends TestCase
     {
         $this->subject->setResponseEvent($this->returnedEvent);
 
-        $this->expectException('InvalidArgumentException', 'Call already responded.');
+        $this->expectException(InvalidArgumentException::class, 'Call already responded.');
         $this->subject->setResponseEvent($this->returnedEvent);
     }
 
@@ -297,7 +301,7 @@ class CallDataTest extends TestCase
     {
         $this->subject->setEndEvent($this->returnedEvent);
 
-        $this->expectException('InvalidArgumentException', 'Call already completed.');
+        $this->expectException(InvalidArgumentException::class, 'Call already completed.');
         $this->subject->setEndEvent($this->returnedEvent);
     }
 

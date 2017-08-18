@@ -24,7 +24,7 @@ class TestMatcherDriverB implements MatcherDriver
 
     public function matcherClassNames()
     {
-        return ['Eloquent\Phony\Test\TestMatcherB'];
+        return [TestMatcherB::class];
     }
 
     public function wrapMatcher($matcher)

@@ -13,6 +13,8 @@ namespace Eloquent\Phony\Event;
 
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallVerifierFactory;
+use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -69,7 +71,7 @@ class EventSequenceTest extends TestCase
     {
         $this->subject = new EventSequence([], $this->callVerifierFactory);
 
-        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException(UndefinedEventException::class);
         $this->subject->firstEvent();
     }
 
@@ -82,7 +84,7 @@ class EventSequenceTest extends TestCase
     {
         $this->subject = new EventSequence([], $this->callVerifierFactory);
 
-        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException(UndefinedEventException::class);
         $this->subject->lastEvent();
     }
 
@@ -96,7 +98,7 @@ class EventSequenceTest extends TestCase
 
     public function testEventAtFailure()
     {
-        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException(UndefinedEventException::class);
         $this->subject->eventAt(111);
     }
 
@@ -109,7 +111,7 @@ class EventSequenceTest extends TestCase
     {
         $this->subject = new EventSequence([], $this->callVerifierFactory);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(UndefinedCallException::class);
         $this->subject->firstCall();
     }
 
@@ -122,7 +124,7 @@ class EventSequenceTest extends TestCase
     {
         $this->subject = new EventSequence([], $this->callVerifierFactory);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(UndefinedCallException::class);
         $this->subject->lastCall();
     }
 
@@ -141,7 +143,7 @@ class EventSequenceTest extends TestCase
 
     public function testCallAtFailure()
     {
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(UndefinedCallException::class);
         $this->subject->callAt(111);
     }
 

@@ -15,6 +15,7 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
+use Generator;
 use PHPUnit\Framework\TestCase;
 
 class SpyDataWithGeneratorsTest extends TestCase
@@ -103,8 +104,8 @@ class SpyDataWithGeneratorsTest extends TestCase
         $generatorSpyA = $spy->invoke($generator);
         $generatorSpyB = $spy->invoke($generatorSpyA);
 
-        $this->assertInstanceOf('Generator', $generatorSpyA);
-        $this->assertInstanceOf('Generator', $generatorSpyB);
+        $this->assertInstanceOf(Generator::class, $generatorSpyA);
+        $this->assertInstanceOf(Generator::class, $generatorSpyB);
         $this->assertNotSame($generatorSpyA, $generatorSpyB);
     }
 }

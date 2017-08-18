@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Difference\DifferenceEngine;
@@ -23,14 +24,26 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Mock\Exception\FinalMethodStubException;
+use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Spy\SpyData;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\EmptyValueFactory;
+use Eloquent\Phony\Stub\StubData;
 use Eloquent\Phony\Stub\StubFactory;
+use Eloquent\Phony\Stub\StubVerifier;
 use Eloquent\Phony\Stub\StubVerifierFactory;
+use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\TestClassB;
+use Eloquent\Phony\Test\TestClassF;
 use Eloquent\Phony\Test\TestClassH;
+use Eloquent\Phony\Test\TestInterfaceA;
+use Eloquent\Phony\Test\TestInterfaceWithReturnType;
+use Eloquent\Phony\Test\TestTraitA;
+use Eloquent\Phony\Test\TestTraitG;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use PHPUnit\Framework\TestCase;
@@ -42,7 +55,7 @@ class InstanceHandleTest extends TestCase
     {
         $this->state = (object) [
             'stubs' => (object) [],
-            'defaultAnswerCallback' => 'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback',
+            'defaultAnswerCallback' => [StubData::class, 'returnsEmptyAnswerCallback'],
             'isRecording' => true,
             'label' => 'label',
         ];
@@ -112,7 +125,7 @@ class InstanceHandleTest extends TestCase
 
     public function testSetLabel()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
 
         $this->assertSame($this->subject, $this->subject->setLabel(null));
         $this->assertNull($this->subject->label());
@@ -122,7 +135,7 @@ class InstanceHandleTest extends TestCase
 
     public function testFull()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
+        $this->setUpWith(TestClassB::class);
 
         $this->assertSame($this->subject, $this->subject->full());
         $this->assertNull($this->mock->testClassAMethodA());
@@ -131,7 +144,7 @@ class InstanceHandleTest extends TestCase
 
     public function testPartial()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
+        $this->setUpWith(TestClassB::class);
 
         $this->assertSame($this->subject, $this->subject->partial());
         $this->assertSame('', $this->mock->testClassAMethodA());
@@ -140,7 +153,7 @@ class InstanceHandleTest extends TestCase
 
     public function testProxy()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
 
         $protectedMethod = new ReflectionMethod($this->mock, 'testClassAMethodC');
         $protectedMethod->setAccessible(true);
@@ -155,7 +168,7 @@ class InstanceHandleTest extends TestCase
 
     public function testSetDefaultAnswerCallback()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
         $callbackA = function () {};
         $callbackB = function () {};
 
@@ -167,63 +180,63 @@ class InstanceHandleTest extends TestCase
 
     public function testStub()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
         $actual = $this->subject->stub('testClassAMethodA');
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertInstanceOf(StubVerifier::class, $actual);
         $this->assertSame($actual, $this->subject->stub('testClassAMethodA'));
         $this->assertSame($actual, $this->subject->state()->stubs->testclassamethoda);
     }
 
     public function testStubWithMagic()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
+        $this->setUpWith(TestClassB::class);
         $actual = $this->subject->stub('nonexistent');
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertInstanceOf(StubVerifier::class, $actual);
         $this->assertSame($actual, $this->subject->stub('nonexistent'));
         $this->assertSame($actual, $this->subject->state()->stubs->nonexistent);
     }
 
     public function testStubFailure()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
+        $this->expectException(UndefinedMethodStubException::class);
         $this->subject->stub('nonexistent');
     }
 
     public function testMagicProperty()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
         $actual = $this->subject->testClassAMethodA;
 
-        $this->assertInstanceOf('Eloquent\Phony\Stub\StubVerifier', $actual);
+        $this->assertInstanceOf(StubVerifier::class, $actual);
         $this->assertSame($actual, $this->subject->testClassAMethodA);
         $this->assertSame($actual, $this->subject->state()->stubs->testclassamethoda);
     }
 
     public function testMagicPropertyFailure()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\UndefinedMethodStubException');
+        $this->expectException(UndefinedMethodStubException::class);
         $this->subject->nonexistent;
     }
 
     public function testSpy()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
         $actual = $this->subject->spy('testClassAMethodA');
 
-        $this->assertInstanceOf('Eloquent\Phony\Spy\SpyData', $actual);
+        $this->assertInstanceOf(SpyData::class, $actual);
         $this->assertSame($actual, $this->subject->spy('testClassAMethodA'));
         $this->assertSame($actual, $this->subject->state()->stubs->testclassamethoda->spy());
     }
 
     public function testCheckNoInteraction()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
 
         $this->assertTrue((bool) $this->subject->checkNoInteraction());
 
@@ -234,25 +247,25 @@ class InstanceHandleTest extends TestCase
 
     public function testNoInteraction()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
 
         $this->assertEquals(new EventSequence([], $this->callVerifierFactory), $this->subject->noInteraction());
     }
 
     public function testNoInteractionFailure()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA', 'PhonyMockStubbingNoInteraction');
+        $this->setUpWith(TestClassA::class, 'PhonyMockStubbingNoInteraction');
         $this->mock->testClassAMethodA('a', 'b');
         $this->mock->testClassAMethodB('c', 'd');
         $this->mock->testClassAMethodA('e', 'f');
 
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->noInteraction();
     }
 
     public function testConstruct()
     {
-        $this->mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
+        $this->mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
         $this->subject = new InstanceHandle(
@@ -273,7 +286,7 @@ class InstanceHandleTest extends TestCase
 
     public function testConstructWith()
     {
-        $this->mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
+        $this->mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
         $this->subject = new InstanceHandle(
@@ -294,7 +307,7 @@ class InstanceHandleTest extends TestCase
 
     public function testConstructWithWithReferenceParameters()
     {
-        $this->mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassA');
+        $this->mockBuilder = $this->mockBuilderFactory->create(TestClassA::class);
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
         $this->subject = new InstanceHandle(
@@ -318,7 +331,7 @@ class InstanceHandleTest extends TestCase
 
     public function testStubbingWithParentMethod()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassA');
+        $this->setUpWith(TestClassA::class);
         $this->subject->partial();
         $this->subject->testClassAMethodA->with('a', 'b')->returns('x');
 
@@ -328,7 +341,7 @@ class InstanceHandleTest extends TestCase
 
     public function testStubbingWithTraitMethod()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestTraitA');
+        $this->setUpWith(TestTraitA::class);
         $this->subject->partial();
         $this->subject->testClassAMethodB->with('a', 'b')->returns('x');
 
@@ -338,7 +351,7 @@ class InstanceHandleTest extends TestCase
 
     public function testStubbingWithMagicMethod()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassB');
+        $this->setUpWith(TestClassB::class);
         $this->subject->partial();
         $this->subject->nonexistent->with('a', 'b')->returns('x');
 
@@ -348,7 +361,7 @@ class InstanceHandleTest extends TestCase
 
     public function testStubbingWithNoParentMethod()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
+        $this->setUpWith(TestInterfaceA::class);
         $this->subject->partial();
         $this->subject->testClassAMethodA->with('a', 'b')->returns('x');
 
@@ -358,16 +371,16 @@ class InstanceHandleTest extends TestCase
 
     public function testStubbingFailureWithFinalMethod()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestClassF');
+        $this->setUpWith(TestClassF::class);
         $this->subject->partial();
 
-        $this->expectException('Eloquent\Phony\Mock\Exception\FinalMethodStubException');
+        $this->expectException(FinalMethodStubException::class);
         $this->subject->testClassFMethodA;
     }
 
     public function testStubbingWithTraitFinalMethod()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestTraitG');
+        $this->setUpWith(TestTraitG::class);
         $this->subject->partial();
         $this->subject->testTraitGMethodA->with('a', 'b')->returns('x');
 
@@ -408,7 +421,7 @@ class InstanceHandleTest extends TestCase
 
     public function testStubbingWithUncallableMethodWithReturnType()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceWithReturnType');
+        $this->setUpWith(TestInterfaceWithReturnType::class);
         $this->subject->partial();
         $this->subject->scalarType->with('a', 'b')->returns(111);
 
@@ -418,7 +431,7 @@ class InstanceHandleTest extends TestCase
 
     public function testStubbingWithUncallableMagicMethodWithReturnType()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceWithReturnType');
+        $this->setUpWith(TestInterfaceWithReturnType::class);
         $this->subject->partial();
         $this->subject->nonexistent->with('a', 'b')->returns('x');
 
@@ -428,7 +441,7 @@ class InstanceHandleTest extends TestCase
 
     public function testStopRecording()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
+        $this->setUpWith(TestInterfaceA::class);
 
         $this->mock->testClassAMethodA('a', 'b');
 
@@ -442,7 +455,7 @@ class InstanceHandleTest extends TestCase
 
     public function testStartRecording()
     {
-        $this->setUpWith('Eloquent\Phony\Test\TestInterfaceA');
+        $this->setUpWith(TestInterfaceA::class);
 
         $this->mock->testClassAMethodA('a', 'b');
 

@@ -25,9 +25,11 @@ use Eloquent\Phony\Spy\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\IterableSpyFactory;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Test\StubVerifierFactory as TestNamespace;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -147,21 +149,21 @@ class StubVerifierFactoryTest extends TestCase
 
     public function testCreateGlobal()
     {
-        $actual = $this->subject->createGlobal('sprintf', 'Eloquent\Phony\Test\StubVerifierFactory');
+        $actual = $this->subject->createGlobal('sprintf', TestNamespace::class);
         $actual->with('a', 'b')->returns('c');
         $actual->with('%s, %s, %s', 'a', 'b', 'c')->forwards();
 
-        $this->assertSame('c', \Eloquent\Phony\Test\StubVerifierFactory\sprintf('a', 'b'));
-        $this->assertSame('a, b, c', \Eloquent\Phony\Test\StubVerifierFactory\sprintf('%s, %s, %s', 'a', 'b', 'c'));
-        $this->assertNull(\Eloquent\Phony\Test\StubVerifierFactory\sprintf('x', 'y'));
+        $this->assertSame('c', TestNamespace\sprintf('a', 'b'));
+        $this->assertSame('a, b, c', TestNamespace\sprintf('%s, %s, %s', 'a', 'b', 'c'));
+        $this->assertNull(TestNamespace\sprintf('x', 'y'));
     }
 
     public function testCreateGlobalWithReferenceParameters()
     {
-        $actual = $this->subject->createGlobal('preg_match', 'Eloquent\Phony\Test\SpyVerifierFactory');
+        $actual = $this->subject->createGlobal('preg_match', TestNamespace::class);
         $actual->setsArgument(2, ['a', 'b']);
 
-        \Eloquent\Phony\Test\SpyVerifierFactory\preg_match('/./', 'a', $matches);
+        TestNamespace\preg_match('/./', 'a', $matches);
 
         $this->assertSame(['a', 'b'], $matches);
     }
@@ -169,21 +171,21 @@ class StubVerifierFactoryTest extends TestCase
     public function testCreateGlobalFailureWithNonGlobal()
     {
         $this->expectException(
-            'InvalidArgumentException',
+            InvalidArgumentException::class,
             'Only functions in the global namespace are supported.'
         );
-        $this->subject->createGlobal('Namespaced\\function', '\Eloquent\Phony\Test\StubVerifierFactory');
+        $this->subject->createGlobal('Namespaced\\function', TestNamespace::class);
     }
 
     public function testCreateGlobalFailureEmptyNamespace()
     {
-        $this->expectException('InvalidArgumentException', 'The supplied namespace must not be empty.');
+        $this->expectException(InvalidArgumentException::class, 'The supplied namespace must not be empty.');
         $this->subject->createGlobal('implode', '');
     }
 
     public function testCreateGlobalFailureGlobalNamespace()
     {
-        $this->expectException('InvalidArgumentException', 'The supplied namespace must not be empty.');
+        $this->expectException(InvalidArgumentException::class, 'The supplied namespace must not be empty.');
         $this->subject->createGlobal('implode', '\\');
     }
 

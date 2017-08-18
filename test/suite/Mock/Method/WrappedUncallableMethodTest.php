@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Test\TestClassA;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
@@ -20,7 +21,7 @@ class WrappedUncallableMethodTest extends TestCase
 {
     protected function setUp()
     {
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodA');
+        $this->method = new ReflectionMethod(TestClassA::class . '::testClassAMethodA');
         $this->mockBuilder = MockBuilderFactory::instance()->create();
         $this->mock = $this->mockBuilder->partial();
         $this->handleFactory = HandleFactory::instance();
@@ -40,7 +41,7 @@ class WrappedUncallableMethodTest extends TestCase
 
     public function testConstructorWithStatic()
     {
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodA');
+        $this->method = new ReflectionMethod(TestClassA::class . '::testClassAStaticMethodA');
         $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
         $this->subject = new WrappedUncallableMethod($this->method, $this->handle, 'return-value');
 
@@ -49,7 +50,7 @@ class WrappedUncallableMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertNull($this->subject->mock());
         $this->assertSame(
-            ['Eloquent\Phony\Test\TestClassA', 'testClassAStaticMethodA'],
+            [TestClassA::class, 'testClassAStaticMethodA'],
             $this->subject->callback()
         );
         $this->assertNull($this->subject->label());

@@ -1,9 +1,12 @@
 <?php
 
+use Eloquent\Phony\Test\TestTraitD;
+use Eloquent\Phony\Test\TestTraitE;
+
 $builder = $factory->create(
     [
-        'Eloquent\Phony\Test\TestTraitD',
-        'Eloquent\Phony\Test\TestTraitE',
+        TestTraitD::class,
+        TestTraitE::class,
     ]
 );
 

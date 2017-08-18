@@ -14,6 +14,8 @@ namespace Eloquent\Phony\Mock\Builder;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\MockFactory;
+use Eloquent\Phony\Test\TestInterfaceA;
+use Eloquent\Phony\Test\TestInterfaceB;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -33,7 +35,7 @@ class MockBuilderFactoryTest extends TestCase
 
     public function testCreate()
     {
-        $types = ['Eloquent\Phony\Test\TestInterfaceA', 'Eloquent\Phony\Test\TestInterfaceB'];
+        $types = [TestInterfaceA::class, TestInterfaceB::class];
         $actual = $this->subject->create($types);
         $expected = new MockBuilder(
             $types,

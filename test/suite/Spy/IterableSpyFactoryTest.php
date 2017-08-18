@@ -14,8 +14,10 @@ namespace Eloquent\Phony\Spy;
 use ArrayIterator;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestIteratorAggregate;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use Traversable;
 
 class IterableSpyFactoryTest extends TestCase
 {
@@ -52,7 +54,7 @@ class IterableSpyFactoryTest extends TestCase
         $endEvent = $this->callEventFactory->createConsumed();
         $endEvent->setCall($this->call);
 
-        $this->assertInstanceOf('Traversable', $spy);
+        $this->assertInstanceOf(Traversable::class, $spy);
         $this->assertEquals($iterableEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
         $this->assertSame($values, $actual);
@@ -84,7 +86,7 @@ class IterableSpyFactoryTest extends TestCase
         $endEvent = $this->callEventFactory->createConsumed();
         $endEvent->setCall($this->call);
 
-        $this->assertInstanceOf('Traversable', $spy);
+        $this->assertInstanceOf(Traversable::class, $spy);
         $this->assertEquals($iterableEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
         $this->assertSame($values, $actual);
@@ -116,7 +118,7 @@ class IterableSpyFactoryTest extends TestCase
         $endEvent = $this->callEventFactory->createConsumed();
         $endEvent->setCall($this->call);
 
-        $this->assertInstanceOf('Traversable', $spy);
+        $this->assertInstanceOf(Traversable::class, $spy);
         $this->assertEquals($iterableEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
         $this->assertSame($values, $actual);
@@ -126,7 +128,7 @@ class IterableSpyFactoryTest extends TestCase
     {
         $this->call = $this->callFactory->create();
 
-        $this->expectException('InvalidArgumentException', 'Unsupported iterable of type NULL.');
+        $this->expectException(InvalidArgumentException::class, 'Unsupported iterable of type NULL.');
         $this->subject->create($this->call, null);
     }
 
@@ -134,7 +136,7 @@ class IterableSpyFactoryTest extends TestCase
     {
         $this->call = $this->callFactory->create();
 
-        $this->expectException('InvalidArgumentException', "Unsupported iterable of type 'stdClass'.");
+        $this->expectException(InvalidArgumentException::class, "Unsupported iterable of type 'stdClass'.");
         $this->subject->create($this->call, (object) []);
     }
 

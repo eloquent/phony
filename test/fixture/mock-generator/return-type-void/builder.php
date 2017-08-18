@@ -1,8 +1,10 @@
 <?php
 
+use Eloquent\Phony\Test\TestInterfaceWithVoidReturnType;
+
 $builder = $factory->create(
     [
-        'Eloquent\Phony\Test\TestInterfaceWithVoidReturnType',
+        TestInterfaceWithVoidReturnType::class,
         [
             'customMethod' => function () : void {},
         ],

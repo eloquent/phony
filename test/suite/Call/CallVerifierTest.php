@@ -12,7 +12,9 @@
 namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
+use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Exporter\InlineExporter;
@@ -26,10 +28,12 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\Cardinality;
+use Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Error;
 use Exception;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -247,7 +251,7 @@ class CallVerifierTest extends TestCase
 
     public function testCallAtFailure()
     {
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(UndefinedCallException::class);
         $this->subject->callAt(1);
     }
 
@@ -406,31 +410,31 @@ class CallVerifierTest extends TestCase
 
     public function testCalledWithFailure()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->calledWith('b', 'c');
     }
 
     public function testCalledWithFailureNever()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->never()->calledWith('a', $this->matcherFactory->wildcard());
     }
 
     public function testCalledWithFailureWithNoArguments()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithNoArguments->calledWith('b', 'c');
     }
 
     public function testCalledWithFailureWithNoMatchers()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->calledWith();
     }
 
     public function testCalledWithFailureInvalidCardinality()
     {
-        $this->expectException('Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException');
+        $this->expectException(InvalidSingularCardinalityException::class);
         $this->subject->times(2)->calledWith('a');
     }
 
@@ -452,13 +456,13 @@ class CallVerifierTest extends TestCase
 
     public function testRespondedFailure()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithNoResponse->responded();
     }
 
     public function testRespondedFailureNever()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->never()->responded();
     }
 
@@ -487,13 +491,13 @@ class CallVerifierTest extends TestCase
 
     public function testCompletedFailure()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->iterableSubjectWithNoEnd->completed();
     }
 
     public function testCompletedFailureNever()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->iterableSubject->never()->completed();
     }
 
@@ -533,43 +537,43 @@ class CallVerifierTest extends TestCase
 
     public function testReturnedFailure()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->returned('x');
     }
 
     public function testReturnedFailureNever()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->never()->returned('abc');
     }
 
     public function testReturnedFailureNeverWithoutMatcher()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->never()->returned();
     }
 
     public function testReturnedFailureWithException()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithException->returned('x');
     }
 
     public function testReturnedFailureWithExceptionWithoutMatcher()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithException->returned();
     }
 
     public function testReturnedFailureNeverResponded()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithNoResponse->returned('x');
     }
 
     public function testReturnedFailureNeverRespondedWithNoMatcher()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithNoResponse->returned();
     }
 
@@ -577,11 +581,11 @@ class CallVerifierTest extends TestCase
     {
         $this->assertTrue((bool) $this->subject->never()->checkThrew());
         $this->assertFalse((bool) $this->subject->checkThrew());
-        $this->assertFalse((bool) $this->subject->checkThrew('Exception'));
-        $this->assertFalse((bool) $this->subject->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->checkThrew(Exception::class));
+        $this->assertFalse((bool) $this->subject->checkThrew(RuntimeException::class));
         $this->assertFalse((bool) $this->subject->checkThrew($this->exception));
         $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exception)));
-        $this->assertFalse((bool) $this->subject->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->checkThrew(InvalidArgumentException::class));
         $this->assertFalse((bool) $this->subject->checkThrew(new Exception()));
         $this->assertFalse((bool) $this->subject->checkThrew(new RuntimeException()));
         $this->assertFalse(
@@ -590,13 +594,13 @@ class CallVerifierTest extends TestCase
         $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
 
         $this->assertTrue((bool) $this->subjectWithException->checkThrew());
-        $this->assertTrue((bool) $this->subjectWithException->checkThrew('Exception'));
-        $this->assertTrue((bool) $this->subjectWithException->checkThrew('RuntimeException'));
+        $this->assertTrue((bool) $this->subjectWithException->checkThrew(Exception::class));
+        $this->assertTrue((bool) $this->subjectWithException->checkThrew(RuntimeException::class));
         $this->assertTrue((bool) $this->subjectWithException->checkThrew($this->exception));
         $this->assertTrue(
             (bool) $this->subjectWithException->checkThrew($this->matcherFactory->equalTo($this->exception))
         );
-        $this->assertFalse((bool) $this->subjectWithException->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subjectWithException->checkThrew(InvalidArgumentException::class));
         $this->assertFalse((bool) $this->subjectWithException->checkThrew(new Exception()));
         $this->assertFalse((bool) $this->subjectWithException->checkThrew(new RuntimeException()));
         $this->assertFalse(
@@ -604,8 +608,8 @@ class CallVerifierTest extends TestCase
         );
         $this->assertFalse((bool) $this->subjectWithException->checkThrew($this->matcherFactory->equalTo(null)));
         $this->assertFalse((bool) $this->subjectWithException->never()->checkThrew());
-        $this->assertFalse((bool) $this->subjectWithException->never()->checkThrew('Exception'));
-        $this->assertFalse((bool) $this->subjectWithException->never()->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subjectWithException->never()->checkThrew(Exception::class));
+        $this->assertFalse((bool) $this->subjectWithException->never()->checkThrew(RuntimeException::class));
         $this->assertFalse((bool) $this->subjectWithException->never()->checkThrew($this->exception));
         $this->assertFalse(
             (bool) $this->subjectWithException->never()->checkThrew($this->matcherFactory->equalTo($this->exception))
@@ -614,21 +618,21 @@ class CallVerifierTest extends TestCase
 
     public function testCheckThrewFailureInvalidInput()
     {
-        $this->expectException('InvalidArgumentException', 'Unable to match exceptions against 111.');
+        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against 111.');
         $this->subjectWithException->checkThrew(111);
     }
 
     public function testCheckThrewFailureInvalidInputObject()
     {
-        $this->expectException('InvalidArgumentException', 'Unable to match exceptions against #0{}.');
+        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against #0{}.');
         $this->subjectWithException->checkThrew((object) []);
     }
 
     public function testThrew()
     {
         $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->threw());
-        $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->threw('Exception'));
-        $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->threw('RuntimeException'));
+        $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->threw(Exception::class));
+        $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->threw(RuntimeException::class));
         $this->assertEquals($this->threwAssertionResult, $this->subjectWithException->threw($this->exception));
         $this->assertEquals(
             $this->threwAssertionResult,
@@ -661,7 +665,7 @@ class CallVerifierTest extends TestCase
 
     public function testThrewWithInstanceHandle()
     {
-        $builder = MockBuilderFactory::instance()->create('RuntimeException');
+        $builder = MockBuilderFactory::instance()->create(RuntimeException::class);
         $exception = $builder->get();
         $threwEvent = $this->callEventFactory->createThrew($exception);
         $call = $this->callFactory->create($this->calledEvent, $threwEvent, null, $threwEvent);
@@ -682,79 +686,79 @@ class CallVerifierTest extends TestCase
 
     public function testThrewFailureExpectingAnyNoneThrown()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->threw();
     }
 
     public function testThrewFailureExpectingAnyNoResponse()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithNoResponse->threw();
     }
 
     public function testThrewFailureExpectingNeverAny()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithException->never()->threw();
     }
 
     public function testThrewFailureTypeMismatch()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subjectWithException->threw('InvalidArgumentException');
+        $this->expectException(AssertionException::class);
+        $this->subjectWithException->threw(InvalidArgumentException::class);
     }
 
     public function testThrewFailureTypeNever()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subjectWithException->never()->threw('RuntimeException');
+        $this->expectException(AssertionException::class);
+        $this->subjectWithException->never()->threw(RuntimeException::class);
     }
 
     public function testThrewFailureExpectingTypeNoneThrown()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->threw('InvalidArgumentException');
+        $this->expectException(AssertionException::class);
+        $this->subject->threw(InvalidArgumentException::class);
     }
 
     public function testThrewFailureExceptionMismatch()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithException->threw(new RuntimeException());
     }
 
     public function testThrewFailureExceptionNever()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithException->never()->threw($this->exception);
     }
 
     public function testThrewFailureExpectingExceptionNoneThrown()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->threw(new RuntimeException());
     }
 
     public function testThrewFailureMatcherMismatch()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithException->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testThrewFailureMatcherNever()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithException->never()->threw($this->matcherFactory->equalTo($this->exception));
     }
 
     public function testThrewFailureInvalidInput()
     {
-        $this->expectException('InvalidArgumentException', 'Unable to match exceptions against 111.');
+        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against 111.');
         $this->subjectWithException->threw(111);
     }
 
     public function testThrewFailureInvalidInputObject()
     {
-        $this->expectException('InvalidArgumentException', 'Unable to match exceptions against #0{}.');
+        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against #0{}.');
         $this->subjectWithException->threw((object) []);
     }
 
@@ -797,25 +801,25 @@ class CallVerifierTest extends TestCase
 
     public function testIteratedFailure()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->iterated();
     }
 
     public function testIteratedFailureNever()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->iterableSubject->never()->iterated();
     }
 
     public function testIteratedFailureWithException()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithException->iterated();
     }
 
     public function testIteratedFailureNeverResponded()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subjectWithNoResponse->iterated();
     }
 }

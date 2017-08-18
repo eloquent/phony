@@ -1,7 +1,7 @@
 <?php
 
-$builder = $factory->create(
-    'Eloquent\Phony\Test\TestClassD'
-);
+use Eloquent\Phony\Test\TestClassD;
+
+$builder = $factory->create(TestClassD::class);
 
 return $builder->named('MockGeneratorPrivateConstructor');

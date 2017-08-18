@@ -90,7 +90,7 @@ class StubFactory
     ) {
         if (null === $defaultAnswerCallback) {
             $defaultAnswerCallback =
-                'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback';
+                [StubData::class, 'returnsEmptyAnswerCallback'];
         }
 
         return new StubData(

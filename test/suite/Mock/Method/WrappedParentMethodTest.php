@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Test\TestClassA;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
@@ -23,7 +24,7 @@ class WrappedParentMethodTest extends TestCase
         $this->mockBuilderFactory = MockBuilderFactory::instance();
 
         $this->callParentMethod = new ReflectionMethod($this, 'setUp');
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodE');
+        $this->method = new ReflectionMethod(TestClassA::class . '::testClassAMethodE');
         $this->mockBuilder = $this->mockBuilderFactory->create();
         $this->mock = $this->mockBuilder->partial();
         $this->handleFactory = HandleFactory::instance();
@@ -45,7 +46,7 @@ class WrappedParentMethodTest extends TestCase
 
     public function testConstructorWithStatic()
     {
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodE');
+        $this->method = new ReflectionMethod(TestClassA::class . '::testClassAStaticMethodE');
         $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
         $this->subject = new WrappedParentMethod($this->callParentMethod, $this->method, $this->handle);
 
@@ -56,7 +57,7 @@ class WrappedParentMethodTest extends TestCase
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame(
-            ['Eloquent\Phony\Test\TestClassA', 'testClassAStaticMethodE'],
+            [TestClassA::class, 'testClassAStaticMethodE'],
             $this->subject->callback()
         );
         $this->assertNull($this->subject->label());
@@ -74,11 +75,11 @@ class WrappedParentMethodTest extends TestCase
 
     public function testInvokeMethods()
     {
-        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassA');
+        $mockBuilder = $this->mockBuilderFactory->create(TestClassA::class);
         $class = $mockBuilder->build();
         $callParentMethod = $class->getMethod('_callParent');
         $callParentMethod->setAccessible(true);
-        $method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAMethodC');
+        $method = new ReflectionMethod(TestClassA::class . '::testClassAMethodC');
         $mock = $mockBuilder->get();
         $handle = $this->handleFactory->instanceHandle($mock);
         $subject = new WrappedParentMethod($callParentMethod, $method, $handle);
@@ -91,11 +92,11 @@ class WrappedParentMethodTest extends TestCase
 
     public function testInvokeMethodsWithStatic()
     {
-        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassA');
+        $mockBuilder = $this->mockBuilderFactory->create(TestClassA::class);
         $class = $mockBuilder->build();
         $callParentMethod = $class->getMethod('_callParentStatic');
         $callParentMethod->setAccessible(true);
-        $method = new ReflectionMethod('Eloquent\Phony\Test\TestClassA::testClassAStaticMethodC');
+        $method = new ReflectionMethod(TestClassA::class . '::testClassAStaticMethodC');
         $handle = $this->handleFactory->staticHandle($mockBuilder->build());
         $subject = new WrappedParentMethod($callParentMethod, $method, $handle);
 

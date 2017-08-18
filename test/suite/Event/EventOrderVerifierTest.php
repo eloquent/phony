@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Event;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallVerifierFactory;
@@ -22,6 +23,7 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestCallFactory;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -104,19 +106,19 @@ class EventOrderVerifierTest extends TestCase
 
     public function testCheckInOrderFailureEmptyResult()
     {
-        $this->expectException('InvalidArgumentException', 'Cannot verify event order with empty results.');
+        $this->expectException(InvalidArgumentException::class, 'Cannot verify event order with empty results.');
         $this->subject->checkInOrder(new EventSequence([], $this->callVerifierFactory));
     }
 
     public function testCheckInOrderFailureInvalidArgument()
     {
-        $this->expectException('InvalidArgumentException', 'Cannot verify event order with supplied value 111.');
+        $this->expectException(InvalidArgumentException::class, 'Cannot verify event order with supplied value 111.');
         $this->subject->checkInOrder(111);
     }
 
     public function testCheckInOrderFailureInvalidArgumentObject()
     {
-        $this->expectException('InvalidArgumentException', 'Cannot verify event order with supplied value #0{}.');
+        $this->expectException(InvalidArgumentException::class, 'Cannot verify event order with supplied value #0{}.');
         $this->subject->checkInOrder((object) []);
     }
 
@@ -166,25 +168,25 @@ class EventOrderVerifierTest extends TestCase
 
     public function testInOrderFailure()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->inOrder($this->callA, $this->callC, $this->callB);
     }
 
     public function testInOrderFailureEmpty()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->inOrder();
     }
 
     public function testInOrderFailureOnlySuppliedEvents()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->inOrder($this->callB, $this->callA);
     }
 
     public function testInOrderFailureEventMergingExampleA()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->inOrder(
             new EventSequence([$this->callB, $this->callC], $this->callVerifierFactory),
             new EventSequence([$this->callA], $this->callVerifierFactory)
@@ -193,7 +195,7 @@ class EventOrderVerifierTest extends TestCase
 
     public function testInOrderFailureEventMergingExampleB()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->inOrder(
             new EventSequence([$this->callC], $this->callVerifierFactory),
             new EventSequence([$this->callA, $this->callB], $this->callVerifierFactory)
@@ -202,7 +204,7 @@ class EventOrderVerifierTest extends TestCase
 
     public function testInOrderFailureEventMergingExampleC()
     {
-        $this->expectException('InvalidArgumentException', 'Cannot verify event order with empty results.');
+        $this->expectException(InvalidArgumentException::class, 'Cannot verify event order with empty results.');
 
         $this->subject->inOrder(
             new EventSequence([$this->callC], $this->callVerifierFactory),
@@ -214,19 +216,19 @@ class EventOrderVerifierTest extends TestCase
 
     public function testInOrderFailureEmptyResult()
     {
-        $this->expectException('InvalidArgumentException', 'Cannot verify event order with empty results.');
+        $this->expectException(InvalidArgumentException::class, 'Cannot verify event order with empty results.');
         $this->subject->inOrder(new EventSequence([], $this->callVerifierFactory));
     }
 
     public function testInOrderFailureInvalidArgument()
     {
-        $this->expectException('InvalidArgumentException', 'Cannot verify event order with supplied value 111.');
+        $this->expectException(InvalidArgumentException::class, 'Cannot verify event order with supplied value 111.');
         $this->subject->inOrder(111);
     }
 
     public function testInOrderFailureInvalidArgumentObject()
     {
-        $this->expectException('InvalidArgumentException', 'Cannot verify event order with supplied value #0{}.');
+        $this->expectException(InvalidArgumentException::class, 'Cannot verify event order with supplied value #0{}.');
         $this->subject->inOrder((object) []);
     }
 
@@ -256,10 +258,7 @@ class EventOrderVerifierTest extends TestCase
 
     public function testAnyOrderFailure()
     {
-        $this->expectException(
-            'Eloquent\Phony\Assertion\Exception\AssertionException',
-            'Expected events. No events recorded.'
-        );
+        $this->expectException(AssertionException::class, 'Expected events. No events recorded.');
         $this->subject->anyOrder();
     }
 

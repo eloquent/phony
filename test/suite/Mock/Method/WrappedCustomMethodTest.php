@@ -14,6 +14,7 @@ namespace Eloquent\Phony\Mock\Method;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Test\TestClassB;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
@@ -47,7 +48,7 @@ class WrappedCustomMethodTest extends TestCase
 
     public function testConstructorWithStatic()
     {
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB');
+        $this->method = new ReflectionMethod(TestClassB::class . '::testClassAStaticMethodB');
         $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
         $this->subject = new WrappedCustomMethod($this->customCallback, $this->method, $this->handle, $this->invoker);
 
@@ -58,7 +59,7 @@ class WrappedCustomMethodTest extends TestCase
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame(
-            ['Eloquent\Phony\Test\TestClassB', 'testClassAStaticMethodB'],
+            [TestClassB::class, 'testClassAStaticMethodB'],
             $this->subject->callback()
         );
         $this->assertNull($this->subject->label());
@@ -86,7 +87,7 @@ class WrappedCustomMethodTest extends TestCase
 
     public function testInvokeMethodsWithStatic()
     {
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB');
+        $this->method = new ReflectionMethod(TestClassB::class . '::testClassAStaticMethodB');
         $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
         $subject = new WrappedCustomMethod($this->customCallback, $this->method, $this->handle, $this->invoker);
 

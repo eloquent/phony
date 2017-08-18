@@ -12,11 +12,14 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallVerifierFactory;
+use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventSequence;
+use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
@@ -35,6 +38,7 @@ use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Error;
 use Exception;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -298,7 +302,7 @@ class SpyVerifierTest extends TestCase
     {
         $this->subject->setCalls([]);
 
-        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException(UndefinedEventException::class);
         $this->subject->firstEvent();
     }
 
@@ -313,7 +317,7 @@ class SpyVerifierTest extends TestCase
     {
         $this->subject->setCalls([]);
 
-        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException(UndefinedEventException::class);
         $this->subject->lastEvent();
     }
 
@@ -328,7 +332,7 @@ class SpyVerifierTest extends TestCase
 
     public function testEventAtFailure()
     {
-        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException(UndefinedEventException::class);
         $this->subject->eventAt();
     }
 
@@ -343,7 +347,7 @@ class SpyVerifierTest extends TestCase
     {
         $this->subject->setCalls([]);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(UndefinedCallException::class);
         $this->subject->firstCall();
     }
 
@@ -358,7 +362,7 @@ class SpyVerifierTest extends TestCase
     {
         $this->subject->setCalls([]);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(UndefinedCallException::class);
         $this->subject->lastCall();
     }
 
@@ -372,7 +376,7 @@ class SpyVerifierTest extends TestCase
 
     public function testCallAtFailureUndefined()
     {
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(UndefinedCallException::class);
         $this->subject->callAt(0);
     }
 
@@ -635,7 +639,7 @@ class SpyVerifierTest extends TestCase
 
     public function testCalledFailure()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException', 'Never called.');
+        $this->expectException(AssertionException::class, 'Never called.');
         $this->subject->called();
     }
 
@@ -662,14 +666,14 @@ class SpyVerifierTest extends TestCase
 
     public function testCalledOnceFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->once()->called();
     }
 
     public function testCalledOnceFailureWithMultipleCalls()
     {
         $this->subject->setCalls($this->calls);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->once()->called();
     }
 
@@ -695,7 +699,7 @@ class SpyVerifierTest extends TestCase
     public function testCalledTimesFailure()
     {
         $this->subject->setCalls($this->calls);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->times(2)->called();
     }
 
@@ -786,33 +790,36 @@ class SpyVerifierTest extends TestCase
     public function testCalledWithFailure()
     {
         $this->subject->setCalls($this->calls);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->calledWith('b', 'c');
     }
 
     public function testCalledWithFailureWithNoMatchers()
     {
         $this->subject->setCalls([$this->callA]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->calledWith();
     }
 
     public function testCalledWithFailureMissingArguments()
     {
         $this->subject->setCalls($this->calls);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->calledWith('a', 'b', 'c', 'd', 'e');
     }
 
     public function testCalledWithFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->calledWith('b', 'c');
     }
 
     public function testCalledWithFailureWithNoCallsAndNoMatchers()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->calledWith();
     }
 
@@ -846,13 +853,14 @@ class SpyVerifierTest extends TestCase
     public function testCalledOnceWithFailure()
     {
         $this->subject->setCalls($this->calls);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->once()->calledWith('a', 'b', 'c');
     }
 
     public function testCalledOnceWithFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->once()->calledWith('a', 'b', 'c');
     }
 
@@ -906,20 +914,22 @@ class SpyVerifierTest extends TestCase
     public function testCalledTimesWithFailure()
     {
         $this->subject->setCalls($this->calls);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->times(5)->calledWith('a', 'b', 'c');
     }
 
     public function testCalledTimesWithFailureWithNoMatchers()
     {
         $this->subject->setCalls($this->calls);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->times(2)->calledWith();
     }
 
     public function testCalledTimesWithFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->times(5)->calledWith('a', 'b', 'c');
     }
 
@@ -1014,7 +1024,7 @@ class SpyVerifierTest extends TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->calledWith('a', 'b', 'c');
     }
 
@@ -1022,13 +1032,13 @@ class SpyVerifierTest extends TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->calledWith();
     }
 
     public function testAlwaysCalledWithFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->calledWith('a', 'b', 'c');
     }
 
@@ -1098,7 +1108,7 @@ class SpyVerifierTest extends TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->never()->calledWith('a', 'b', 'c');
     }
 
@@ -1106,7 +1116,7 @@ class SpyVerifierTest extends TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->never()->calledWith();
     }
 
@@ -1114,7 +1124,7 @@ class SpyVerifierTest extends TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->never()->calledWith('*');
     }
 
@@ -1171,13 +1181,13 @@ class SpyVerifierTest extends TestCase
     public function testRespondedFailure()
     {
         $this->subject->setCalls([$this->callE, $this->callE]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->responded();
     }
 
     public function testRespondedFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->responded();
     }
 
@@ -1208,13 +1218,13 @@ class SpyVerifierTest extends TestCase
     public function testAlwaysRespondedFailure()
     {
         $this->subject->setCalls($this->calls);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->responded();
     }
 
     public function testAlwaysRespondedFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->responded();
     }
 
@@ -1276,13 +1286,13 @@ class SpyVerifierTest extends TestCase
     public function testCompletedFailure()
     {
         $this->subject->setCalls([$this->iteratorCallWithNoEnd, $this->iteratorCallWithNoEnd]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->completed();
     }
 
     public function testCompletedFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->completed();
     }
 
@@ -1315,13 +1325,13 @@ class SpyVerifierTest extends TestCase
         $this->subject->setCalls($this->calls);
         $this->subject->addCall($this->iteratorCall);
 
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->completed();
     }
 
     public function testAlwaysCompletedFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->completed();
     }
 
@@ -1371,20 +1381,20 @@ class SpyVerifierTest extends TestCase
     public function testReturnedFailure()
     {
         $this->subject->setCalls($this->calls);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->returned('z');
     }
 
     public function testReturnedFailureWithoutMatcher()
     {
         $this->subject->setCalls([$this->callC, $this->callD]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->returned();
     }
 
     public function testReturnedFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->returned($this->returnValueA);
     }
 
@@ -1438,32 +1448,32 @@ class SpyVerifierTest extends TestCase
     public function testAlwaysReturnedFailure()
     {
         $this->subject->setCalls($this->calls);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->returned($this->returnValueA);
     }
 
     public function testAlwaysReturnedFailureWithNoMatcher()
     {
         $this->subject->setCalls($this->calls);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->returned();
     }
 
     public function testAlwaysReturnedFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->returned($this->returnValueA);
     }
 
     public function testCheckThrew()
     {
         $this->assertFalse((bool) $this->subject->checkThrew());
-        $this->assertFalse((bool) $this->subject->checkThrew('Exception'));
-        $this->assertFalse((bool) $this->subject->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->checkThrew(Exception::class));
+        $this->assertFalse((bool) $this->subject->checkThrew(RuntimeException::class));
         $this->assertFalse((bool) $this->subject->checkThrew($this->exceptionA));
         $this->assertFalse((bool) $this->subject->checkThrew($this->exceptionB));
         $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exceptionA)));
-        $this->assertFalse((bool) $this->subject->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->checkThrew(InvalidArgumentException::class));
         $this->assertFalse((bool) $this->subject->checkThrew(new Exception()));
         $this->assertFalse((bool) $this->subject->checkThrew(new RuntimeException()));
         $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
@@ -1471,12 +1481,12 @@ class SpyVerifierTest extends TestCase
         $this->subject->setCalls($this->calls);
 
         $this->assertTrue((bool) $this->subject->checkThrew());
-        $this->assertTrue((bool) $this->subject->checkThrew('Exception'));
-        $this->assertTrue((bool) $this->subject->checkThrew('RuntimeException'));
+        $this->assertTrue((bool) $this->subject->checkThrew(Exception::class));
+        $this->assertTrue((bool) $this->subject->checkThrew(RuntimeException::class));
         $this->assertTrue((bool) $this->subject->checkThrew($this->exceptionA));
         $this->assertTrue((bool) $this->subject->checkThrew($this->exceptionB));
         $this->assertTrue((bool) $this->subject->checkThrew($this->matcherFactory->equalTo($this->exceptionA)));
-        $this->assertFalse((bool) $this->subject->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->checkThrew(InvalidArgumentException::class));
         $this->assertFalse((bool) $this->subject->checkThrew(new Exception()));
         $this->assertFalse((bool) $this->subject->checkThrew(new RuntimeException()));
         $this->assertFalse((bool) $this->subject->checkThrew($this->matcherFactory->equalTo(null)));
@@ -1484,19 +1494,13 @@ class SpyVerifierTest extends TestCase
 
     public function testCheckThrewFailureInvalidInput()
     {
-        $this->expectException(
-            'InvalidArgumentException',
-            'Unable to match exceptions against 111.'
-        );
+        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against 111.');
         $this->subject->checkThrew(111);
     }
 
     public function testCheckThrewFailureInvalidInputObject()
     {
-        $this->expectException(
-            'InvalidArgumentException',
-            'Unable to match exceptions against #0{}.'
-        );
+        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against #0{}.');
         $this->subject->checkThrew((object) []);
     }
 
@@ -1510,11 +1514,11 @@ class SpyVerifierTest extends TestCase
         );
         $this->assertEquals(
             new EventSequence([$this->callCResponse, $this->callDResponse], $this->callVerifierFactory),
-            $this->subject->threw('Exception')
+            $this->subject->threw(Exception::class)
         );
         $this->assertEquals(
             new EventSequence([$this->callCResponse, $this->callDResponse], $this->callVerifierFactory),
-            $this->subject->threw('RuntimeException')
+            $this->subject->threw(RuntimeException::class)
         );
         $this->assertEquals(
             new EventSequence([$this->callCResponse], $this->callVerifierFactory),
@@ -1562,7 +1566,7 @@ class SpyVerifierTest extends TestCase
 
     public function testThrewWithInstanceHandle()
     {
-        $builder = MockBuilderFactory::instance()->create('RuntimeException');
+        $builder = MockBuilderFactory::instance()->create(RuntimeException::class);
         $exception = $builder->get();
         $threwEvent = $this->callEventFactory->createThrew($exception);
         $call = $this->callFactory->create(
@@ -1581,99 +1585,105 @@ class SpyVerifierTest extends TestCase
     public function testThrewFailureExpectingAny()
     {
         $this->subject->setCalls([$this->callA, $this->callB]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->threw();
     }
 
     public function testThrewFailureExpectingAnyWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->threw();
     }
 
     public function testThrewFailureExpectingType()
     {
         $this->subject->setCalls([$this->callC, $this->callD]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
+
+        $this->expectException(AssertionException::class);
+        $this->subject->threw(UndefinedCallException::class);
     }
 
     public function testThrewFailureExpectingTypeWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(AssertionException::class);
+        $this->subject->threw(UndefinedCallException::class);
     }
 
     public function testThrewFailureExpectingTypeWithNoExceptions()
     {
         $this->subject->setCalls([$this->callA, $this->callB]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
+
+        $this->expectException(AssertionException::class);
+        $this->subject->threw(UndefinedCallException::class);
     }
 
     public function testThrewFailureExpectingException()
     {
         $this->subject->setCalls([$this->callC, $this->callD]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->threw(new RuntimeException());
     }
 
     public function testThrewFailureExpectingExceptionWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->threw(new RuntimeException());
     }
 
     public function testThrewFailureExpectingExceptionWithNoExceptions()
     {
         $this->subject->setCalls([$this->callA, $this->callB]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->threw(new RuntimeException());
     }
 
     public function testThrewFailureExpectingMatcher()
     {
         $this->subject->setCalls([$this->callC, $this->callD]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testThrewFailureExpectingMatcherWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testThrewFailureExpectingMatcherWithNoExceptions()
     {
         $this->subject->setCalls([$this->callA, $this->callB]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testThrewFailureInvalidInput()
     {
-        $this->expectException('InvalidArgumentException', 'Unable to match exceptions against 111.');
+        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against 111.');
         $this->subject->threw(111);
     }
 
     public function testThrewFailureInvalidInputObject()
     {
-        $this->expectException('InvalidArgumentException', 'Unable to match exceptions against #0{}.');
+        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against #0{}.');
         $this->subject->threw((object) []);
     }
 
     public function testCheckAlwaysThrew()
     {
         $this->assertFalse((bool) $this->subject->always()->checkThrew());
-        $this->assertFalse((bool) $this->subject->always()->checkThrew('Exception'));
-        $this->assertFalse((bool) $this->subject->always()->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(Exception::class));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(RuntimeException::class));
         $this->assertFalse((bool) $this->subject->always()->checkThrew($this->exceptionA));
         $this->assertFalse((bool) $this->subject->always()->checkThrew($this->exceptionB));
         $this->assertFalse(
             (bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
         );
-        $this->assertFalse((bool) $this->subject->always()->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(InvalidArgumentException::class));
         $this->assertFalse((bool) $this->subject->always()->checkThrew(new Exception()));
         $this->assertFalse((bool) $this->subject->always()->checkThrew(new RuntimeException()));
         $this->assertFalse((bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
@@ -1681,14 +1691,14 @@ class SpyVerifierTest extends TestCase
         $this->subject->setCalls($this->calls);
 
         $this->assertFalse((bool) $this->subject->always()->checkThrew());
-        $this->assertFalse((bool) $this->subject->always()->checkThrew('Exception'));
-        $this->assertFalse((bool) $this->subject->always()->checkThrew('RuntimeException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(Exception::class));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(RuntimeException::class));
         $this->assertFalse((bool) $this->subject->always()->checkThrew($this->exceptionA));
         $this->assertFalse((bool) $this->subject->always()->checkThrew($this->exceptionB));
         $this->assertFalse(
             (bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
         );
-        $this->assertFalse((bool) $this->subject->always()->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(InvalidArgumentException::class));
         $this->assertFalse((bool) $this->subject->always()->checkThrew(new Exception()));
         $this->assertFalse((bool) $this->subject->always()->checkThrew(new RuntimeException()));
         $this->assertFalse((bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
@@ -1696,14 +1706,14 @@ class SpyVerifierTest extends TestCase
         $this->subject->setCalls([$this->callC, $this->callC]);
 
         $this->assertTrue((bool) $this->subject->always()->checkThrew());
-        $this->assertTrue((bool) $this->subject->always()->checkThrew('Exception'));
-        $this->assertTrue((bool) $this->subject->always()->checkThrew('RuntimeException'));
+        $this->assertTrue((bool) $this->subject->always()->checkThrew(Exception::class));
+        $this->assertTrue((bool) $this->subject->always()->checkThrew(RuntimeException::class));
         $this->assertTrue((bool) $this->subject->always()->checkThrew($this->exceptionA));
         $this->assertFalse((bool) $this->subject->always()->checkThrew($this->exceptionB));
         $this->assertTrue(
             (bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo($this->exceptionA))
         );
-        $this->assertFalse((bool) $this->subject->always()->checkThrew('InvalidArgumentException'));
+        $this->assertFalse((bool) $this->subject->always()->checkThrew(InvalidArgumentException::class));
         $this->assertFalse((bool) $this->subject->always()->checkThrew(new Exception()));
         $this->assertFalse((bool) $this->subject->always()->checkThrew(new RuntimeException()));
         $this->assertFalse((bool) $this->subject->always()->checkThrew($this->matcherFactory->equalTo(null)));
@@ -1719,8 +1729,8 @@ class SpyVerifierTest extends TestCase
         $expected = new EventSequence([$this->callCResponse, $this->callCResponse], $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->always()->threw());
-        $this->assertEquals($expected, $this->subject->always()->threw('Exception'));
-        $this->assertEquals($expected, $this->subject->always()->threw('RuntimeException'));
+        $this->assertEquals($expected, $this->subject->always()->threw(Exception::class));
+        $this->assertEquals($expected, $this->subject->always()->threw(RuntimeException::class));
         $this->assertEquals($expected, $this->subject->always()->threw($this->exceptionA));
         $this->assertEquals(
             $expected,
@@ -1731,80 +1741,88 @@ class SpyVerifierTest extends TestCase
     public function testAlwaysThrewFailureExpectingAny()
     {
         $this->subject->setCalls($this->calls);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->always()->threw();
     }
 
     public function testAlwaysThrewFailureExpectingAnyButNothingThrown()
     {
         $this->subject->setCalls([$this->callA, $this->callB]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->always()->threw();
     }
 
     public function testAlwaysThrewFailureExpectingAnyWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->threw();
     }
 
     public function testAlwaysThrewFailureExpectingType()
     {
         $this->subject->setCalls([$this->callC, $this->callD]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->always()->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
+
+        $this->expectException(AssertionException::class);
+        $this->subject->always()->threw(UndefinedCallException::class);
     }
 
     public function testAlwaysThrewFailureExpectingTypeWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->always()->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(AssertionException::class);
+        $this->subject->always()->threw(UndefinedCallException::class);
     }
 
     public function testAlwaysThrewFailureExpectingTypeWithNoExceptions()
     {
         $this->subject->setCalls([$this->callA, $this->callB]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
-        $this->subject->always()->threw('Eloquent\Phony\Call\Exception\UndefinedCallException');
+
+        $this->expectException(AssertionException::class);
+        $this->subject->always()->threw(UndefinedCallException::class);
     }
 
     public function testAlwaysThrewFailureExpectingException()
     {
         $this->subject->setCalls([$this->callC, $this->callD]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->always()->threw(new RuntimeException());
     }
 
     public function testAlwaysThrewFailureExpectingExceptionWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->threw(new RuntimeException());
     }
 
     public function testAlwaysThrewFailureExpectingExceptionWithNoExceptions()
     {
         $this->subject->setCalls([$this->callA, $this->callB]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->always()->threw(new RuntimeException());
     }
 
     public function testAlwaysThrewFailureExpectingMatcher()
     {
         $this->subject->setCalls([$this->callC, $this->callD]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->always()->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testAlwaysThrewFailureExpectingMatcherWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
     public function testAlwaysThrewFailureExpectingMatcherWithNoExceptions()
     {
         $this->subject->setCalls([$this->callA, $this->callB]);
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+
+        $this->expectException(AssertionException::class);
         $this->subject->always()->threw($this->matcherFactory->equalTo(new RuntimeException()));
     }
 
@@ -1843,13 +1861,13 @@ class SpyVerifierTest extends TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->iterated();
     }
 
     public function testIteratedFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->iterated();
     }
 
@@ -1879,13 +1897,13 @@ class SpyVerifierTest extends TestCase
     {
         $this->subject->setCalls($this->calls);
 
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->iterated();
     }
 
     public function testAlwaysIteratedFailureWithNoCalls()
     {
-        $this->expectException('Eloquent\Phony\Assertion\Exception\AssertionException');
+        $this->expectException(AssertionException::class);
         $this->subject->always()->iterated();
     }
 

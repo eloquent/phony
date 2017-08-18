@@ -1,8 +1,10 @@
 <?php
 
+use Eloquent\Phony\Test\TestInterfaceWithReturnType;
+
 $builder = $factory->create(
     [
-        'Eloquent\Phony\Test\TestInterfaceWithReturnType',
+        TestInterfaceWithReturnType::class,
         [
             'customMethodWithClassType' => function () : \stdClass {},
             'customMethodWithScalarType' => function () : int {},

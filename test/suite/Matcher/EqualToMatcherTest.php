@@ -15,6 +15,7 @@ use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Test\Properties\TestBaseClass;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\Properties\TestDerivedClassB;
 use Eloquent\Phony\Test\Properties\TestDerivedClassWithTraitA;
@@ -457,7 +458,7 @@ class EqualToMatcherTest extends TestCase
     public function testMockMatching()
     {
         $className = 'PhonyMockEqualToMatcherMatchesMocks';
-        $builder = MockBuilderFactory::instance()->create('Eloquent\Phony\Test\Properties\TestBaseClass')
+        $builder = MockBuilderFactory::instance()->create(TestBaseClass::class)
             ->named($className);
         $mockA1 = $builder->full();
         Phony::on($mockA1)->setLabel('a');

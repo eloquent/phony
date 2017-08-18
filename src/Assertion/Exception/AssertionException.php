@@ -29,7 +29,7 @@ final class AssertionException extends Exception
      */
     public static function trim(Exception $exception)
     {
-        $reflector = new ReflectionClass('Exception');
+        $reflector = new ReflectionClass(Exception::class);
 
         $traceProperty = $reflector->getProperty('trace');
         $traceProperty->setAccessible(true);

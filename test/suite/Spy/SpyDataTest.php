@@ -12,6 +12,8 @@
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
@@ -163,7 +165,7 @@ class SpyDataTest extends TestCase
     {
         $this->subject->setCalls([]);
 
-        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException(UndefinedEventException::class);
         $this->subject->firstEvent();
     }
 
@@ -178,7 +180,7 @@ class SpyDataTest extends TestCase
     {
         $this->subject->setCalls([]);
 
-        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException(UndefinedEventException::class);
         $this->subject->lastEvent();
     }
 
@@ -193,7 +195,7 @@ class SpyDataTest extends TestCase
 
     public function testEventAtFailure()
     {
-        $this->expectException('Eloquent\Phony\Event\Exception\UndefinedEventException');
+        $this->expectException(UndefinedEventException::class);
         $this->subject->eventAt();
     }
 
@@ -208,7 +210,7 @@ class SpyDataTest extends TestCase
     {
         $this->subject->setCalls([]);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(UndefinedCallException::class);
         $this->subject->firstCall();
     }
 
@@ -223,7 +225,7 @@ class SpyDataTest extends TestCase
     {
         $this->subject->setCalls([]);
 
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(UndefinedCallException::class);
         $this->subject->lastCall();
     }
 
@@ -238,7 +240,7 @@ class SpyDataTest extends TestCase
 
     public function testCallAtFailure()
     {
-        $this->expectException('Eloquent\Phony\Call\Exception\UndefinedCallException');
+        $this->expectException(UndefinedCallException::class);
         $this->subject->callAt();
     }
 
@@ -462,8 +464,8 @@ class SpyDataTest extends TestCase
         $iterableSpyA = $spy->invoke([]);
         $iterableSpyB = $spy->invoke($iterableSpyA);
 
-        $this->assertInstanceOf('Eloquent\Phony\Spy\IterableSpy', $iterableSpyA);
-        $this->assertInstanceOf('Eloquent\Phony\Spy\IterableSpy', $iterableSpyB);
+        $this->assertInstanceOf(IterableSpy::class, $iterableSpyA);
+        $this->assertInstanceOf(IterableSpy::class, $iterableSpyB);
         $this->assertNotSame($iterableSpyA, $iterableSpyB);
     }
 

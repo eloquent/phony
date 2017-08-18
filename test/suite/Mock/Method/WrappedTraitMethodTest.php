@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Test\TestTraitA;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
@@ -23,8 +24,8 @@ class WrappedTraitMethodTest extends TestCase
         $this->mockBuilderFactory = MockBuilderFactory::instance();
 
         $this->callTraitMethod = new ReflectionMethod($this, 'setUp');
-        $this->traitName = 'Eloquent\Phony\Test\TestTraitA';
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB');
+        $this->traitName = TestTraitA::class;
+        $this->method = new ReflectionMethod(TestTraitA::class . '::testClassAMethodB');
         $this->mockBuilder = $this->mockBuilderFactory->create();
         $this->mock = $this->mockBuilder->partial();
         $this->handleFactory = HandleFactory::instance();
@@ -47,7 +48,7 @@ class WrappedTraitMethodTest extends TestCase
 
     public function testConstructorWithStatic()
     {
-        $this->method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA');
+        $this->method = new ReflectionMethod(TestTraitA::class . '::testClassAStaticMethodA');
         $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
         $this->subject = new WrappedTraitMethod($this->callTraitMethod, $this->traitName, $this->method, $this->handle);
 
@@ -58,7 +59,7 @@ class WrappedTraitMethodTest extends TestCase
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame(
-            ['Eloquent\Phony\Test\TestTraitA', 'testClassAStaticMethodA'],
+            [TestTraitA::class, 'testClassAStaticMethodA'],
             $this->subject->callback()
         );
         $this->assertNull($this->subject->label());
@@ -76,12 +77,12 @@ class WrappedTraitMethodTest extends TestCase
 
     public function testInvokeMethods()
     {
-        $traitName = 'Eloquent\Phony\Test\TestTraitA';
+        $traitName = TestTraitA::class;
         $mockBuilder = $this->mockBuilderFactory->create($traitName);
         $class = $mockBuilder->build();
         $callTraitMethod = $class->getMethod('_callTrait');
         $callTraitMethod->setAccessible(true);
-        $method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAMethodB');
+        $method = new ReflectionMethod(TestTraitA::class . '::testClassAMethodB');
         $mock = $mockBuilder->get();
         $handle = $this->handleFactory->instanceHandle($mock);
         $subject = new WrappedTraitMethod($callTraitMethod, $traitName, $method, $handle);
@@ -93,12 +94,12 @@ class WrappedTraitMethodTest extends TestCase
 
     public function testInvokeMethodsWithStatic()
     {
-        $traitName = 'Eloquent\Phony\Test\TestTraitA';
+        $traitName = TestTraitA::class;
         $mockBuilder = $this->mockBuilderFactory->create($traitName);
         $class = $mockBuilder->build();
         $callTraitMethod = $class->getMethod('_callTraitStatic');
         $callTraitMethod->setAccessible(true);
-        $method = new ReflectionMethod('Eloquent\Phony\Test\TestTraitA::testClassAStaticMethodA');
+        $method = new ReflectionMethod(TestTraitA::class . '::testClassAStaticMethodA');
         $handle = $this->handleFactory->staticHandle($mockBuilder->build());
         $subject = new WrappedTraitMethod($callTraitMethod, $traitName, $method, $handle);
         $a = 'a';

@@ -1,8 +1,10 @@
 <?php
 
+use Eloquent\Phony\Test\TestInterfaceWithNullableBuiltinTypes;
+
 $builder = $factory->create(
     [
-        'Eloquent\Phony\Test\TestInterfaceWithNullableBuiltinTypes',
+        TestInterfaceWithNullableBuiltinTypes::class,
         [
             'static customStaticMethod' =>
                 function (?string $string, ?stdClass $object) : ?TestClassA {},

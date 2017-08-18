@@ -1,7 +1,7 @@
 <?php
 
-$builder = $factory->create(
-    'Eloquent\Phony\Test\TestTraitJ'
-);
+use Eloquent\Phony\Test\TestTraitJ;
+
+$builder = $factory->create(TestTraitJ::class);
 
 return $builder->named('MockGeneratorTraitMagicCall');

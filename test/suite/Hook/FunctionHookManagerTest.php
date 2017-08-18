@@ -11,7 +11,11 @@
 
 namespace Eloquent\Phony\Hook;
 
+use Eloquent\Phony\Hook\Exception\FunctionExistsException;
+use Eloquent\Phony\Hook\Exception\FunctionHookGenerationFailedException;
+use Eloquent\Phony\Hook\Exception\FunctionSignatureMismatchException;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Test\FunctionHookManager as TestNamespace;
 use Eloquent\Phony\Test\TestFunctionHookGenerator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -24,7 +28,7 @@ class FunctionHookManagerTest extends TestCase
         $this->hookGenerator = FunctionHookGenerator::instance();
         $this->subject = new FunctionHookManager($this->functionSignatureInspector, $this->hookGenerator);
 
-        $this->namespace = 'Eloquent\Phony\Test\FunctionHookManager';
+        $this->namespace = TestNamespace::class;
         $this->name = 'phony_' . md5(mt_rand());
         $this->fullName = $this->namespace . '\\' . $this->name;
     }
@@ -67,7 +71,7 @@ class FunctionHookManagerTest extends TestCase
     {
         $this->subject->defineFunction($this->name, $this->namespace, function ($a = null) {});
 
-        $this->expectException('Eloquent\Phony\Hook\Exception\FunctionSignatureMismatchException');
+        $this->expectException(FunctionSignatureMismatchException::class);
         $this->subject->defineFunction($this->name, $this->namespace, function () {});
     }
 
@@ -77,7 +81,7 @@ class FunctionHookManagerTest extends TestCase
             eval("namespace $this->namespace;\nfunction existant () {}");
         }
 
-        $this->expectException('Eloquent\Phony\Hook\Exception\FunctionExistsException');
+        $this->expectException(FunctionExistsException::class);
         $this->subject->defineFunction('existant', $this->namespace, function () {});
     }
 
@@ -86,7 +90,7 @@ class FunctionHookManagerTest extends TestCase
         $this->hookGenerator = new TestFunctionHookGenerator('{');
         $this->subject = new FunctionHookManager($this->functionSignatureInspector, $this->hookGenerator);
 
-        $this->expectException('Eloquent\Phony\Hook\Exception\FunctionHookGenerationFailedException');
+        $this->expectException(FunctionHookGenerationFailedException::class);
         $this->subject->defineFunction($this->name, $this->namespace, function () {});
     }
 

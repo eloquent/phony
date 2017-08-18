@@ -1,7 +1,7 @@
 <?php
 
-$builder = $factory->create(
-    'Eloquent\Phony\Test\TestClassC'
-);
+use Eloquent\Phony\Test\TestClassC;
+
+$builder = $factory->create(TestClassC::class);
 
 return $builder->named('MockGeneratorSelfKeyword');

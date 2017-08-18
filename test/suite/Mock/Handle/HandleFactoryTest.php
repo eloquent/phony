@@ -11,16 +11,23 @@
 
 namespace Eloquent\Phony\Mock\Handle;
 
+use Countable;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Mock\Exception\InvalidMockClassException;
+use Eloquent\Phony\Mock\Exception\InvalidMockException;
+use Eloquent\Phony\Mock\Exception\NonMockClassException;
 use Eloquent\Phony\Stub\EmptyValueFactory;
+use Eloquent\Phony\Stub\StubData;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
+use Eloquent\Phony\Test\TestClassB;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionProperty;
+use stdClass;
 
 class HandleFactoryTest extends TestCase
 {
@@ -46,7 +53,7 @@ class HandleFactoryTest extends TestCase
 
     public function testInstanceHandleNew()
     {
-        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $mock = $mockBuilder->full();
         $handleProperty = new ReflectionProperty($mock, '_handle');
         $handleProperty->setAccessible(true);
@@ -54,7 +61,7 @@ class HandleFactoryTest extends TestCase
         $expected = new InstanceHandle(
             $mock,
             (object) [
-                'defaultAnswerCallback' => 'Eloquent\Phony\Stub\StubData::returnsEmptyAnswerCallback',
+                'defaultAnswerCallback' => [StubData::class, 'returnsEmptyAnswerCallback'],
                 'stubs' => (object) [],
                 'isRecording' => true,
                 'label' => 'label',
@@ -73,7 +80,7 @@ class HandleFactoryTest extends TestCase
 
     public function testInstanceHandleAdapt()
     {
-        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $mock = $mockBuilder->full();
         $handleProperty = new ReflectionProperty($mock, '_handle');
         $handleProperty->setAccessible(true);
@@ -86,13 +93,13 @@ class HandleFactoryTest extends TestCase
 
     public function testInstanceHandleFailureInvalid()
     {
-        $this->expectException('Eloquent\Phony\Mock\Exception\InvalidMockException');
+        $this->expectException(InvalidMockException::class);
         $this->subject->instanceHandle(null);
     }
 
     public function testStaticHandleNew()
     {
-        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $class = $mockBuilder->build(true);
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
@@ -100,7 +107,7 @@ class HandleFactoryTest extends TestCase
         $expected = new StaticHandle(
             $class,
             (object) [
-                'defaultAnswerCallback' => 'Eloquent\Phony\Stub\StubData::forwardsAnswerCallback',
+                'defaultAnswerCallback' => [StubData::class, 'forwardsAnswerCallback'],
                 'stubs' => (object) [],
                 'isRecording' => true,
             ],
@@ -118,7 +125,7 @@ class HandleFactoryTest extends TestCase
 
     public function testStaticHandleAdapt()
     {
-        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $class = $mockBuilder->build(true);
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
@@ -131,7 +138,7 @@ class HandleFactoryTest extends TestCase
 
     public function testStaticHandleFromMock()
     {
-        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $class = $mockBuilder->build(true);
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
@@ -143,7 +150,7 @@ class HandleFactoryTest extends TestCase
 
     public function testStaticHandleFromSting()
     {
-        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $class = $mockBuilder->build(true);
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
@@ -155,25 +162,25 @@ class HandleFactoryTest extends TestCase
 
     public function testStaticHandleFailureUndefinedClass()
     {
-        $this->expectException('Eloquent\Phony\Mock\Exception\NonMockClassException');
-        $this->subject->staticHandle('Undefined');
+        $this->expectException(NonMockClassException::class);
+        $this->subject->staticHandle(Undefined::class);
     }
 
     public function testStaticHandleFailureNonMockClass()
     {
-        $this->expectException('Eloquent\Phony\Mock\Exception\NonMockClassException');
-        $this->subject->staticHandle(new ReflectionClass('stdClass'));
+        $this->expectException(NonMockClassException::class);
+        $this->subject->staticHandle(new ReflectionClass(stdClass::class));
     }
 
     public function testStaticHandleFailureNonMockClassString()
     {
-        $this->expectException('Eloquent\Phony\Mock\Exception\NonMockClassException');
-        $this->subject->staticHandle('Countable');
+        $this->expectException(NonMockClassException::class);
+        $this->subject->staticHandle(Countable::class);
     }
 
     public function testStaticHandleFailureInvalid()
     {
-        $this->expectException('Eloquent\Phony\Mock\Exception\InvalidMockClassException');
+        $this->expectException(InvalidMockClassException::class);
         $this->subject->staticHandle(null);
     }
 

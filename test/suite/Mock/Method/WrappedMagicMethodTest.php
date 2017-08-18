@@ -13,6 +13,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Test\TestClassB;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
@@ -52,7 +53,7 @@ class WrappedMagicMethodTest extends TestCase
 
     public function testConstructorWithStatic()
     {
-        $this->callMagicMethod = new ReflectionMethod('Eloquent\Phony\Test\TestClassB::testClassAStaticMethodB');
+        $this->callMagicMethod = new ReflectionMethod(TestClassB::class . '::testClassAStaticMethodB');
         $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
         $this->subject = new WrappedMagicMethod(
             $this->name,
@@ -69,7 +70,7 @@ class WrappedMagicMethodTest extends TestCase
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame(
-            ['Eloquent\Phony\Test\TestClassB', '__callStatic'],
+            [TestClassB::class, '__callStatic'],
             $this->subject->callback()
         );
         $this->assertNull($this->subject->label());
@@ -87,7 +88,7 @@ class WrappedMagicMethodTest extends TestCase
 
     public function testInvokeMethods()
     {
-        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $class = $mockBuilder->build();
         $callMagicMethod = $class->getMethod('_callMagic');
         $callMagicMethod->setAccessible(true);
@@ -103,7 +104,7 @@ class WrappedMagicMethodTest extends TestCase
 
     public function testInvokeMethodsWithStatic()
     {
-        $mockBuilder = $this->mockBuilderFactory->create('Eloquent\Phony\Test\TestClassB');
+        $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $class = $mockBuilder->build();
         $callMagicMethod = $class->getMethod('_callMagicStatic');
         $callMagicMethod->setAccessible(true);
