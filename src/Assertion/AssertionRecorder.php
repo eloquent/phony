@@ -45,5 +45,5 @@ interface AssertionRecorder
      *
      * @throws Throwable If this recorder throws exceptions.
      */
-    public function createFailure($description);
+    public function createFailure(string $description);
 }

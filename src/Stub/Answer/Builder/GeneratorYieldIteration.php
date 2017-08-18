@@ -29,9 +29,9 @@ class GeneratorYieldIteration
      */
     public function __construct(
         array $requests,
-        $hasKey,
+        bool $hasKey,
         $key,
-        $hasValue,
+        bool $hasValue,
         $value
     ) {
         $this->requests = $requests;

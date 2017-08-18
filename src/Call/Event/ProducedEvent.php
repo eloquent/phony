@@ -24,7 +24,7 @@ class ProducedEvent extends AbstractCallEvent implements IterableEvent
      * @param mixed $key            The produced key.
      * @param mixed $value          The produced value.
      */
-    public function __construct($sequenceNumber, $time, $key, $value)
+    public function __construct(int $sequenceNumber, float $time, $key, $value)
     {
         parent::__construct($sequenceNumber, $time);
 

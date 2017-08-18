@@ -91,7 +91,7 @@ interface EventCollection extends IteratorAggregate, Countable
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt($index = 0);
+    public function eventAt(int $index = 0);
 
     /**
      * Get the first call.
@@ -120,5 +120,5 @@ interface EventCollection extends IteratorAggregate, Countable
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt($index = 0);
+    public function callAt(int $index = 0);
 }

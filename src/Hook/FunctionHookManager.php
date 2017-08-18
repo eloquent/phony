@@ -65,8 +65,11 @@ class FunctionHookManager
      * @return callback|null         The replaced callback, or null if no callback was set.
      * @throws FunctionHookException If the function hook generation fails.
      */
-    public function defineFunction($name, $namespace, callable $callback)
-    {
+    public function defineFunction(
+        string $name,
+        string $namespace,
+        callable $callback
+    ) {
         $signature = $this->signatureInspector->callbackSignature($callback);
         $fullName = $namespace . '\\' . $name;
         $key = strtolower($fullName);

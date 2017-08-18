@@ -65,7 +65,7 @@ class CallData implements Call
      *
      * @throws InvalidArgumentException If the supplied calls respresent an invalid call state.
      */
-    public function __construct($index, CalledEvent $calledEvent)
+    public function __construct(int $index, CalledEvent $calledEvent)
     {
         $this->index = $index;
 
@@ -211,7 +211,7 @@ class CallData implements Call
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt($index = 0)
+    public function eventAt(int $index = 0)
     {
         if (0 === $index) {
             return $this->calledEvent;
@@ -260,7 +260,7 @@ class CallData implements Call
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt($index = 0)
+    public function callAt(int $index = 0)
     {
         if (0 === $index || -1 === $index) {
             return $this;
@@ -498,7 +498,7 @@ class CallData implements Call
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.
      */
-    public function argument($index = 0)
+    public function argument(int $index = 0)
     {
         return $this->calledEvent->arguments()->get($index);
     }

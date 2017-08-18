@@ -94,7 +94,7 @@ class AssertionRenderer
      *
      * @param bool|null $useColor True to use color.
      */
-    public function setUseColor($useColor)
+    public function setUseColor(bool $useColor = null)
     {
         if (null === $useColor) {
             $useColor = $this->featureDetector->isSupported('stdout.ansi');
@@ -157,7 +157,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isNever) {
             $expected = 'Expected no ' . $renderedSubject . ' call.';
@@ -239,7 +239,7 @@ class AssertionRenderer
             $matchers[0] instanceof WildcardMatcher &&
             $matchers[0]->matcher() instanceof AnyMatcher &&
             0 === $matchers[0]->minimumArguments() &&
-            null === $matchers[0]->maximumArguments()
+            $matchers[0]->maximumArguments() < 0
         ) {
             return $this->renderCalled($subject, $cardinality);
         }
@@ -339,7 +339,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             if ($isNever) {
@@ -488,7 +488,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             if ($isNever) {
@@ -604,7 +604,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             if ($isNever) {
@@ -810,7 +810,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             if ($isNever) {
@@ -962,7 +962,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             if ($isNever) {
@@ -1105,7 +1105,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             if ($isNever) {
@@ -1236,7 +1236,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             if ($isNever) {
@@ -1352,7 +1352,7 @@ class AssertionRenderer
     public function renderIterableUsed(
         $subject,
         Cardinality $cardinality,
-        $isGenerator
+        bool $isGenerator
     ) {
         $isCall = $subject instanceof Call;
 
@@ -1369,7 +1369,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             $totalCount = 1;
@@ -1658,7 +1658,7 @@ class AssertionRenderer
     public function renderIterableProduced(
         $subject,
         Cardinality $cardinality,
-        $isGenerator,
+        bool $isGenerator,
         Matcher $key = null,
         Matcher $value = null
     ) {
@@ -1677,7 +1677,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             $totalCount = 0;
@@ -2008,7 +2008,7 @@ class AssertionRenderer
     public function renderIterableConsumed(
         $subject,
         Cardinality $cardinality,
-        $isGenerator
+        bool $isGenerator
     ) {
         $isCall = $subject instanceof Call;
 
@@ -2025,7 +2025,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             $totalCount = 1;
@@ -2355,7 +2355,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             $totalCount = 0;
@@ -2647,7 +2647,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             $totalCount = 0;
@@ -2946,7 +2946,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             $totalCount = 1;
@@ -3244,7 +3244,7 @@ class AssertionRenderer
 
         $minimum = $cardinality->minimum();
         $maximum = $cardinality->maximum();
-        $isNever = null !== $maximum && $maximum < 1;
+        $isNever = 0 === $maximum;
 
         if ($isCall) {
             $totalCount = 1;
@@ -3763,7 +3763,7 @@ class AssertionRenderer
             } else {
                 $expected = 'Up to ' . $maximum . ' allowed. ';
             }
-        } elseif (null === $maximum) {
+        } elseif ($maximum < 0) {
             if (1 === $minimum) {
                 $expected = '';
             } else {

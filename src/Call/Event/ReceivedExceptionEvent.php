@@ -25,8 +25,11 @@ class ReceivedExceptionEvent extends AbstractCallEvent implements IterableEvent
      * @param float     $time           The time at which the event occurred, in seconds since the Unix epoch.
      * @param Throwable $exception      The received exception.
      */
-    public function __construct($sequenceNumber, $time, Throwable $exception)
-    {
+    public function __construct(
+        int $sequenceNumber,
+        float $time,
+        Throwable $exception
+    ) {
         parent::__construct($sequenceNumber, $time);
 
         $this->exception = $exception;

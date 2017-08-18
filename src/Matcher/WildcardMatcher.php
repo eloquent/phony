@@ -26,7 +26,7 @@ class WildcardMatcher implements Matchable
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self(AnyMatcher::instance(), 0, null);
+            self::$instance = new self(AnyMatcher::instance(), 0, -1);
         }
 
         return self::$instance;
@@ -35,14 +35,16 @@ class WildcardMatcher implements Matchable
     /**
      * Construct a new wildcard matcher.
      *
-     * @param Matcher  $matcher          The matcher to use for each argument.
-     * @param int      $minimumArguments The minimum number of arguments.
-     * @param int|null $maximumArguments The maximum number of arguments.
+     * Negative values for $maximumArguments are treated as "no maximum".
+     *
+     * @param Matcher $matcher          The matcher to use for each argument.
+     * @param int     $minimumArguments The minimum number of arguments.
+     * @param int     $maximumArguments The maximum number of arguments.
      */
     public function __construct(
         Matcher $matcher,
-        $minimumArguments,
-        $maximumArguments
+        int $minimumArguments,
+        int $maximumArguments
     ) {
         $this->matcher = $matcher;
         $this->minimumArguments = $minimumArguments;
@@ -72,7 +74,7 @@ class WildcardMatcher implements Matchable
     /**
      * Get the maximum number of arguments to match.
      *
-     * @return int|null The maximum number of arguments.
+     * @return int The maximum number of arguments.
      */
     public function maximumArguments()
     {
@@ -91,7 +93,7 @@ class WildcardMatcher implements Matchable
         $matcherDescription = $this->matcher->describe($exporter);
 
         if (0 === $this->minimumArguments) {
-            if (null === $this->maximumArguments) {
+            if ($this->maximumArguments < 0) {
                 return sprintf('%s*', $matcherDescription);
             } else {
                 return sprintf(
@@ -100,7 +102,7 @@ class WildcardMatcher implements Matchable
                     $this->maximumArguments
                 );
             }
-        } elseif (null === $this->maximumArguments) {
+        } elseif ($this->maximumArguments < 0) {
             return sprintf(
                 '%s{%d,}',
                 $matcherDescription,

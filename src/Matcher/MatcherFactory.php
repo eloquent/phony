@@ -211,7 +211,7 @@ class MatcherFactory
      *
      * @return Matcher The newly created matcher.
      */
-    public function equalTo($value, $useSubstitution = false)
+    public function equalTo($value, bool $useSubstitution = false)
     {
         return new EqualToMatcher($value, $useSubstitution, $this->exporter);
     }
@@ -219,16 +219,18 @@ class MatcherFactory
     /**
      * Create a new matcher that matches multiple arguments.
      *
-     * @param mixed    $value            The value to check for each argument.
-     * @param int      $minimumArguments The minimum number of arguments.
-     * @param int|null $maximumArguments The maximum number of arguments.
+     * Negative values for $maximumArguments are treated as "no maximum".
+     *
+     * @param mixed $value            The value to check for each argument.
+     * @param int   $minimumArguments The minimum number of arguments.
+     * @param int   $maximumArguments The maximum number of arguments.
      *
      * @return WildcardMatcher The newly created wildcard matcher.
      */
     public function wildcard(
         $value = null,
-        $minimumArguments = 0,
-        $maximumArguments = null
+        int $minimumArguments = 0,
+        int $maximumArguments = -1
     ) {
         if (0 === func_num_args()) {
             return $this->wildcardAnyMatcher;

@@ -79,7 +79,7 @@ class ExceptionAssertionRecorder implements AssertionRecorder
      *
      * @throws Throwable If this recorder throws exceptions.
      */
-    public function createFailure($description)
+    public function createFailure(string $description)
     {
         throw new AssertionException($description);
     }

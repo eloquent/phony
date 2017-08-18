@@ -69,7 +69,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
     public function __construct(
         callable $callback = null,
         $self,
-        $label,
+        string $label = null,
         callable $defaultAnswerCallback,
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,
@@ -211,9 +211,9 @@ class StubData extends AbstractWrappedInvocable implements Stub
     public function callsWith(
         callable $callback,
         $arguments = [],
-        $prefixSelf = null,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = null,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     ) {
         if (null === $prefixSelf) {
             $parameters = $this->invocableInspector
@@ -280,11 +280,11 @@ class StubData extends AbstractWrappedInvocable implements Stub
      * @return $this This stub.
      */
     public function callsArgumentWith(
-        $index = 0,
+        int $index = 0,
         $arguments = [],
-        $prefixSelf = false,
-        $suffixArgumentsObject = false,
-        $suffixArguments = false
+        bool $prefixSelf = false,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = false
     ) {
         $invoker = $this->invoker;
 
@@ -390,9 +390,9 @@ class StubData extends AbstractWrappedInvocable implements Stub
     public function doesWith(
         callable $callback,
         $arguments = [],
-        $prefixSelf = null,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = null,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     ) {
         if (null === $prefixSelf) {
             $parameters = $this->invocableInspector
@@ -433,9 +433,9 @@ class StubData extends AbstractWrappedInvocable implements Stub
      */
     public function forwards(
         $arguments = [],
-        $prefixSelf = null,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = null,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     ) {
         if (null === $prefixSelf) {
             if ($this->callback instanceof WrappedCustomMethod) {
@@ -561,7 +561,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function returnsArgument($index = 0)
+    public function returnsArgument(int $index = 0)
     {
         return $this->doesWith(
             function ($arguments) use ($index) {

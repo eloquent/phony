@@ -113,7 +113,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return $this This spy.
      */
-    public function setUseGeneratorSpies($useGeneratorSpies)
+    public function setUseGeneratorSpies(bool $useGeneratorSpies)
     {
         $this->spy->setUseGeneratorSpies($useGeneratorSpies);
 
@@ -137,7 +137,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return $this This spy.
      */
-    public function setUseIterableSpies($useIterableSpies)
+    public function setUseIterableSpies(bool $useIterableSpies)
     {
         $this->spy->setUseIterableSpies($useIterableSpies);
 
@@ -161,7 +161,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return $this This invocable.
      */
-    public function setLabel($label)
+    public function setLabel(string $label = null)
     {
         $this->spy->setLabel($label);
 
@@ -315,7 +315,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt($index = 0)
+    public function eventAt(int $index = 0)
     {
         return $this->spy->eventAt($index);
     }
@@ -353,7 +353,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return CallVerifier           The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt($index = 0)
+    public function callAt(int $index = 0)
     {
         return $this->callVerifierFactory->fromCall($this->spy->callAt($index));
     }

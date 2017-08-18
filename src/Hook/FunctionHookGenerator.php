@@ -39,8 +39,11 @@ class FunctionHookGenerator
      *
      * @return string The source code.
      */
-    public function generateHook($name, $namespace, array $signature)
-    {
+    public function generateHook(
+        string $name,
+        string $namespace,
+        array $signature
+    ) {
         $source = "namespace $namespace;\n\nfunction $name";
         $parameterCount = count($signature);
 

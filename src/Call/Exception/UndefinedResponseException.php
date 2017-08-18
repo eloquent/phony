@@ -23,7 +23,7 @@ final class UndefinedResponseException extends Exception
      *
      * @param string $message The message.
      */
-    public function __construct($message)
+    public function __construct(string $message)
     {
         parent::__construct($message);
     }

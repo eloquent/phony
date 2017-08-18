@@ -24,7 +24,7 @@ final class FunctionSignatureMismatchException extends Exception implements
      *
      * @param string $functionName The function name.
      */
-    public function __construct($functionName)
+    public function __construct(string $functionName)
     {
         $this->functionName = $functionName;
 

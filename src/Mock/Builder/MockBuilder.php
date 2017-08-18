@@ -249,7 +249,7 @@ class MockBuilder
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
      */
-    public function addMethod($name, callable $callback = null)
+    public function addMethod(string $name, callable $callback = null)
     {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
@@ -275,7 +275,7 @@ class MockBuilder
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
      */
-    public function addProperty($name, $value = null)
+    public function addProperty(string $name, $value = null)
     {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
@@ -295,7 +295,7 @@ class MockBuilder
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
      */
-    public function addStaticMethod($name, callable $callback = null)
+    public function addStaticMethod(string $name, callable $callback = null)
     {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
@@ -321,7 +321,7 @@ class MockBuilder
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
      */
-    public function addStaticProperty($name, $value = null)
+    public function addStaticProperty(string $name, $value = null)
     {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
@@ -341,7 +341,7 @@ class MockBuilder
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
      */
-    public function addConstant($name, $value)
+    public function addConstant(string $name, $value = null)
     {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
@@ -360,7 +360,7 @@ class MockBuilder
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
      */
-    public function named($className = null)
+    public function named(string $className = null)
     {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
@@ -447,7 +447,7 @@ class MockBuilder
      * @return ReflectionClass The class.
      * @throws MockException   If the mock generation fails.
      */
-    public function build($createNew = false)
+    public function build(bool $createNew = false)
     {
         if (!$this->class) {
             $this->class = $this->factory
@@ -467,7 +467,7 @@ class MockBuilder
      * @return string        The class name.
      * @throws MockException If the mock generation fails.
      */
-    public function className($createNew = false)
+    public function className(bool $createNew = false)
     {
         return $this->build($createNew)->getName();
     }

@@ -78,9 +78,9 @@ class GeneratorAnswerBuilder
     public function callsWith(
         callable $callback,
         $arguments = [],
-        $prefixSelf = null,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = null,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     ) {
         if (null === $prefixSelf) {
             $parameters = $this->invocableInspector
@@ -143,11 +143,11 @@ class GeneratorAnswerBuilder
      * @return $this This builder.
      */
     public function callsArgumentWith(
-        $index = 0,
+        int $index = 0,
         $arguments = [],
-        $prefixSelf = false,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = false,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     ) {
         $invoker = $this->invoker;
 
@@ -344,7 +344,7 @@ class GeneratorAnswerBuilder
      *
      * @return Stub The stub.
      */
-    public function returnsArgument($index = 0)
+    public function returnsArgument(int $index = 0)
     {
         $this->returnsArgument = $index;
 

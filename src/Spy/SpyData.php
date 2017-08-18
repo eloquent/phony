@@ -43,7 +43,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      */
     public function __construct(
         callable $callback = null,
-        $label,
+        string $label = null,
         CallFactory $callFactory,
         Invoker $invoker,
         GeneratorSpyFactory $generatorSpyFactory,
@@ -79,7 +79,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return $this This spy.
      */
-    public function setUseGeneratorSpies($useGeneratorSpies)
+    public function setUseGeneratorSpies(bool $useGeneratorSpies)
     {
         $this->useGeneratorSpies = $useGeneratorSpies;
 
@@ -103,7 +103,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return $this This spy.
      */
-    public function setUseIterableSpies($useIterableSpies)
+    public function setUseIterableSpies(bool $useIterableSpies)
     {
         $this->useIterableSpies = $useIterableSpies;
 
@@ -275,7 +275,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt($index = 0)
+    public function eventAt(int $index = 0)
     {
         if (!$this->normalizeIndex(count($this->calls), $index, $normalized)) {
             throw new UndefinedEventException($index);
@@ -325,7 +325,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt($index = 0)
+    public function callAt(int $index = 0)
     {
         if (!$this->normalizeIndex(count($this->calls), $index, $normalized)) {
             throw new UndefinedCallException($index);

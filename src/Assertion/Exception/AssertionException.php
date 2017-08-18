@@ -88,7 +88,7 @@ final class AssertionException extends Exception
      *
      * @param string $description The failure description.
      */
-    public function __construct($description)
+    public function __construct(string $description)
     {
         parent::__construct($description);
 

@@ -166,7 +166,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt($index = 0)
+    public function eventAt(int $index = 0)
     {
         if (!$this->normalizeIndex($this->eventCount, $index, $normalized)) {
             throw new UndefinedEventException($index);
@@ -217,7 +217,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt($index = 0)
+    public function callAt(int $index = 0)
     {
         if (!$this->normalizeIndex($this->callCount, $index, $normalized)) {
             throw new UndefinedCallException($index);
@@ -283,7 +283,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return $this This verifier.
      */
-    public function times($times)
+    public function times(int $times)
     {
         return $this->between($times, $times);
     }
@@ -296,9 +296,9 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return $this This verifier.
      */
-    public function atLeast($minimum)
+    public function atLeast(int $minimum)
     {
-        return $this->between($minimum, null);
+        return $this->between($minimum, -1);
     }
 
     /**
@@ -309,22 +309,22 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return $this This verifier.
      */
-    public function atMost($maximum)
+    public function atMost(int $maximum)
     {
-        return $this->between(null, $maximum);
+        return $this->between(0, $maximum);
     }
 
     /**
      * Requires that the next verification matches a number of times greater
      * than or equal to $minimum, and less than or equal to $maximum.
      *
-     * @param int      $minimum The minimum match count.
-     * @param int|null $maximum The maximum match count, or null for no maximum.
+     * @param int $minimum The minimum match count.
+     * @param int $maximum The maximum match count.
      *
      * @return $this                       This verifier.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function between($minimum, $maximum)
+    public function between(int $minimum, int $maximum)
     {
         $this->cardinality = new Cardinality($minimum, $maximum);
 

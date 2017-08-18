@@ -40,8 +40,8 @@ abstract class GeneratorAnswerBuilderDetail
         array &$requests,
         Throwable &$exception = null,
         &$returnValue,
-        &$returnsArgument,
-        &$returnsSelf,
+        int &$returnsArgument = null,
+        bool &$returnsSelf,
         Invoker $invoker
     ) {
         return function ($self, $arguments) use (

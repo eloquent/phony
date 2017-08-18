@@ -23,7 +23,7 @@ interface WrappedInvocable extends Invocable
      *
      * @return $this This invocable.
      */
-    public function setLabel($label);
+    public function setLabel(string $label = null);
 
     /**
      * Get the label.

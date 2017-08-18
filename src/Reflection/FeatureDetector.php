@@ -70,7 +70,7 @@ class FeatureDetector
      * @param string   $feature  The feature.
      * @param callable $callback The feature detection callback.
      */
-    public function addFeature($feature, callable $callback)
+    public function addFeature(string $feature, callable $callback)
     {
         $this->features[$feature] = $callback;
     }
@@ -104,7 +104,7 @@ class FeatureDetector
      * @return bool                      True if supported.
      * @throws UndefinedFeatureException If the specified feature is undefined.
      */
-    public function isSupported($feature)
+    public function isSupported(string $feature)
     {
         if (!array_key_exists($feature, $this->supported)) {
             if (!isset($this->features[$feature])) {
@@ -236,7 +236,7 @@ class FeatureDetector
      *
      * @return bool True if the syntax is valid.
      */
-    public function checkStatement($source)
+    public function checkStatement(string $source)
     {
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
         $result = false;

@@ -32,8 +32,11 @@ class EqualToMatcher implements Matcher
      * @param bool     $useSubstitution True to use substitution for wrapper types.
      * @param Exporter $exporter        The exporter to use.
      */
-    public function __construct($value, $useSubstitution, Exporter $exporter)
-    {
+    public function __construct(
+        $value,
+        bool $useSubstitution,
+        Exporter $exporter
+    ) {
         $this->value = $value;
         $this->useSubstitution = $useSubstitution;
         $this->exporter = $exporter;

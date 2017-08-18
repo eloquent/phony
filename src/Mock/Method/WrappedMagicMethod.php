@@ -33,9 +33,9 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      * @param mixed            $returnValue     The return value.
      */
     public function __construct(
-        $name,
+        string $name,
         ReflectionMethod $callMagicMethod,
-        $isUncallable,
+        bool $isUncallable,
         Handle $handle,
         $returnValue
     ) {

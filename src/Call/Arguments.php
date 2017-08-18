@@ -118,7 +118,7 @@ class Arguments implements Countable, IteratorAggregate
      *
      * @return bool True if the argument exists.
      */
-    public function has($index = 0)
+    public function has(int $index = 0)
     {
         if ($this->normalizeIndex($this->count, $index)) {
             return true;
@@ -138,7 +138,7 @@ class Arguments implements Countable, IteratorAggregate
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function get($index = 0)
+    public function get(int $index = 0)
     {
         if (!$this->normalizeIndex($this->count, $index, $normalized)) {
             throw new UndefinedArgumentException($index);

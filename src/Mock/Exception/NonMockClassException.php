@@ -26,7 +26,7 @@ final class NonMockClassException extends Exception implements
      * @param string         $className The class name.
      * @param Throwable|null $cause     The cause, if available.
      */
-    public function __construct($className, Throwable $cause = null)
+    public function __construct(string $className, Throwable $cause = null)
     {
         $this->className = $className;
 

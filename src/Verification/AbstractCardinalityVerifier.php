@@ -81,7 +81,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function times($times)
+    public function times(int $times)
     {
         $this->cardinality = new Cardinality($times, $times);
 
@@ -96,9 +96,9 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function atLeast($minimum)
+    public function atLeast(int $minimum)
     {
-        $this->cardinality = new Cardinality($minimum, null);
+        $this->cardinality = new Cardinality($minimum, -1);
 
         return $this;
     }
@@ -111,7 +111,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function atMost($maximum)
+    public function atMost(int $maximum)
     {
         $this->cardinality = new Cardinality(0, $maximum);
 
@@ -122,13 +122,13 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      * Requires that the next verification matches a number of times greater
      * than or equal to $minimum, and less than or equal to $maximum.
      *
-     * @param int      $minimum The minimum match count.
-     * @param int|null $maximum The maximum match count, or null for no maximum.
+     * @param int $minimum The minimum match count.
+     * @param int $maximum The maximum match count.
      *
      * @return $this                       This verifier.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function between($minimum, $maximum)
+    public function between(int $minimum, int $maximum)
     {
         $this->cardinality = new Cardinality($minimum, $maximum);
 

@@ -114,7 +114,7 @@ class FacadeDriver
         $wildcardMatcher = new WildcardMatcher(
             $anyMatcher,
             0,
-            null
+            -1
         );
         $matcherFactory = new MatcherFactory(
             $anyMatcher,

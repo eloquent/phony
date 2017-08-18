@@ -70,7 +70,7 @@ class MethodDefinitionCollection
      *
      * @return string|null The canonical method name, or null if no such method exists.
      */
-    public function methodName($name)
+    public function methodName(string $name)
     {
         $name = strtolower($name);
 

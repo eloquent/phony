@@ -38,7 +38,7 @@ class CardinalityTest extends TestCase
         $this->subject = new Cardinality();
 
         $this->assertSame(1, $this->subject->minimum());
-        $this->assertNull($this->subject->maximum());
+        $this->assertSame(-1, $this->subject->maximum());
         $this->assertFalse($this->subject->isNever());
         $this->assertFalse($this->subject->isAlways());
     }
@@ -70,7 +70,7 @@ class CardinalityTest extends TestCase
     public function testConstructorFailureInvalidIsAny()
     {
         $this->expectException(InvalidCardinalityStateException::class);
-        new Cardinality(0, null);
+        new Cardinality(0, -1);
     }
 
     public function testIsNever()
@@ -97,15 +97,15 @@ class CardinalityTest extends TestCase
 
     public function matchesData()
     {
-        //                                         minimum maximum isAlways count  maximumCount expected
+        //                                    minimum maximum isAlways count  maximumCount expected
         return [
-            'Less than minimum'           => [1,      null,   false,   0,     1,           false],
-            'Equal to minimum'            => [1,      null,   false,   1,     1,           true],
-            'Greater than minimum'        => [1,      null,   false,   2,     1,           true],
+            'Less than minimum'           => [1,      -1,     false,   0,     1,           false],
+            'Equal to minimum'            => [1,      -1,     false,   1,     1,           true],
+            'Greater than minimum'        => [1,      -1,     false,   2,     1,           true],
 
-            'Less than maximum'           => [null,   1,      false,   0,     1,           true],
-            'Equal to maximum'            => [null,   1,      false,   1,     1,           true],
-            'Greater than maximum'        => [null,   1,      false,   2,     1,           false],
+            'Less than maximum'           => [0,      1,      false,   0,     1,           true],
+            'Equal to maximum'            => [0,      1,      false,   1,     1,           true],
+            'Greater than maximum'        => [0,      1,      false,   2,     1,           false],
 
             'Less than bounds minimum'    => [1,      3,      false,   0,     1,           false],
             'Equal to bounds minimum'     => [1,      3,      false,   1,     1,           true],
@@ -113,13 +113,13 @@ class CardinalityTest extends TestCase
             'Equal to bounds maximum'     => [1,      3,      false,   3,     1,           true],
             'Greater than bounds maximum' => [1,      3,      false,   4,     1,           false],
 
-            'Boolean true'                => [1,      null,   false,   true,  1,           true],
-            'Boolean false'               => [1,      null,   false,   false, 1,           false],
-            'Boolean true with never'     => [null,   0,      false,   true,  1,           false],
-            'Boolean false with never'    => [null,   0,      false,   false, 1,           true],
+            'Boolean true'                => [1,      -1,     false,   true,  1,           true],
+            'Boolean false'               => [1,      -1,     false,   false, 1,           false],
+            'Boolean true with never'     => [0,      0,      false,   true,  1,           false],
+            'Boolean false with never'    => [0,      0,      false,   false, 1,           true],
 
-            'Always'                      => [null,   3,      true,    2,     2,           true],
-            'Not always'                  => [null,   3,      true,    2,     3,           false],
+            'Always'                      => [0,      3,      true,    2,     2,           true],
+            'Not always'                  => [0,      3,      true,    2,     3,           false],
         ];
     }
 

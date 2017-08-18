@@ -31,9 +31,9 @@ class CallRequest
     public function __construct(
         callable $callback,
         Arguments $arguments,
-        $prefixSelf,
-        $suffixArgumentsObject,
-        $suffixArguments
+        bool $prefixSelf,
+        bool $suffixArgumentsObject,
+        bool $suffixArguments
     ) {
         $this->callback = $callback;
         $this->arguments = $arguments;

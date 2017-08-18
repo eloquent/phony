@@ -100,7 +100,7 @@ interface Call extends Event, EventCollection
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function argument($index = 0);
+    public function argument(int $index = 0);
 
     /**
      * Get the returned value.

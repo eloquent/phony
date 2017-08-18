@@ -163,7 +163,7 @@ class StubVerifierFactory
      * @return StubVerifier             The newly created stub verifier.
      * @throws InvalidArgumentException If an invalid function name or namespace is specified.
      */
-    public function createGlobal($function, $namespace)
+    public function createGlobal(string $function, string $namespace)
     {
         if (false !== strpos($function, '\\')) {
             throw new InvalidArgumentException(

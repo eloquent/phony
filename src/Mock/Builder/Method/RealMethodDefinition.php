@@ -25,7 +25,7 @@ class RealMethodDefinition implements MethodDefinition
      * @param ReflectionMethod $method The method.
      * @param string           $name   The name.
      */
-    public function __construct(ReflectionMethod $method, $name)
+    public function __construct(ReflectionMethod $method, string $name)
     {
         $this->method = $method;
         $this->name = $name;

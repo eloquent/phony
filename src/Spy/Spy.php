@@ -27,7 +27,7 @@ interface Spy extends WrappedInvocable, EventCollection
      *
      * @return $this This spy.
      */
-    public function setUseGeneratorSpies($useGeneratorSpies);
+    public function setUseGeneratorSpies(bool $useGeneratorSpies);
 
     /**
      * Returns true if this spy uses generator spies.
@@ -43,7 +43,7 @@ interface Spy extends WrappedInvocable, EventCollection
      *
      * @return $this This spy.
      */
-    public function setUseIterableSpies($useIterableSpies);
+    public function setUseIterableSpies(bool $useIterableSpies);
 
     /**
      * Returns true if this spy uses iterable spies.

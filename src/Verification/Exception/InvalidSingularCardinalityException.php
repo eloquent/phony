@@ -11,6 +11,7 @@
 
 namespace Eloquent\Phony\Verification\Exception;
 
+use Eloquent\Phony\Verification\Cardinality;
 use Exception;
 
 /**
@@ -23,9 +24,9 @@ final class InvalidSingularCardinalityException extends Exception implements
     /**
      * Construct a new invalid singular cardinality exception.
      *
-     * @param tuple<int,int|null> $cardinality The cardinality.
+     * @param Cardinality $cardinality The cardinality.
      */
-    public function __construct($cardinality)
+    public function __construct(Cardinality $cardinality)
     {
         $this->cardinality = $cardinality;
 
@@ -38,7 +39,7 @@ final class InvalidSingularCardinalityException extends Exception implements
     /**
      * Get the cardinality.
      *
-     * @return tuple<int,int|null> The cardinality.
+     * @return Cardinality The cardinality.
      */
     public function cardinality()
     {

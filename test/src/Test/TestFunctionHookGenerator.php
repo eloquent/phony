@@ -20,8 +20,11 @@ class TestFunctionHookGenerator extends FunctionHookGenerator
         $this->source = $source;
     }
 
-    public function generateHook($name, $namespace, array $signature)
-    {
+    public function generateHook(
+        string $name,
+        string $namespace,
+        array $signature
+    ) {
         return $this->source;
     }
 

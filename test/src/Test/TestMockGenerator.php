@@ -30,8 +30,10 @@ class TestMockGenerator extends MockGenerator
         );
     }
 
-    public function generate(MockDefinition $definition, $className = null)
-    {
+    public function generate(
+        MockDefinition $definition,
+        string $className = null
+    ) {
         return $this->source;
     }
 

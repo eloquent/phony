@@ -139,7 +139,7 @@ function spy(callable $callback = null)
  *
  * @return SpyVerifier The new spy.
  */
-function spyGlobal($function, $namespace)
+function spyGlobal(string $function, string $namespace)
 {
     return FacadeDriver::instance()->spyVerifierFactory
         ->createGlobal($function, $namespace);
@@ -170,7 +170,7 @@ function stub(callable $callback = null)
  *
  * @return StubVerifier The new stub.
  */
-function stubGlobal($function, $namespace)
+function stubGlobal(string $function, string $namespace)
 {
     return FacadeDriver::instance()->stubVerifierFactory
         ->createGlobal($function, $namespace);
@@ -266,16 +266,18 @@ function equalTo($value)
 /**
  * Create a new matcher that matches multiple arguments.
  *
- * @param mixed    $value            The value to check for each argument.
- * @param int      $minimumArguments The minimum number of arguments.
- * @param int|null $maximumArguments The maximum number of arguments.
+ * Negative values for $maximumArguments are treated as "no maximum".
+ *
+ * @param mixed $value            The value to check for each argument.
+ * @param int   $minimumArguments The minimum number of arguments.
+ * @param int   $maximumArguments The maximum number of arguments.
  *
  * @return WildcardMatcher The newly created wildcard matcher.
  */
 function wildcard(
     $value = null,
-    $minimumArguments = 0,
-    $maximumArguments = null
+    int $minimumArguments = 0,
+    int $maximumArguments = -1
 ) {
     return FacadeDriver::instance()->matcherFactory
         ->wildcard($value, $minimumArguments, $maximumArguments);
@@ -290,7 +292,7 @@ function wildcard(
  *
  * @return int The previous depth.
  */
-function setExportDepth($depth)
+function setExportDepth(int $depth)
 {
     return FacadeDriver::instance()->exporter->setDepth($depth);
 }
@@ -302,7 +304,7 @@ function setExportDepth($depth)
  *
  * @param bool|null $useColor True to use color.
  */
-function setUseColor($useColor)
+function setUseColor(bool $useColor = null)
 {
     $facade = FacadeDriver::instance();
 

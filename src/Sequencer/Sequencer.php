@@ -23,7 +23,7 @@ class Sequencer
      *
      * @return Sequencer The sequencer.
      */
-    public static function sequence($name)
+    public static function sequence(string $name)
     {
         if (!isset(self::$instances[$name])) {
             self::$instances[$name] = new self();
@@ -37,7 +37,7 @@ class Sequencer
      *
      * @param int $current The sequence number.
      */
-    public function set($current)
+    public function set(int $current)
     {
         $this->current = $current;
     }

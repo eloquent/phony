@@ -60,7 +60,7 @@ class MatcherVerifier
 
                 $isMatch =
                     (
-                        null === $maximumArguments ||
+                        $maximumArguments < 0 ||
                         $matchCount <= $maximumArguments
                     ) &&
                     $matchCount >= $matcher->minimumArguments();
@@ -127,7 +127,7 @@ class MatcherVerifier
                     ++$index;
                 }
 
-                if (null === $maximumArguments) {
+                if ($maximumArguments < 0) {
                     while (
                         $index < $argumentCount &&
                         $innerMatcher->matches($arguments[$index])

@@ -23,7 +23,7 @@ final class UndefinedFeatureException extends Exception
      *
      * @param string $feature The feature.
      */
-    public function __construct($feature)
+    public function __construct(string $feature)
     {
         $this->feature = $feature;
 

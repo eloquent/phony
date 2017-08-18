@@ -11,13 +11,14 @@
 
 namespace Eloquent\Phony\Verification\Exception;
 
+use Eloquent\Phony\Verification\Cardinality;
 use PHPUnit\Framework\TestCase;
 
 class InvalidSingularCardinalityExceptionTest extends TestCase
 {
     public function testException()
     {
-        $cardinality = [2, 3];
+        $cardinality = new Cardinality();
         $exception = new InvalidSingularCardinalityException($cardinality);
 
         $this->assertSame($cardinality, $exception->cardinality());

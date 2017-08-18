@@ -25,7 +25,7 @@ interface Exporter
      *
      * @return int The previous depth.
      */
-    public function setDepth($depth);
+    public function setDepth(int $depth);
 
     /**
      * Export the supplied value.
@@ -37,7 +37,7 @@ interface Exporter
      *
      * @return string The exported value.
      */
-    public function export(&$value, $depth = null);
+    public function export(&$value, int $depth = null);
 
     /**
      * Export a string representation of a callable value.

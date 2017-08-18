@@ -88,7 +88,7 @@ class HandleFactory
      * @return InstanceHandle The newly created handle.
      * @throws MockException  If the supplied mock is invalid.
      */
-    public function instanceHandle($mock, $label = null)
+    public function instanceHandle($mock, string $label = null)
     {
         if ($mock instanceof InstanceHandle) {
             return $mock;

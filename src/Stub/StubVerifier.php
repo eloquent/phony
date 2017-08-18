@@ -139,7 +139,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This invocable.
      */
-    public function setLabel($label)
+    public function setLabel(string $label = null)
     {
         $this->stub->setLabel($label);
 
@@ -202,9 +202,9 @@ class StubVerifier extends SpyVerifier implements Stub
     public function callsWith(
         callable $callback,
         $arguments = [],
-        $prefixSelf = null,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = null,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     ) {
         $this->stub->callsWith(
             $callback,
@@ -253,11 +253,11 @@ class StubVerifier extends SpyVerifier implements Stub
      * @return $this This stub.
      */
     public function callsArgumentWith(
-        $index = 0,
+        int $index = 0,
         $arguments = [],
-        $prefixSelf = false,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = false,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     ) {
         $this->stub->callsArgumentWith(
             $index,
@@ -324,9 +324,9 @@ class StubVerifier extends SpyVerifier implements Stub
     public function doesWith(
         callable $callback,
         $arguments = [],
-        $prefixSelf = null,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = null,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     ) {
         $this->stub->doesWith(
             $callback,
@@ -351,9 +351,9 @@ class StubVerifier extends SpyVerifier implements Stub
      */
     public function forwards(
         $arguments = [],
-        $prefixSelf = null,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = null,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     ) {
         $this->stub->forwards(
             $arguments,
@@ -389,7 +389,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function returnsArgument($index = 0)
+    public function returnsArgument(int $index = 0)
     {
         $this->stub->returnsArgument($index);
 

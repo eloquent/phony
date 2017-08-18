@@ -90,7 +90,7 @@ interface Handle
      * @return StubVerifier  The stub verifier.
      * @throws MockException If the stub does not exist.
      */
-    public function stub($name, $isNewRule = true);
+    public function stub(string $name, bool $isNewRule = true);
 
     /**
      * Get a stub verifier.
@@ -102,7 +102,7 @@ interface Handle
      * @return StubVerifier  The stub verifier.
      * @throws MockException If the stub does not exist.
      */
-    public function __get($name);
+    public function __get(string $name);
 
     /**
      * Checks if there was no interaction with the mock.
@@ -141,7 +141,7 @@ interface Handle
      * @return Spy           The spy.
      * @throws MockException If the spy does not exist.
      */
-    public function spy($name);
+    public function spy(string $name);
 
     /**
      * Get the handle state.

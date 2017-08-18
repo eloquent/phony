@@ -159,7 +159,7 @@ class EventSequence implements EventCollection
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt($index = 0)
+    public function eventAt(int $index = 0)
     {
         if (!$this->normalizeIndex($this->eventCount, $index, $normalized)) {
             throw new UndefinedEventException($index);
@@ -210,7 +210,7 @@ class EventSequence implements EventCollection
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt($index = 0)
+    public function callAt(int $index = 0)
     {
         if (!$this->normalizeIndex($this->callCount, $index, $normalized)) {
             throw new UndefinedCallException($index);

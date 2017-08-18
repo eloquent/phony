@@ -22,7 +22,7 @@ abstract class AbstractEvent implements Event
      * @param int   $sequenceNumber The sequence number.
      * @param float $time           The time at which the event occurred, in seconds since the Unix epoch.
      */
-    public function __construct($sequenceNumber, $time)
+    public function __construct(int $sequenceNumber, float $time)
     {
         $this->sequenceNumber = $sequenceNumber;
         $this->time = $time;

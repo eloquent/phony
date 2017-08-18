@@ -27,8 +27,8 @@ class CalledEvent extends AbstractCallEvent
      * @param Arguments $arguments      The arguments.
      */
     public function __construct(
-        $sequenceNumber,
-        $time,
+        int $sequenceNumber,
+        float $time,
         callable $callback,
         Arguments $arguments
     ) {

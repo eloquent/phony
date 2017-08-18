@@ -31,9 +31,9 @@ final class MockGenerationFailedException extends Exception implements
      * @param Throwable|null           $cause      The cause, if available.
      */
     public function __construct(
-        $className,
+        string $className,
         MockDefinition $definition,
-        $source,
+        string $source,
         array $error = null,
         Throwable $cause = null
     ) {

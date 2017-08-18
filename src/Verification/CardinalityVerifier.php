@@ -53,7 +53,7 @@ interface CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function times($times);
+    public function times(int $times);
 
     /**
      * Requires that the next verification matches a number of times greater
@@ -63,7 +63,7 @@ interface CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function atLeast($minimum);
+    public function atLeast(int $minimum);
 
     /**
      * Requires that the next verification matches a number of times less than
@@ -73,19 +73,19 @@ interface CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function atMost($maximum);
+    public function atMost(int $maximum);
 
     /**
      * Requires that the next verification matches a number of times greater
      * than or equal to $minimum, and less than or equal to $maximum.
      *
-     * @param int      $minimum The minimum match count.
-     * @param int|null $maximum The maximum match count, or null for no maximum.
+     * @param int $minimum The minimum match count.
+     * @param int $maximum The maximum match count.
      *
      * @return $this                       This verifier.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function between($minimum, $maximum);
+    public function between(int $minimum, int $maximum);
 
     /**
      * Requires that the next verification matches for all possible items.

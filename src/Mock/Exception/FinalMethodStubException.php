@@ -25,7 +25,7 @@ final class FinalMethodStubException extends Exception implements
      * @param string $className The class name.
      * @param string $name      The method name.
      */
-    public function __construct($className, $name)
+    public function __construct(string $className, string $name)
     {
         $this->className = $className;
         $this->name = $name;

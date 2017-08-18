@@ -30,9 +30,9 @@ final class FunctionHookGenerationFailedException extends Exception implements
      * @param Throwable|null           $cause        The cause, if available.
      */
     public function __construct(
-        $functionName,
+        string $functionName,
         callable $callback,
-        $source,
+        string $source,
         array $error = null,
         Throwable $cause = null
     ) {

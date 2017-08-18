@@ -51,7 +51,7 @@ class DifferenceEngine
      *
      * @param bool|null $useColor True to use color.
      */
-    public function setUseColor($useColor)
+    public function setUseColor(bool $useColor = null)
     {
         if (null === $useColor) {
             $useColor = $this->featureDetector->isSupported('stdout.ansi');
@@ -80,7 +80,7 @@ class DifferenceEngine
      *
      * @return string The difference.
      */
-    public function difference($from, $to)
+    public function difference(string $from, string $to)
     {
         $flags = PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY;
         $from = preg_split('/(\W+)/u', $from, -1, $flags);

@@ -4960,14 +4960,16 @@ Create a new ["equal to" matcher].
 
 ----
 
-> *[wildcard][wildcard-api]* [**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = null) *(with [use function])*<br />
-> *[wildcard][wildcard-api]* x\\[**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = null) *(without [use function])*<br />
-> *[wildcard][wildcard-api]* Phony::[**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = null) *(static)*
+> *[wildcard][wildcard-api]* [**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = -1) *(with [use function])*<br />
+> *[wildcard][wildcard-api]* x\\[**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = -1) *(without [use function])*<br />
+> *[wildcard][wildcard-api]* Phony::[**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = -1) *(static)*
 
 Create a new ["wildcard" matcher].
 
 *The `$value` parameter accepts a value, or a [matcher], to check against each
 argument that the wildcard matches.*
+
+*Negative values for `$maximumArguments` represent "no maximum".*
 
 <a name="facade.inOrder" />
 
@@ -8080,9 +8082,11 @@ Get the minimum number of arguments to match.
 
 ----
 
-> *int|null* $wildcard->[**maximumArguments**](#wildcard.maximumArguments)()
+> *int* $wildcard->[**maximumArguments**](#wildcard.maximumArguments)()
 
 Get the maximum number of arguments to match.
+
+*Negative values are used to represent "no maximum".*
 
 *See [The "wildcard" matcher].*
 

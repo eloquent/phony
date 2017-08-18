@@ -74,7 +74,7 @@ class MockFactory
      */
     public function createMockClass(
         MockDefinition $definition,
-        $createNew = false
+        bool $createNew = false
     ) {
         $signature = $definition->signature();
 

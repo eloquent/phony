@@ -63,7 +63,7 @@ class InlineExporter implements Exporter
      * @param InvocableInspector $invocableInspector The invocable inspector to use.
      */
     public function __construct(
-        $depth,
+        int $depth,
         Sequencer $objectSequencer,
         InvocableInspector $invocableInspector
     ) {
@@ -90,7 +90,7 @@ class InlineExporter implements Exporter
      *
      * @return int The previous depth.
      */
-    public function setDepth($depth)
+    public function setDepth(int $depth)
     {
         $oldDepth = $this->depth;
         $this->depth = $depth;
@@ -108,7 +108,7 @@ class InlineExporter implements Exporter
      *
      * @return string The exported value.
      */
-    public function export(&$value, $depth = null)
+    public function export(&$value, int $depth = null)
     {
         if (null === $depth) {
             $depth = $this->depth;

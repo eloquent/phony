@@ -27,8 +27,8 @@ class CustomMethodDefinition implements MethodDefinition
      * @param ReflectionFunctionAbstract $method   The function implementation.
      */
     public function __construct(
-        $isStatic,
-        $name,
+        bool $isStatic,
+        string $name,
         callable $callback,
         ReflectionFunctionAbstract $method
     ) {

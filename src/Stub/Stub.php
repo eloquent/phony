@@ -91,9 +91,9 @@ interface Stub extends WrappedInvocable
     public function callsWith(
         callable $callback,
         $arguments = [],
-        $prefixSelf = null,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = null,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     );
 
     /**
@@ -127,11 +127,11 @@ interface Stub extends WrappedInvocable
      * @return $this This stub.
      */
     public function callsArgumentWith(
-        $index = 0,
+        int $index = 0,
         $arguments = [],
-        $prefixSelf = false,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = false,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     );
 
     /**
@@ -174,9 +174,9 @@ interface Stub extends WrappedInvocable
     public function doesWith(
         callable $callback,
         $arguments = [],
-        $prefixSelf = null,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = null,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     );
 
     /**
@@ -191,9 +191,9 @@ interface Stub extends WrappedInvocable
      */
     public function forwards(
         $arguments = [],
-        $prefixSelf = null,
-        $suffixArgumentsObject = false,
-        $suffixArguments = true
+        bool $prefixSelf = null,
+        bool $suffixArgumentsObject = false,
+        bool $suffixArguments = true
     );
 
     /**
@@ -215,7 +215,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function returnsArgument($index = 0);
+    public function returnsArgument(int $index = 0);
 
     /**
      * Add an answer that returns the self value.

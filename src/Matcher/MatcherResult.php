@@ -24,7 +24,7 @@ class MatcherResult
      * @param array<bool> $argumentMatches The argument results.
      */
     public function __construct(
-        $isMatch,
+        bool $isMatch,
         array $matcherMatches,
         array $argumentMatches
     ) {

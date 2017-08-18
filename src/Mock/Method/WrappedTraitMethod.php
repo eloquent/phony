@@ -31,7 +31,7 @@ class WrappedTraitMethod extends AbstractWrappedMethod
      */
     public function __construct(
         ReflectionMethod $callTraitMethod,
-        $traitName,
+        string $traitName,
         ReflectionMethod $method,
         Handle $handle
     ) {

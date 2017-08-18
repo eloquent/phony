@@ -142,7 +142,7 @@ abstract class AbstractFacade
      *
      * @return SpyVerifier The new spy.
      */
-    public static function spyGlobal($function, $namespace)
+    public static function spyGlobal(string $function, string $namespace)
     {
         return static::driver()->spyVerifierFactory
             ->createGlobal($function, $namespace);
@@ -173,7 +173,7 @@ abstract class AbstractFacade
      *
      * @return StubVerifier The new stub.
      */
-    public static function stubGlobal($function, $namespace)
+    public static function stubGlobal(string $function, string $namespace)
     {
         return static::driver()->stubVerifierFactory
             ->createGlobal($function, $namespace);
@@ -266,16 +266,18 @@ abstract class AbstractFacade
     /**
      * Create a new matcher that matches multiple arguments.
      *
-     * @param mixed    $value            The value to check for each argument.
-     * @param int      $minimumArguments The minimum number of arguments.
-     * @param int|null $maximumArguments The maximum number of arguments.
+     * Negative values for $maximumArguments are treated as "no maximum".
+     *
+     * @param mixed $value            The value to check for each argument.
+     * @param int   $minimumArguments The minimum number of arguments.
+     * @param int   $maximumArguments The maximum number of arguments.
      *
      * @return WildcardMatcher The newly created wildcard matcher.
      */
     public static function wildcard(
         $value = null,
-        $minimumArguments = 0,
-        $maximumArguments = null
+        int $minimumArguments = 0,
+        int $maximumArguments = -1
     ) {
         return static::driver()->matcherFactory
             ->wildcard($value, $minimumArguments, $maximumArguments);
@@ -290,7 +292,7 @@ abstract class AbstractFacade
      *
      * @return int The previous depth.
      */
-    public static function setExportDepth($depth)
+    public static function setExportDepth(int $depth)
     {
         return static::driver()->exporter->setDepth($depth);
     }
@@ -302,7 +304,7 @@ abstract class AbstractFacade
      *
      * @param bool|null $useColor True to use color.
      */
-    public static function setUseColor($useColor)
+    public static function setUseColor(bool $useColor = null)
     {
         static::driver()->assertionRenderer->setUseColor($useColor);
         static::driver()->differenceEngine->setUseColor($useColor);

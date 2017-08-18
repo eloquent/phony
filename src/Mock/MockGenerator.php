@@ -112,7 +112,7 @@ class MockGenerator
      */
     public function generate(
         MockDefinition $definition,
-        $className = null
+        string $className = null
     ) {
         if (null === $className) {
             $className = $this->generateClassName($definition);

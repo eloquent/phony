@@ -142,7 +142,7 @@ class SpyVerifierFactory
      * @return SpyVerifier              The newly created spy verifier.
      * @throws InvalidArgumentException If an invalid function name or namespace is specified.
      */
-    public function createGlobal($function, $namespace)
+    public function createGlobal(string $function, string $namespace)
     {
         if (false !== strpos($function, '\\')) {
             throw new InvalidArgumentException(

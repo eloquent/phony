@@ -174,7 +174,7 @@ abstract class AbstractHandle implements Handle
      * @return StubVerifier  The stub verifier.
      * @throws MockException If the stub does not exist.
      */
-    public function stub($name, $isNewRule = true)
+    public function stub(string $name, bool $isNewRule = true)
     {
         $key = strtolower($name);
 
@@ -201,7 +201,7 @@ abstract class AbstractHandle implements Handle
      * @return StubVerifier  The stub verifier.
      * @throws MockException If the stub does not exist.
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         $key = strtolower($name);
 
@@ -222,7 +222,7 @@ abstract class AbstractHandle implements Handle
      * @return Spy           The spy.
      * @throws MockException If the spy does not exist.
      */
-    public function spy($name)
+    public function spy(string $name)
     {
         return $this->stub($name)->spy();
     }
@@ -316,7 +316,7 @@ abstract class AbstractHandle implements Handle
      * @return StubVerifier  The stub verifier.
      * @throws MockException If the method does not exist.
      */
-    protected function createStub($name)
+    protected function createStub(string $name)
     {
         $isMagic = !$this->class->hasMethod($name);
         $callMagicMethod = $this->callMagicMethod;

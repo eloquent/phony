@@ -25,7 +25,7 @@ final class UndefinedEventException extends Exception
      * @param int            $index The index.
      * @param Throwable|null $cause The cause, if available.
      */
-    public function __construct($index, Throwable $cause = null)
+    public function __construct(int $index, Throwable $cause = null)
     {
         $this->index = $index;
 

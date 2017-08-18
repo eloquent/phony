@@ -23,26 +23,28 @@ class Cardinality
     /**
      * Construct a new cardinality.
      *
-     * @param int      $minimum  The minimum.
-     * @param int|null $maximum  The maximum, or null for no maximum.
-     * @param bool     $isAlways True if 'always' should be enabled.
+     * Negative values for $maximum are treated as "no maximum".
+     *
+     * @param int  $minimum  The minimum.
+     * @param int  $maximum  The maximum.
+     * @param bool $isAlways True if 'always' should be enabled.
      *
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function __construct(
-        $minimum = 1,
-        $maximum = null,
-        $isAlways = false
+        int $minimum = 1,
+        int $maximum = -1,
+        bool $isAlways = false
     ) {
-        if ($minimum < 0 || $maximum < 0) {
+        if ($minimum < 0) {
             throw new InvalidCardinalityStateException();
         }
 
-        if (null !== $maximum && $minimum > $maximum) {
+        if ($maximum >= 0 && $minimum > $maximum) {
             throw new InvalidCardinalityStateException();
         }
 
-        if (null === $maximum && !$minimum) {
+        if ($maximum < 0 && !$minimum) {
             throw new InvalidCardinalityStateException();
         }
 
@@ -64,7 +66,7 @@ class Cardinality
     /**
      * Get the maximum.
      *
-     * @return int|null The maximum.
+     * @return int The maximum.
      */
     public function maximum()
     {
@@ -84,10 +86,11 @@ class Cardinality
     /**
      * Turn 'always' on or off.
      *
-     * @param  bool                        $isAlways True to enable 'always'.
+     * @param bool $isAlways True to enable 'always'.
+     *
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function setIsAlways($isAlways)
+    public function setIsAlways(bool $isAlways)
     {
         if ($isAlways && $this->isNever()) {
             throw new InvalidCardinalityStateException();
@@ -114,7 +117,7 @@ class Cardinality
      *
      * @return bool True if the supplied count matches this cardinality.
      */
-    public function matches($count, $maximumCount)
+    public function matches($count, int $maximumCount)
     {
         $count = intval($count);
         $result = true;
@@ -123,7 +126,7 @@ class Cardinality
             $result = false;
         }
 
-        if (null !== $this->maximum && $count > $this->maximum) {
+        if ($this->maximum >= 0 && $count > $this->maximum) {
             $result = false;
         }
 

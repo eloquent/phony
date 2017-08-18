@@ -184,7 +184,7 @@ class SpyVerifierTest extends TestCase
     public function testConstructor()
     {
         $this->assertSame($this->spy, $this->subject->spy());
-        $this->assertEquals(new Cardinality(1, null), $this->subject->cardinality());
+        $this->assertEquals(new Cardinality(1, -1), $this->subject->cardinality());
     }
 
     public function testProxyMethods()
@@ -1917,7 +1917,7 @@ class SpyVerifierTest extends TestCase
         $this->assertEquals(new Cardinality(2, 2), $this->subject->twice()->cardinality());
         $this->assertEquals(new Cardinality(3, 3), $this->subject->thrice()->cardinality());
         $this->assertEquals(new Cardinality(3), $this->subject->atLeast(3)->cardinality());
-        $this->assertEquals(new Cardinality(null, 4), $this->subject->atMost(4)->cardinality());
+        $this->assertEquals(new Cardinality(0, 4), $this->subject->atMost(4)->cardinality());
         $this->assertEquals(new Cardinality(5, 6), $this->subject->between(5, 6)->cardinality());
         $this->assertEquals(new Cardinality(5, 6, true), $this->subject->between(5, 6)->always()->cardinality());
     }

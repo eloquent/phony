@@ -24,7 +24,7 @@ final class ClassExistsException extends Exception implements
      *
      * @param string $className The class name.
      */
-    public function __construct($className)
+    public function __construct(string $className)
     {
         $this->className = $className;
 

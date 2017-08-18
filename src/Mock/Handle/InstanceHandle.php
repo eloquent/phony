@@ -148,7 +148,7 @@ class InstanceHandle extends AbstractHandle
      *
      * @return $this This handle.
      */
-    public function setLabel($label)
+    public function setLabel(string $label = null)
     {
         $this->state->label = $label;
 

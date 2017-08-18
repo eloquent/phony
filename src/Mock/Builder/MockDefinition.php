@@ -41,7 +41,7 @@ class MockDefinition
         array $customStaticMethods,
         array $customStaticProperties,
         array $customConstants,
-        $className
+        string $className = null
     ) {
         $this->types = $types;
         $this->customMethods = $customMethods;

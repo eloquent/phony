@@ -23,7 +23,7 @@ final class UndefinedCallException extends Exception
      *
      * @param int $index The call index.
      */
-    public function __construct($index)
+    public function __construct(int $index)
     {
         $this->index = $index;
 

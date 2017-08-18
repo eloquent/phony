@@ -65,7 +65,7 @@ class MatcherVerifierTest extends TestCase
     {
         $matchers = [
             $this->matcherFactory->equalTo('a'),
-            new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null),
+            new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, -1),
         ];
 
         $this->assertTrue($this->subject->matches($matchers, ['a']));
@@ -80,7 +80,7 @@ class MatcherVerifierTest extends TestCase
     public function testMatchesWithWildcardBeforeValue()
     {
         $matchers = [
-            new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null),
+            new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, -1),
             $this->matcherFactory->equalTo('a'),
         ];
 
@@ -96,7 +96,7 @@ class MatcherVerifierTest extends TestCase
     public function testMatchesWithWildcardBeforeValueGreedy()
     {
         $matchers = [
-            new WildcardMatcher($this->matcherFactory->equalTo('a'), 0, null),
+            new WildcardMatcher($this->matcherFactory->equalTo('a'), 0, -1),
             $this->matcherFactory->equalTo('a'),
         ];
 
@@ -105,7 +105,7 @@ class MatcherVerifierTest extends TestCase
 
     public function testMatchesWithOnlyWildcard()
     {
-        $matchers = [new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null)];
+        $matchers = [new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, -1)];
 
         $this->assertTrue($this->subject->matches($matchers, []));
         $this->assertTrue($this->subject->matches($matchers, ['b']));
@@ -120,7 +120,7 @@ class MatcherVerifierTest extends TestCase
     {
         $matchers = [
             $this->matcherFactory->equalTo('a'),
-            new WildcardMatcher($this->matcherFactory->equalTo('b'), 1, null),
+            new WildcardMatcher($this->matcherFactory->equalTo('b'), 1, -1),
         ];
 
         $this->assertFalse($this->subject->matches($matchers, ['a']));
@@ -197,7 +197,7 @@ class MatcherVerifierTest extends TestCase
     {
         $matchers = [
             $this->matcherFactory->equalTo('a'),
-            new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null),
+            new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, -1),
         ];
 
         $this->assertEquals(
@@ -233,7 +233,7 @@ class MatcherVerifierTest extends TestCase
     public function testExplainWithWildcardBeforeValue()
     {
         $matchers = [
-            new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null),
+            new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, -1),
             $this->matcherFactory->equalTo('a'),
         ];
 
@@ -270,7 +270,7 @@ class MatcherVerifierTest extends TestCase
     public function testExplainWithWildcardBeforeValueGreedy()
     {
         $matchers = [
-            new WildcardMatcher($this->matcherFactory->equalTo('a'), 0, null),
+            new WildcardMatcher($this->matcherFactory->equalTo('a'), 0, -1),
             $this->matcherFactory->equalTo('a'),
         ];
 
@@ -282,7 +282,7 @@ class MatcherVerifierTest extends TestCase
 
     public function testExplainWithOnlyWildcard()
     {
-        $matchers = [new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, null)];
+        $matchers = [new WildcardMatcher($this->matcherFactory->equalTo('b'), 0, -1)];
 
         $this->assertEquals(
             new MatcherResult(true, [true], []),
@@ -318,7 +318,7 @@ class MatcherVerifierTest extends TestCase
     {
         $matchers = [
             $this->matcherFactory->equalTo('a'),
-            new WildcardMatcher($this->matcherFactory->equalTo('b'), 2, null),
+            new WildcardMatcher($this->matcherFactory->equalTo('b'), 2, -1),
         ];
 
         $this->assertEquals(

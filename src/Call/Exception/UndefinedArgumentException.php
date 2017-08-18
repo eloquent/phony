@@ -23,7 +23,7 @@ final class UndefinedArgumentException extends Exception
      *
      * @param int $index The index.
      */
-    public function __construct($index)
+    public function __construct(int $index)
     {
         $this->index = $index;
 
