@@ -6,29 +6,20 @@ matrix:
         - php: 7.1
         - php: 7.2
         - php: nightly
-        - php: hhvm-3.21
+        - php: 7.1
           sudo: required
-          dist: trusty
-          group: edge
-          env: HHVMPHP7=1
-        - php: hhvm-nightly
-          sudo: required
-          dist: trusty
-          group: edge
-          env: HHVMPHP7=1
+          services:
+              - docker
+          env: HHVM=1
     fast_finish: true
     allow_failures:
         - php: nightly
-        - php: hhvm-nightly
-        - env: HHVMPHP7=1
+        - env: HHVM=1
 
 before_install:
     - phpenv config-rm xdebug.ini || true
     - composer config --global github-oauth.github.com $GITHUB_TOKEN
 install: composer install --prefer-dist --no-progress --no-interaction
-before_script:
-  - if [[ "$HHVMPHP7" ]]; then echo hhvm.php7.all=1 >> /etc/hhvm/php.ini; fi
-  - if [[ "$HHVMPHP7" ]]; then echo hhvm.hack.lang.look_for_typechecker=0 >> /etc/hhvm/php.ini; fi
 script: scripts/travis
 after_script: scripts/travis-after
 deploy:
