@@ -100,21 +100,52 @@ class MockBuilderTest extends TestCase
         return $types;
     }
 
-    protected function assertTypes(array $expectedTypes, array $expectedNonTypes, ReflectionClass $actual)
+    protected function assertTypes(array $expectedTypes, array $expectedNonTypes, MockBuilder $actual)
     {
+        $class = $actual->build();
+        $actualRendered = implode('&', array_keys($actual->types()));
+
         foreach ($expectedTypes as $type) {
             if (interface_exists($type)) {
-                $this->assertTrue($actual->implementsInterface($type));
+                $this->assertTrue(
+                    $class->implementsInterface($type),
+                    sprintf(
+                        'Expected %s to implement interface %s.',
+                        var_export($actualRendered, true),
+                        var_export($type, true)
+                    )
+                );
             } else {
-                $this->assertTrue($actual->isSubclassOf($type));
+                $this->assertTrue(
+                    $class->isSubclassOf($type),
+                    sprintf(
+                        'Expected %s to be a sub-class of %s.',
+                        var_export($actualRendered, true),
+                        var_export($type, true)
+                    )
+                );
             }
         }
 
         foreach ($expectedNonTypes as $type) {
             if (interface_exists($type)) {
-                $this->assertFalse($actual->implementsInterface($type));
+                $this->assertFalse(
+                    $class->implementsInterface($type),
+                    sprintf(
+                        'Expected %s to not implement %s.',
+                        var_export($actualRendered, true),
+                        var_export($type, true)
+                    )
+                );
             } else {
-                $this->assertFalse($actual->isSubclassOf($type));
+                $this->assertFalse(
+                    $class->isSubclassOf($type),
+                    sprintf(
+                        'Expected %s to not be a sub-class of %s.',
+                        var_export($actualRendered, true),
+                        var_export($type, true)
+                    )
+                );
             }
         }
     }
@@ -587,7 +618,7 @@ class MockBuilderTest extends TestCase
     {
         $this->setUpWith($typeNames);
 
-        $this->assertTypes($expectedTypes, $expectedNonTypes, $this->subject->build());
+        $this->assertTypes($expectedTypes, $expectedNonTypes, $this->subject);
     }
 
     public function buildThrowablesData()
@@ -641,13 +672,9 @@ class MockBuilderTest extends TestCase
      */
     public function testBuildThrowables($typeNames, $expectedTypes, $expectedNonTypes)
     {
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestIncomplete('Broken under HHVM.');
-        }
-
         $this->setUpWith($typeNames);
 
-        $this->assertTypes($expectedTypes, $expectedNonTypes, $this->subject->build());
+        $this->assertTypes($expectedTypes, $expectedNonTypes, $this->subject);
     }
 
     public function buildDateTimesData()
@@ -703,7 +730,7 @@ class MockBuilderTest extends TestCase
     {
         $this->setUpWith($typeNames);
 
-        $this->assertTypes($expectedTypes, $expectedNonTypes, $this->subject->build());
+        $this->assertTypes($expectedTypes, $expectedNonTypes, $this->subject);
     }
 
     public function testBuildWithReflectorInterface()

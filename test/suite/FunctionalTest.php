@@ -628,10 +628,6 @@ class FunctionalTest extends TestCase
 
     public function testIterableInterfaceMockingWithPDOStatement()
     {
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestIncomplete('Broken under HHVM.');
-        }
-
         $this->assertInstanceOf('PDOStatement', x\mock('PDOStatement')->get());
     }
 
