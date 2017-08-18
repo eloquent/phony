@@ -131,6 +131,10 @@ class EdgeCaseTest extends TestCase
      */
     public function testTypes($typeName)
     {
+        // echo "class $typeName\n";
+        // echo x\mockBuilder($typeName)->source();
+        // ob_flush();
+
         $handle = x\mock($typeName);
         $mock = $handle->get();
 
@@ -149,6 +153,11 @@ class EdgeCaseTest extends TestCase
                 continue;
             }
 
+            switch ($functionName) {
+                case 'assert':
+                    continue 2;
+            }
+
             $data[$functionName] = [$functionName];
         }
 
@@ -160,6 +169,9 @@ class EdgeCaseTest extends TestCase
      */
     public function testFunctions($functionName)
     {
+        // echo "function $functionName\n";
+        // ob_flush();
+
         $stub = x\stubGlobal($functionName, TestNamespace::class);
 
         $this->assertTrue((bool) $stub);
