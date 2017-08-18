@@ -35,6 +35,8 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
 
         $this->isIterableTypeHintSupported = $featureDetector
             ->isSupported('type.iterable');
+        $this->isObjectTypeHintSupported = $featureDetector
+            ->isSupported('type.object');
     }
 
     /**
@@ -62,11 +64,20 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
                     case 'iterable':
                         if ($this->isIterableTypeHintSupported) {
                             $typehint .= ' ';
-
-                            break;
+                        } else {
+                            $typehint = '\\' . $typehint . ' ';
                         }
 
-                        // no break
+                        break;
+
+                    case 'object':
+                        if ($this->isObjectTypeHintSupported) {
+                            $typehint .= ' ';
+                        } else {
+                            $typehint = '\\' . $typehint . ' ';
+                        }
+
+                        break;
 
                     default:
                         $typehint = '\\' . $typehint . ' ';
@@ -111,4 +122,5 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
     }
 
     private $isIterableTypeHintSupported;
+    private $isObjectTypeHintSupported;
 }
