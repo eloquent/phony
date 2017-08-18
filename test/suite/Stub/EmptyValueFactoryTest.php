@@ -47,7 +47,6 @@ use LimitIterator;
 use LogicException;
 use MultipleIterator;
 use NoRewindIterator;
-use object;
 use OuterIterator;
 use OutOfBoundsException;
 use OutOfRangeException;
@@ -142,7 +141,7 @@ class EmptyValueFactoryTest extends TestCase
             $this->assertSame([], (array) $actual);
             $this->assertSame('{}', json_encode($actual));
         } else {
-            $this->assertInstanceOf(object::class, $actual);
+            $this->assertInstanceOf('object', $actual);
             $this->assertInstanceOf(Mock::class, $actual);
         }
     }
