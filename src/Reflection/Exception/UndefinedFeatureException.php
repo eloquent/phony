@@ -37,7 +37,7 @@ final class UndefinedFeatureException extends Exception
      *
      * @return string The feature.
      */
-    public function feature()
+    public function feature(): string
     {
         return $this->feature;
     }

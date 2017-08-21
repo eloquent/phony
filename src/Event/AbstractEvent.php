@@ -37,7 +37,7 @@ abstract class AbstractEvent implements Event
      *
      * @return int The sequence number.
      */
-    public function sequenceNumber()
+    public function sequenceNumber(): int
     {
         return $this->sequenceNumber;
     }
@@ -47,7 +47,7 @@ abstract class AbstractEvent implements Event
      *
      * @return float The time at which the event occurred, in seconds since the Unix epoch.
      */
-    public function time()
+    public function time(): float
     {
         return $this->time;
     }

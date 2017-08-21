@@ -24,14 +24,14 @@ interface WrappedMethod
      *
      * @return string The name.
      */
-    public function name();
+    public function name(): string;
 
     /**
      * Get the handle.
      *
      * @return Handle The handle.
      */
-    public function handle();
+    public function handle(): Handle;
 
     /**
      * Get the mock.

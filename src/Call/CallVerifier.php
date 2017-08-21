@@ -84,7 +84,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return int The index.
      */
-    public function index()
+    public function index(): int
     {
         return $this->call->index();
     }
@@ -98,7 +98,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return int The sequence number.
      */
-    public function sequenceNumber()
+    public function sequenceNumber(): int
     {
         return $this->call->sequenceNumber();
     }
@@ -108,7 +108,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return float The time at which the event occurred, in seconds since the Unix epoch.
      */
-    public function time()
+    public function time(): float
     {
         return $this->call->time();
     }
@@ -118,7 +118,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return bool True if this collection contains any events.
      */
-    public function hasEvents()
+    public function hasEvents(): bool
     {
         return $this->call->hasEvents();
     }
@@ -128,7 +128,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return bool True if this collection contains any calls.
      */
-    public function hasCalls()
+    public function hasCalls(): bool
     {
         return $this->call->hasCalls();
     }
@@ -138,7 +138,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return int The event count.
      */
-    public function eventCount()
+    public function eventCount(): int
     {
         return $this->call->eventCount();
     }
@@ -148,7 +148,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return int The call count.
      */
-    public function callCount()
+    public function callCount(): int
     {
         return $this->call->callCount();
     }
@@ -158,7 +158,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return int The event count.
      */
-    public function count()
+    public function count(): int
     {
         return $this->call->count();
     }
@@ -169,7 +169,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function firstEvent()
+    public function firstEvent(): Event
     {
         return $this->call->firstEvent();
     }
@@ -180,7 +180,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function lastEvent()
+    public function lastEvent(): Event
     {
         return $this->call->lastEvent();
     }
@@ -196,7 +196,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt(int $index = 0)
+    public function eventAt(int $index = 0): Event
     {
         return $this->call->eventAt($index);
     }
@@ -207,7 +207,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function firstCall()
+    public function firstCall(): Call
     {
         return $this;
     }
@@ -218,7 +218,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function lastCall()
+    public function lastCall(): Call
     {
         return $this;
     }
@@ -234,7 +234,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt(int $index = 0)
+    public function callAt(int $index = 0): Call
     {
         if (0 === $index || -1 === $index) {
             return $this;
@@ -248,7 +248,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return Iterator The iterator.
      */
-    public function getIterator()
+    public function getIterator(): Iterator
     {
         return $this->call->getIterator();
     }
@@ -258,7 +258,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return CalledEvent The 'called' event.
      */
-    public function calledEvent()
+    public function calledEvent(): CalledEvent
     {
         return $this->call->calledEvent();
     }
@@ -302,7 +302,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return array<IterableEvent> The iterable events.
      */
-    public function iterableEvents()
+    public function iterableEvents(): array
     {
         return $this->call->iterableEvents();
     }
@@ -334,7 +334,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return array<Event> The events.
      */
-    public function allEvents()
+    public function allEvents(): array
     {
         return $this->call->allEvents();
     }
@@ -344,7 +344,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return array<Call> The calls.
      */
-    public function allCalls()
+    public function allCalls(): array
     {
         return $this->call->allCalls();
     }
@@ -356,7 +356,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return bool True if this call has responded.
      */
-    public function hasResponded()
+    public function hasResponded(): bool
     {
         return $this->call->hasResponded();
     }
@@ -366,7 +366,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return bool True if this call has responded with an iterable.
      */
-    public function isIterable()
+    public function isIterable(): bool
     {
         return $this->call->isIterable();
     }
@@ -376,7 +376,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return bool True if this call has responded with a generator.
      */
-    public function isGenerator()
+    public function isGenerator(): bool
     {
         return $this->call->isGenerator();
     }
@@ -394,7 +394,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return bool True if this call has completed.
      */
-    public function hasCompleted()
+    public function hasCompleted(): bool
     {
         return $this->call->hasCompleted();
     }
@@ -404,7 +404,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return callable The callback.
      */
-    public function callback()
+    public function callback(): callable
     {
         return $this->call->callback();
     }
@@ -414,7 +414,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return Arguments The received arguments.
      */
-    public function arguments()
+    public function arguments(): Arguments
     {
         return $this->call->arguments();
     }
@@ -463,7 +463,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @return Throwable                  The thrown exception.
      * @throws UndefinedResponseException If this call has not yet thrown an exception.
      */
-    public function exception()
+    public function exception(): Throwable
     {
         return $this->call->exception();
     }
@@ -474,7 +474,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @return Throwable                  The thrown exception.
      * @throws UndefinedResponseException If this call has not yet thrown an exception via generator.
      */
-    public function generatorException()
+    public function generatorException(): Throwable
     {
         return $this->call->generatorException();
     }
@@ -485,7 +485,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded.
      */
-    public function response()
+    public function response(): array
     {
         return $this->call->response();
     }
@@ -496,7 +496,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded via generator.
      */
-    public function generatorResponse()
+    public function generatorResponse(): array
     {
         return $this->call->generatorResponse();
     }
@@ -568,7 +568,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      *
      * @return int The number of arguments.
      */
-    public function argumentCount()
+    public function argumentCount(): int
     {
         return $this->argumentCount;
     }
@@ -606,7 +606,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function calledWith(...$arguments)
+    public function calledWith(...$arguments): EventCollection
     {
         $cardinality = $this->cardinality;
         $matchers = $this->matcherFactory->adaptAll($arguments);
@@ -647,7 +647,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function responded()
+    public function responded(): EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -686,7 +686,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function completed()
+    public function completed(): EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -758,7 +758,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function returned($value = null)
+    public function returned($value = null): EventCollection
     {
         $cardinality = $this->cardinality;
         $argumentCount = func_num_args();
@@ -866,7 +866,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @throws InvalidArgumentException    If the type is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function threw($type = null)
+    public function threw($type = null): EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -926,7 +926,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function generated()
+    public function generated(): GeneratorVerifier
     {
         $cardinality = $this->cardinality;
 
@@ -976,7 +976,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function iterated()
+    public function iterated(): IterableVerifier
     {
         $cardinality = $this->cardinality;
 

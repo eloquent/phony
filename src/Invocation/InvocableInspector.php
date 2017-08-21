@@ -28,7 +28,7 @@ class InvocableInspector
      *
      * @return InvocableInspector The static inspector.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -45,8 +45,9 @@ class InvocableInspector
      * @return ReflectionFunctionAbstract The reflector.
      * @throws ReflectionException        If the callback cannot be reflected.
      */
-    public function callbackReflector(callable $callback)
-    {
+    public function callbackReflector(
+        callable $callback
+    ): ReflectionFunctionAbstract {
         while ($callback instanceof WrappedInvocable) {
             $callback = $callback->callback();
         }
@@ -74,6 +75,7 @@ class InvocableInspector
      * @param callable $callback The callback.
      *
      * @return ReflectionType|null The return type, or null if no return type is defined.
+     * @throws ReflectionException If the callback cannot be reflected.
      */
     public function callbackReturnType(callable $callback)
     {

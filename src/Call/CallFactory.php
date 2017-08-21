@@ -26,7 +26,7 @@ class CallFactory
      *
      * @return CallFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -65,7 +65,7 @@ class CallFactory
         callable $callback,
         Arguments $arguments,
         SpyData $spy
-    ) {
+    ): CallData {
         $originalArguments = $arguments->copy();
 
         $call = new CallData(

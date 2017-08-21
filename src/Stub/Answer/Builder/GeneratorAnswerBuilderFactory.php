@@ -25,7 +25,7 @@ class GeneratorAnswerBuilderFactory
      *
      * @return GeneratorAnswerBuilderFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -58,7 +58,7 @@ class GeneratorAnswerBuilderFactory
      *
      * @return GeneratorAnswerBuilder The newly created builder.
      */
-    public function create(Stub $stub)
+    public function create(Stub $stub): GeneratorAnswerBuilder
     {
         return new GeneratorAnswerBuilder(
             $stub,

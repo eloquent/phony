@@ -37,7 +37,7 @@ final class UndefinedCallException extends Exception
      *
      * @return int The call index.
      */
-    public function index()
+    public function index(): int
     {
         return $this->index;
     }

@@ -46,7 +46,7 @@ final class UnusedStubCriteriaException extends Exception
      *
      * @return array<Matchable> The criteria.
      */
-    public function criteria()
+    public function criteria(): array
     {
         return $this->criteria;
     }

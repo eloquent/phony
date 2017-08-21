@@ -41,7 +41,7 @@ final class UndefinedEventException extends Exception
      *
      * @return int The index.
      */
-    public function index()
+    public function index(): int
     {
         return $this->index;
     }

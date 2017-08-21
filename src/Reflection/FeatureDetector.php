@@ -26,7 +26,7 @@ class FeatureDetector
      *
      * @return FeatureDetector The static detector.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -80,7 +80,7 @@ class FeatureDetector
      *
      * @return array<string,callable> The features.
      */
-    public function features()
+    public function features(): array
     {
         return $this->features;
     }
@@ -90,7 +90,7 @@ class FeatureDetector
      *
      * @return array<string,bool> The known feature support.
      */
-    public function supported()
+    public function supported(): array
     {
         return $this->supported;
     }
@@ -104,7 +104,7 @@ class FeatureDetector
      * @return bool                      True if supported.
      * @throws UndefinedFeatureException If the specified feature is undefined.
      */
-    public function isSupported(string $feature)
+    public function isSupported(string $feature): bool
     {
         if (!array_key_exists($feature, $this->supported)) {
             if (!isset($this->features[$feature])) {
@@ -123,7 +123,7 @@ class FeatureDetector
      *
      * @return array<string,callable> The standard features.
      */
-    public function standardFeatures()
+    public function standardFeatures(): array
     {
         return [
             'parameter.variadic.reference' => function ($detector) {
@@ -216,7 +216,7 @@ class FeatureDetector
      *
      * @return string The runtime.
      */
-    public function runtime()
+    public function runtime(): string
     {
         if (!$this->runtime) {
             if (false === strpos(phpversion(), 'hhvm')) {
@@ -236,7 +236,7 @@ class FeatureDetector
      *
      * @return bool True if the syntax is valid.
      */
-    public function checkStatement(string $source)
+    public function checkStatement(string $source): bool
     {
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
         $result = false;

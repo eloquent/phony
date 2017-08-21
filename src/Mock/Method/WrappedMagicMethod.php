@@ -64,7 +64,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      *
      * @return ReflectionMethod The method.
      */
-    public function callMagicMethod()
+    public function callMagicMethod(): ReflectionMethod
     {
         return $this->callMagicMethod;
     }
@@ -74,7 +74,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      *
      * @return bool True if uncallable.
      */
-    public function isUncallable()
+    public function isUncallable(): bool
     {
         return $this->isUncallable;
     }
@@ -84,7 +84,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      *
      * @return string The name.
      */
-    public function name()
+    public function name(): string
     {
         return $this->name;
     }
@@ -94,7 +94,7 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
      *
      * @return Handle The handle.
      */
-    public function handle()
+    public function handle(): Handle
     {
         return $this->handle;
     }

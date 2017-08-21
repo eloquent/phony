@@ -46,7 +46,7 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
      *
      * @return array<string,array<string>> The function signature.
      */
-    public function signature(ReflectionFunctionAbstract $function)
+    public function signature(ReflectionFunctionAbstract $function): array
     {
         $isMatch = preg_match_all(
             static::PARAMETER_PATTERN,

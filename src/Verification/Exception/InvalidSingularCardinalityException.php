@@ -41,7 +41,7 @@ final class InvalidSingularCardinalityException extends Exception implements
      *
      * @return Cardinality The cardinality.
      */
-    public function cardinality()
+    public function cardinality(): Cardinality
     {
         return $this->cardinality;
     }

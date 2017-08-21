@@ -43,7 +43,7 @@ class CalledEvent extends AbstractCallEvent
      *
      * @return callable The callback.
      */
-    public function callback()
+    public function callback(): callable
     {
         return $this->callback;
     }
@@ -53,7 +53,7 @@ class CalledEvent extends AbstractCallEvent
      *
      * @return Arguments The received arguments.
      */
-    public function arguments()
+    public function arguments(): Arguments
     {
         return $this->arguments;
     }

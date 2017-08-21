@@ -21,7 +21,7 @@ class SystemClock implements Clock
      *
      * @return Clock The static clock.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self('microtime');
@@ -45,7 +45,7 @@ class SystemClock implements Clock
      *
      * @return float The current time.
      */
-    public function time()
+    public function time(): float
     {
         $microtime = $this->microtime;
 

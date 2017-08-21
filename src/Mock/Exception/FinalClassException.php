@@ -41,7 +41,7 @@ final class FinalClassException extends Exception implements
      *
      * @return string The class name.
      */
-    public function className()
+    public function className(): string
     {
         return $this->className;
     }

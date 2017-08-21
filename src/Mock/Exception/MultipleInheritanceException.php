@@ -49,7 +49,7 @@ final class MultipleInheritanceException extends Exception implements
      *
      * @return array<string> The class names.
      */
-    public function classNames()
+    public function classNames(): array
     {
         return $this->classNames;
     }

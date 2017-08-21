@@ -89,7 +89,7 @@ class MockDefinition
      *
      * @return array<string,ReflectionClass> The types.
      */
-    public function types()
+    public function types(): array
     {
         return $this->types;
     }
@@ -99,7 +99,7 @@ class MockDefinition
      *
      * @return array<string,tuple<callable,ReflectionFunctionAbstract>> The custom methods.
      */
-    public function customMethods()
+    public function customMethods(): array
     {
         return $this->customMethods;
     }
@@ -109,7 +109,7 @@ class MockDefinition
      *
      * @return array<string,mixed> The custom properties.
      */
-    public function customProperties()
+    public function customProperties(): array
     {
         return $this->customProperties;
     }
@@ -119,7 +119,7 @@ class MockDefinition
      *
      * @return array<string,tuple<callable,ReflectionFunctionAbstract>> The custom static methods.
      */
-    public function customStaticMethods()
+    public function customStaticMethods(): array
     {
         return $this->customStaticMethods;
     }
@@ -129,7 +129,7 @@ class MockDefinition
      *
      * @return array<string,mixed> The custom static properties.
      */
-    public function customStaticProperties()
+    public function customStaticProperties(): array
     {
         return $this->customStaticProperties;
     }
@@ -139,7 +139,7 @@ class MockDefinition
      *
      * @return array<string,mixed> The custom constants.
      */
-    public function customConstants()
+    public function customConstants(): array
     {
         return $this->customConstants;
     }
@@ -172,7 +172,7 @@ class MockDefinition
      *
      * @return array<string> The type names.
      */
-    public function typeNames()
+    public function typeNames(): array
     {
         $this->inspectTypes();
 
@@ -196,7 +196,7 @@ class MockDefinition
      *
      * @return array<string> The interface names.
      */
-    public function interfaceNames()
+    public function interfaceNames(): array
     {
         $this->inspectTypes();
 
@@ -208,7 +208,7 @@ class MockDefinition
      *
      * @return array<string> The trait names.
      */
-    public function traitNames()
+    public function traitNames(): array
     {
         $this->inspectTypes();
 
@@ -222,7 +222,7 @@ class MockDefinition
      *
      * @return MethodDefinitionCollection The method definitions.
      */
-    public function methods()
+    public function methods(): MethodDefinitionCollection
     {
         $this->buildMethods();
 
@@ -234,7 +234,7 @@ class MockDefinition
      *
      * @return bool True if equal.
      */
-    public function isEqualTo(MockDefinition $definition)
+    public function isEqualTo(MockDefinition $definition): bool
     {
         return $definition->signature() === $this->signature;
     }

@@ -96,7 +96,7 @@ class StaticHandle extends AbstractHandle
      *
      * @return $this This handle.
      */
-    public function proxy($object)
+    public function proxy($object): Handle
     {
         $reflector = new ReflectionObject($object);
 

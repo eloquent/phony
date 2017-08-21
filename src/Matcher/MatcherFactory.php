@@ -25,7 +25,7 @@ class MatcherFactory
      *
      * @return MatcherFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -89,7 +89,7 @@ class MatcherFactory
      *
      * @return array<MatcherDriver> The matcher drivers.
      */
-    public function drivers()
+    public function drivers(): array
     {
         return $this->drivers;
     }
@@ -101,7 +101,7 @@ class MatcherFactory
      *
      * @return bool True if the value is a matcher.
      */
-    public function isMatcher($value)
+    public function isMatcher($value): bool
     {
         if (is_object($value)) {
             if ($value instanceof Matcher) {
@@ -123,9 +123,9 @@ class MatcherFactory
      *
      * @param mixed $value The value to create a matcher for.
      *
-     * @return Matcher The newly created matcher.
+     * @return Matchable The newly created matcher.
      */
-    public function adapt($value)
+    public function adapt($value): Matchable
     {
         if ($value instanceof Matchable) {
             return $value;
@@ -157,7 +157,7 @@ class MatcherFactory
      *
      * @return array<Matchable> The newly created matchers.
      */
-    public function adaptAll(array $values)
+    public function adaptAll(array $values): array
     {
         $matchers = [];
 
@@ -198,7 +198,7 @@ class MatcherFactory
      *
      * @return Matcher The newly created matcher.
      */
-    public function any()
+    public function any(): Matcher
     {
         return $this->anyMatcher;
     }
@@ -211,7 +211,7 @@ class MatcherFactory
      *
      * @return Matcher The newly created matcher.
      */
-    public function equalTo($value, bool $useSubstitution = false)
+    public function equalTo($value, bool $useSubstitution = false): Matcher
     {
         return new EqualToMatcher($value, $useSubstitution, $this->exporter);
     }
@@ -231,7 +231,7 @@ class MatcherFactory
         $value = null,
         int $minimumArguments = 0,
         int $maximumArguments = -1
-    ) {
+    ): WildcardMatcher {
         if (0 === func_num_args()) {
             return $this->wildcardAnyMatcher;
         }

@@ -26,7 +26,7 @@ class IterableSpyFactory
      *
      * @return IterableSpyFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(CallEventFactory::instance());
@@ -51,10 +51,10 @@ class IterableSpyFactory
      * @param Call     $call     The call from which the iterable originated.
      * @param iterable $iterable The iterable.
      *
-     * @return Traversable              The newly created iterable spy.
+     * @return IterableSpy              The newly created iterable spy.
      * @throws InvalidArgumentException If the supplied iterable is invalid.
      */
-    public function create(Call $call, $iterable)
+    public function create(Call $call, $iterable): IterableSpy
     {
         if ($iterable instanceof Traversable) {
             return new TraversableSpy(

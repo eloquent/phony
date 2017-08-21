@@ -35,7 +35,7 @@ interface Call extends Event, EventCollection
      *
      * @return int The index.
      */
-    public function index();
+    public function index(): int;
 
     /**
      * Returns true if this call has responded.
@@ -44,21 +44,21 @@ interface Call extends Event, EventCollection
      *
      * @return bool True if this call has responded.
      */
-    public function hasResponded();
+    public function hasResponded(): bool;
 
     /**
      * Returns true if this call has responded with an iterable.
      *
      * @return bool True if this call has responded with an iterable.
      */
-    public function isIterable();
+    public function isIterable(): bool;
 
     /**
      * Returns true if this call has responded with a generator.
      *
      * @return bool True if this call has responded with a generator.
      */
-    public function isGenerator();
+    public function isGenerator(): bool;
 
     /**
      * Returns true if this call has completed.
@@ -73,14 +73,14 @@ interface Call extends Event, EventCollection
      *
      * @return bool True if this call has completed.
      */
-    public function hasCompleted();
+    public function hasCompleted(): bool;
 
     /**
      * Get the callback.
      *
      * @return callable The callback.
      */
-    public function callback();
+    public function callback(): callable;
 
     /**
      * Get the arguments.
@@ -124,7 +124,7 @@ interface Call extends Event, EventCollection
      * @return Throwable                  The thrown exception.
      * @throws UndefinedResponseException If this call has not yet thrown an exception.
      */
-    public function exception();
+    public function exception(): Throwable;
 
     /**
      * Get the exception thrown from the generator.
@@ -132,7 +132,7 @@ interface Call extends Event, EventCollection
      * @return Throwable                  The thrown exception.
      * @throws UndefinedResponseException If this call has not yet thrown an exception via generator.
      */
-    public function generatorException();
+    public function generatorException(): Throwable;
 
     /**
      * Get the response.
@@ -140,7 +140,7 @@ interface Call extends Event, EventCollection
      * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded.
      */
-    public function response();
+    public function response(): array;
 
     /**
      * Get the response from the generator.
@@ -148,7 +148,7 @@ interface Call extends Event, EventCollection
      * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded via generator.
      */
-    public function generatorResponse();
+    public function generatorResponse(): array;
 
     /**
      * Get the time at which the call responded.
@@ -179,7 +179,7 @@ interface Call extends Event, EventCollection
      *
      * @return CalledEvent The 'called' event.
      */
-    public function calledEvent();
+    public function calledEvent(): CalledEvent;
 
     /**
      * Set the response event.
@@ -211,7 +211,7 @@ interface Call extends Event, EventCollection
      *
      * @return array<IterableEvent> The iterable events.
      */
-    public function iterableEvents();
+    public function iterableEvents(): array;
 
     /**
      * Set the end event.

@@ -32,7 +32,7 @@ class MockFactory
      *
      * @return MockFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -75,7 +75,7 @@ class MockFactory
     public function createMockClass(
         MockDefinition $definition,
         bool $createNew = false
-    ) {
+    ): ReflectionClass {
         $signature = $definition->signature();
 
         if (!$createNew) {
@@ -158,7 +158,7 @@ class MockFactory
      * @return Mock          The newly created mock.
      * @throws MockException If the mock generation fails.
      */
-    public function createFullMock(ReflectionClass $class)
+    public function createFullMock(ReflectionClass $class): Mock
     {
         $mock = $class->newInstanceWithoutConstructor();
         $this->handleFactory
@@ -179,7 +179,7 @@ class MockFactory
     public function createPartialMock(
         ReflectionClass $class,
         $arguments = []
-    ) {
+    ): Mock {
         $mock = $class->newInstanceWithoutConstructor();
         $handle = $this->handleFactory
             ->instanceHandle($mock, strval($this->labelSequencer->next()));

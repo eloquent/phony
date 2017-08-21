@@ -40,7 +40,7 @@ use Throwable;
  *
  * @return MockBuilder The mock builder.
  */
-function mockBuilder($types = [])
+function mockBuilder($types = []): MockBuilder
 {
     return FacadeDriver::instance()->mockBuilderFactory->create($types);
 }
@@ -56,7 +56,7 @@ function mockBuilder($types = [])
  *
  * @return InstanceHandle A handle around the new mock.
  */
-function mock($types = [])
+function mock($types = []): InstanceHandle
 {
     $driver = FacadeDriver::instance();
 
@@ -81,7 +81,7 @@ function mock($types = [])
  *
  * @return InstanceHandle A handle around the new mock.
  */
-function partialMock($types = [], $arguments = [])
+function partialMock($types = [], $arguments = []): InstanceHandle
 {
     $driver = FacadeDriver::instance();
 
@@ -98,7 +98,7 @@ function partialMock($types = [], $arguments = [])
  * @return InstanceHandle The newly created handle.
  * @throws MockException  If the supplied mock is invalid.
  */
-function on($mock)
+function on($mock): InstanceHandle
 {
     return FacadeDriver::instance()->handleFactory->instanceHandle($mock);
 }
@@ -111,7 +111,7 @@ function on($mock)
  * @return StaticHandle  The newly created handle.
  * @throws MockException If the supplied class name is not a mock class.
  */
-function onStatic($class)
+function onStatic($class): StaticHandle
 {
     return
         FacadeDriver::instance()->handleFactory->staticHandle($class);
@@ -124,7 +124,7 @@ function onStatic($class)
  *
  * @return SpyVerifier The new spy.
  */
-function spy(callable $callback = null)
+function spy(callable $callback = null): SpyVerifier
 {
     return FacadeDriver::instance()->spyVerifierFactory
         ->createFromCallback($callback);
@@ -139,7 +139,7 @@ function spy(callable $callback = null)
  *
  * @return SpyVerifier The new spy.
  */
-function spyGlobal(string $function, string $namespace)
+function spyGlobal(string $function, string $namespace): SpyVerifier
 {
     return FacadeDriver::instance()->spyVerifierFactory
         ->createGlobal($function, $namespace);
@@ -152,7 +152,7 @@ function spyGlobal(string $function, string $namespace)
  *
  * @return StubVerifier The new stub.
  */
-function stub(callable $callback = null)
+function stub(callable $callback = null): StubVerifier
 {
     return FacadeDriver::instance()->stubVerifierFactory
         ->createFromCallback($callback);
@@ -170,7 +170,7 @@ function stub(callable $callback = null)
  *
  * @return StubVerifier The new stub.
  */
-function stubGlobal(string $function, string $namespace)
+function stubGlobal(string $function, string $namespace): StubVerifier
 {
     return FacadeDriver::instance()->stubVerifierFactory
         ->createGlobal($function, $namespace);
@@ -208,7 +208,7 @@ function checkInOrder(...$events)
  * @return EventCollection The result.
  * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
  */
-function inOrder(...$events)
+function inOrder(...$events): EventCollection
 {
     return FacadeDriver::instance()->eventOrderVerifier->inOrder(...$events);
 }
@@ -236,7 +236,7 @@ function checkAnyOrder(...$events)
  * @throws InvalidArgumentException If invalid input is supplied.
  * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
  */
-function anyOrder(...$events)
+function anyOrder(...$events): EventCollection
 {
     return FacadeDriver::instance()->eventOrderVerifier->anyOrder(...$events);
 }
@@ -246,7 +246,7 @@ function anyOrder(...$events)
  *
  * @return Matcher The newly created matcher.
  */
-function any()
+function any(): Matcher
 {
     return FacadeDriver::instance()->matcherFactory->any();
 }
@@ -258,7 +258,7 @@ function any()
  *
  * @return Matcher The newly created matcher.
  */
-function equalTo($value)
+function equalTo($value): Matcher
 {
     return FacadeDriver::instance()->matcherFactory->equalTo($value, false);
 }
@@ -278,7 +278,7 @@ function wildcard(
     $value = null,
     int $minimumArguments = 0,
     int $maximumArguments = -1
-) {
+): WildcardMatcher {
     return FacadeDriver::instance()->matcherFactory
         ->wildcard($value, $minimumArguments, $maximumArguments);
 }
@@ -292,7 +292,7 @@ function wildcard(
  *
  * @return int The previous depth.
  */
-function setExportDepth(int $depth)
+function setExportDepth(int $depth): int
 {
     return FacadeDriver::instance()->exporter->setDepth($depth);
 }

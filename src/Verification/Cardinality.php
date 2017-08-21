@@ -58,7 +58,7 @@ class Cardinality
      *
      * @return int The minimum.
      */
-    public function minimum()
+    public function minimum(): int
     {
         return $this->minimum;
     }
@@ -68,7 +68,7 @@ class Cardinality
      *
      * @return int The maximum.
      */
-    public function maximum()
+    public function maximum(): int
     {
         return $this->maximum;
     }
@@ -78,7 +78,7 @@ class Cardinality
      *
      * @return bool True if this cardinality is 'never'.
      */
-    public function isNever()
+    public function isNever(): bool
     {
         return 0 === $this->maximum;
     }
@@ -104,7 +104,7 @@ class Cardinality
      *
      * @return bool True if 'always' is enabled.
      */
-    public function isAlways()
+    public function isAlways(): bool
     {
         return $this->isAlways;
     }
@@ -117,7 +117,7 @@ class Cardinality
      *
      * @return bool True if the supplied count matches this cardinality.
      */
-    public function matches($count, int $maximumCount)
+    public function matches($count, int $maximumCount): bool
     {
         $count = intval($count);
         $result = true;
@@ -144,7 +144,7 @@ class Cardinality
      * @return $this                       This cardinality.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function assertSingular()
+    public function assertSingular(): self
     {
         if ($this->minimum > 1 || $this->maximum > 1 || $this->isAlways) {
             throw new InvalidSingularCardinalityException($this);

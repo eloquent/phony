@@ -43,7 +43,7 @@ class WrappedParentMethod extends AbstractWrappedMethod
      *
      * @return ReflectionMethod The _callParent() method.
      */
-    public function callParentMethod()
+    public function callParentMethod(): ReflectionMethod
     {
         return $this->callParentMethod;
     }

@@ -19,6 +19,7 @@ use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Verification\Exception\InvalidCardinalityException;
+use Iterator;
 
 /**
  * An abstract base class for implementing cardinality verifiers and an event
@@ -52,7 +53,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
         $this->callCount = count($calls);
         $this->callVerifierFactory = $callVerifierFactory;
 
-        $this->resetCardinality();
+        $this->cardinality = new Cardinality(1, -1);
     }
 
     /**
@@ -60,7 +61,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return bool True if this collection contains any events.
      */
-    public function hasEvents()
+    public function hasEvents(): bool
     {
         return $this->eventCount > 0;
     }
@@ -70,7 +71,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return bool True if this collection contains any calls.
      */
-    public function hasCalls()
+    public function hasCalls(): bool
     {
         return $this->callCount > 0;
     }
@@ -80,7 +81,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return int The event count.
      */
-    public function eventCount()
+    public function eventCount(): int
     {
         return $this->eventCount;
     }
@@ -90,7 +91,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return int The call count.
      */
-    public function callCount()
+    public function callCount(): int
     {
         return $this->callCount;
     }
@@ -100,7 +101,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return int The event count.
      */
-    public function count()
+    public function count(): int
     {
         return $this->eventCount;
     }
@@ -110,7 +111,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return array<Event> The events.
      */
-    public function allEvents()
+    public function allEvents(): array
     {
         return $this->events;
     }
@@ -120,7 +121,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return array<Call> The calls.
      */
-    public function allCalls()
+    public function allCalls(): array
     {
         return $this->callVerifierFactory->fromCalls($this->calls);
     }
@@ -131,7 +132,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function firstEvent()
+    public function firstEvent(): Event
     {
         if ($this->eventCount < 1) {
             throw new UndefinedEventException(0);
@@ -146,7 +147,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function lastEvent()
+    public function lastEvent(): Event
     {
         if ($this->eventCount) {
             return $this->events[$this->eventCount - 1];
@@ -166,7 +167,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt(int $index = 0)
+    public function eventAt(int $index = 0): Event
     {
         if (!$this->normalizeIndex($this->eventCount, $index, $normalized)) {
             throw new UndefinedEventException($index);
@@ -181,7 +182,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function firstCall()
+    public function firstCall(): Call
     {
         if (isset($this->calls[0])) {
             return $this->callVerifierFactory->fromCall($this->calls[0]);
@@ -196,7 +197,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function lastCall()
+    public function lastCall(): Call
     {
         if ($this->callCount) {
             return $this->callVerifierFactory
@@ -217,7 +218,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt(int $index = 0)
+    public function callAt(int $index = 0): Call
     {
         if (!$this->normalizeIndex($this->callCount, $index, $normalized)) {
             throw new UndefinedCallException($index);
@@ -231,7 +232,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return Iterator The iterator.
      */
-    public function getIterator()
+    public function getIterator(): Iterator
     {
         return new ArrayIterator($this->allCalls());
     }
@@ -241,7 +242,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return $this This verifier.
      */
-    public function never()
+    public function never(): CardinalityVerifier
     {
         return $this->times(0);
     }
@@ -251,7 +252,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return $this This verifier.
      */
-    public function once()
+    public function once(): CardinalityVerifier
     {
         return $this->times(1);
     }
@@ -261,7 +262,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return $this This verifier.
      */
-    public function twice()
+    public function twice(): CardinalityVerifier
     {
         return $this->times(2);
     }
@@ -271,7 +272,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return $this This verifier.
      */
-    public function thrice()
+    public function thrice(): CardinalityVerifier
     {
         return $this->times(3);
     }
@@ -283,7 +284,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return $this This verifier.
      */
-    public function times(int $times)
+    public function times(int $times): CardinalityVerifier
     {
         return $this->between($times, $times);
     }
@@ -296,7 +297,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return $this This verifier.
      */
-    public function atLeast(int $minimum)
+    public function atLeast(int $minimum): CardinalityVerifier
     {
         return $this->between($minimum, -1);
     }
@@ -309,7 +310,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return $this This verifier.
      */
-    public function atMost(int $maximum)
+    public function atMost(int $maximum): CardinalityVerifier
     {
         return $this->between(0, $maximum);
     }
@@ -324,7 +325,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      * @return $this                       This verifier.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function between(int $minimum, int $maximum)
+    public function between(int $minimum, int $maximum): CardinalityVerifier
     {
         $this->cardinality = new Cardinality($minimum, $maximum);
 
@@ -336,7 +337,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return $this This verifier.
      */
-    public function always()
+    public function always(): CardinalityVerifier
     {
         $this->cardinality->setIsAlways(true);
 
@@ -348,10 +349,10 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return Cardinality The current cardinality.
      */
-    public function resetCardinality()
+    public function resetCardinality(): Cardinality
     {
         $cardinality = $this->cardinality;
-        $this->atLeast(1);
+        $this->cardinality = new Cardinality(1, -1);
 
         return $cardinality;
     }
@@ -361,7 +362,7 @@ abstract class AbstractCardinalityVerifierEventCollection implements
      *
      * @return Cardinality The cardinality.
      */
-    public function cardinality()
+    public function cardinality(): Cardinality
     {
         return $this->cardinality;
     }

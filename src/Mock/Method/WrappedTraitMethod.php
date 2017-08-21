@@ -46,7 +46,7 @@ class WrappedTraitMethod extends AbstractWrappedMethod
      *
      * @return ReflectionMethod The _callTrait() method.
      */
-    public function callTraitMethod()
+    public function callTraitMethod(): ReflectionMethod
     {
         return $this->callTraitMethod;
     }
@@ -56,7 +56,7 @@ class WrappedTraitMethod extends AbstractWrappedMethod
      *
      * @return string The trait name.
      */
-    public function traitName()
+    public function traitName(): string
     {
         return $this->traitName;
     }

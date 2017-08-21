@@ -44,7 +44,7 @@ final class FinalMethodStubException extends Exception implements
      *
      * @return string The class name.
      */
-    public function className()
+    public function className(): string
     {
         return $this->className;
     }
@@ -54,7 +54,7 @@ final class FinalMethodStubException extends Exception implements
      *
      * @return string The method name.
      */
-    public function name()
+    public function name(): string
     {
         return $this->name;
     }

@@ -43,7 +43,7 @@ abstract class GeneratorAnswerBuilderDetail
         int &$returnsArgument = null,
         bool &$returnsSelf,
         Invoker $invoker
-    ) {
+    ): callable {
         return function ($self, $arguments) use (
             &$iterations,
             &$requests,

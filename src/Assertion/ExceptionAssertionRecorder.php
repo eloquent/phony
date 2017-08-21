@@ -28,7 +28,7 @@ class ExceptionAssertionRecorder implements AssertionRecorder
      *
      * @return AssertionRecorder The static recorder.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -55,7 +55,7 @@ class ExceptionAssertionRecorder implements AssertionRecorder
      *
      * @return EventCollection The result.
      */
-    public function createSuccess(array $events = [])
+    public function createSuccess(array $events = []): EventCollection
     {
         return new EventSequence($events, $this->callVerifierFactory);
     }
@@ -67,8 +67,9 @@ class ExceptionAssertionRecorder implements AssertionRecorder
      *
      * @return EventCollection The result.
      */
-    public function createSuccessFromEventCollection(EventCollection $events)
-    {
+    public function createSuccessFromEventCollection(
+        EventCollection $events
+    ): EventCollection {
         return $events;
     }
 
@@ -79,7 +80,7 @@ class ExceptionAssertionRecorder implements AssertionRecorder
      *
      * @throws Throwable If this recorder throws exceptions.
      */
-    public function createFailure(string $description)
+    public function createFailure(string $description): Throwable
     {
         throw new AssertionException($description);
     }

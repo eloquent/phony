@@ -54,7 +54,7 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
      *
      * @return ReflectionMethod The method.
      */
-    public function method()
+    public function method(): ReflectionMethod
     {
         return $this->method;
     }
@@ -64,7 +64,7 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
      *
      * @return string The name.
      */
-    public function name()
+    public function name(): string
     {
         return $this->name;
     }
@@ -74,7 +74,7 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
      *
      * @return Handle The handle.
      */
-    public function handle()
+    public function handle(): Handle
     {
         return $this->handle;
     }

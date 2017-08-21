@@ -26,7 +26,7 @@ abstract class AbstractCallEvent extends AbstractEvent implements CallEvent
      *
      * @return $this This event.
      */
-    public function setCall(Call $call)
+    public function setCall(Call $call): CallEvent
     {
         $this->call = $call;
 

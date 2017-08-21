@@ -19,7 +19,7 @@ use Eloquent\Phony\Facade\FacadeDriver;
  */
 class TestFacadeDriver extends FacadeDriver
 {
-    public static function instance()
+    public static function instance(): FacadeDriver
     {
         if (!self::$instance) {
             self::$instance = new self(ExceptionAssertionRecorder::instance());

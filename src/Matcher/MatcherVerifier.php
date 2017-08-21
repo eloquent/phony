@@ -21,7 +21,7 @@ class MatcherVerifier
      *
      * @return MatcherVerifier The static verifier.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -38,7 +38,7 @@ class MatcherVerifier
      *
      * @return bool True if the arguments match.
      */
-    public function matches(array $matchers, array $arguments)
+    public function matches(array $matchers, array $arguments): bool
     {
         $argumentCount = count($arguments);
         $index = 0;
@@ -94,7 +94,7 @@ class MatcherVerifier
      *
      * @return MatcherResult The result of matching.
      */
-    public function explain(array $matchers, array $arguments)
+    public function explain(array $matchers, array $arguments): MatcherResult
     {
         $isMatch = true;
         $matcherMatches = [];

@@ -90,7 +90,7 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function used()
+    public function used(): EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -206,7 +206,7 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function produced($keyOrValue = null, $value = null)
+    public function produced($keyOrValue = null, $value = null): EventCollection
     {
         $cardinality = $this->cardinality;
         $argumentCount = func_num_args();
@@ -278,7 +278,7 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function consumed()
+    public function consumed(): EventCollection
     {
         $cardinality = $this->cardinality;
 

@@ -40,7 +40,7 @@ class ReceivedExceptionEvent extends AbstractCallEvent implements IterableEvent
      *
      * @return Throwable The received exception.
      */
-    public function exception()
+    public function exception(): Throwable
     {
         return $this->exception;
     }

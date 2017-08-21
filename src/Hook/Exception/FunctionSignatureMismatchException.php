@@ -42,7 +42,7 @@ final class FunctionSignatureMismatchException extends Exception implements
      *
      * @return string The function name.
      */
-    public function functionName()
+    public function functionName(): string
     {
         return $this->functionName;
     }

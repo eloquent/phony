@@ -32,7 +32,7 @@ class SpyVerifierFactory
      *
      * @return SpyVerifierFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -93,7 +93,7 @@ class SpyVerifierFactory
      *
      * @return SpyVerifier The newly created spy verifier.
      */
-    public function create(Spy $spy = null)
+    public function create(Spy $spy = null): SpyVerifier
     {
         if (!$spy) {
             $spy = $this->spyFactory->create();
@@ -118,7 +118,7 @@ class SpyVerifierFactory
      *
      * @return SpyVerifier The newly created spy verifier.
      */
-    public function createFromCallback(callable $callback = null)
+    public function createFromCallback(callable $callback = null): SpyVerifier
     {
         return new SpyVerifier(
             $this->spyFactory->create($callback),
@@ -142,8 +142,10 @@ class SpyVerifierFactory
      * @return SpyVerifier              The newly created spy verifier.
      * @throws InvalidArgumentException If an invalid function name or namespace is specified.
      */
-    public function createGlobal(string $function, string $namespace)
-    {
+    public function createGlobal(
+        string $function,
+        string $namespace
+    ): SpyVerifier {
         if (false !== strpos($function, '\\')) {
             throw new InvalidArgumentException(
                 'Only functions in the global namespace are supported.'

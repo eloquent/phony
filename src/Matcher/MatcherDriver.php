@@ -21,14 +21,14 @@ interface MatcherDriver
      *
      * @return bool True if available.
      */
-    public function isAvailable();
+    public function isAvailable(): bool;
 
     /**
      * Get the supported matcher class names.
      *
      * @return array<string> The matcher class names.
      */
-    public function matcherClassNames();
+    public function matcherClassNames(): array;
 
     /**
      * Wrap the supplied third party matcher.
@@ -37,5 +37,5 @@ interface MatcherDriver
      *
      * @return Matchable The wrapped matcher.
      */
-    public function wrapMatcher($matcher);
+    public function wrapMatcher($matcher): Matchable;
 }

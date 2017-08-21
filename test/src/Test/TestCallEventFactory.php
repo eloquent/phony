@@ -12,6 +12,7 @@
 namespace Eloquent\Phony\Test;
 
 use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 
@@ -25,12 +26,12 @@ class TestCallEventFactory extends CallEventFactory
         parent::__construct($this->sequencer, $this->clock);
     }
 
-    public function sequencer()
+    public function sequencer(): Sequencer
     {
         return $this->sequencer;
     }
 
-    public function clock()
+    public function clock(): TestClock
     {
         return $this->clock;
     }
@@ -44,7 +45,7 @@ class TestCallEventFactory extends CallEventFactory
     public function createCalled(
         callable $callback = null,
         Arguments $arguments = null
-    ) {
+    ): CalledEvent {
         if (!$callback) {
             $callback = function () {};
         }

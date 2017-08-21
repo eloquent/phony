@@ -41,7 +41,7 @@ class CallData implements Call
      *
      * @return int The comparison value.
      */
-    public static function compareSequential(Call $a, Call $b)
+    public static function compareSequential(Call $a, Call $b): int
     {
         $a = $a->sequenceNumber();
         $b = $b->sequenceNumber();
@@ -83,7 +83,7 @@ class CallData implements Call
      *
      * @return int The index.
      */
-    public function index()
+    public function index(): int
     {
         return $this->index;
     }
@@ -97,7 +97,7 @@ class CallData implements Call
      *
      * @return int The sequence number.
      */
-    public function sequenceNumber()
+    public function sequenceNumber(): int
     {
         return $this->calledEvent->sequenceNumber();
     }
@@ -107,7 +107,7 @@ class CallData implements Call
      *
      * @return float The time at which the event occurred, in seconds since the Unix epoch.
      */
-    public function time()
+    public function time(): float
     {
         return $this->calledEvent->time();
     }
@@ -117,7 +117,7 @@ class CallData implements Call
      *
      * @return bool True if this collection contains any events.
      */
-    public function hasEvents()
+    public function hasEvents(): bool
     {
         return true;
     }
@@ -127,7 +127,7 @@ class CallData implements Call
      *
      * @return bool True if this collection contains any calls.
      */
-    public function hasCalls()
+    public function hasCalls(): bool
     {
         return true;
     }
@@ -137,7 +137,7 @@ class CallData implements Call
      *
      * @return int The event count.
      */
-    public function eventCount()
+    public function eventCount(): int
     {
         $events = $this->allEvents();
 
@@ -149,7 +149,7 @@ class CallData implements Call
      *
      * @return int The call count.
      */
-    public function callCount()
+    public function callCount(): int
     {
         return 1;
     }
@@ -159,7 +159,7 @@ class CallData implements Call
      *
      * @return int The event count.
      */
-    public function count()
+    public function count(): int
     {
         $events = $this->allEvents();
 
@@ -172,7 +172,7 @@ class CallData implements Call
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function firstEvent()
+    public function firstEvent(): Event
     {
         return $this->calledEvent;
     }
@@ -183,7 +183,7 @@ class CallData implements Call
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function lastEvent()
+    public function lastEvent(): Event
     {
         if ($this->endEvent) {
             return $this->endEvent;
@@ -211,7 +211,7 @@ class CallData implements Call
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt(int $index = 0)
+    public function eventAt(int $index = 0): Event
     {
         if (0 === $index) {
             return $this->calledEvent;
@@ -233,7 +233,7 @@ class CallData implements Call
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function firstCall()
+    public function firstCall(): Call
     {
         return $this;
     }
@@ -244,7 +244,7 @@ class CallData implements Call
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function lastCall()
+    public function lastCall(): Call
     {
         return $this;
     }
@@ -260,7 +260,7 @@ class CallData implements Call
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt(int $index = 0)
+    public function callAt(int $index = 0): Call
     {
         if (0 === $index || -1 === $index) {
             return $this;
@@ -274,7 +274,7 @@ class CallData implements Call
      *
      * @return Iterator The iterator.
      */
-    public function getIterator()
+    public function getIterator(): Iterator
     {
         return new ArrayIterator([$this]);
     }
@@ -284,7 +284,7 @@ class CallData implements Call
      *
      * @return CalledEvent The 'called' event.
      */
-    public function calledEvent()
+    public function calledEvent(): CalledEvent
     {
         return $this->calledEvent;
     }
@@ -341,7 +341,7 @@ class CallData implements Call
      *
      * @return array<IterableEvent> The iterable events.
      */
-    public function iterableEvents()
+    public function iterableEvents(): array
     {
         return $this->iterableEvents;
     }
@@ -383,7 +383,7 @@ class CallData implements Call
      *
      * @return array<Event> The events.
      */
-    public function allEvents()
+    public function allEvents(): array
     {
         $events = $this->iterableEvents();
 
@@ -405,7 +405,7 @@ class CallData implements Call
      *
      * @return array<Call> The calls.
      */
-    public function allCalls()
+    public function allCalls(): array
     {
         return [$this];
     }
@@ -417,7 +417,7 @@ class CallData implements Call
      *
      * @return bool True if this call has responded.
      */
-    public function hasResponded()
+    public function hasResponded(): bool
     {
         return (bool) $this->responseEvent;
     }
@@ -427,7 +427,7 @@ class CallData implements Call
      *
      * @return bool True if this call has responded with an iterable.
      */
-    public function isIterable()
+    public function isIterable(): bool
     {
         if (!$this->responseEvent instanceof ReturnedEvent) {
             return false;
@@ -443,7 +443,7 @@ class CallData implements Call
      *
      * @return bool True if this call has responded with a generator.
      */
-    public function isGenerator()
+    public function isGenerator(): bool
     {
         return $this->responseEvent instanceof ReturnedEvent &&
             $this->responseEvent->value() instanceof Generator;
@@ -462,7 +462,7 @@ class CallData implements Call
      *
      * @return bool True if this call has completed.
      */
-    public function hasCompleted()
+    public function hasCompleted(): bool
     {
         return (bool) $this->endEvent;
     }
@@ -472,7 +472,7 @@ class CallData implements Call
      *
      * @return callable The callback.
      */
-    public function callback()
+    public function callback(): callable
     {
         return $this->calledEvent->callback();
     }
@@ -482,7 +482,7 @@ class CallData implements Call
      *
      * @return Arguments The received arguments.
      */
-    public function arguments()
+    public function arguments(): Arguments
     {
         return $this->calledEvent->arguments();
     }
@@ -543,7 +543,7 @@ class CallData implements Call
      * @return Throwable                  The thrown exception.
      * @throws UndefinedResponseException If this call has not yet thrown an exception.
      */
-    public function exception()
+    public function exception(): Throwable
     {
         if ($this->responseEvent instanceof ThrewEvent) {
             return $this->responseEvent->exception();
@@ -560,7 +560,7 @@ class CallData implements Call
      * @return Throwable                  The thrown exception.
      * @throws UndefinedResponseException If this call has not yet thrown an exception via generator.
      */
-    public function generatorException()
+    public function generatorException(): Throwable
     {
         if ($this->endEvent instanceof ThrewEvent) {
             return $this->endEvent->exception();
@@ -577,7 +577,7 @@ class CallData implements Call
      * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded.
      */
-    public function response()
+    public function response(): array
     {
         if ($this->responseEvent instanceof ReturnedEvent) {
             return [null, $this->responseEvent->value()];
@@ -596,7 +596,7 @@ class CallData implements Call
      * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded via generator.
      */
-    public function generatorResponse()
+    public function generatorResponse(): array
     {
         if ($this->endEvent instanceof ReturnedEvent) {
             return [null, $this->endEvent->value()];

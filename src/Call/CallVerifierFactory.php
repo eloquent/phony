@@ -29,7 +29,7 @@ class CallVerifierFactory
      *
      * @return CallVerifierFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -78,7 +78,7 @@ class CallVerifierFactory
      *
      * @return CallVerifier The call verifier.
      */
-    public function fromCall(Call $call)
+    public function fromCall(Call $call): CallVerifier
     {
         return new CallVerifier(
             $call,
@@ -98,7 +98,7 @@ class CallVerifierFactory
      *
      * @return array<CallVerifier> The call verifiers.
      */
-    public function fromCalls(array $calls)
+    public function fromCalls(array $calls): array
     {
         $verifiers = [];
 

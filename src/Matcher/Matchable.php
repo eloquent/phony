@@ -25,12 +25,12 @@ interface Matchable
      *
      * @return string The description.
      */
-    public function describe(Exporter $exporter = null);
+    public function describe(Exporter $exporter = null): string;
 
     /**
      * Describe this matcher.
      *
      * @return string The description.
      */
-    public function __toString();
+    public function __toString(): string;
 }

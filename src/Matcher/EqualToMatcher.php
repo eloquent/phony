@@ -59,7 +59,7 @@ class EqualToMatcher implements Matcher
      *
      * @return bool True if the value matches.
      */
-    public function matches($value)
+    public function matches($value): bool
     {
         $left = $this->value;
         $right = $value;
@@ -349,7 +349,7 @@ class EqualToMatcher implements Matcher
      *
      * @return string The description.
      */
-    public function describe(Exporter $exporter = null)
+    public function describe(Exporter $exporter = null): string
     {
         if ($exporter) {
             return $exporter->export($this->value);
@@ -363,7 +363,7 @@ class EqualToMatcher implements Matcher
      *
      * @return string The description.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->exporter->export($this->value);
     }

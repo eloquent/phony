@@ -24,7 +24,7 @@ class TestFunctionHookGenerator extends FunctionHookGenerator
         string $name,
         string $namespace,
         array $signature
-    ) {
+    ): string {
         return $this->source;
     }
 

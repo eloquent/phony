@@ -26,7 +26,7 @@ class HamcrestMatcherDriver implements MatcherDriver
      *
      * @return MatcherDriver The static driver.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -40,7 +40,7 @@ class HamcrestMatcherDriver implements MatcherDriver
      *
      * @return bool True if available.
      */
-    public function isAvailable()
+    public function isAvailable(): bool
     {
         return interface_exists(Matcher::class);
     }
@@ -50,7 +50,7 @@ class HamcrestMatcherDriver implements MatcherDriver
      *
      * @return array<string> The matcher class names.
      */
-    public function matcherClassNames()
+    public function matcherClassNames(): array
     {
         return [Matcher::class];
     }
@@ -62,7 +62,7 @@ class HamcrestMatcherDriver implements MatcherDriver
      *
      * @return Matchable The wrapped matcher.
      */
-    public function wrapMatcher($matcher)
+    public function wrapMatcher($matcher): Matchable
     {
         return new WrappedMatcher($matcher);
     }

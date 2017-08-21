@@ -55,7 +55,7 @@ class GeneratorAnswerBuilder
      *
      * @return $this This builder.
      */
-    public function calls(...$callbacks)
+    public function calls(...$callbacks): self
     {
         foreach ($callbacks as $callback) {
             $this->callsWith($callback);
@@ -74,6 +74,8 @@ class GeneratorAnswerBuilder
      * @param bool|null       $prefixSelf            True if the self value should be prefixed.
      * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     *
+     * @return $this This builder.
      */
     public function callsWith(
         callable $callback,
@@ -81,7 +83,7 @@ class GeneratorAnswerBuilder
         bool $prefixSelf = null,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    ) {
+    ): self {
         if (null === $prefixSelf) {
             $parameters = $this->invocableInspector
                 ->callbackReflector($callback)->getParameters();
@@ -115,7 +117,7 @@ class GeneratorAnswerBuilder
      *
      * @return $this This builder.
      */
-    public function callsArgument(...$indices)
+    public function callsArgument(...$indices): self
     {
         if (empty($indices)) {
             $this->callsArgumentWith(0);
@@ -148,7 +150,7 @@ class GeneratorAnswerBuilder
         bool $prefixSelf = false,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    ) {
+    ): self {
         $invoker = $this->invoker;
 
         if (!$arguments instanceof Arguments) {
@@ -199,7 +201,7 @@ class GeneratorAnswerBuilder
      *
      * @return $this This builder.
      */
-    public function setsArgument($indexOrValue = null, $value = null)
+    public function setsArgument($indexOrValue = null, $value = null): self
     {
         if (func_num_args() > 1) {
             $index = $indexOrValue;
@@ -239,7 +241,7 @@ class GeneratorAnswerBuilder
      *
      * @return $this This builder.
      */
-    public function yields($keyOrValue = null, $value = null)
+    public function yields($keyOrValue = null, $value = null): self
     {
         $argumentCount = func_num_args();
 
@@ -285,7 +287,7 @@ class GeneratorAnswerBuilder
      *
      * @return $this This builder.
      */
-    public function yieldsFrom($values)
+    public function yieldsFrom($values): self
     {
         $this->iterations[] =
             new GeneratorYieldFromIteration($this->requests, $values);
@@ -302,7 +304,7 @@ class GeneratorAnswerBuilder
      * @return Stub             The stub.
      * @throws RuntimeException If the current runtime does not support the supplied return value.
      */
-    public function returns(...$values)
+    public function returns(...$values): Stub
     {
         if (empty($values)) {
             $values = [null];
@@ -344,7 +346,7 @@ class GeneratorAnswerBuilder
      *
      * @return Stub The stub.
      */
-    public function returnsArgument(int $index = 0)
+    public function returnsArgument(int $index = 0): Stub
     {
         $this->returnsArgument = $index;
 
@@ -356,7 +358,7 @@ class GeneratorAnswerBuilder
      *
      * @return Stub The stub.
      */
-    public function returnsSelf()
+    public function returnsSelf(): Stub
     {
         $this->returnsSelf = true;
 
@@ -370,7 +372,7 @@ class GeneratorAnswerBuilder
      *
      * @return Stub The stub.
      */
-    public function throws(...$exceptions)
+    public function throws(...$exceptions): Stub
     {
         if (empty($exceptions)) {
             $exceptions = [new Exception()];
@@ -407,7 +409,7 @@ class GeneratorAnswerBuilder
      *
      * @return callable The answer.
      */
-    public function answer()
+    public function answer(): callable
     {
         return GeneratorAnswerBuilderDetail::answer(
             $this->iterations,

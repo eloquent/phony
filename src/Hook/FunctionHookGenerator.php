@@ -21,7 +21,7 @@ class FunctionHookGenerator
      *
      * @return FunctionHookGenerator The static generator.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -43,7 +43,7 @@ class FunctionHookGenerator
         string $name,
         string $namespace,
         array $signature
-    ) {
+    ): string {
         $source = "namespace $namespace;\n\nfunction $name";
         $parameterCount = count($signature);
 

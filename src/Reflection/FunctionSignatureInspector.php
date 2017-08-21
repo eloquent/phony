@@ -24,7 +24,7 @@ abstract class FunctionSignatureInspector
      *
      * @return FunctionSignatureInspector The static inspector.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             $featureDetector = FeatureDetector::instance();
@@ -64,7 +64,7 @@ abstract class FunctionSignatureInspector
      *
      * @return array<string,array<string>> The callback signature.
      */
-    public function callbackSignature(callable $callback)
+    public function callbackSignature(callable $callback): array
     {
         return $this->signature(
             $this->invocableInspector->callbackReflector($callback)
@@ -78,7 +78,9 @@ abstract class FunctionSignatureInspector
      *
      * @return array<string,array<string>> The function signature.
      */
-    abstract public function signature(ReflectionFunctionAbstract $function);
+    abstract public function signature(
+        ReflectionFunctionAbstract $function
+    ): array;
 
     private static $instance;
     private $invocableInspector;

@@ -41,7 +41,7 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
      *
      * @return bool True if anonymous.
      */
-    public function isAnonymous()
+    public function isAnonymous(): bool
     {
         return $this->isAnonymous;
     }
@@ -63,7 +63,7 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
      *
      * @return $this This invocable.
      */
-    public function setLabel(string $label = null)
+    public function setLabel(string $label = null): WrappedInvocable
     {
         $this->label = $label;
 

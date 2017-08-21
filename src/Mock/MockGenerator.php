@@ -27,7 +27,7 @@ class MockGenerator
      *
      * @return MockGenerator The static generator.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -71,7 +71,7 @@ class MockGenerator
      *
      * @return string The mock class name.
      */
-    public function generateClassName(MockDefinition $definition)
+    public function generateClassName(MockDefinition $definition): string
     {
         $className = $definition->className();
 
@@ -113,7 +113,7 @@ class MockGenerator
     public function generate(
         MockDefinition $definition,
         string $className = null
-    ) {
+    ): string {
         if (null === $className) {
             $className = $this->generateClassName($definition);
         }

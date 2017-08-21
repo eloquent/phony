@@ -86,7 +86,7 @@ class MethodDefinitionCollection
      *
      * @return array<string,MethodDefinition> The methods.
      */
-    public function allMethods()
+    public function allMethods(): array
     {
         return $this->allMethods;
     }
@@ -96,7 +96,7 @@ class MethodDefinitionCollection
      *
      * @return array<string,MethodDefinition> The methods.
      */
-    public function staticMethods()
+    public function staticMethods(): array
     {
         return $this->staticMethods;
     }
@@ -106,7 +106,7 @@ class MethodDefinitionCollection
      *
      * @return array<string,MethodDefinition> The methods.
      */
-    public function methods()
+    public function methods(): array
     {
         return $this->methods;
     }
@@ -116,7 +116,7 @@ class MethodDefinitionCollection
      *
      * @return array<string,MethodDefinition> The methods.
      */
-    public function publicStaticMethods()
+    public function publicStaticMethods(): array
     {
         return $this->publicStaticMethods;
     }
@@ -126,7 +126,7 @@ class MethodDefinitionCollection
      *
      * @return array<string,MethodDefinition> The methods.
      */
-    public function publicMethods()
+    public function publicMethods(): array
     {
         return $this->publicMethods;
     }
@@ -136,7 +136,7 @@ class MethodDefinitionCollection
      *
      * @return array<string,MethodDefinition> The methods.
      */
-    public function protectedStaticMethods()
+    public function protectedStaticMethods(): array
     {
         return $this->protectedStaticMethods;
     }
@@ -146,7 +146,7 @@ class MethodDefinitionCollection
      *
      * @return array<string,MethodDefinition> The methods.
      */
-    public function protectedMethods()
+    public function protectedMethods(): array
     {
         return $this->protectedMethods;
     }
@@ -156,7 +156,7 @@ class MethodDefinitionCollection
      *
      * @return array<ReflectionMethod> The trait methods.
      */
-    public function traitMethods()
+    public function traitMethods(): array
     {
         return $this->traitMethods;
     }

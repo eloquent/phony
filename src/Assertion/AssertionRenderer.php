@@ -51,7 +51,7 @@ class AssertionRenderer
      *
      * @return AssertionRenderer The static renderer.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -137,7 +137,7 @@ class AssertionRenderer
      *
      * @return string The rendered failure message.
      */
-    public function renderCalled($subject, Cardinality $cardinality)
+    public function renderCalled($subject, Cardinality $cardinality): string
     {
         $isCall = $subject instanceof Call;
 
@@ -231,7 +231,7 @@ class AssertionRenderer
         $subject,
         Cardinality $cardinality,
         array $matchers
-    ) {
+    ): string {
         $matcherCount = count($matchers);
 
         if (
@@ -471,7 +471,7 @@ class AssertionRenderer
      *
      * @return string The rendered failure message.
      */
-    public function renderResponded($subject, Cardinality $cardinality)
+    public function renderResponded($subject, Cardinality $cardinality): string
     {
         $isCall = $subject instanceof Call;
 
@@ -587,7 +587,7 @@ class AssertionRenderer
      *
      * @return string The rendered failure message.
      */
-    public function renderCompleted($subject, Cardinality $cardinality)
+    public function renderCompleted($subject, Cardinality $cardinality): string
     {
         $isCall = $subject instanceof Call;
 
@@ -784,7 +784,7 @@ class AssertionRenderer
         $subject,
         Cardinality $cardinality,
         Matcher $value = null
-    ) {
+    ): string {
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
@@ -933,8 +933,11 @@ class AssertionRenderer
      *
      * @return string The rendered failure message.
      */
-    public function renderThrew($subject, Cardinality $cardinality, $type)
-    {
+    public function renderThrew(
+        $subject,
+        Cardinality $cardinality,
+        $type
+    ): string {
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
@@ -1085,7 +1088,7 @@ class AssertionRenderer
      *
      * @return string The rendered failure message.
      */
-    public function renderGenerated($subject, Cardinality $cardinality)
+    public function renderGenerated($subject, Cardinality $cardinality): string
     {
         $isCall = $subject instanceof Call;
 
@@ -1216,7 +1219,7 @@ class AssertionRenderer
      *
      * @return string The rendered failure message.
      */
-    public function renderIterated($subject, Cardinality $cardinality)
+    public function renderIterated($subject, Cardinality $cardinality): string
     {
         $isCall = $subject instanceof Call;
 
@@ -1353,7 +1356,7 @@ class AssertionRenderer
         $subject,
         Cardinality $cardinality,
         bool $isGenerator
-    ) {
+    ): string {
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
@@ -1661,7 +1664,7 @@ class AssertionRenderer
         bool $isGenerator,
         Matcher $key = null,
         Matcher $value = null
-    ) {
+    ): string {
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
@@ -2009,7 +2012,7 @@ class AssertionRenderer
         $subject,
         Cardinality $cardinality,
         bool $isGenerator
-    ) {
+    ): string {
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
@@ -2339,7 +2342,7 @@ class AssertionRenderer
         $subject,
         Cardinality $cardinality,
         Matcher $value = null
-    ) {
+    ): string {
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
@@ -2631,7 +2634,7 @@ class AssertionRenderer
         $subject,
         Cardinality $cardinality,
         $type
-    ) {
+    ): string {
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
@@ -2930,7 +2933,7 @@ class AssertionRenderer
         $subject,
         Cardinality $cardinality,
         Matcher $value = null
-    ) {
+    ): string {
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
@@ -3228,7 +3231,7 @@ class AssertionRenderer
         $subject,
         Cardinality $cardinality,
         $type
-    ) {
+    ): string {
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
@@ -3529,7 +3532,7 @@ class AssertionRenderer
      *
      * @return string The rendered failure message.
      */
-    public function renderNoInteraction(Handle $handle, array $calls)
+    public function renderNoInteraction(Handle $handle, array $calls): string
     {
         $class = $handle->clazz();
 
@@ -3579,7 +3582,7 @@ class AssertionRenderer
      *
      * @return string The rendered failure message.
      */
-    public function renderInOrder(array $expected, array $actual)
+    public function renderInOrder(array $expected, array $actual): string
     {
         if (empty($expected)) {
             return $this->reset . 'Expected events.' . PHP_EOL .
@@ -3644,7 +3647,7 @@ class AssertionRenderer
      *
      * @return string The rendered value.
      */
-    public function renderValue($value)
+    public function renderValue($value): string
     {
         return $this->exporter->export($value);
     }
@@ -3656,7 +3659,7 @@ class AssertionRenderer
      *
      * @return string The rendered matchers.
      */
-    public function renderMatchers(array $matchers)
+    public function renderMatchers(array $matchers): string
     {
         if (count($matchers) < 1) {
             return '<none>';

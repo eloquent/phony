@@ -26,7 +26,7 @@ interface CallEvent extends Event
      *
      * @return $this This event.
      */
-    public function setCall(Call $call);
+    public function setCall(Call $call): self;
 
     /**
      * Get the call.

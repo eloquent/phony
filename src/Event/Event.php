@@ -25,12 +25,12 @@ interface Event
      *
      * @return int The sequence number.
      */
-    public function sequenceNumber();
+    public function sequenceNumber(): int;
 
     /**
      * Get the time at which the event occurred.
      *
      * @return float The time at which the event occurred, in seconds since the Unix epoch.
      */
-    public function time();
+    public function time(): float;
 }

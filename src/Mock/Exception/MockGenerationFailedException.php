@@ -102,7 +102,7 @@ final class MockGenerationFailedException extends Exception implements
      *
      * @return MockDefinition The definition.
      */
-    public function definition()
+    public function definition(): MockDefinition
     {
         return $this->definition;
     }
@@ -112,7 +112,7 @@ final class MockGenerationFailedException extends Exception implements
      *
      * @return string The generated source code.
      */
-    public function source()
+    public function source(): string
     {
         return $this->source;
     }
@@ -120,7 +120,7 @@ final class MockGenerationFailedException extends Exception implements
     /**
      * Get the error details.
      *
-     * @return array<string,mixed> The error details.
+     * @return array<string,mixed>|null The error details.
      */
     public function error()
     {

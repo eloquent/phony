@@ -25,7 +25,7 @@ class MockBuilderFactory
      *
      * @return MockBuilderFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -66,7 +66,7 @@ class MockBuilderFactory
      *
      * @return MockBuilder The mock builder.
      */
-    public function create($types = [])
+    public function create($types = []): MockBuilder
     {
         return new MockBuilder(
             $types,

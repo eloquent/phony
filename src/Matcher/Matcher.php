@@ -23,5 +23,5 @@ interface Matcher extends Matchable
      *
      * @return bool True if the value matches.
      */
-    public function matches($value);
+    public function matches($value): bool;
 }

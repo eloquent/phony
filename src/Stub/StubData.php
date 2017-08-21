@@ -104,7 +104,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return callable The default answer callback.
      */
-    public function defaultAnswerCallback()
+    public function defaultAnswerCallback(): callable
     {
         return $this->defaultAnswerCallback;
     }
@@ -118,7 +118,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function setSelf($self)
+    public function setSelf($self): Stub
     {
         if ($self === $this) {
             $self = null;
@@ -150,8 +150,9 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function setDefaultAnswerCallback(callable $defaultAnswerCallback)
-    {
+    public function setDefaultAnswerCallback(
+        callable $defaultAnswerCallback
+    ): Stub {
         $this->defaultAnswerCallback = $defaultAnswerCallback;
 
         return $this;
@@ -164,7 +165,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function with(...$arguments)
+    public function with(...$arguments): Stub
     {
         $this->closeRule();
 
@@ -188,7 +189,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function calls(...$callbacks)
+    public function calls(...$callbacks): Stub
     {
         foreach ($callbacks as $callback) {
             $this->callsWith($callback);
@@ -207,6 +208,8 @@ class StubData extends AbstractWrappedInvocable implements Stub
      * @param bool|null       $prefixSelf            True if the self value should be prefixed.
      * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     *
+     * @return $this This stub.
      */
     public function callsWith(
         callable $callback,
@@ -214,7 +217,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
         bool $prefixSelf = null,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    ) {
+    ): Stub {
         if (null === $prefixSelf) {
             $parameters = $this->invocableInspector
                 ->callbackReflector($callback)->getParameters();
@@ -250,7 +253,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function callsArgument(...$indices)
+    public function callsArgument(...$indices): Stub
     {
         if (empty($indices)) {
             $this->callsArgumentWith(0);
@@ -285,7 +288,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
         bool $prefixSelf = false,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = false
-    ) {
+    ): Stub {
         $invoker = $this->invoker;
 
         if (!$arguments instanceof Arguments) {
@@ -336,7 +339,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function setsArgument($indexOrValue = null, $value = null)
+    public function setsArgument($indexOrValue = null, $value = null): Stub
     {
         if (func_num_args() > 1) {
             $index = $indexOrValue;
@@ -367,7 +370,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function does(...$callbacks)
+    public function does(...$callbacks): Stub
     {
         foreach ($callbacks as $callback) {
             $this->doesWith($callback);
@@ -393,7 +396,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
         bool $prefixSelf = null,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    ) {
+    ): Stub {
         if (null === $prefixSelf) {
             $parameters = $this->invocableInspector
                 ->callbackReflector($callback)->getParameters();
@@ -436,7 +439,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
         bool $prefixSelf = null,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    ) {
+    ): Stub {
         if (null === $prefixSelf) {
             if ($this->callback instanceof WrappedCustomMethod) {
                 $parameters = $this->invocableInspector
@@ -492,7 +495,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function returns(...$values)
+    public function returns(...$values): Stub
     {
         if (empty($values)) {
             $callback = $this->callback;
@@ -561,7 +564,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function returnsArgument(int $index = 0)
+    public function returnsArgument(int $index = 0): Stub
     {
         return $this->doesWith(
             function ($arguments) use ($index) {
@@ -579,7 +582,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function returnsSelf()
+    public function returnsSelf(): Stub
     {
         return $this->doesWith(
             function ($self) {
@@ -599,7 +602,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function throws(...$exceptions)
+    public function throws(...$exceptions): Stub
     {
         if (empty($exceptions)) {
             return $this->doesWith(
@@ -642,7 +645,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */
-    public function generates(...$values)
+    public function generates(...$values): GeneratorAnswerBuilder
     {
         $builder = $this->generatorAnswerBuilderFactory->create($this);
         $this->doesWith($builder->answer(), [], true, true, false);
@@ -666,7 +669,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @return $this This stub.
      */
-    public function closeRule()
+    public function closeRule(): Stub
     {
         if (!empty($this->secondaryRequests)) {
             $defaultAnswerCallback = $this->defaultAnswerCallback;
@@ -696,6 +699,8 @@ class StubData extends AbstractWrappedInvocable implements Stub
 
             throw new UnusedStubCriteriaException($criteria);
         }
+
+        return $this;
     }
 
     /**

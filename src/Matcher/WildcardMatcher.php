@@ -23,7 +23,7 @@ class WildcardMatcher implements Matchable
      *
      * @return WildcardMatcher The static matcher.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(AnyMatcher::instance(), 0, -1);
@@ -56,7 +56,7 @@ class WildcardMatcher implements Matchable
      *
      * @return Matcher The matcher.
      */
-    public function matcher()
+    public function matcher(): Matcher
     {
         return $this->matcher;
     }
@@ -66,7 +66,7 @@ class WildcardMatcher implements Matchable
      *
      * @return int The minimum number of arguments.
      */
-    public function minimumArguments()
+    public function minimumArguments(): int
     {
         return $this->minimumArguments;
     }
@@ -76,7 +76,7 @@ class WildcardMatcher implements Matchable
      *
      * @return int The maximum number of arguments.
      */
-    public function maximumArguments()
+    public function maximumArguments(): int
     {
         return $this->maximumArguments;
     }
@@ -88,7 +88,7 @@ class WildcardMatcher implements Matchable
      *
      * @return string The description.
      */
-    public function describe(Exporter $exporter = null)
+    public function describe(Exporter $exporter = null): string
     {
         $matcherDescription = $this->matcher->describe($exporter);
 
@@ -129,7 +129,7 @@ class WildcardMatcher implements Matchable
      *
      * @return string The description.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->describe();
     }

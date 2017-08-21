@@ -45,7 +45,7 @@ class WrappedMatcher implements Matcher
      *
      * @return bool True if the value matches.
      */
-    public function matches($value)
+    public function matches($value): bool
     {
         return (bool) $this->matcher->matches($value);
     }
@@ -57,7 +57,7 @@ class WrappedMatcher implements Matcher
      *
      * @return string The description.
      */
-    public function describe(Exporter $exporter = null)
+    public function describe(Exporter $exporter = null): string
     {
         return '<' . strval($this->matcher) . '>';
     }
@@ -67,7 +67,7 @@ class WrappedMatcher implements Matcher
      *
      * @return string The description.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return '<' . strval($this->matcher) . '>';
     }

@@ -102,7 +102,7 @@ final class FunctionHookGenerationFailedException extends Exception implements
      *
      * @return string The function name.
      */
-    public function functionName()
+    public function functionName(): string
     {
         return $this->functionName;
     }
@@ -112,7 +112,7 @@ final class FunctionHookGenerationFailedException extends Exception implements
      *
      * @return callable The callback.
      */
-    public function callback()
+    public function callback(): callable
     {
         return $this->callback;
     }
@@ -122,7 +122,7 @@ final class FunctionHookGenerationFailedException extends Exception implements
      *
      * @return string The generated source code.
      */
-    public function source()
+    public function source(): string
     {
         return $this->source;
     }
@@ -130,7 +130,7 @@ final class FunctionHookGenerationFailedException extends Exception implements
     /**
      * Get the error details.
      *
-     * @return array<string,mixed> The error details.
+     * @return array<string,mixed>|null The error details.
      */
     public function error()
     {

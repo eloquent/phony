@@ -35,7 +35,7 @@ class StubVerifierFactory
      *
      * @return StubVerifierFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -105,7 +105,7 @@ class StubVerifierFactory
      *
      * @return StubVerifier The newly created stub verifier.
      */
-    public function create(Stub $stub = null, Spy $spy = null)
+    public function create(Stub $stub = null, Spy $spy = null): StubVerifier
     {
         if (!$stub) {
             $stub = $this->stubFactory->create();
@@ -135,7 +135,7 @@ class StubVerifierFactory
      *
      * @return StubVerifier The newly created stub verifier.
      */
-    public function createFromCallback(callable $callback = null)
+    public function createFromCallback(callable $callback = null): StubVerifier
     {
         $stub = $this->stubFactory->create($callback);
 
@@ -163,8 +163,10 @@ class StubVerifierFactory
      * @return StubVerifier             The newly created stub verifier.
      * @throws InvalidArgumentException If an invalid function name or namespace is specified.
      */
-    public function createGlobal(string $function, string $namespace)
-    {
+    public function createGlobal(
+        string $function,
+        string $namespace
+    ): StubVerifier {
         if (false !== strpos($function, '\\')) {
             throw new InvalidArgumentException(
                 'Only functions in the global namespace are supported.'

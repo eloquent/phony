@@ -100,7 +100,7 @@ abstract class AbstractHandle implements Handle
      *
      * @return ReflectionClass The class.
      */
-    public function clazz()
+    public function clazz(): ReflectionClass
     {
         return $this->class;
     }
@@ -110,7 +110,7 @@ abstract class AbstractHandle implements Handle
      *
      * @return string The class name.
      */
-    public function className()
+    public function className(): string
     {
         return $this->class->getName();
     }
@@ -120,7 +120,7 @@ abstract class AbstractHandle implements Handle
      *
      * @return $this This handle.
      */
-    public function full()
+    public function full(): Handle
     {
         $this->state->defaultAnswerCallback =
             [StubData::class, 'returnsEmptyAnswerCallback'];
@@ -133,7 +133,7 @@ abstract class AbstractHandle implements Handle
      *
      * @return $this This handle.
      */
-    public function partial()
+    public function partial(): Handle
     {
         $this->state->defaultAnswerCallback =
             [StubData::class, 'forwardsAnswerCallback'];
@@ -148,8 +148,9 @@ abstract class AbstractHandle implements Handle
      *
      * @return $this This handle.
      */
-    public function setDefaultAnswerCallback(callable $defaultAnswerCallback)
-    {
+    public function setDefaultAnswerCallback(
+        callable $defaultAnswerCallback
+    ): Handle {
         $this->state->defaultAnswerCallback = $defaultAnswerCallback;
 
         return $this;
@@ -160,7 +161,7 @@ abstract class AbstractHandle implements Handle
      *
      * @return callable The default answer callback.
      */
-    public function defaultAnswerCallback()
+    public function defaultAnswerCallback(): callable
     {
         return $this->state->defaultAnswerCallback;
     }
@@ -174,7 +175,7 @@ abstract class AbstractHandle implements Handle
      * @return StubVerifier  The stub verifier.
      * @throws MockException If the stub does not exist.
      */
-    public function stub(string $name, bool $isNewRule = true)
+    public function stub(string $name, bool $isNewRule = true): StubVerifier
     {
         $key = strtolower($name);
 
@@ -201,7 +202,7 @@ abstract class AbstractHandle implements Handle
      * @return StubVerifier  The stub verifier.
      * @throws MockException If the stub does not exist.
      */
-    public function __get(string $name)
+    public function __get(string $name): StubVerifier
     {
         $key = strtolower($name);
 
@@ -222,7 +223,7 @@ abstract class AbstractHandle implements Handle
      * @return Spy           The spy.
      * @throws MockException If the spy does not exist.
      */
-    public function spy(string $name)
+    public function spy(string $name): Spy
     {
         return $this->stub($name)->spy();
     }
@@ -249,7 +250,7 @@ abstract class AbstractHandle implements Handle
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function noInteraction()
+    public function noInteraction(): EventCollection
     {
         if ($result = $this->checkNoInteraction()) {
             return $result;
@@ -271,7 +272,7 @@ abstract class AbstractHandle implements Handle
      *
      * @return $this This handle.
      */
-    public function stopRecording()
+    public function stopRecording(): Handle
     {
         foreach (get_object_vars($this->state->stubs) as $stub) {
             $stub->stopRecording();
@@ -287,7 +288,7 @@ abstract class AbstractHandle implements Handle
      *
      * @return $this This handle.
      */
-    public function startRecording()
+    public function startRecording(): Handle
     {
         foreach (get_object_vars($this->state->stubs) as $stub) {
             $stub->startRecording();
@@ -303,7 +304,7 @@ abstract class AbstractHandle implements Handle
      *
      * @return stdClass The state.
      */
-    public function state()
+    public function state(): stdClass
     {
         return $this->state;
     }

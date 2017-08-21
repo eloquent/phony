@@ -21,5 +21,5 @@ interface Clock
      *
      * @return float The current time.
      */
-    public function time();
+    public function time(): float;
 }

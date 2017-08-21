@@ -29,28 +29,28 @@ interface Handle
      *
      * @return ReflectionClass The class.
      */
-    public function clazz();
+    public function clazz(): ReflectionClass;
 
     /**
      * Get the class name.
      *
      * @return string The class name.
      */
-    public function className();
+    public function className(): string;
 
     /**
      * Turn the mock into a full mock.
      *
      * @return $this This handle.
      */
-    public function full();
+    public function full(): self;
 
     /**
      * Turn the mock into a partial mock.
      *
      * @return $this This handle.
      */
-    public function partial();
+    public function partial(): self;
 
     /**
      * Use the supplied object as the implementation for all methods of the
@@ -63,7 +63,7 @@ interface Handle
      *
      * @return $this This handle.
      */
-    public function proxy($object);
+    public function proxy($object): self;
 
     /**
      * Set the callback to use when creating a default answer.
@@ -72,14 +72,16 @@ interface Handle
      *
      * @return $this This handle.
      */
-    public function setDefaultAnswerCallback(callable $defaultAnswerCallback);
+    public function setDefaultAnswerCallback(
+        callable $defaultAnswerCallback
+    ): self;
 
     /**
      * Get the default answer callback.
      *
      * @return callable The default answer callback.
      */
-    public function defaultAnswerCallback();
+    public function defaultAnswerCallback(): callable;
 
     /**
      * Get a stub verifier.
@@ -90,7 +92,7 @@ interface Handle
      * @return StubVerifier  The stub verifier.
      * @throws MockException If the stub does not exist.
      */
-    public function stub(string $name, bool $isNewRule = true);
+    public function stub(string $name, bool $isNewRule = true): StubVerifier;
 
     /**
      * Get a stub verifier.
@@ -102,7 +104,7 @@ interface Handle
      * @return StubVerifier  The stub verifier.
      * @throws MockException If the stub does not exist.
      */
-    public function __get(string $name);
+    public function __get(string $name): StubVerifier;
 
     /**
      * Checks if there was no interaction with the mock.
@@ -117,21 +119,21 @@ interface Handle
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function noInteraction();
+    public function noInteraction(): EventCollection;
 
     /**
      * Stop recording calls.
      *
      * @return $this This handle.
      */
-    public function stopRecording();
+    public function stopRecording(): self;
 
     /**
      * Start recording calls.
      *
      * @return $this This handle.
      */
-    public function startRecording();
+    public function startRecording(): self;
 
     /**
      * Get a spy.
@@ -141,12 +143,12 @@ interface Handle
      * @return Spy           The spy.
      * @throws MockException If the spy does not exist.
      */
-    public function spy(string $name);
+    public function spy(string $name): Spy;
 
     /**
      * Get the handle state.
      *
      * @return stdClass The state.
      */
-    public function state();
+    public function state(): stdClass;
 }

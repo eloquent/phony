@@ -28,7 +28,7 @@ class GeneratorSpyFactory
      *
      * @return GeneratorSpyFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -62,7 +62,7 @@ class GeneratorSpyFactory
      *
      * @return Generator The newly created generator spy.
      */
-    public function create(Call $call, Generator $generator)
+    public function create(Call $call, Generator $generator): Generator
     {
         // @codeCoverageIgnoreStart
         if ($this->isHhvm) {

@@ -28,7 +28,7 @@ class StubFactory
      *
      * @return StubFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -87,7 +87,7 @@ class StubFactory
         callable $callback = null,
         $self = null,
         callable $defaultAnswerCallback = null
-    ) {
+    ): Stub {
         if (null === $defaultAnswerCallback) {
             $defaultAnswerCallback =
                 [StubData::class, 'returnsEmptyAnswerCallback'];

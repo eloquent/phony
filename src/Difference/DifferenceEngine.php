@@ -23,7 +23,7 @@ class DifferenceEngine
      *
      * @return DifferenceEngine The static engine.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(FeatureDetector::instance());
@@ -80,7 +80,7 @@ class DifferenceEngine
      *
      * @return string The difference.
      */
-    public function difference(string $from, string $to)
+    public function difference(string $from, string $to): string
     {
         $flags = PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY;
         $from = preg_split('/(\W+)/u', $from, -1, $flags);

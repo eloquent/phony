@@ -46,7 +46,7 @@ class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
      *
      * @return array<string,array<string>> The function signature.
      */
-    public function signature(ReflectionFunctionAbstract $function)
+    public function signature(ReflectionFunctionAbstract $function): array
     {
         $signature = [];
 

@@ -29,7 +29,7 @@ class FunctionHookManager
      *
      * @return FunctionHookManager The static manager.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(

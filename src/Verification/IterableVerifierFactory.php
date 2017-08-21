@@ -29,7 +29,7 @@ class IterableVerifierFactory
      *
      * @return IterableVerifierFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -78,7 +78,7 @@ class IterableVerifierFactory
      *
      * @return IterableVerifier The newly created iterable verifier.
      */
-    public function create($subject, array $calls)
+    public function create($subject, array $calls): IterableVerifier
     {
         return new IterableVerifier(
             $subject,

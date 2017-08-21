@@ -27,14 +27,14 @@ interface Spy extends WrappedInvocable, EventCollection
      *
      * @return $this This spy.
      */
-    public function setUseGeneratorSpies(bool $useGeneratorSpies);
+    public function setUseGeneratorSpies(bool $useGeneratorSpies): self;
 
     /**
      * Returns true if this spy uses generator spies.
      *
      * @return bool True if this spy uses generator spies.
      */
-    public function useGeneratorSpies();
+    public function useGeneratorSpies(): bool;
 
     /**
      * Turn on or off the use of iterable spies.
@@ -43,28 +43,28 @@ interface Spy extends WrappedInvocable, EventCollection
      *
      * @return $this This spy.
      */
-    public function setUseIterableSpies(bool $useIterableSpies);
+    public function setUseIterableSpies(bool $useIterableSpies): self;
 
     /**
      * Returns true if this spy uses iterable spies.
      *
      * @return bool True if this spy uses iterable spies.
      */
-    public function useIterableSpies();
+    public function useIterableSpies(): bool;
 
     /**
      * Stop recording calls.
      *
      * @return $this This spy.
      */
-    public function stopRecording();
+    public function stopRecording(): self;
 
     /**
      * Start recording calls.
      *
      * @return $this This spy.
      */
-    public function startRecording();
+    public function startRecording(): self;
 
     /**
      * Set the calls.

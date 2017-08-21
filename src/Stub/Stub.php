@@ -30,7 +30,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function setSelf($self);
+    public function setSelf($self): self;
 
     /**
      * Get the self value of this stub.
@@ -46,14 +46,16 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function setDefaultAnswerCallback(callable $defaultAnswerCallback);
+    public function setDefaultAnswerCallback(
+        callable $defaultAnswerCallback
+    ): self;
 
     /**
      * Get the default answer callback.
      *
      * @return callable The default answer callback.
      */
-    public function defaultAnswerCallback();
+    public function defaultAnswerCallback(): callable;
 
     /**
      * Modify the current criteria to match the supplied arguments.
@@ -62,7 +64,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function with(...$arguments);
+    public function with(...$arguments): self;
 
     /**
      * Add a callback to be called as part of an answer.
@@ -73,7 +75,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function calls(...$callbacks);
+    public function calls(...$callbacks): self;
 
     /**
      * Add a callback to be called as part of an answer.
@@ -87,6 +89,8 @@ interface Stub extends WrappedInvocable
      * @param bool|null       $prefixSelf            True if the self value should be prefixed.
      * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     *
+     * @return $this This stub.
      */
     public function callsWith(
         callable $callback,
@@ -94,7 +98,7 @@ interface Stub extends WrappedInvocable
         bool $prefixSelf = null,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    );
+    ): self;
 
     /**
      * Add an argument callback to be called as part of an answer.
@@ -108,7 +112,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function callsArgument(...$indices);
+    public function callsArgument(...$indices): self;
 
     /**
      * Add an argument callback to be called as part of an answer.
@@ -132,7 +136,7 @@ interface Stub extends WrappedInvocable
         bool $prefixSelf = false,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    );
+    ): self;
 
     /**
      * Set the value of an argument passed by reference as part of an answer.
@@ -149,7 +153,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function setsArgument($indexOrValue = null, $value = null);
+    public function setsArgument($indexOrValue = null, $value = null): self;
 
     /**
      * Add a callback as an answer.
@@ -158,7 +162,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function does(...$callbacks);
+    public function does(...$callbacks): self;
 
     /**
      * Add a callback as an answer.
@@ -177,7 +181,7 @@ interface Stub extends WrappedInvocable
         bool $prefixSelf = null,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    );
+    ): self;
 
     /**
      * Add an answer that calls the wrapped callback.
@@ -194,7 +198,7 @@ interface Stub extends WrappedInvocable
         bool $prefixSelf = null,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    );
+    ): self;
 
     /**
      * Add an answer that returns a value.
@@ -203,7 +207,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function returns(...$values);
+    public function returns(...$values): self;
 
     /**
      * Add an answer that returns an argument.
@@ -215,14 +219,14 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function returnsArgument(int $index = 0);
+    public function returnsArgument(int $index = 0): self;
 
     /**
      * Add an answer that returns the self value.
      *
      * @return $this This stub.
      */
-    public function returnsSelf();
+    public function returnsSelf(): self;
 
     /**
      * Add an answer that throws an exception.
@@ -231,7 +235,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function throws(...$exceptions);
+    public function throws(...$exceptions): self;
 
     /**
      * Add an answer that returns a generator, and return a builder for
@@ -241,12 +245,12 @@ interface Stub extends WrappedInvocable
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */
-    public function generates(...$values);
+    public function generates(...$values): GeneratorAnswerBuilder;
 
     /**
      * Close any existing rule.
      *
      * @return $this This stub.
      */
-    public function closeRule();
+    public function closeRule(): self;
 }

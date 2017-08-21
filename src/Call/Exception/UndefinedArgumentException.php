@@ -40,7 +40,7 @@ final class UndefinedArgumentException extends Exception
      *
      * @return int The index.
      */
-    public function index()
+    public function index(): int
     {
         return $this->index;
     }

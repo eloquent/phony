@@ -26,7 +26,7 @@ class EmptyValueFactory
      *
      * @return EmptyValueFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(FeatureDetector::instance());

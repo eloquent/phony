@@ -25,7 +25,7 @@ class SpyFactory
      *
      * @return SpyFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -70,7 +70,7 @@ class SpyFactory
      *
      * @return Spy The newly created spy.
      */
-    public function create(callable $callback = null)
+    public function create(callable $callback = null): Spy
     {
         return new SpyData(
             $callback,

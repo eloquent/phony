@@ -27,42 +27,42 @@ interface EventCollection extends IteratorAggregate, Countable
      *
      * @return bool True if this collection contains any events.
      */
-    public function hasEvents();
+    public function hasEvents(): bool;
 
     /**
      * Returns true if this collection contains any calls.
      *
      * @return bool True if this collection contains any calls.
      */
-    public function hasCalls();
+    public function hasCalls(): bool;
 
     /**
      * Get the number of events.
      *
      * @return int The event count.
      */
-    public function eventCount();
+    public function eventCount(): int;
 
     /**
      * Get the number of calls.
      *
      * @return int The call count.
      */
-    public function callCount();
+    public function callCount(): int;
 
     /**
      * Get all events as an array.
      *
      * @return array<Event> The events.
      */
-    public function allEvents();
+    public function allEvents(): array;
 
     /**
      * Get all calls as an array.
      *
      * @return array<Call> The calls.
      */
-    public function allCalls();
+    public function allCalls(): array;
 
     /**
      * Get the first event.
@@ -70,7 +70,7 @@ interface EventCollection extends IteratorAggregate, Countable
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function firstEvent();
+    public function firstEvent(): Event;
 
     /**
      * Get the last event.
@@ -78,7 +78,7 @@ interface EventCollection extends IteratorAggregate, Countable
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function lastEvent();
+    public function lastEvent(): Event;
 
     /**
      * Get an event by index.
@@ -91,7 +91,7 @@ interface EventCollection extends IteratorAggregate, Countable
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt(int $index = 0);
+    public function eventAt(int $index = 0): Event;
 
     /**
      * Get the first call.
@@ -99,7 +99,7 @@ interface EventCollection extends IteratorAggregate, Countable
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function firstCall();
+    public function firstCall(): Call;
 
     /**
      * Get the last call.
@@ -107,7 +107,7 @@ interface EventCollection extends IteratorAggregate, Countable
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function lastCall();
+    public function lastCall(): Call;
 
     /**
      * Get a call by index.
@@ -120,5 +120,5 @@ interface EventCollection extends IteratorAggregate, Countable
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt(int $index = 0);
+    public function callAt(int $index = 0): Call;
 }

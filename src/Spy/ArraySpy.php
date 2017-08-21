@@ -41,7 +41,7 @@ class ArraySpy implements IterableSpy
     /**
      * Get the original iterable value.
      *
-     * @return mixed The original value.
+     * @return iterable The original value.
      */
     public function iterable()
     {
@@ -89,7 +89,7 @@ class ArraySpy implements IterableSpy
      *
      * @return bool True if the current iterator position is valid.
      */
-    public function valid()
+    public function valid(): bool
     {
         if (!$this->isUsed) {
             $this->call
@@ -124,7 +124,7 @@ class ArraySpy implements IterableSpy
      *
      * @return bool True if the key exists.
      */
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return isset($this->array[$key]);
     }
@@ -167,7 +167,7 @@ class ArraySpy implements IterableSpy
      *
      * @return int The count.
      */
-    public function count()
+    public function count(): int
     {
         return count($this->array);
     }

@@ -53,7 +53,7 @@ class EventSequence implements EventCollection
      *
      * @return bool True if this collection contains any events.
      */
-    public function hasEvents()
+    public function hasEvents(): bool
     {
         return $this->eventCount > 0;
     }
@@ -63,7 +63,7 @@ class EventSequence implements EventCollection
      *
      * @return bool True if this collection contains any calls.
      */
-    public function hasCalls()
+    public function hasCalls(): bool
     {
         return $this->callCount > 0;
     }
@@ -73,7 +73,7 @@ class EventSequence implements EventCollection
      *
      * @return int The event count.
      */
-    public function eventCount()
+    public function eventCount(): int
     {
         return $this->eventCount;
     }
@@ -83,7 +83,7 @@ class EventSequence implements EventCollection
      *
      * @return int The call count.
      */
-    public function callCount()
+    public function callCount(): int
     {
         return $this->callCount;
     }
@@ -93,7 +93,7 @@ class EventSequence implements EventCollection
      *
      * @return int The event count.
      */
-    public function count()
+    public function count(): int
     {
         return $this->eventCount;
     }
@@ -103,7 +103,7 @@ class EventSequence implements EventCollection
      *
      * @return array<Event> The events.
      */
-    public function allEvents()
+    public function allEvents(): array
     {
         return $this->events;
     }
@@ -113,7 +113,7 @@ class EventSequence implements EventCollection
      *
      * @return array<Call> The calls.
      */
-    public function allCalls()
+    public function allCalls(): array
     {
         return $this->callVerifierFactory->fromCalls($this->calls);
     }
@@ -124,7 +124,7 @@ class EventSequence implements EventCollection
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function firstEvent()
+    public function firstEvent(): Event
     {
         if (empty($this->events)) {
             throw new UndefinedEventException(0);
@@ -139,7 +139,7 @@ class EventSequence implements EventCollection
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function lastEvent()
+    public function lastEvent(): Event
     {
         if ($count = count($this->events)) {
             return $this->events[$count - 1];
@@ -159,7 +159,7 @@ class EventSequence implements EventCollection
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt(int $index = 0)
+    public function eventAt(int $index = 0): Event
     {
         if (!$this->normalizeIndex($this->eventCount, $index, $normalized)) {
             throw new UndefinedEventException($index);
@@ -174,7 +174,7 @@ class EventSequence implements EventCollection
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function firstCall()
+    public function firstCall(): Call
     {
         if (isset($this->calls[0])) {
             return $this->callVerifierFactory->fromCall($this->calls[0]);
@@ -189,7 +189,7 @@ class EventSequence implements EventCollection
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function lastCall()
+    public function lastCall(): Call
     {
         if ($this->callCount) {
             return $this->callVerifierFactory
@@ -210,7 +210,7 @@ class EventSequence implements EventCollection
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt(int $index = 0)
+    public function callAt(int $index = 0): Call
     {
         if (!$this->normalizeIndex($this->callCount, $index, $normalized)) {
             throw new UndefinedCallException($index);
@@ -224,7 +224,7 @@ class EventSequence implements EventCollection
      *
      * @return Iterator The iterator.
      */
-    public function getIterator()
+    public function getIterator(): Iterator
     {
         return new ArrayIterator($this->events);
     }

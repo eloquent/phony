@@ -23,7 +23,7 @@ interface WrappedInvocable extends Invocable
      *
      * @return $this This invocable.
      */
-    public function setLabel(string $label = null);
+    public function setLabel(string $label = null): self;
 
     /**
      * Get the label.
@@ -37,7 +37,7 @@ interface WrappedInvocable extends Invocable
      *
      * @return bool True if anonymous.
      */
-    public function isAnonymous();
+    public function isAnonymous(): bool;
 
     /**
      * Get the callback.

@@ -60,7 +60,7 @@ class FacadeDriver
      *
      * @return FacadeDriver The static driver.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(ExceptionAssertionRecorder::instance());

@@ -22,6 +22,7 @@ use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
+use Eloquent\Phony\Invocation\WrappedInvocable;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
@@ -81,7 +82,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return Spy The spy.
      */
-    public function spy()
+    public function spy(): Spy
     {
         return $this->spy;
     }
@@ -91,7 +92,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return bool True if anonymous.
      */
-    public function isAnonymous()
+    public function isAnonymous(): bool
     {
         return $this->spy->isAnonymous();
     }
@@ -113,7 +114,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return $this This spy.
      */
-    public function setUseGeneratorSpies(bool $useGeneratorSpies)
+    public function setUseGeneratorSpies(bool $useGeneratorSpies): Spy
     {
         $this->spy->setUseGeneratorSpies($useGeneratorSpies);
 
@@ -125,7 +126,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return bool True if this spy uses generator spies.
      */
-    public function useGeneratorSpies()
+    public function useGeneratorSpies(): bool
     {
         return $this->spy->useGeneratorSpies();
     }
@@ -137,7 +138,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return $this This spy.
      */
-    public function setUseIterableSpies(bool $useIterableSpies)
+    public function setUseIterableSpies(bool $useIterableSpies): Spy
     {
         $this->spy->setUseIterableSpies($useIterableSpies);
 
@@ -149,7 +150,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return bool True if this spy uses iterable spies.
      */
-    public function useIterableSpies()
+    public function useIterableSpies(): bool
     {
         return $this->spy->useIterableSpies();
     }
@@ -161,7 +162,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return $this This invocable.
      */
-    public function setLabel(string $label = null)
+    public function setLabel(string $label = null): WrappedInvocable
     {
         $this->spy->setLabel($label);
 
@@ -183,7 +184,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return $this This spy.
      */
-    public function stopRecording()
+    public function stopRecording(): Spy
     {
         $this->spy->stopRecording();
 
@@ -195,7 +196,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return $this This spy.
      */
-    public function startRecording()
+    public function startRecording(): Spy
     {
         $this->spy->startRecording();
 
@@ -227,7 +228,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return bool True if this collection contains any events.
      */
-    public function hasEvents()
+    public function hasEvents(): bool
     {
         return $this->spy->hasEvents();
     }
@@ -237,7 +238,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return bool True if this collection contains any calls.
      */
-    public function hasCalls()
+    public function hasCalls(): bool
     {
         return $this->spy->hasCalls();
     }
@@ -247,7 +248,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return int The event count.
      */
-    public function eventCount()
+    public function eventCount(): int
     {
         return $this->spy->eventCount();
     }
@@ -257,7 +258,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return int The call count.
      */
-    public function callCount()
+    public function callCount(): int
     {
         return $this->spy->callCount();
     }
@@ -267,7 +268,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return array<Event> The events.
      */
-    public function allEvents()
+    public function allEvents(): array
     {
         return $this->spy->allEvents();
     }
@@ -277,7 +278,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return array<CallVerifier> The calls.
      */
-    public function allCalls()
+    public function allCalls(): array
     {
         return $this->callVerifierFactory->fromCalls($this->spy->allCalls());
     }
@@ -288,7 +289,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function firstEvent()
+    public function firstEvent(): Event
     {
         return $this->spy->firstEvent();
     }
@@ -299,7 +300,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function lastEvent()
+    public function lastEvent(): Event
     {
         return $this->spy->lastEvent();
     }
@@ -315,7 +316,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt(int $index = 0)
+    public function eventAt(int $index = 0): Event
     {
         return $this->spy->eventAt($index);
     }
@@ -323,10 +324,10 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     /**
      * Get the first call.
      *
-     * @return Call                   The call.
+     * @return CallVerifier           The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function firstCall()
+    public function firstCall(): Call
     {
         return $this->callVerifierFactory->fromCall($this->spy->firstCall());
     }
@@ -334,10 +335,10 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     /**
      * Get the last call.
      *
-     * @return Call                   The call.
+     * @return CallVerifier           The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function lastCall()
+    public function lastCall(): Call
     {
         return $this->callVerifierFactory->fromCall($this->spy->lastCall());
     }
@@ -353,7 +354,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return CallVerifier           The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt(int $index = 0)
+    public function callAt(int $index = 0): Call
     {
         return $this->callVerifierFactory->fromCall($this->spy->callAt($index));
     }
@@ -363,7 +364,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return Iterator The iterator.
      */
-    public function getIterator()
+    public function getIterator(): Iterator
     {
         return new ArrayIterator($this->allCalls());
     }
@@ -373,7 +374,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      *
      * @return int The event count.
      */
-    public function count()
+    public function count(): int
     {
         return $this->spy->count();
     }
@@ -442,7 +443,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function called()
+    public function called(): EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -495,7 +496,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function calledWith(...$arguments)
+    public function calledWith(...$arguments): EventCollection
     {
         $cardinality = $this->cardinality;
         $matchers = $this->matcherFactory->adaptAll($arguments);
@@ -542,7 +543,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function responded()
+    public function responded(): EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -587,7 +588,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function completed()
+    public function completed(): EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -659,7 +660,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function returned($value = null)
+    public function returned($value = null): EventCollection
     {
         $cardinality = $this->cardinality;
         $argumentCount = func_num_args();
@@ -781,7 +782,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function threw($type = null)
+    public function threw($type = null): EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -846,7 +847,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return GeneratorVerifier The result.
      * @throws Throwable         If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function generated()
+    public function generated(): GeneratorVerifier
     {
         $cardinality = $this->cardinality;
 
@@ -900,7 +901,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
      * @return IterableVerifier The result.
      * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function iterated()
+    public function iterated(): IterableVerifier
     {
         $cardinality = $this->cardinality;
 

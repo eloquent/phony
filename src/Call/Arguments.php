@@ -29,7 +29,7 @@ class Arguments implements Countable, IteratorAggregate
      *
      * @return Arguments The arguments object.
      */
-    public static function create(...$arguments)
+    public static function create(...$arguments): self
     {
         return new self($arguments);
     }
@@ -50,7 +50,7 @@ class Arguments implements Countable, IteratorAggregate
      *
      * @return Arguments The copied arguments.
      */
-    public function copy()
+    public function copy(): self
     {
         $arguments = [];
 
@@ -68,7 +68,7 @@ class Arguments implements Countable, IteratorAggregate
      *
      * @return array<mixed> The arguments.
      */
-    public function all()
+    public function all(): array
     {
         return $this->arguments;
     }
@@ -89,7 +89,7 @@ class Arguments implements Countable, IteratorAggregate
      * @return $this                      This arguments object.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function set($indexOrValue = null, $value = null)
+    public function set($indexOrValue = null, $value = null): self
     {
         if (func_num_args() > 1) {
             $index = $indexOrValue;
@@ -118,7 +118,7 @@ class Arguments implements Countable, IteratorAggregate
      *
      * @return bool True if the argument exists.
      */
-    public function has(int $index = 0)
+    public function has(int $index = 0): bool
     {
         if ($this->normalizeIndex($this->count, $index)) {
             return true;
@@ -152,7 +152,7 @@ class Arguments implements Countable, IteratorAggregate
      *
      * @return int The number of arguments.
      */
-    public function count()
+    public function count(): int
     {
         return $this->count;
     }
@@ -162,7 +162,7 @@ class Arguments implements Countable, IteratorAggregate
      *
      * @return Iterator The iterator.
      */
-    public function getIterator()
+    public function getIterator(): Iterator
     {
         return new ArrayIterator($this->arguments);
     }

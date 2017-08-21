@@ -27,7 +27,7 @@ class EventOrderVerifier
      *
      * @return EventOrderVerifier The static verifier.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -130,7 +130,7 @@ class EventOrderVerifier
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function inOrder(...$events)
+    public function inOrder(...$events): EventCollection
     {
         if ($result = $this->checkInOrder(...$events)) {
             return $result;
@@ -171,7 +171,7 @@ class EventOrderVerifier
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function anyOrder(...$events)
+    public function anyOrder(...$events): EventCollection
     {
         if ($result = $this->checkAnyOrder(...$events)) {
             return $result;

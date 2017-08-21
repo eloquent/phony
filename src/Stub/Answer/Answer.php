@@ -35,7 +35,7 @@ class Answer
      *
      * @return CallRequest The primary request.
      */
-    public function primaryRequest()
+    public function primaryRequest(): CallRequest
     {
         return $this->primaryRequest;
     }
@@ -45,7 +45,7 @@ class Answer
      *
      * @return array<CallRequest> The secondary requests.
      */
-    public function secondaryRequests()
+    public function secondaryRequests(): array
     {
         return $this->secondaryRequests;
     }

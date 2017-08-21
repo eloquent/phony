@@ -27,7 +27,7 @@ class CallEventFactory
      *
      * @return CallEventFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -59,8 +59,10 @@ class CallEventFactory
      *
      * @return CalledEvent The newly created event.
      */
-    public function createCalled(callable $callback, Arguments $arguments)
-    {
+    public function createCalled(
+        callable $callback,
+        Arguments $arguments
+    ): CalledEvent {
         return new CalledEvent(
             $this->sequencer->next(),
             $this->clock->time(),
@@ -76,7 +78,7 @@ class CallEventFactory
      *
      * @return ReturnedEvent The newly created event.
      */
-    public function createReturned($value)
+    public function createReturned($value): ReturnedEvent
     {
         return new ReturnedEvent(
             $this->sequencer->next(),
@@ -92,7 +94,7 @@ class CallEventFactory
      *
      * @return ThrewEvent The newly created event.
      */
-    public function createThrew(Throwable $exception)
+    public function createThrew(Throwable $exception): ThrewEvent
     {
         return new ThrewEvent(
             $this->sequencer->next(),
@@ -106,7 +108,7 @@ class CallEventFactory
      *
      * @return UsedEvent The newly created event.
      */
-    public function createUsed()
+    public function createUsed(): UsedEvent
     {
         return new UsedEvent($this->sequencer->next(), $this->clock->time());
     }
@@ -119,7 +121,7 @@ class CallEventFactory
      *
      * @return ProducedEvent The newly created event.
      */
-    public function createProduced($key, $value)
+    public function createProduced($key, $value): ProducedEvent
     {
         return new ProducedEvent(
             $this->sequencer->next(),
@@ -136,7 +138,7 @@ class CallEventFactory
      *
      * @return ReceivedEvent The newly created event.
      */
-    public function createReceived($value)
+    public function createReceived($value): ReceivedEvent
     {
         return new ReceivedEvent(
             $this->sequencer->next(),
@@ -152,8 +154,9 @@ class CallEventFactory
      *
      * @return ReceivedExceptionEvent The newly created event.
      */
-    public function createReceivedException(Throwable $exception)
-    {
+    public function createReceivedException(
+        Throwable $exception
+    ): ReceivedExceptionEvent {
         return new ReceivedExceptionEvent(
             $this->sequencer->next(),
             $this->clock->time(),
@@ -166,7 +169,7 @@ class CallEventFactory
      *
      * @return ConsumedEvent The newly created event.
      */
-    public function createConsumed()
+    public function createConsumed(): ConsumedEvent
     {
         return new ConsumedEvent(
             $this->sequencer->next(),

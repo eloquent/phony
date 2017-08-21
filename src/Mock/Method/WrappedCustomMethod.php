@@ -45,9 +45,9 @@ class WrappedCustomMethod extends AbstractWrappedMethod
     /**
      * Get the custom callback.
      *
-     * @return ReflectionMethod The custom callback.
+     * @return callable The custom callback.
      */
-    public function customCallback()
+    public function customCallback(): callable
     {
         return $this->customCallback;
     }

@@ -42,7 +42,7 @@ class InlineExporter implements Exporter
      *
      * @return Exporter The static exporter.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -90,7 +90,7 @@ class InlineExporter implements Exporter
      *
      * @return int The previous depth.
      */
-    public function setDepth(int $depth)
+    public function setDepth(int $depth): int
     {
         $oldDepth = $this->depth;
         $this->depth = $depth;
@@ -108,7 +108,7 @@ class InlineExporter implements Exporter
      *
      * @return string The exported value.
      */
-    public function export(&$value, int $depth = null)
+    public function export(&$value, int $depth = null): string
     {
         if (null === $depth) {
             $depth = $this->depth;
@@ -642,7 +642,7 @@ class InlineExporter implements Exporter
      *
      * @return string The exported callable.
      */
-    public function exportCallable(callable $callback)
+    public function exportCallable(callable $callback): string
     {
         $wrappedCallback = null;
 

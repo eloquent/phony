@@ -24,7 +24,7 @@ class Phony extends AbstractFacade
      *
      * @return FacadeDriver The facade driver.
      */
-    protected static function driver()
+    protected static function driver(): FacadeDriver
     {
         return FacadeDriver::instance();
     }

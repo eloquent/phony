@@ -27,7 +27,7 @@ interface AssertionRecorder
      *
      * @return EventCollection The result.
      */
-    public function createSuccess(array $events = []);
+    public function createSuccess(array $events = []): EventCollection;
 
     /**
      * Record that a successful assertion occurred.
@@ -36,7 +36,9 @@ interface AssertionRecorder
      *
      * @return EventCollection The result.
      */
-    public function createSuccessFromEventCollection(EventCollection $events);
+    public function createSuccessFromEventCollection(
+        EventCollection $events
+    ): EventCollection;
 
     /**
      * Create a new assertion failure exception.
@@ -45,5 +47,5 @@ interface AssertionRecorder
      *
      * @throws Throwable If this recorder throws exceptions.
      */
-    public function createFailure(string $description);
+    public function createFailure(string $description): Throwable;
 }

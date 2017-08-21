@@ -44,7 +44,7 @@ abstract class AbstractFacade
      *
      * @return MockBuilder The mock builder.
      */
-    public static function mockBuilder($types = [])
+    public static function mockBuilder($types = []): MockBuilder
     {
         return static::driver()->mockBuilderFactory->create($types);
     }
@@ -60,7 +60,7 @@ abstract class AbstractFacade
      *
      * @return InstanceHandle A handle around the new mock.
      */
-    public static function mock($types = [])
+    public static function mock($types = []): InstanceHandle
     {
         $driver = static::driver();
 
@@ -85,8 +85,10 @@ abstract class AbstractFacade
      *
      * @return InstanceHandle A handle around the new mock.
      */
-    public static function partialMock($types = [], $arguments = [])
-    {
+    public static function partialMock(
+        $types = [],
+        $arguments = []
+    ): InstanceHandle {
         $driver = static::driver();
 
         return $driver->handleFactory->instanceHandle(
@@ -102,7 +104,7 @@ abstract class AbstractFacade
      * @return InstanceHandle The newly created handle.
      * @throws MockException  If the supplied mock is invalid.
      */
-    public static function on($mock)
+    public static function on($mock): InstanceHandle
     {
         return static::driver()->handleFactory->instanceHandle($mock);
     }
@@ -115,7 +117,7 @@ abstract class AbstractFacade
      * @return StaticHandle  The newly created handle.
      * @throws MockException If the supplied class name is not a mock class.
      */
-    public static function onStatic($class)
+    public static function onStatic($class): StaticHandle
     {
         return static::driver()->handleFactory->staticHandle($class);
     }
@@ -127,7 +129,7 @@ abstract class AbstractFacade
      *
      * @return SpyVerifier The new spy.
      */
-    public static function spy(callable $callback = null)
+    public static function spy(callable $callback = null): SpyVerifier
     {
         return
             static::driver()->spyVerifierFactory->createFromCallback($callback);
@@ -142,8 +144,10 @@ abstract class AbstractFacade
      *
      * @return SpyVerifier The new spy.
      */
-    public static function spyGlobal(string $function, string $namespace)
-    {
+    public static function spyGlobal(
+        string $function,
+        string $namespace
+    ): SpyVerifier {
         return static::driver()->spyVerifierFactory
             ->createGlobal($function, $namespace);
     }
@@ -155,7 +159,7 @@ abstract class AbstractFacade
      *
      * @return StubVerifier The new stub.
      */
-    public static function stub(callable $callback = null)
+    public static function stub(callable $callback = null): StubVerifier
     {
         return static::driver()->stubVerifierFactory
             ->createFromCallback($callback);
@@ -173,8 +177,10 @@ abstract class AbstractFacade
      *
      * @return StubVerifier The new stub.
      */
-    public static function stubGlobal(string $function, string $namespace)
-    {
+    public static function stubGlobal(
+        string $function,
+        string $namespace
+    ): StubVerifier {
         return static::driver()->stubVerifierFactory
             ->createGlobal($function, $namespace);
     }
@@ -209,7 +215,7 @@ abstract class AbstractFacade
      * @return EventCollection The result.
      * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public static function inOrder(...$events)
+    public static function inOrder(...$events): EventCollection
     {
         return static::driver()->eventOrderVerifier->inOrder(...$events);
     }
@@ -236,7 +242,7 @@ abstract class AbstractFacade
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public static function anyOrder(...$events)
+    public static function anyOrder(...$events): EventCollection
     {
         return static::driver()->eventOrderVerifier->anyOrder(...$events);
     }
@@ -246,7 +252,7 @@ abstract class AbstractFacade
      *
      * @return Matcher The newly created matcher.
      */
-    public static function any()
+    public static function any(): Matcher
     {
         return static::driver()->matcherFactory->any();
     }
@@ -258,7 +264,7 @@ abstract class AbstractFacade
      *
      * @return Matcher The newly created matcher.
      */
-    public static function equalTo($value)
+    public static function equalTo($value): Matcher
     {
         return static::driver()->matcherFactory->equalTo($value, false);
     }
@@ -278,7 +284,7 @@ abstract class AbstractFacade
         $value = null,
         int $minimumArguments = 0,
         int $maximumArguments = -1
-    ) {
+    ): WildcardMatcher {
         return static::driver()->matcherFactory
             ->wildcard($value, $minimumArguments, $maximumArguments);
     }
@@ -292,7 +298,7 @@ abstract class AbstractFacade
      *
      * @return int The previous depth.
      */
-    public static function setExportDepth(int $depth)
+    public static function setExportDepth(int $depth): int
     {
         return static::driver()->exporter->setDepth($depth);
     }

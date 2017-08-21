@@ -15,6 +15,7 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallVerifierFactory;
+use Eloquent\Phony\Invocation\WrappedInvocable;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
@@ -77,7 +78,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return Stub The stub.
      */
-    public function stub()
+    public function stub(): Stub
     {
         return $this->stub;
     }
@@ -91,7 +92,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function setSelf($self)
+    public function setSelf($self): Stub
     {
         $this->stub->setSelf($self);
 
@@ -113,7 +114,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return callable The default answer callback.
      */
-    public function defaultAnswerCallback()
+    public function defaultAnswerCallback(): callable
     {
         return $this->stub->defaultAnswerCallback();
     }
@@ -125,8 +126,9 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function setDefaultAnswerCallback(callable $defaultAnswerCallback)
-    {
+    public function setDefaultAnswerCallback(
+        callable $defaultAnswerCallback
+    ): Stub {
         $this->stub->setDefaultAnswerCallback($defaultAnswerCallback);
 
         return $this;
@@ -139,7 +141,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This invocable.
      */
-    public function setLabel(string $label = null)
+    public function setLabel(string $label = null): WrappedInvocable
     {
         $this->stub->setLabel($label);
 
@@ -163,7 +165,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function with(...$arguments)
+    public function with(...$arguments): Stub
     {
         $this->stub->with(...$arguments);
 
@@ -179,7 +181,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function calls(...$callbacks)
+    public function calls(...$callbacks): Stub
     {
         $this->stub->calls(...$callbacks);
 
@@ -205,7 +207,7 @@ class StubVerifier extends SpyVerifier implements Stub
         bool $prefixSelf = null,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    ) {
+    ): Stub {
         $this->stub->callsWith(
             $callback,
             $arguments,
@@ -229,7 +231,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function callsArgument(...$indices)
+    public function callsArgument(...$indices): Stub
     {
         $this->stub->callsArgument(...$indices);
 
@@ -258,7 +260,7 @@ class StubVerifier extends SpyVerifier implements Stub
         bool $prefixSelf = false,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    ) {
+    ): Stub {
         $this->stub->callsArgumentWith(
             $index,
             $arguments,
@@ -285,7 +287,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function setsArgument($indexOrValue = null, $value = null)
+    public function setsArgument($indexOrValue = null, $value = null): Stub
     {
         if (func_num_args() > 1) {
             $this->stub->setsArgument($indexOrValue, $value);
@@ -303,7 +305,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function does(...$callbacks)
+    public function does(...$callbacks): Stub
     {
         $this->stub->does(...$callbacks);
 
@@ -327,7 +329,7 @@ class StubVerifier extends SpyVerifier implements Stub
         bool $prefixSelf = null,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    ) {
+    ): Stub {
         $this->stub->doesWith(
             $callback,
             $arguments,
@@ -354,7 +356,7 @@ class StubVerifier extends SpyVerifier implements Stub
         bool $prefixSelf = null,
         bool $suffixArgumentsObject = false,
         bool $suffixArguments = true
-    ) {
+    ): Stub {
         $this->stub->forwards(
             $arguments,
             $prefixSelf,
@@ -372,7 +374,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function returns(...$values)
+    public function returns(...$values): Stub
     {
         $this->stub->returns(...$values);
 
@@ -389,7 +391,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function returnsArgument(int $index = 0)
+    public function returnsArgument(int $index = 0): Stub
     {
         $this->stub->returnsArgument($index);
 
@@ -401,7 +403,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function returnsSelf()
+    public function returnsSelf(): Stub
     {
         $this->stub->returnsSelf();
 
@@ -415,7 +417,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function throws(...$exceptions)
+    public function throws(...$exceptions): Stub
     {
         $this->stub->throws(...$exceptions);
 
@@ -430,7 +432,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */
-    public function generates(...$values)
+    public function generates(...$values): GeneratorAnswerBuilder
     {
         $builder = $this->generatorAnswerBuilderFactory->create($this);
         $this->stub->doesWith($builder->answer(), [], true, true, false);
@@ -455,7 +457,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @return $this This stub.
      */
-    public function closeRule()
+    public function closeRule(): Stub
     {
         $this->stub->closeRule();
 

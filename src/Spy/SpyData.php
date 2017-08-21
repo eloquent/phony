@@ -67,7 +67,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return int The index.
      */
-    public function nextIndex()
+    public function nextIndex(): int
     {
         return count($this->calls);
     }
@@ -79,7 +79,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return $this This spy.
      */
-    public function setUseGeneratorSpies(bool $useGeneratorSpies)
+    public function setUseGeneratorSpies(bool $useGeneratorSpies): Spy
     {
         $this->useGeneratorSpies = $useGeneratorSpies;
 
@@ -91,7 +91,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return bool True if this spy uses generator spies.
      */
-    public function useGeneratorSpies()
+    public function useGeneratorSpies(): bool
     {
         return $this->useGeneratorSpies;
     }
@@ -103,7 +103,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return $this This spy.
      */
-    public function setUseIterableSpies(bool $useIterableSpies)
+    public function setUseIterableSpies(bool $useIterableSpies): Spy
     {
         $this->useIterableSpies = $useIterableSpies;
 
@@ -115,7 +115,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return bool True if this spy uses iterable spies.
      */
-    public function useIterableSpies()
+    public function useIterableSpies(): bool
     {
         return $this->useIterableSpies;
     }
@@ -125,7 +125,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return $this This spy.
      */
-    public function stopRecording()
+    public function stopRecording(): Spy
     {
         $this->isRecording = false;
 
@@ -137,7 +137,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return $this This spy.
      */
-    public function startRecording()
+    public function startRecording(): Spy
     {
         $this->isRecording = true;
 
@@ -169,7 +169,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return bool True if this collection contains any events.
      */
-    public function hasEvents()
+    public function hasEvents(): bool
     {
         return (bool) $this->calls;
     }
@@ -179,7 +179,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return bool True if this collection contains any calls.
      */
-    public function hasCalls()
+    public function hasCalls(): bool
     {
         return (bool) $this->calls;
     }
@@ -189,7 +189,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return int The event count.
      */
-    public function eventCount()
+    public function eventCount(): int
     {
         return count($this->calls);
     }
@@ -199,7 +199,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return int The call count.
      */
-    public function callCount()
+    public function callCount(): int
     {
         return count($this->calls);
     }
@@ -209,7 +209,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return int The event count.
      */
-    public function count()
+    public function count(): int
     {
         return count($this->calls);
     }
@@ -219,7 +219,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return array<Event> The events.
      */
-    public function allEvents()
+    public function allEvents(): array
     {
         return $this->calls;
     }
@@ -229,7 +229,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return array<Call> The calls.
      */
-    public function allCalls()
+    public function allCalls(): array
     {
         return $this->calls;
     }
@@ -240,7 +240,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function firstEvent()
+    public function firstEvent(): Event
     {
         if (empty($this->calls)) {
             throw new UndefinedEventException(0);
@@ -255,7 +255,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * @return Event                   The event.
      * @throws UndefinedEventException If there are no events.
      */
-    public function lastEvent()
+    public function lastEvent(): Event
     {
         if ($count = count($this->calls)) {
             return $this->calls[$count - 1];
@@ -275,7 +275,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * @return Event                   The event.
      * @throws UndefinedEventException If the requested event is undefined, or there are no events.
      */
-    public function eventAt(int $index = 0)
+    public function eventAt(int $index = 0): Event
     {
         if (!$this->normalizeIndex(count($this->calls), $index, $normalized)) {
             throw new UndefinedEventException($index);
@@ -290,7 +290,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function firstCall()
+    public function firstCall(): Call
     {
         if (isset($this->calls[0])) {
             return $this->calls[0];
@@ -305,7 +305,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * @return Call                   The call.
      * @throws UndefinedCallException If there are no calls.
      */
-    public function lastCall()
+    public function lastCall(): Call
     {
         if ($count = count($this->calls)) {
             return $this->calls[$count - 1];
@@ -325,7 +325,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      * @return Call                   The call.
      * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
      */
-    public function callAt(int $index = 0)
+    public function callAt(int $index = 0): Call
     {
         if (!$this->normalizeIndex(count($this->calls), $index, $normalized)) {
             throw new UndefinedCallException($index);
@@ -339,7 +339,7 @@ class SpyData extends AbstractWrappedInvocable implements Spy
      *
      * @return Iterator The iterator.
      */
-    public function getIterator()
+    public function getIterator(): Iterator
     {
         return new ArrayIterator($this->calls);
     }

@@ -23,7 +23,7 @@ class AnyMatcher implements Matcher
      *
      * @return Matcher The static matcher.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -39,7 +39,7 @@ class AnyMatcher implements Matcher
      *
      * @return bool True if the value matches.
      */
-    public function matches($value)
+    public function matches($value): bool
     {
         return true;
     }
@@ -51,7 +51,7 @@ class AnyMatcher implements Matcher
      *
      * @return string The description.
      */
-    public function describe(Exporter $exporter = null)
+    public function describe(Exporter $exporter = null): string
     {
         return '<any>';
     }
@@ -61,7 +61,7 @@ class AnyMatcher implements Matcher
      *
      * @return string The description.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return '<any>';
     }

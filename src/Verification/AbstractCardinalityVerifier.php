@@ -23,7 +23,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      */
     public function __construct()
     {
-        $this->resetCardinality();
+        $this->cardinality = new Cardinality(1, -1);
     }
 
     /**
@@ -31,7 +31,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function never()
+    public function never(): CardinalityVerifier
     {
         $this->cardinality = new Cardinality(0, 0);
 
@@ -43,7 +43,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function once()
+    public function once(): CardinalityVerifier
     {
         $this->cardinality = new Cardinality(1, 1);
 
@@ -55,7 +55,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function twice()
+    public function twice(): CardinalityVerifier
     {
         $this->cardinality = new Cardinality(2, 2);
 
@@ -67,7 +67,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function thrice()
+    public function thrice(): CardinalityVerifier
     {
         $this->cardinality = new Cardinality(3, 3);
 
@@ -81,7 +81,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function times(int $times)
+    public function times(int $times): CardinalityVerifier
     {
         $this->cardinality = new Cardinality($times, $times);
 
@@ -96,7 +96,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function atLeast(int $minimum)
+    public function atLeast(int $minimum): CardinalityVerifier
     {
         $this->cardinality = new Cardinality($minimum, -1);
 
@@ -111,7 +111,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function atMost(int $maximum)
+    public function atMost(int $maximum): CardinalityVerifier
     {
         $this->cardinality = new Cardinality(0, $maximum);
 
@@ -128,7 +128,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      * @return $this                       This verifier.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function between(int $minimum, int $maximum)
+    public function between(int $minimum, int $maximum): CardinalityVerifier
     {
         $this->cardinality = new Cardinality($minimum, $maximum);
 
@@ -140,7 +140,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function always()
+    public function always(): CardinalityVerifier
     {
         $this->cardinality->setIsAlways(true);
 
@@ -152,10 +152,10 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return Cardinality The current cardinality.
      */
-    public function resetCardinality()
+    public function resetCardinality(): Cardinality
     {
         $cardinality = $this->cardinality;
-        $this->atLeast(1);
+        $this->cardinality = new Cardinality(1, -1);
 
         return $cardinality;
     }
@@ -165,7 +165,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
      *
      * @return Cardinality The cardinality.
      */
-    public function cardinality()
+    public function cardinality(): Cardinality
     {
         return $this->cardinality;
     }

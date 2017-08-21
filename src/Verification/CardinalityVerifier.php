@@ -23,28 +23,28 @@ interface CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function never();
+    public function never(): self;
 
     /**
      * Requires that the next verification matches only once.
      *
      * @return $this This verifier.
      */
-    public function once();
+    public function once(): self;
 
     /**
      * Requires that the next verification matches exactly two times.
      *
      * @return $this This verifier.
      */
-    public function twice();
+    public function twice(): self;
 
     /**
      * Requires that the next verification matches exactly three times.
      *
      * @return $this This verifier.
      */
-    public function thrice();
+    public function thrice(): self;
 
     /**
      * Requires that the next verification matches an exact number of times.
@@ -53,7 +53,7 @@ interface CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function times(int $times);
+    public function times(int $times): self;
 
     /**
      * Requires that the next verification matches a number of times greater
@@ -63,7 +63,7 @@ interface CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function atLeast(int $minimum);
+    public function atLeast(int $minimum): self;
 
     /**
      * Requires that the next verification matches a number of times less than
@@ -73,7 +73,7 @@ interface CardinalityVerifier
      *
      * @return $this This verifier.
      */
-    public function atMost(int $maximum);
+    public function atMost(int $maximum): self;
 
     /**
      * Requires that the next verification matches a number of times greater
@@ -85,26 +85,26 @@ interface CardinalityVerifier
      * @return $this                       This verifier.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function between(int $minimum, int $maximum);
+    public function between(int $minimum, int $maximum): self;
 
     /**
      * Requires that the next verification matches for all possible items.
      *
      * @return $this This verifier.
      */
-    public function always();
+    public function always(): self;
 
     /**
      * Reset the cardinality to its default value.
      *
      * @return Cardinality The current cardinality.
      */
-    public function resetCardinality();
+    public function resetCardinality(): Cardinality;
 
     /**
      * Get the cardinality.
      *
      * @return Cardinality The cardinality.
      */
-    public function cardinality();
+    public function cardinality(): Cardinality;
 }

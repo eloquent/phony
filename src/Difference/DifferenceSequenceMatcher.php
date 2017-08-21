@@ -83,7 +83,7 @@ class DifferenceSequenceMatcher
      *
      * @return array Array of the opcodes describing the differences between the strings.
      */
-    public function getOpCodes()
+    public function getOpCodes(): array
     {
         $i = 0;
         $j = 0;

@@ -29,7 +29,7 @@ class GeneratorVerifierFactory
      *
      * @return GeneratorVerifierFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -78,7 +78,7 @@ class GeneratorVerifierFactory
      *
      * @return GeneratorVerifier The newly created generator verifier.
      */
-    public function create($subject, array $calls)
+    public function create($subject, array $calls): GeneratorVerifier
     {
         return new GeneratorVerifier(
             $subject,

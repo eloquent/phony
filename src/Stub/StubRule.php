@@ -40,7 +40,7 @@ class StubRule
      *
      * @return array<Matchable> The criteria.
      */
-    public function criteria()
+    public function criteria(): array
     {
         return $this->criteria;
     }
@@ -50,7 +50,7 @@ class StubRule
      *
      * @return array<Answer> The answers.
      */
-    public function answers()
+    public function answers(): array
     {
         return $this->answers;
     }
@@ -61,7 +61,7 @@ class StubRule
      * @return Answer                   The answer.
      * @throws UndefinedAnswerException If an undefined or incomplete answer is encountered.
      */
-    public function next()
+    public function next(): Answer
     {
         if ($this->calledCount > $this->lastIndex) {
             $index = $this->lastIndex;

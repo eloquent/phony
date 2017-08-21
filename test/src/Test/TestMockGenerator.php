@@ -33,7 +33,7 @@ class TestMockGenerator extends MockGenerator
     public function generate(
         MockDefinition $definition,
         string $className = null
-    ) {
+    ): string {
         return $this->source;
     }
 

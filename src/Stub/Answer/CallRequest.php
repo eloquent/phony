@@ -53,7 +53,7 @@ class CallRequest
      *
      * @return callable The callback.
      */
-    public function callback()
+    public function callback(): callable
     {
         return $this->callback;
     }
@@ -66,7 +66,7 @@ class CallRequest
      *
      * @return Arguments The final arguments.
      */
-    public function finalArguments($self, Arguments $arguments)
+    public function finalArguments($self, Arguments $arguments): Arguments
     {
         $finalArguments = $this->arguments->all();
 
@@ -89,7 +89,7 @@ class CallRequest
      *
      * @return Arguments The hard-coded arguments.
      */
-    public function arguments()
+    public function arguments(): Arguments
     {
         return $this->arguments;
     }
@@ -99,7 +99,7 @@ class CallRequest
      *
      * @return bool True if the self value should be prefixed.
      */
-    public function prefixSelf()
+    public function prefixSelf(): bool
     {
         return $this->prefixSelf;
     }
@@ -110,7 +110,7 @@ class CallRequest
      *
      * @return bool True if arguments object should be appended.
      */
-    public function suffixArgumentsObject()
+    public function suffixArgumentsObject(): bool
     {
         return $this->suffixArgumentsObject;
     }
@@ -121,7 +121,7 @@ class CallRequest
      *
      * @return bool True if arguments should be appended.
      */
-    public function suffixArguments()
+    public function suffixArguments(): bool
     {
         return $this->suffixArguments;
     }

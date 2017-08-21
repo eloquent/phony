@@ -37,7 +37,7 @@ class HandleFactory
      *
      * @return HandleFactory The static factory.
      */
-    public static function instance()
+    public static function instance(): self
     {
         if (!self::$instance) {
             self::$instance = new self(
@@ -88,7 +88,7 @@ class HandleFactory
      * @return InstanceHandle The newly created handle.
      * @throws MockException  If the supplied mock is invalid.
      */
-    public function instanceHandle($mock, string $label = null)
+    public function instanceHandle($mock, string $label = null): InstanceHandle
     {
         if ($mock instanceof InstanceHandle) {
             return $mock;
@@ -139,7 +139,7 @@ class HandleFactory
      * @return StaticHandle  The newly created handle.
      * @throws MockException If the supplied class name is not a mock class.
      */
-    public function staticHandle($class)
+    public function staticHandle($class): StaticHandle
     {
         if ($class instanceof StaticHandle) {
             return $class;

@@ -40,7 +40,7 @@ class ThrewEvent extends AbstractCallEvent implements ResponseEvent
      *
      * @return Throwable The thrown exception.
      */
-    public function exception()
+    public function exception(): Throwable
     {
         return $this->exception;
     }

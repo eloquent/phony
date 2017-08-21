@@ -104,7 +104,7 @@ class InstanceHandle extends AbstractHandle
      *
      * @return Mock The mock.
      */
-    public function get()
+    public function get(): Mock
     {
         return $this->mock;
     }
@@ -116,7 +116,7 @@ class InstanceHandle extends AbstractHandle
      *
      * @return $this This handle.
      */
-    public function construct(...$arguments)
+    public function construct(...$arguments): self
     {
         return $this->constructWith($arguments);
     }
@@ -128,7 +128,7 @@ class InstanceHandle extends AbstractHandle
      *
      * @return $this This handle.
      */
-    public function constructWith($arguments = [])
+    public function constructWith($arguments = []): self
     {
         if ($this->callParentConstructorMethod) {
             if (!$arguments instanceof Arguments) {
@@ -148,7 +148,7 @@ class InstanceHandle extends AbstractHandle
      *
      * @return $this This handle.
      */
-    public function setLabel(string $label = null)
+    public function setLabel(string $label = null): self
     {
         $this->state->label = $label;
 
@@ -176,7 +176,7 @@ class InstanceHandle extends AbstractHandle
      *
      * @return $this This handle.
      */
-    public function proxy($object)
+    public function proxy($object): Handle
     {
         $reflector = new ReflectionObject($object);
 

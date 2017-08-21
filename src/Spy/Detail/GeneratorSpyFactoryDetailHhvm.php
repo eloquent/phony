@@ -36,7 +36,7 @@ abstract class GeneratorSpyFactoryDetailHhvm
         Call $call,
         Generator $generator,
         CallEventFactory $callEventFactory
-    ) {
+    ): Generator {
         $call->addIterableEvent($callEventFactory->createUsed());
 
         $isFirst = true;

@@ -43,7 +43,7 @@ class CustomMethodDefinition implements MethodDefinition
      *
      * @return bool True if this method is callable.
      */
-    public function isCallable()
+    public function isCallable(): bool
     {
         return true;
     }
@@ -53,7 +53,7 @@ class CustomMethodDefinition implements MethodDefinition
      *
      * @return bool True if this method is static.
      */
-    public function isStatic()
+    public function isStatic(): bool
     {
         return $this->isStatic;
     }
@@ -63,7 +63,7 @@ class CustomMethodDefinition implements MethodDefinition
      *
      * @return bool True if this method is custom.
      */
-    public function isCustom()
+    public function isCustom(): bool
     {
         return true;
     }
@@ -73,7 +73,7 @@ class CustomMethodDefinition implements MethodDefinition
      *
      * @return string The access level.
      */
-    public function accessLevel()
+    public function accessLevel(): string
     {
         return 'public';
     }
@@ -83,7 +83,7 @@ class CustomMethodDefinition implements MethodDefinition
      *
      * @return string The name.
      */
-    public function name()
+    public function name(): string
     {
         return $this->name;
     }
@@ -93,7 +93,7 @@ class CustomMethodDefinition implements MethodDefinition
      *
      * @return ReflectionFunctionAbstract The method.
      */
-    public function method()
+    public function method(): ReflectionFunctionAbstract
     {
         return $this->method;
     }
