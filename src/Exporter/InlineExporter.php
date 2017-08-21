@@ -660,7 +660,7 @@ class InlineExporter implements Exporter
 
             $label = $wrappedCallback->label();
 
-            if (null !== $label) {
+            if ('' !== $label) {
                 $label = '[' . $label . ']';
             }
         }
@@ -704,7 +704,7 @@ class InlineExporter implements Exporter
             if ($handle instanceof InstanceHandle) {
                 $label = $handle->label();
 
-                if (null !== $label) {
+                if ('' !== $label) {
                     $rendered .= '[' . $label . ']';
                 }
             }

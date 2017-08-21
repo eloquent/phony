@@ -21,9 +21,9 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
      * Construct a new wrapped invocable.
      *
      * @param callable|null $callback The callback.
-     * @param string|null   $label    The label.
+     * @param string        $label    The label.
      */
-    public function __construct($callback = null, string $label = null)
+    public function __construct($callback = null, string $label = '')
     {
         if (!$callback) {
             $this->isAnonymous = true;
@@ -59,11 +59,11 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
     /**
      * Set the label.
      *
-     * @param string|null $label The label.
+     * @param string $label The label.
      *
      * @return $this This invocable.
      */
-    public function setLabel(string $label = null): WrappedInvocable
+    public function setLabel(string $label): WrappedInvocable
     {
         $this->label = $label;
 
@@ -73,9 +73,9 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
     /**
      * Get the label.
      *
-     * @return string|null The label.
+     * @return string The label.
      */
-    public function label()
+    public function label(): string
     {
         return $this->label;
     }

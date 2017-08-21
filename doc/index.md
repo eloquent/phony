@@ -5131,7 +5131,7 @@ Get the [label][labeling mocks].
 
 ----
 
-> *fluent* $handle->[**setLabel**](#handle.setLabel)()
+> *fluent* $handle->[**setLabel**](#handle.setLabel)($label)
 
 Set the [label][labeling mocks].
 
@@ -5496,7 +5496,7 @@ Create a new [partial mock].
 
 ----
 
-> *mock* $builder->[**partialWith**](#builder.partialWith)($arguments = [], $label = null)
+> *mock* $builder->[**partialWith**](#builder.partialWith)($arguments = [], $label = '')
 
 Create a new [partial mock].
 

@@ -57,7 +57,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
      *
      * @param callable|null                 $callback                      The callback, or null to create an anonymous stub.
      * @param mixed                         $self                          The self value.
-     * @param string|null                   $label                         The label.
+     * @param string                        $label                         The label.
      * @param callable                      $defaultAnswerCallback         The callback to use when creating a default answer.
      * @param MatcherFactory                $matcherFactory                The matcher factory to use.
      * @param MatcherVerifier               $matcherVerifier               The matcher verifier to use.
@@ -69,7 +69,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
     public function __construct(
         callable $callback = null,
         $self,
-        string $label = null,
+        string $label,
         callable $defaultAnswerCallback,
         MatcherFactory $matcherFactory,
         MatcherVerifier $matcherVerifier,

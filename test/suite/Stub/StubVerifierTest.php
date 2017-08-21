@@ -184,8 +184,8 @@ class StubVerifierTest extends TestCase
 
     public function testSetLabel()
     {
-        $this->assertSame($this->subject, $this->subject->setLabel(null));
-        $this->assertSame('', (string) $this->subject->label());
+        $this->assertSame($this->subject, $this->subject->setLabel(''));
+        $this->assertSame('', $this->subject->label());
 
         $this->subject->setLabel($this->label);
 

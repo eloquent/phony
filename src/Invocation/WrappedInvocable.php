@@ -19,18 +19,18 @@ interface WrappedInvocable extends Invocable
     /**
      * Set the label.
      *
-     * @param string|null $label The label.
+     * @param string $label The label.
      *
      * @return $this This invocable.
      */
-    public function setLabel(string $label = null): self;
+    public function setLabel(string $label): self;
 
     /**
      * Get the label.
      *
-     * @return string|null The label.
+     * @return string The label.
      */
-    public function label();
+    public function label(): string;
 
     /**
      * Returns true if anonymous.

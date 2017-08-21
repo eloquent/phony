@@ -55,7 +55,7 @@ class SpyDataWithGeneratorsTest extends TestCase
         };
         $spy = new SpyData(
             $this->callback,
-            null,
+            '',
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
@@ -90,7 +90,7 @@ class SpyDataWithGeneratorsTest extends TestCase
         };
         $spy = new SpyData(
             $this->callback,
-            null,
+            '',
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,

@@ -55,15 +55,13 @@ class AssertionRendererTest extends TestCase
 
         $mockBuilder = $mockBuilderFactory->create(TestClassA::class);
         $this->thisObjectB = $mockBuilder->get();
-        $this->thisObjectBHandle = $this->handleFactory->instanceHandle($this->thisObjectB);
-        $this->thisObjectBHandle->setLabel('label');
+        $this->thisObjectBHandle = $this->handleFactory->instanceHandle($this->thisObjectB, 'label');
         $this->thisObjectB->testClassAMethodA();
 
         $mockBuilder = $mockBuilderFactory->create(IteratorAggregate::class);
         $mockBuilder->named('PhonyMockAssertionRendererTestIteratorAggregate');
         $this->thisObjectC = $mockBuilder->get();
-        $this->thisObjectCHandle = $this->handleFactory->instanceHandle($this->thisObjectC);
-        $this->thisObjectCHandle->setLabel('label');
+        $this->thisObjectCHandle = $this->handleFactory->instanceHandle($this->thisObjectC, 'label');
 
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();

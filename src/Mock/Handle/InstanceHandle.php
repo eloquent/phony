@@ -144,11 +144,11 @@ class InstanceHandle extends AbstractHandle
     /**
      * Set the label.
      *
-     * @param string|null $label The label.
+     * @param string $label The label.
      *
      * @return $this This handle.
      */
-    public function setLabel(string $label = null): self
+    public function setLabel(string $label): self
     {
         $this->state->label = $label;
 
@@ -158,9 +158,9 @@ class InstanceHandle extends AbstractHandle
     /**
      * Get the label.
      *
-     * @return string|null The label.
+     * @return string The label.
      */
-    public function label()
+    public function label(): string
     {
         return $this->state->label;
     }

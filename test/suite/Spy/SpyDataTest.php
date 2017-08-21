@@ -59,8 +59,8 @@ class SpyDataTest extends TestCase
 
     public function testSetLabel()
     {
-        $this->assertSame($this->subject, $this->subject->setLabel(null));
-        $this->assertNull($this->subject->label());
+        $this->assertSame($this->subject, $this->subject->setLabel(''));
+        $this->assertSame('', $this->subject->label());
 
         $this->subject->setLabel($this->label);
 
@@ -420,7 +420,7 @@ class SpyDataTest extends TestCase
         };
         $spy = new SpyData(
             $this->callback,
-            null,
+            '',
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
@@ -454,7 +454,7 @@ class SpyDataTest extends TestCase
         };
         $spy = new SpyData(
             $this->callback,
-            null,
+            '',
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,

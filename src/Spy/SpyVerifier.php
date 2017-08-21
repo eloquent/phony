@@ -158,11 +158,11 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     /**
      * Set the label.
      *
-     * @param string|null $label The label.
+     * @param string $label The label.
      *
      * @return $this This invocable.
      */
-    public function setLabel(string $label = null): WrappedInvocable
+    public function setLabel(string $label): WrappedInvocable
     {
         $this->spy->setLabel($label);
 
@@ -172,9 +172,9 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
     /**
      * Get the label.
      *
-     * @return string|null The label.
+     * @return string The label.
      */
-    public function label()
+    public function label(): string
     {
         return $this->spy->label();
     }

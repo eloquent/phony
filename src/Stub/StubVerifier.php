@@ -137,11 +137,11 @@ class StubVerifier extends SpyVerifier implements Stub
     /**
      * Set the label.
      *
-     * @param string|null $label The label.
+     * @param string $label The label.
      *
      * @return $this This invocable.
      */
-    public function setLabel(string $label = null): WrappedInvocable
+    public function setLabel(string $label): WrappedInvocable
     {
         $this->stub->setLabel($label);
 
@@ -151,9 +151,9 @@ class StubVerifier extends SpyVerifier implements Stub
     /**
      * Get the label.
      *
-     * @return string|null The label.
+     * @return string The label.
      */
-    public function label()
+    public function label(): string
     {
         return $this->stub->label();
     }

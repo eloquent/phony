@@ -46,7 +46,7 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
             $callback = [$this->mock, $this->name];
         }
 
-        parent::__construct($callback, null);
+        parent::__construct($callback, '');
     }
 
     /**

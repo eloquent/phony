@@ -182,8 +182,8 @@ class StubDataTest extends TestCase
 
     public function testSetLabel()
     {
-        $this->assertSame($this->subject, $this->subject->setLabel(null));
-        $this->assertNull($this->subject->label());
+        $this->assertSame($this->subject, $this->subject->setLabel(''));
+        $this->assertSame('', $this->subject->label());
 
         $this->subject->setLabel($this->label);
 
@@ -1155,7 +1155,7 @@ class StubDataTest extends TestCase
         $stub = new StubData(
             null,
             null,
-            null,
+            '',
             $this->defaultAnswerCallback,
             $this->matcherFactory,
             $this->matcherVerifier,

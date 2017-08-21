@@ -29,7 +29,7 @@ class InvocableInspectorTest extends TestCase
 
         $this->callback = function () {};
         $this->invocable = new TestInvocable();
-        $this->wrappedInvocable = new TestWrappedInvocable($this->callback, null);
+        $this->wrappedInvocable = new TestWrappedInvocable($this->callback, '');
 
         $this->featureDetector = FeatureDetector::instance();
     }

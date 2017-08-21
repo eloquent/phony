@@ -36,7 +36,7 @@ class WrappedUncallableMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertSame([$this->mock, 'testClassAMethodA'], $this->subject->callback());
-        $this->assertNull($this->subject->label());
+        $this->assertSame('', $this->subject->label());
     }
 
     public function testConstructorWithStatic()
@@ -53,13 +53,13 @@ class WrappedUncallableMethodTest extends TestCase
             [TestClassA::class, 'testClassAStaticMethodA'],
             $this->subject->callback()
         );
-        $this->assertNull($this->subject->label());
+        $this->assertSame('', $this->subject->label());
     }
 
     public function testSetLabel()
     {
-        $this->assertSame($this->subject, $this->subject->setLabel(null));
-        $this->assertNull($this->subject->label());
+        $this->assertSame($this->subject, $this->subject->setLabel(''));
+        $this->assertSame('', $this->subject->label());
 
         $this->subject->setLabel('label');
 

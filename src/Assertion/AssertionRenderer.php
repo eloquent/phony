@@ -3546,7 +3546,7 @@ class AssertionRenderer
         if ($handle instanceof InstanceHandle) {
             $label = $handle->label();
 
-            if (null !== $label) {
+            if ('' !== $label) {
                 $renderedHandle .= '[' . $label . ']';
             }
         } else {

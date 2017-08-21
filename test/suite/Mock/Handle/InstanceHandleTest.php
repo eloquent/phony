@@ -127,8 +127,8 @@ class InstanceHandleTest extends TestCase
     {
         $this->setUpWith(TestClassA::class);
 
-        $this->assertSame($this->subject, $this->subject->setLabel(null));
-        $this->assertNull($this->subject->label());
+        $this->assertSame($this->subject, $this->subject->setLabel(''));
+        $this->assertSame('', $this->subject->label());
         $this->assertSame($this->subject, $this->subject->setLabel($this->state->label));
         $this->assertSame($this->state->label, $this->subject->label());
     }
