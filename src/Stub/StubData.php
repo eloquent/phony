@@ -222,7 +222,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
             $parameters = $this->invocableInspector
                 ->callbackReflector($callback)->getParameters();
 
-            $prefixSelf = $parameters &&
+            $prefixSelf = !empty($parameters) &&
                 'phonySelf' === $parameters[0]->getName();
         }
 
@@ -401,7 +401,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
             $parameters = $this->invocableInspector
                 ->callbackReflector($callback)->getParameters();
 
-            $prefixSelf = $parameters &&
+            $prefixSelf = !empty($parameters) &&
                 'phonySelf' === $parameters[0]->getName();
         }
 
@@ -450,7 +450,7 @@ class StubData extends AbstractWrappedInvocable implements Stub
                     ->callbackReflector($this->callback)->getParameters();
             }
 
-            $prefixSelf = $parameters &&
+            $prefixSelf = !empty($parameters) &&
                 'phonySelf' === $parameters[0]->getName();
         }
 

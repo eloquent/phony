@@ -88,7 +88,7 @@ class GeneratorAnswerBuilder
             $parameters = $this->invocableInspector
                 ->callbackReflector($callback)->getParameters();
 
-            $prefixSelf = $parameters &&
+            $prefixSelf = !empty($parameters) &&
                 'phonySelf' === $parameters[0]->getName();
         }
 
