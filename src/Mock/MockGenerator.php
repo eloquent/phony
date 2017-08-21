@@ -75,14 +75,14 @@ class MockGenerator
     {
         $className = $definition->className();
 
-        if (null !== $className) {
+        if ('' !== $className) {
             return $className;
         }
 
         $className = 'PhonyMock';
         $parentClassName = $definition->parentClassName();
 
-        if (null !== $parentClassName) {
+        if ('' !== $parentClassName) {
             $subject = $parentClassName;
         } elseif ($interfaceNames = $definition->interfaceNames()) {
             $subject = $interfaceNames[0];
@@ -106,15 +106,15 @@ class MockGenerator
      * Generate a mock class and return the source code.
      *
      * @param MockDefinition $definition The definition.
-     * @param string|null    $className  The class name.
+     * @param string         $className  The class name.
      *
      * @return string The source code.
      */
     public function generate(
         MockDefinition $definition,
-        string $className = null
+        string $className = ''
     ): string {
-        if (null === $className) {
+        if ('' === $className) {
             $className = $this->generateClassName($definition);
         }
 
@@ -162,7 +162,7 @@ class MockGenerator
         $interfaceNames = $definition->interfaceNames();
         $traitNames = $definition->traitNames();
 
-        if (null !== $parentClassName) {
+        if ('' !== $parentClassName) {
             $source .= "\nextends \\" . $parentClassName;
         }
 
@@ -708,7 +708,7 @@ EOD;
         $traitNames = $definition->traitNames();
         $hasTraits = (bool) $traitNames;
         $parentClassName = $definition->parentClassName();
-        $hasParentClass = null !== $parentClassName;
+        $hasParentClass = '' !== $parentClassName;
         $constructor = null;
         $types = $definition->types();
         $source = '';
@@ -745,7 +745,9 @@ EOD;
 EOD;
         }
 
-        if (null !== ($name = $methods->methodName('__callstatic'))) {
+        $name = $methods->methodName('__callstatic');
+
+        if ($name) {
             $methodName = null;
 
             if ($hasTraits) {
@@ -891,7 +893,9 @@ EOD;
 EOD;
         }
 
-        if (null !== ($name = $methods->methodName('__call'))) {
+        $name = $methods->methodName('__call');
+
+        if ($name) {
             $methodName = null;
 
             if ($hasTraits) {

@@ -134,6 +134,6 @@ class MethodDefinitionCollectionTest extends TestCase
         $this->assertSame('methodA', $this->subject->methodName('methodA'));
         $this->assertSame('methodA', $this->subject->methodName('methoda'));
         $this->assertSame('methodA', $this->subject->methodName('METHODA'));
-        $this->assertNull($this->subject->methodName('nonexistent'));
+        $this->assertSame('', $this->subject->methodName('nonexistent'));
     }
 }

@@ -544,7 +544,7 @@ class MockDefinitionTest extends TestCase
             [],
             [],
             [],
-            null
+            ''
         );
 
         $this->assertTrue($definitionA->isEqualTo($definitionA));
@@ -569,7 +569,7 @@ class MockDefinitionTest extends TestCase
             [],
             [],
             [],
-            null
+            ''
         );
         $definitionB = new MockDefinition(
             [],
@@ -581,7 +581,7 @@ class MockDefinitionTest extends TestCase
             [],
             [],
             [],
-            null
+            ''
         );
 
         $this->assertFalse($definitionA->isEqualTo($definitionB));
@@ -598,7 +598,7 @@ class MockDefinitionTest extends TestCase
             ],
             [],
             [],
-            null
+            ''
         );
         $definitionB = new MockDefinition(
             [],
@@ -610,7 +610,7 @@ class MockDefinitionTest extends TestCase
             ],
             [],
             [],
-            null
+            ''
         );
 
         $this->assertFalse($definitionA->isEqualTo($definitionB));

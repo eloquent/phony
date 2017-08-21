@@ -32,7 +32,7 @@ class MockDefinition
      * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customStaticMethods    The custom static methods.
      * @param array<string,mixed>                                      $customStaticProperties The custom static properties.
      * @param array<string,mixed>                                      $customConstants        The custom constants.
-     * @param string|null                                              $className              The class name.
+     * @param string                                                   $className              The class name.
      */
     public function __construct(
         array $types,
@@ -41,7 +41,7 @@ class MockDefinition
         array $customStaticMethods,
         array $customStaticProperties,
         array $customConstants,
-        string $className = null
+        string $className
     ) {
         $this->types = $types;
         $this->customMethods = $customMethods;
@@ -50,6 +50,7 @@ class MockDefinition
         $this->customStaticProperties = $customStaticProperties;
         $this->customConstants = $customConstants;
         $this->className = $className;
+        $this->parentClassName = '';
 
         $this->signature = [
             'types' => array_keys($types),
@@ -147,9 +148,9 @@ class MockDefinition
     /**
      * Get the class name.
      *
-     * @return string|null The class name.
+     * @return string The class name.
      */
-    public function className()
+    public function className(): string
     {
         return $this->className;
     }
@@ -182,9 +183,9 @@ class MockDefinition
     /**
      * Get the parent class name.
      *
-     * @return string|null The parent class name, or null if the mock will not extend a class.
+     * @return string The parent class name, or an empty string if the mock will not extend a class.
      */
-    public function parentClassName()
+    public function parentClassName(): string
     {
         $this->inspectTypes();
 

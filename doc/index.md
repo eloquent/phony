@@ -6029,7 +6029,7 @@ Invoke the spy, record the call, and return or throw the result.
 
 ----
 
-> *string|null* $spy->[**label**](#spy.label)()
+> *string* $spy->[**label**](#spy.label)()
 
 Get the [label][labeling spies].
 

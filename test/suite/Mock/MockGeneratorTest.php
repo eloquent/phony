@@ -59,7 +59,7 @@ class MockGeneratorTest extends TestCase
             [],
             [],
             [],
-            null
+            ''
         );
 
         $this->assertSame($expected, $this->subject->generateClassName($definition));
@@ -78,7 +78,7 @@ class MockGeneratorTest extends TestCase
             [],
             [],
             [],
-            null
+            ''
         );
 
         $this->assertSame('PhonyMock_TestTraitA_0', $this->subject->generateClassName($definition));

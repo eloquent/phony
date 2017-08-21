@@ -68,9 +68,9 @@ class MethodDefinitionCollection
      *
      * @param string $name The method name.
      *
-     * @return string|null The canonical method name, or null if no such method exists.
+     * @return string The canonical method name, or an empty string if no such method exists.
      */
-    public function methodName(string $name)
+    public function methodName(string $name): string
     {
         $name = strtolower($name);
 
@@ -78,7 +78,7 @@ class MethodDefinitionCollection
             return $this->methodNames[$name];
         }
 
-        return null;
+        return '';
     }
 
     /**

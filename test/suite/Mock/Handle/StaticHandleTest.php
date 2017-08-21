@@ -95,10 +95,12 @@ class StaticHandleTest extends TestCase
         $this->featureDetector = FeatureDetector::instance();
     }
 
-    protected function setUpWith($className, $mockClassName = null)
+    protected function setUpWith($className, $mockClassName = '')
     {
         $this->mockBuilder = $this->mockBuilderFactory->create($className);
-        $this->mockBuilder->named($mockClassName);
+        if ($mockClassName) {
+            $this->mockBuilder->named($mockClassName);
+        }
         $this->class = $this->mockBuilder->build(true);
         $this->subject = new StaticHandle(
             $this->class,

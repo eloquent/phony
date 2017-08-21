@@ -66,12 +66,13 @@ class MockBuilder
             interface_exists('__systemlib\throwable');
 
         $this->types = [];
-        $this->parentClassName = null;
+        $this->parentClassName = '';
         $this->customMethods = [];
         $this->customProperties = [];
         $this->customStaticMethods = [];
         $this->customStaticProperties = [];
         $this->customConstants = [];
+        $this->className = '';
         $this->isFinalized = false;
         $this->emptyCallback = function () {};
 
@@ -173,7 +174,7 @@ class MockBuilder
             $parentClassNames = [$this->parentClassName];
         }
 
-        $parentClassName = null;
+        $parentClassName = '';
         $definitions = [];
 
         foreach ($final as $type) {
@@ -357,18 +358,18 @@ class MockBuilder
     /**
      * Set the class name.
      *
-     * @param string|null $className The class name, or null to use a generated name.
+     * @param string $className The class name, or empty string to use a generated name.
      *
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
      */
-    public function named(string $className = null): self
+    public function named(string $className): self
     {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
         }
 
-        if (null !== $className) {
+        if ('' !== $className) {
             if (
                 !preg_match('/^' . static::SYMBOL_PATTERN . '$/S', $className)
             ) {
