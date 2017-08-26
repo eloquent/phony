@@ -8,7 +8,6 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
-use Eloquent\Phony\Stub\Answer\Builder\Detail\GeneratorAnswerBuilderDetail;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Stub;
 use Exception;
@@ -413,15 +412,59 @@ class GeneratorAnswerBuilder
      */
     public function answer(): callable
     {
-        return GeneratorAnswerBuilderDetail::answer(
-            $this->iterations,
-            $this->requests,
-            $this->exception,
-            $this->returnValue,
-            $this->returnsArgument,
-            $this->returnsSelf,
-            $this->invoker
-        );
+        return function ($self, $arguments) {
+            foreach ($this->iterations as $iteration) {
+                foreach ($iteration->requests as $request) {
+                    $this->invoker->callWith(
+                        $request->callback(),
+                        $request->finalArguments($self, $arguments)
+                    );
+                }
+
+                if ($iteration instanceof GeneratorYieldFromIteration) {
+                    foreach ($iteration->values as $key => $value) {
+                        if ($key instanceof InstanceHandle) {
+                            $key = $key->get();
+                        }
+
+                        if ($value instanceof InstanceHandle) {
+                            $value = $value->get();
+                        }
+
+                        yield $key => $value;
+                    }
+                } else {
+                    if ($iteration->hasKey) {
+                        yield $iteration->key => $iteration->value;
+                    } elseif ($iteration->hasValue) {
+                        yield $iteration->value;
+                    } else {
+                        yield;
+                    }
+                }
+            }
+
+            foreach ($this->requests as $request) {
+                $this->invoker->callWith(
+                    $request->callback(),
+                    $request->finalArguments($self, $arguments)
+                );
+            }
+
+            if ($this->exception) {
+                throw $this->exception;
+            }
+
+            if ($this->returnsSelf) {
+                return $self;
+            }
+
+            if (null !== $this->returnsArgument) {
+                return $arguments->get($this->returnsArgument);
+            }
+
+            return $this->returnValue;
+        };
     }
 
     /**
