@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Reflection;
 
-use Eloquent\Phony\Invocation\InvocableInspector;
 use ReflectionFunctionAbstract;
 
 /**
@@ -12,20 +11,15 @@ use ReflectionFunctionAbstract;
  *
  * @codeCoverageIgnore
  */
-class HhvmFunctionSignatureInspector extends FunctionSignatureInspector
+class HhvmFunctionSignatureInspector implements FunctionSignatureInspector
 {
     /**
      * Construct a new function signature inspector.
      *
-     * @param InvocableInspector $invocableInspector The invocable inspector to use.
-     * @param FeatureDetector    $featureDetector    The feature detector to use.
+     * @param FeatureDetector $featureDetector The feature detector to use.
      */
-    public function __construct(
-        InvocableInspector $invocableInspector,
-        FeatureDetector $featureDetector
-    ) {
-        parent::__construct($invocableInspector);
-
+    public function __construct(FeatureDetector $featureDetector)
+    {
         $this->isIterableTypeHintSupported = $featureDetector
             ->isSupported('type.iterable');
         $this->isObjectTypeHintSupported = $featureDetector

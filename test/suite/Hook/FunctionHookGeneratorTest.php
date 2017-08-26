@@ -2,8 +2,9 @@
 
 namespace Eloquent\Phony\Hook;
 
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspectorFactory;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -13,7 +14,8 @@ class FunctionHookGeneratorTest extends TestCase
     {
         $this->subject = new FunctionHookGenerator();
 
-        $this->signatureInspector = FunctionSignatureInspector::instance();
+        $this->invocableInspector = InvocableInspector::instance();
+        $this->signatureInspector = FunctionSignatureInspectorFactory::create();
     }
 
     public function generateData()
@@ -53,7 +55,7 @@ class FunctionHookGeneratorTest extends TestCase
         require $fixturePath . '/' . $testName . '/callback.php';
         $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
         $expected = str_replace("\n", PHP_EOL, $expected);
-        $signature = $this->signatureInspector->callbackSignature($callback);
+        $signature = $this->signatureInspector->signature($this->invocableInspector->callbackReflector($callback));
         $actual = $this->subject->generateHook($functionName, $namespace, $signature);
 
         $this->assertSame($expected, '<?php' . PHP_EOL . PHP_EOL . $actual);

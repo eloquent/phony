@@ -5,7 +5,8 @@ namespace Eloquent\Phony\Hook;
 use Eloquent\Phony\Hook\Exception\FunctionExistsException;
 use Eloquent\Phony\Hook\Exception\FunctionHookGenerationFailedException;
 use Eloquent\Phony\Hook\Exception\FunctionSignatureMismatchException;
-use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspectorFactory;
 use Eloquent\Phony\Test\FunctionHookManager as TestNamespace;
 use Eloquent\Phony\Test\TestFunctionHookGenerator;
 use PHPUnit\Framework\TestCase;
@@ -15,9 +16,14 @@ class FunctionHookManagerTest extends TestCase
 {
     protected function setUp()
     {
-        $this->functionSignatureInspector = FunctionSignatureInspector::instance();
+        $this->invocableInspector = InvocableInspector::instance();
+        $this->functionSignatureInspector = FunctionSignatureInspectorFactory::create();
         $this->hookGenerator = FunctionHookGenerator::instance();
-        $this->subject = new FunctionHookManager($this->functionSignatureInspector, $this->hookGenerator);
+        $this->subject = new FunctionHookManager(
+            $this->invocableInspector,
+            $this->functionSignatureInspector,
+            $this->hookGenerator
+        );
 
         $this->namespace = TestNamespace::class;
         $this->name = 'phony_' . md5(mt_rand());
@@ -79,7 +85,11 @@ class FunctionHookManagerTest extends TestCase
     public function testDefineFunctionFailureSyntax()
     {
         $this->hookGenerator = new TestFunctionHookGenerator('{');
-        $this->subject = new FunctionHookManager($this->functionSignatureInspector, $this->hookGenerator);
+        $this->subject = new FunctionHookManager(
+            $this->invocableInspector,
+            $this->functionSignatureInspector,
+            $this->hookGenerator
+        );
 
         $this->expectException(FunctionHookGenerationFailedException::class);
         $this->subject->defineFunction($this->name, $this->namespace, function () {});

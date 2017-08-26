@@ -5,7 +5,7 @@ namespace Eloquent\Phony\Test;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Mock\MockGenerator;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspectorFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 
 class TestMockGenerator extends MockGenerator
@@ -16,7 +16,7 @@ class TestMockGenerator extends MockGenerator
 
         parent::__construct(
             Sequencer::sequence('mock-class-label'),
-            FunctionSignatureInspector::instance(),
+            FunctionSignatureInspectorFactory::create(),
             FeatureDetector::instance()
         );
     }

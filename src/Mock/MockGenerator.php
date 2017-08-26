@@ -8,6 +8,7 @@ use Eloquent\Phony\Mock\Builder\Method\TraitMethodDefinition;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspectorFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 
 /**
@@ -25,7 +26,7 @@ class MockGenerator
         if (!self::$instance) {
             self::$instance = new self(
                 Sequencer::sequence('mock-class-label'),
-                FunctionSignatureInspector::instance(),
+                FunctionSignatureInspectorFactory::create(),
                 FeatureDetector::instance()
             );
         }

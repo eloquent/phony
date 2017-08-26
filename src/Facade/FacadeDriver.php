@@ -85,16 +85,12 @@ class FacadeDriver
 
         if ($featureDetector->isSupported('runtime.hhvm')) {
             // @codeCoverageIgnoreStart
-            $functionSignatureInspector = new HhvmFunctionSignatureInspector(
-                $invocableInspector,
-                $featureDetector
-            );
+            $functionSignatureInspector =
+                new HhvmFunctionSignatureInspector($featureDetector);
             // @codeCoverageIgnoreEnd
         } else {
-            $functionSignatureInspector = new PhpFunctionSignatureInspector(
-                $invocableInspector,
-                $featureDetector
-            );
+            $functionSignatureInspector =
+                new PhpFunctionSignatureInspector($featureDetector);
         }
 
         $mockClassLabelSequence = Sequencer::sequence('mock-class-label');
@@ -190,6 +186,7 @@ class FacadeDriver
         $assertionRecorder->setCallVerifierFactory($callVerifierFactory);
         $functionHookGenerator = new FunctionHookGenerator();
         $functionHookManager = new FunctionHookManager(
+            $invocableInspector,
             $functionSignatureInspector,
             $functionHookGenerator
         );

@@ -8,7 +8,9 @@ use Eloquent\Phony\Hook\Exception\FunctionExistsException;
 use Eloquent\Phony\Hook\Exception\FunctionHookException;
 use Eloquent\Phony\Hook\Exception\FunctionHookGenerationFailedException;
 use Eloquent\Phony\Hook\Exception\FunctionSignatureMismatchException;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspectorFactory;
 use ParseError;
 
 /**
@@ -25,7 +27,8 @@ class FunctionHookManager
     {
         if (!self::$instance) {
             self::$instance = new self(
-                FunctionSignatureInspector::instance(),
+                InvocableInspector::instance(),
+                FunctionSignatureInspectorFactory::create(),
                 FunctionHookGenerator::instance()
             );
         }
@@ -36,13 +39,16 @@ class FunctionHookManager
     /**
      * Construct a new function hook manager.
      *
+     * @param InvocableInspector         $invocableInspector The invocable inspector to use.
      * @param FunctionSignatureInspector $signatureInspector The function signature inspector to use.
      * @param FunctionHookGenerator      $hookGenerator      The function hook generator to use.
      */
     public function __construct(
+        InvocableInspector $invocableInspector,
         FunctionSignatureInspector $signatureInspector,
         FunctionHookGenerator $hookGenerator
     ) {
+        $this->invocableInspector = $invocableInspector;
         $this->signatureInspector = $signatureInspector;
         $this->hookGenerator = $hookGenerator;
     }
@@ -62,7 +68,9 @@ class FunctionHookManager
         string $namespace,
         callable $callback
     ) {
-        $signature = $this->signatureInspector->callbackSignature($callback);
+        $signature = $this->signatureInspector->signature(
+            $this->invocableInspector->callbackReflector($callback)
+        );
         $fullName = $namespace . '\\' . $name;
         $key = strtolower($fullName);
 
@@ -128,6 +136,7 @@ class FunctionHookManager
 
     public static $hooks = [];
     private static $instance;
+    private $invocableInspector;
     private $signatureInspector;
     private $hookGenerator;
 }

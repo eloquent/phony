@@ -2,7 +2,6 @@
 
 namespace Eloquent\Phony\Reflection;
 
-use Eloquent\Phony\Invocation\InvocableInspector;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionFunction;
@@ -20,8 +19,7 @@ class PhpFunctionSignatureInspectorTest extends TestCase
             $this->markTestSkipped('Requires the standard PHP runtime.');
         }
 
-        $this->invocableInspector = new InvocableInspector();
-        $this->subject = new PhpFunctionSignatureInspector($this->invocableInspector, $this->featureDetector);
+        $this->subject = new PhpFunctionSignatureInspector($this->featureDetector);
     }
 
     public function testSignature()
@@ -143,18 +141,6 @@ class PhpFunctionSignatureInspectorTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testCallbackSignature()
-    {
-        $callback = function ($a, array $b = null) {};
-        $expected = [
-            'a' => ['', '', '', ''],
-            'b' => ['array ', '', '', ' = null'],
-        ];
-        $actual = $this->subject->callbackSignature($callback);
-
-        $this->assertSame($actual, $expected);
-    }
-
     public function testSignatureWithVariadicParameter()
     {
         $function = new ReflectionFunction(eval('return function(...$a){};'));
@@ -171,18 +157,5 @@ class PhpFunctionSignatureInspectorTest extends TestCase
 
     protected function methodB(self $a = null, self $b)
     {
-    }
-
-    public function testInstance()
-    {
-        $class = __NAMESPACE__ . '\FunctionSignatureInspector';
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

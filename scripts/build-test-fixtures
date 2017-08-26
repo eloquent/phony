@@ -3,9 +3,10 @@
 
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Hook\FunctionHookGenerator;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspectorFactory;
 use Eloquent\Phony\Test\Phony as TestPhony;
 
 $rootPath = dirname(__DIR__);
@@ -42,7 +43,8 @@ foreach (scandir($mockGeneratorFixturePath) as $name) {
 }
 
 $hookGeneratorFixturePath = $fixturePath . '/hook-generator';
-$signatureInspector = FunctionSignatureInspector::instance();
+$invocableInspector = InvocableInspector::instance();
+$signatureInspector = FunctionSignatureInspectorFactory::create();
 $hookGenerator = FunctionHookGenerator::instance();
 
 foreach (scandir($hookGeneratorFixturePath) as $name) {
@@ -63,7 +65,8 @@ foreach (scandir($hookGeneratorFixturePath) as $name) {
 
     require $thisPath . '/callback.php';
 
-    $signature = $signatureInspector->callbackSignature($callback);
+    $signature = $signatureInspector
+        ->signature($invocableInspector->callbackReflector($callback));
     $source =
         $hookGenerator->generateHook($functionName, $namespace, $signature);
 

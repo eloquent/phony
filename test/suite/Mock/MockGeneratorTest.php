@@ -6,7 +6,7 @@ use Countable;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspectorFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestTraitA;
@@ -21,7 +21,7 @@ class MockGeneratorTest extends TestCase
     protected function setUp()
     {
         $this->labelSequencer = new Sequencer();
-        $this->signatureInspector = FunctionSignatureInspector::instance();
+        $this->signatureInspector = FunctionSignatureInspectorFactory::create();
         $this->featureDetector = new FeatureDetector();
         $this->subject = new MockGenerator($this->labelSequencer, $this->signatureInspector, $this->featureDetector);
     }
