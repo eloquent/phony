@@ -85,9 +85,9 @@ interface Call extends Event, EventCollection
     /**
      * Get the arguments.
      *
-     * @return Arguments|null The arguments.
+     * @return Arguments The arguments.
      */
-    public function arguments();
+    public function arguments(): Arguments;
 
     /**
      * Get an argument by index.

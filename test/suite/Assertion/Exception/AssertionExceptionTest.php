@@ -115,12 +115,12 @@ class AssertionExceptionTest extends TestCase
                         'function' => 'functionA',
                     ],
                 ],
-                null,
+                [],
             ],
 
             'Empty Trace' => [
                 [],
-                null,
+                [],
             ],
         ];
     }

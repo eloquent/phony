@@ -40,7 +40,11 @@ final class AssertionException extends Exception
 
         $call = static::tracePhonyCall($traceProperty->getValue($exception));
 
-        if ($call) {
+        if (empty($call)) {
+            $traceProperty->setValue($exception, []);
+            $fileProperty->setValue($exception, null);
+            $lineProperty->setValue($exception, null);
+        } else {
             $traceProperty->setValue($exception, [$call]);
             $fileProperty->setValue(
                 $exception,
@@ -50,10 +54,6 @@ final class AssertionException extends Exception
                 $exception,
                 isset($call['line']) ? $call['line'] : null
             );
-        } else {
-            $traceProperty->setValue($exception, []);
-            $fileProperty->setValue($exception, null);
-            $lineProperty->setValue($exception, null);
         }
     }
 
@@ -62,7 +62,7 @@ final class AssertionException extends Exception
      *
      * @param array $trace The stack trace.
      *
-     * @return array|null The call, or null if unable to determine the entry point.
+     * @return array The call, or an empty array if unable to determine the entry point.
      */
     public static function tracePhonyCall(array $trace)
     {
@@ -80,7 +80,7 @@ final class AssertionException extends Exception
             }
         }
 
-        return null;
+        return [];
     }
 
     /**
