@@ -4,43 +4,18 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Method;
 
-use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
+use Eloquent\Phony\Invocation\WrappedInvocableTrait;
 use Eloquent\Phony\Mock\Handle\Handle;
 use Eloquent\Phony\Mock\Handle\StaticHandle;
 use Eloquent\Phony\Mock\Mock;
 use ReflectionMethod;
 
 /**
- * An abstract base class for implementing wrapped methods.
+ * Used for implementing wrapped methods.
  */
-abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
-    WrappedMethod
+trait WrappedMethodTrait
 {
-    /**
-     * Construct a new wrapped method.
-     *
-     * @param ReflectionMethod $method The method.
-     * @param Handle           $handle The handle.
-     */
-    public function __construct(ReflectionMethod $method, Handle $handle)
-    {
-        $this->method = $method;
-        $this->handle = $handle;
-        $this->name = $method->getName();
-
-        if ($handle instanceof StaticHandle) {
-            $this->mock = null;
-            $callback = [
-                $method->getDeclaringClass()->getName(),
-                $this->name,
-            ];
-        } else {
-            $this->mock = $handle->get();
-            $callback = [$this->mock, $this->name];
-        }
-
-        parent::__construct($callback, '');
-    }
+    use WrappedInvocableTrait;
 
     /**
      * Get the method.
@@ -80,6 +55,26 @@ abstract class AbstractWrappedMethod extends AbstractWrappedInvocable implements
     public function mock()
     {
         return $this->mock;
+    }
+
+    private function constructWrappedMethod(
+        ReflectionMethod $method,
+        Handle $handle
+    ) {
+        $this->method = $method;
+        $this->handle = $handle;
+        $this->name = $method->getName();
+
+        if ($handle instanceof StaticHandle) {
+            $this->mock = null;
+            $this->callback = [
+                $method->getDeclaringClass()->getName(),
+                $this->name,
+            ];
+        } else {
+            $this->mock = $handle->get();
+            $this->callback = [$this->mock, $this->name];
+        }
     }
 
     protected $method;

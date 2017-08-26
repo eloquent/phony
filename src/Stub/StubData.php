@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Invocation\WrappedInvocableTrait;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
@@ -23,8 +23,10 @@ use Throwable;
 /**
  * Provides canned answers to function or method invocations.
  */
-class StubData extends AbstractWrappedInvocable implements Stub
+class StubData implements Stub
 {
+    use WrappedInvocableTrait;
+
     /**
      * Creates a "forwards" answer on the supplied stub.
      *
@@ -71,12 +73,19 @@ class StubData extends AbstractWrappedInvocable implements Stub
         EmptyValueFactory $emptyValueFactory,
         GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory
     ) {
-        parent::__construct($callback, $label);
+        if (!$callback) {
+            $this->isAnonymous = true;
+            $this->callback = function () {};
+        } else {
+            $this->isAnonymous = false;
+            $this->callback = $callback;
+        }
 
         if (empty($self)) {
             $self = $this->callback;
         }
 
+        $this->label = $label;
         $this->defaultAnswerCallback = $defaultAnswerCallback;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;

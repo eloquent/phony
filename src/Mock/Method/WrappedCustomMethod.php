@@ -13,8 +13,10 @@ use Throwable;
 /**
  * A wrapper for custom methods.
  */
-class WrappedCustomMethod extends AbstractWrappedMethod
+class WrappedCustomMethod implements WrappedMethod
 {
+    use WrappedMethodTrait;
+
     /**
      * Construct a new wrapped custom method.
      *
@@ -32,7 +34,7 @@ class WrappedCustomMethod extends AbstractWrappedMethod
         $this->customCallback = $customCallback;
         $this->invoker = $invoker;
 
-        parent::__construct($method, $handle);
+        $this->constructWrappedMethod($method, $handle);
     }
 
     /**

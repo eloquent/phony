@@ -12,8 +12,8 @@ use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
-use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Invocation\WrappedInvocableTrait;
 use Generator;
 use Iterator;
 use Throwable;
@@ -22,8 +22,10 @@ use Traversable;
 /**
  * Spies on a function or method.
  */
-class SpyData extends AbstractWrappedInvocable implements Spy
+class SpyData implements Spy
 {
+    use WrappedInvocableTrait;
+
     /**
      * Construct a new spy.
      *
@@ -42,8 +44,15 @@ class SpyData extends AbstractWrappedInvocable implements Spy
         GeneratorSpyFactory $generatorSpyFactory,
         IterableSpyFactory $iterableSpyFactory
     ) {
-        parent::__construct($callback, $label);
+        if (!$callback) {
+            $this->isAnonymous = true;
+            $this->callback = function () {};
+        } else {
+            $this->isAnonymous = false;
+            $this->callback = $callback;
+        }
 
+        $this->label = $label;
         $this->callFactory = $callFactory;
         $this->invoker = $invoker;
         $this->generatorSpyFactory = $generatorSpyFactory;

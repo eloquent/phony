@@ -12,8 +12,10 @@ use Throwable;
 /**
  * A wrapper that allows calling of the parent method in mocks.
  */
-class WrappedParentMethod extends AbstractWrappedMethod
+class WrappedParentMethod implements WrappedMethod
 {
+    use WrappedMethodTrait;
+
     /**
      * Construct a new wrapped parent method.
      *
@@ -28,7 +30,7 @@ class WrappedParentMethod extends AbstractWrappedMethod
     ) {
         $this->callParentMethod = $callParentMethod;
 
-        parent::__construct($method, $handle);
+        $this->constructWrappedMethod($method, $handle);
     }
 
     /**

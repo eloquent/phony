@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Method;
 
+use Eloquent\Phony\Invocation\WrappedInvocable;
 use Eloquent\Phony\Mock\Handle\Handle;
 use Eloquent\Phony\Mock\Mock;
 
 /**
  * The interface implemented by wrapped methods.
  */
-interface WrappedMethod
+interface WrappedMethod extends WrappedInvocable
 {
     /**
      * Get the name.

@@ -5,30 +5,10 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Invocation;
 
 /**
- * An abstract base class for implementing wrapped invocables.
+ * Used for implementing wrapped invocables.
  */
-abstract class AbstractWrappedInvocable extends AbstractInvocable implements
-    WrappedInvocable
+trait WrappedInvocableTrait
 {
-    /**
-     * Construct a new wrapped invocable.
-     *
-     * @param callable|null $callback The callback.
-     * @param string        $label    The label.
-     */
-    public function __construct($callback = null, string $label = '')
-    {
-        if (!$callback) {
-            $this->isAnonymous = true;
-            $this->callback = function () {};
-        } else {
-            $this->isAnonymous = false;
-            $this->callback = $callback;
-        }
-
-        $this->label = $label;
-    }
-
     /**
      * Returns true if anonymous.
      *
@@ -73,7 +53,33 @@ abstract class AbstractWrappedInvocable extends AbstractInvocable implements
         return $this->label;
     }
 
-    protected $isAnonymous;
+    /**
+     * Invoke this object.
+     *
+     * @param mixed ...$arguments The arguments.
+     *
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
+     */
+    public function invoke(...$arguments)
+    {
+        return $this->invokeWith($arguments);
+    }
+
+    /**
+     * Invoke this object.
+     *
+     * @param mixed ...$arguments The arguments.
+     *
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
+     */
+    public function __invoke(...$arguments)
+    {
+        return $this->invokeWith($arguments);
+    }
+
     protected $callback;
-    protected $label;
+    protected $isAnonymous = false;
+    protected $label = '';
 }

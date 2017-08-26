@@ -11,8 +11,10 @@ use Throwable;
 /**
  * A wrapper for uncallable methods.
  */
-class WrappedUncallableMethod extends AbstractWrappedMethod
+class WrappedUncallableMethod implements WrappedMethod
 {
+    use WrappedMethodTrait;
+
     /**
      * Construct a new wrapped uncallable method.
      *
@@ -27,7 +29,7 @@ class WrappedUncallableMethod extends AbstractWrappedMethod
     ) {
         $this->returnValue = $returnValue;
 
-        parent::__construct($method, $handle);
+        $this->constructWrappedMethod($method, $handle);
     }
 
     /**

@@ -12,8 +12,10 @@ use Throwable;
 /**
  * A wrapper that allows calling of the trait method in mocks.
  */
-class WrappedTraitMethod extends AbstractWrappedMethod
+class WrappedTraitMethod implements WrappedMethod
 {
+    use WrappedMethodTrait;
+
     /**
      * Construct a new wrapped trait method.
      *
@@ -31,7 +33,7 @@ class WrappedTraitMethod extends AbstractWrappedMethod
         $this->callTraitMethod = $callTraitMethod;
         $this->traitName = $traitName;
 
-        parent::__construct($method, $handle);
+        $this->constructWrappedMethod($method, $handle);
     }
 
     /**

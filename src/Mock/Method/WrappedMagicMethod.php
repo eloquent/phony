@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Invocation\AbstractWrappedInvocable;
+use Eloquent\Phony\Invocation\WrappedInvocableTrait;
 use Eloquent\Phony\Mock\Handle\Handle;
 use ReflectionMethod;
 use Throwable;
@@ -13,9 +13,10 @@ use Throwable;
 /**
  * A wrapper that allows calling of the parent magic method in mocks.
  */
-class WrappedMagicMethod extends AbstractWrappedInvocable implements
-    WrappedMethod
+class WrappedMagicMethod implements WrappedMethod
 {
+    use WrappedInvocableTrait;
+
     /**
      * Construct a new wrapped magic method.
      *
@@ -40,16 +41,14 @@ class WrappedMagicMethod extends AbstractWrappedInvocable implements
 
         if ($callMagicMethod->isStatic()) {
             $this->mock = null;
-            $callback = [
+            $this->callback = [
                 $callMagicMethod->getDeclaringClass()->getName(),
                 '__callStatic',
             ];
         } else {
             $this->mock = $handle->get();
-            $callback = [$this->mock, '__call'];
+            $this->callback = [$this->mock, '__call'];
         }
-
-        parent::__construct($callback, '');
     }
 
     /**
