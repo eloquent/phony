@@ -39,14 +39,8 @@ final class AssertionException extends Exception
             $lineProperty->setValue($exception, null);
         } else {
             $traceProperty->setValue($exception, [$call]);
-            $fileProperty->setValue(
-                $exception,
-                isset($call['file']) ? $call['file'] : null
-            );
-            $lineProperty->setValue(
-                $exception,
-                isset($call['line']) ? $call['line'] : null
-            );
+            $fileProperty->setValue($exception, $call['file'] ?? null);
+            $lineProperty->setValue($exception, $call['line'] ?? null);
         }
     }
 

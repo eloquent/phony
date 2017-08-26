@@ -67,11 +67,7 @@ class MethodDefinitionCollection
     {
         $name = strtolower($name);
 
-        if (isset($this->methodNames[$name])) {
-            return $this->methodNames[$name];
-        }
-
-        return '';
+        return $this->methodNames[$name] ?? '';
     }
 
     /**
