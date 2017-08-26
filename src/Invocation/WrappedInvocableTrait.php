@@ -79,6 +79,18 @@ trait WrappedInvocableTrait
         return $this->invokeWith($arguments);
     }
 
+    /**
+     * Invoke this object.
+     *
+     * This method supports reference parameters.
+     *
+     * @param Arguments|array $arguments The arguments.
+     *
+     * @return mixed     The result of invocation.
+     * @throws Throwable If an error occurs.
+     */
+    abstract public function invokeWith($arguments = []);
+
     protected $callback;
     protected $isAnonymous = false;
     protected $label = '';
