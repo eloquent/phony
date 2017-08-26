@@ -7,9 +7,8 @@ namespace Eloquent\Phony\Spy;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Spy\Detail\GeneratorSpyFactoryDetailHhvm;
-use Eloquent\Phony\Spy\Detail\GeneratorSpyFactoryDetailPhp;
 use Generator;
+use Throwable;
 
 /**
  * Creates generator spies.
@@ -57,25 +56,73 @@ class GeneratorSpyFactory
      */
     public function create(Call $call, Generator $generator): Generator
     {
-        // @codeCoverageIgnoreStart
-        if ($this->isHhvm) {
-            $spy = GeneratorSpyFactoryDetailHhvm::createGeneratorSpy(
-                $call,
-                $generator,
-                $this->callEventFactory
-            );
-        } else {
-            // @codeCoverageIgnoreEnd
-            $spy = GeneratorSpyFactoryDetailPhp::createGeneratorSpy(
-                $call,
-                $generator,
-                $this->callEventFactory
-            );
-        }
-
+        $spy = $this->createSpy($call, $generator);
         $spy->_phonySubject = $generator;
 
         return $spy;
+    }
+
+    private function createSpy($call, $generator)
+    {
+        $call->addIterableEvent($this->callEventFactory->createUsed());
+
+        $isFirst = true;
+        $received = null;
+        $receivedException = null;
+
+        while (true) {
+            $thrown = null;
+
+            try {
+                if (!$isFirst) {
+                    if ($receivedException) {
+                        $generator->throw($receivedException);
+                    } else {
+                        $generator->send($received);
+                    }
+                }
+
+                if (!$generator->valid()) {
+                    $returnValue = $generator->getReturn();
+                    $call->setEndEvent(
+                        $this->callEventFactory->createReturned($returnValue)
+                    );
+
+                    return $returnValue;
+                }
+            } catch (Throwable $thrown) {
+                $call->setEndEvent(
+                    $this->callEventFactory->createThrew($thrown)
+                );
+
+                throw $thrown;
+            }
+
+            $key = $generator->key();
+            $value = $generator->current();
+            $received = null;
+            $receivedException = null;
+
+            $call->addIterableEvent(
+                $this->callEventFactory->createProduced($key, $value)
+            );
+
+            try {
+                $received = yield $key => $value;
+
+                $call->addIterableEvent(
+                    $this->callEventFactory->createReceived($received)
+                );
+            } catch (Throwable $receivedException) {
+                $call->addIterableEvent(
+                    $this->callEventFactory
+                        ->createReceivedException($receivedException)
+                );
+            }
+
+            $isFirst = false;
+            unset($value);
+        }
     }
 
     private static $instance;
