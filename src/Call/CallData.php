@@ -36,18 +36,7 @@ class CallData implements Call
      */
     public static function compareSequential(Call $a, Call $b): int
     {
-        $a = $a->sequenceNumber();
-        $b = $b->sequenceNumber();
-
-        if ($a < $b) {
-            return -1;
-        }
-
-        if ($a > $b) {
-            return 1;
-        }
-
-        return 0;
+        return $a->sequenceNumber() <=> $b->sequenceNumber();
     }
 
     /**

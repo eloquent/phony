@@ -344,15 +344,7 @@ class DifferenceSequenceMatcher
             }
         }
 
-        if ($aLength === $bLength) {
-            return 0;
-        }
-
-        if ($aLength < $bLength) {
-            return -1;
-        }
-
-        return 1;
+        return $aLength <=> $bLength;
     }
 
     private $a;
