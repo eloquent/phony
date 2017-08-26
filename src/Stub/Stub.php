@@ -96,6 +96,9 @@ interface Stub extends WrappedInvocable
     /**
      * Add an argument callback to be called as part of an answer.
      *
+     * Calling this method with no arguments is equivalent to calling it with a
+     * single argument of `0`.
+     *
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
@@ -196,6 +199,9 @@ interface Stub extends WrappedInvocable
     /**
      * Add an answer that returns a value.
      *
+     * Calling this method with no arguments is equivalent to calling it with a
+     * single argument of `null`.
+     *
      * @param mixed ...$values The return values.
      *
      * @return $this This stub.
@@ -223,6 +229,9 @@ interface Stub extends WrappedInvocable
 
     /**
      * Add an answer that throws an exception.
+     *
+     * Calling this method with no arguments is equivalent to calling it with a
+     * single argument of `null`.
      *
      * @param Throwable|string|null ...$exceptions The exceptions, or messages, or nulls to throw generic exceptions.
      *

@@ -2289,11 +2289,8 @@ echo $generatorA->getReturn(); // outputs 'x'
 echo $generatorB->getReturn(); // outputs 'y'
 ```
 
-Note that attempting to return anything other than `null` will result in an
-exception unless the current runtime supports generator return expressions. For
-older runtimes, it is perfectly valid to call
-[`returns()`](#generatorAnswer.returns) with no arguments in order to end the
-generator:
+Note that it is perfectly valid to call [`returns()`](#generatorAnswer.returns)
+with no arguments in order to end the generator by returning `null`:
 
 ```php
 $stub = stub()->generates()->returns();
@@ -5321,7 +5318,7 @@ Get the types that will be mocked.
 
 ----
 
-> *fluent* $builder->[**like**](#builder.like)($type, ...$additionalTypes)
+> *fluent* $builder->[**like**](#builder.like)(...$types)
 
 Add classes, interfaces, or traits.
 
@@ -5383,7 +5380,7 @@ Add a custom class constant.
 
 ----
 
-> *fluent* $builder->[**named**](#builder.named)($className = null)
+> *fluent* $builder->[**named**](#builder.named)($className)
 
 Set the class name.
 
@@ -5592,7 +5589,7 @@ Modify the current criteria to match the supplied arguments.
 
 ----
 
-> *fluent* $stub->[**calls**](#stub.calls)($callback, ...$additionalCallbacks)
+> *fluent* $stub->[**calls**](#stub.calls)(...$callbacks)
 
 Add callbacks to be called as part of an answer.
 
@@ -5618,9 +5615,12 @@ Add a callback to be called as part of an answer.
 
 ----
 
-> *fluent* $stub->[**callsArgument**](#stub.callsArgument)($index = 0, ...$additionalIndices)
+> *fluent* $stub->[**callsArgument**](#stub.callsArgument)(...$indices)
 
 Add argument callbacks to be called as part of an answer.
+
+*Calling this method with no arguments is equivalent to calling it with a single
+argument of `0`.*
 
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
@@ -5671,7 +5671,7 @@ Set the value of an argument passed by reference as part of an answer.
 
 ----
 
-> *fluent* $stub->[**does**](#stub.does)($callback, ...$additionalCallbacks)
+> *fluent* $stub->[**does**](#stub.does)(...$callbacks)
 
 Add callbacks as answers.
 
@@ -5709,9 +5709,12 @@ Add an answer that calls the wrapped callback.
 
 ----
 
-> *fluent* $stub->[**returns**](#stub.returns)($value = null, ...$additionalValues)
+> *fluent* $stub->[**returns**](#stub.returns)(...$values)
 
 Add answers that return values.
+
+*Calling this method with no arguments is equivalent to calling it with a single
+argument of `null`.*
 
 *This method supports [mock handle substitution].*
 
@@ -5744,9 +5747,12 @@ Add an answer that returns the self value.
 
 ----
 
-> *fluent* $stub->[**throws**](#stub.throws)($exception = null, ...$additionalExceptions)
+> *fluent* $stub->[**throws**](#stub.throws)(...$exceptions)
 
 Add answers that throw exceptions.
+
+*Calling this method with no arguments is equivalent to calling it with a single
+argument of `null`.*
 
 *This method supports [mock handle substitution].*
 
@@ -5790,7 +5796,7 @@ See also:
 
 ----
 
-> *fluent* $generatorAnswer->[**calls**](#generatorAnswer.calls)($callback, ...$additionalCallbacks)
+> *fluent* $generatorAnswer->[**calls**](#generatorAnswer.calls)(...$callbacks)
 
 Add callbacks to be called as part of the answer.
 
@@ -5812,9 +5818,12 @@ Add callbacks to be called as part of the answer.
 
 ----
 
-> *fluent* $generatorAnswer->[**callsArgument**](#generatorAnswer.callsArgument)($index = 0, ...$additionalIndices)
+> *fluent* $generatorAnswer->[**callsArgument**](#generatorAnswer.callsArgument)(...$indices)
 
 Add argument callbacks to be called as part of the answer.
+
+*Calling this method with no arguments is equivalent to calling it with a single
+argument of `0`.*
 
 *Negative indices are offset from the end of the list. That is, `-1` indicates
 the last element, and `-2` indicates the second last element.*
@@ -5896,9 +5905,12 @@ generator.*
 
 ----
 
-> *[stub][stub-api]* $generatorAnswer->[**returns**](#generatorAnswer.returns)($value = null, ...$additionalValues)
+> *[stub][stub-api]* $generatorAnswer->[**returns**](#generatorAnswer.returns)(...$values)
 
 End the generator by returning a value.
+
+*Calling this method with no arguments is equivalent to calling it with a single
+argument of `null`.*
 
 *This method supports [mock handle substitution].*
 
@@ -5931,9 +5943,12 @@ End the generator by returning the self value.
 
 ----
 
-> *[stub][stub-api]* $generatorAnswer->[**throws**](#generatorAnswer.throws)($exception = null, ...$additionalExceptions)
+> *[stub][stub-api]* $generatorAnswer->[**throws**](#generatorAnswer.throws)(...$exceptions)
 
 End the generator by throwing an exception.
+
+*Calling this method with no arguments is equivalent to calling it with a single
+argument of `null`.*
 
 *This method supports [mock handle substitution].*
 
