@@ -800,8 +800,8 @@ implements \Eloquent\Phony\Mock\Mock,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         $name = '_callTrait_' .
-            \str_replace('\\', "\xc2\xa6", $traitName) .
-            "\xc2\xbb" .
+            \str_replace('\\', "\u{a6}", $traitName) .
+            "\u{bb}" .
             $name;
 
         return self::$name(...$arguments->all());
@@ -833,8 +833,8 @@ implements \Eloquent\Phony\Mock\Mock,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         $name = '_callTrait_' .
-            \str_replace('\\', "\xc2\xa6", $traitName) .
-            "\xc2\xbb" .
+            \str_replace('\\', "\u{a6}", $traitName) .
+            "\u{bb}" .
             $name;
 
         return $this->$name(...$arguments->all());

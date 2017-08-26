@@ -3787,8 +3787,8 @@ class AssertionRenderer
         return PHP_EOL . $expected . $actual;
     }
 
-    const PASS = "\xe2\x9C\x93";
-    const FAIL = "\xe2\x9C\x97";
+    const PASS = "\u{2713}";
+    const FAIL = "\u{2717}";
 
     private static $instance;
     private $matcherVerifier;

@@ -186,8 +186,8 @@ class MockGenerator
                     '::' .
                     $methodName .
                     "\n            as private _callTrait_" .
-                    str_replace('\\', "\xc2\xa6", $typeName) .
-                    "\xc2\xbb" .
+                    str_replace('\\', self::NS_SEPARATOR, $typeName) .
+                    self::METHOD_SEPARATOR .
                     $methodName .
                     ';';
             }
@@ -728,8 +728,8 @@ EOD;
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         $name = '_callTrait_' .
-            \str_replace('\\', "\xc2\xa6", $traitName) .
-            "\xc2\xbb" .
+            \str_replace('\\', "\u{a6}", $traitName) .
+            "\u{bb}" .
             $name;
 
         return self::$name(...$arguments->all());
@@ -754,8 +754,8 @@ EOD;
                         ->method()->getDeclaringClass()->getName();
                     $methodName = var_export(
                         '_callTrait_' .
-                            \str_replace('\\', "\xc2\xa6", $traitName) .
-                            "\xc2\xbb" .
+                            \str_replace('\\', self::NS_SEPARATOR, $traitName) .
+                            self::METHOD_SEPARATOR .
                             $name,
                         true
                     );
@@ -852,8 +852,12 @@ EOD;
 
                 if ($constructor) {
                     $constructorName = '_callTrait_' .
-                        \str_replace('\\', "\xc2\xa6", $constructorTraitName) .
-                        "\xc2\xbb" .
+                        \str_replace(
+                            '\\',
+                            self::NS_SEPARATOR,
+                            $constructorTraitName
+                        ) .
+                        self::METHOD_SEPARATOR .
                         $constructor->getName();
 
                     $source .= <<<EOD
@@ -876,8 +880,8 @@ EOD;
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
         $name = '_callTrait_' .
-            \str_replace('\\', "\xc2\xa6", $traitName) .
-            "\xc2\xbb" .
+            \str_replace('\\', "\u{a6}", $traitName) .
+            "\u{bb}" .
             $name;
 
         return $this->$name(...$arguments->all());
@@ -902,8 +906,8 @@ EOD;
                         ->method()->getDeclaringClass()->getName();
                     $methodName = var_export(
                         '_callTrait_' .
-                            \str_replace('\\', "\xc2\xa6", $traitName) .
-                            "\xc2\xbb" .
+                            \str_replace('\\', self::NS_SEPARATOR, $traitName) .
+                            self::METHOD_SEPARATOR .
                             $name,
                         true
                     );
@@ -1002,6 +1006,9 @@ EOD;
 
         return $source;
     }
+
+    const NS_SEPARATOR = "\u{a6}";
+    const METHOD_SEPARATOR = "\u{bb}";
 
     private static $instance;
     private $labelSequencer;
