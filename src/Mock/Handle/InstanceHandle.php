@@ -19,8 +19,10 @@ use stdClass;
 /**
  * A handle for stubbing and verifying a mock instance.
  */
-class InstanceHandle extends AbstractHandle
+class InstanceHandle implements Handle
 {
+    use HandleTrait;
+
     /**
      * Construct a new instance handle.
      *
@@ -76,7 +78,7 @@ class InstanceHandle extends AbstractHandle
 
         $this->callParentConstructorMethod = $callParentConstructorMethod;
 
-        parent::__construct(
+        $this->constructHandle(
             $class,
             $state,
             $callParentMethod,

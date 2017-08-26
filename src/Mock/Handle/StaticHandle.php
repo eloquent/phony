@@ -17,8 +17,10 @@ use stdClass;
 /**
  * A handle for stubbing and verifying a mock class.
  */
-class StaticHandle extends AbstractHandle
+class StaticHandle implements Handle
 {
+    use HandleTrait;
+
     /**
      * Construct a new static handle.
      *
@@ -62,7 +64,7 @@ class StaticHandle extends AbstractHandle
             $callMagicMethod = null;
         }
 
-        parent::__construct(
+        $this->constructHandle(
             $class,
             $state,
             $callParentMethod,

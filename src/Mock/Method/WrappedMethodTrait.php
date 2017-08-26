@@ -57,10 +57,8 @@ trait WrappedMethodTrait
         return $this->mock;
     }
 
-    private function constructWrappedMethod(
-        ReflectionMethod $method,
-        Handle $handle
-    ) {
+    private function constructWrappedMethod($method, $handle)
+    {
         $this->method = $method;
         $this->handle = $handle;
         $this->name = $method->getName();

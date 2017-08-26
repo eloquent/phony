@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Handle;
 
-use Eloquent\Phony\Assertion\AssertionRecorder;
-use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Event\EventCollection;
-use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Exception\FinalMethodStubException;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Method\WrappedCustomMethod;
@@ -17,77 +14,17 @@ use Eloquent\Phony\Mock\Method\WrappedTraitMethod;
 use Eloquent\Phony\Mock\Method\WrappedUncallableMethod;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Spy\Spy;
-use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubData;
-use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifier;
-use Eloquent\Phony\Stub\StubVerifierFactory;
 use ReflectionClass;
-use ReflectionMethod;
 use stdClass;
 use Throwable;
 
 /**
- * An abstract base class for implementing handles.
+ * Used for implementing handles.
  */
-abstract class AbstractHandle implements Handle
+trait HandleTrait
 {
-    /**
-     * Construct a new handle.
-     *
-     * @param ReflectionClass       $class               The class.
-     * @param stdClass              $state               The state.
-     * @param ReflectionMethod|null $callParentMethod    The call parent method, or null if no parent class exists.
-     * @param ReflectionMethod|null $callTraitMethod     The call trait method, or null if no trait methods are implemented.
-     * @param ReflectionMethod|null $callMagicMethod     The call magic method, or null if magic calls are not supported.
-     * @param Mock|null             $mock                The mock, or null if this is a static handle.
-     * @param StubFactory           $stubFactory         The stub factory to use.
-     * @param StubVerifierFactory   $stubVerifierFactory The stub verifier factory to use.
-     * @param EmptyValueFactory     $emptyValueFactory   The empty value factory to use.
-     * @param AssertionRenderer     $assertionRenderer   The assertion renderer to use.
-     * @param AssertionRecorder     $assertionRecorder   The assertion recorder to use.
-     * @param Invoker               $invoker             The invoker to use.
-     */
-    public function __construct(
-        ReflectionClass $class,
-        stdClass $state,
-        ReflectionMethod $callParentMethod = null,
-        ReflectionMethod $callTraitMethod = null,
-        ReflectionMethod $callMagicMethod = null,
-        Mock $mock = null,
-        StubFactory $stubFactory,
-        StubVerifierFactory $stubVerifierFactory,
-        EmptyValueFactory $emptyValueFactory,
-        AssertionRenderer $assertionRenderer,
-        AssertionRecorder $assertionRecorder,
-        Invoker $invoker
-    ) {
-        $this->mock = $mock;
-        $this->class = $class;
-        $this->state = $state;
-        $this->callParentMethod = $callParentMethod;
-        $this->callTraitMethod = $callTraitMethod;
-        $this->callMagicMethod = $callMagicMethod;
-        $this->stubFactory = $stubFactory;
-        $this->stubVerifierFactory = $stubVerifierFactory;
-        $this->emptyValueFactory = $emptyValueFactory;
-        $this->assertionRenderer = $assertionRenderer;
-        $this->assertionRecorder = $assertionRecorder;
-        $this->invoker = $invoker;
-
-        $uncallableMethodsProperty = $class->getProperty('_uncallableMethods');
-        $uncallableMethodsProperty->setAccessible(true);
-        $this->uncallableMethods = $uncallableMethodsProperty->getValue(null);
-
-        $traitMethodsProperty = $class->getProperty('_traitMethods');
-        $traitMethodsProperty->setAccessible(true);
-        $this->traitMethods = $traitMethodsProperty->getValue(null);
-
-        $customMethodsProperty = $class->getProperty('_customMethods');
-        $customMethodsProperty->setAccessible(true);
-        $this->customMethods = $customMethodsProperty->getValue(null);
-    }
-
     /**
      * Get the class.
      *
@@ -410,6 +347,46 @@ abstract class AbstractHandle implements Handle
         }
 
         return $stubVerifier;
+    }
+
+    private function constructHandle(
+        $class,
+        $state,
+        $callParentMethod,
+        $callTraitMethod,
+        $callMagicMethod,
+        $mock,
+        $stubFactory,
+        $stubVerifierFactory,
+        $emptyValueFactory,
+        $assertionRenderer,
+        $assertionRecorder,
+        $invoker
+    ) {
+        $this->mock = $mock;
+        $this->class = $class;
+        $this->state = $state;
+        $this->callParentMethod = $callParentMethod;
+        $this->callTraitMethod = $callTraitMethod;
+        $this->callMagicMethod = $callMagicMethod;
+        $this->stubFactory = $stubFactory;
+        $this->stubVerifierFactory = $stubVerifierFactory;
+        $this->emptyValueFactory = $emptyValueFactory;
+        $this->assertionRenderer = $assertionRenderer;
+        $this->assertionRecorder = $assertionRecorder;
+        $this->invoker = $invoker;
+
+        $uncallableMethodsProperty = $class->getProperty('_uncallableMethods');
+        $uncallableMethodsProperty->setAccessible(true);
+        $this->uncallableMethods = $uncallableMethodsProperty->getValue(null);
+
+        $traitMethodsProperty = $class->getProperty('_traitMethods');
+        $traitMethodsProperty->setAccessible(true);
+        $this->traitMethods = $traitMethodsProperty->getValue(null);
+
+        $customMethodsProperty = $class->getProperty('_customMethods');
+        $customMethodsProperty->setAccessible(true);
+        $this->customMethods = $customMethodsProperty->getValue(null);
     }
 
     protected $state;
