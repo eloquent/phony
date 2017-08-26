@@ -57,7 +57,7 @@ final class AssertionException extends Exception
      *
      * @return array The call, or an empty array if unable to determine the entry point.
      */
-    public static function tracePhonyCall(array $trace)
+    public static function tracePhonyCall(array $trace): array
     {
         $prefix = 'Eloquent\Phony\\';
 
