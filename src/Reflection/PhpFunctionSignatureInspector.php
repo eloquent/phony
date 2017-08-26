@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Phony package.
  *
@@ -50,7 +52,7 @@ class PhpFunctionSignatureInspector extends FunctionSignatureInspector
     {
         $isMatch = preg_match_all(
             static::PARAMETER_PATTERN,
-            $function,
+            (string) $function,
             $matches,
             PREG_SET_ORDER
         );

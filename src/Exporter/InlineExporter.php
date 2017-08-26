@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Phony package.
  *
@@ -468,7 +470,7 @@ class InlineExporter implements Exporter
                             if (
                                 preg_match(
                                     '/^\x00([^\x00]+)\x00([^\x00]+)$/',
-                                    $propertyName,
+                                    (string) $propertyName,
                                     $matches
                                 )
                             ) {

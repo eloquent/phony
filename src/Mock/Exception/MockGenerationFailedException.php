@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Phony package.
  *
@@ -75,7 +77,7 @@ final class MockGenerationFailedException extends Exception implements
 
         end($lines);
         $lineNumber = key($lines);
-        $padSize = strlen($lineNumber + 1) + 4;
+        $padSize = strlen((string) ($lineNumber + 1)) + 4;
         $renderedLines = '';
 
         foreach ($lines as $lineNumber => $line) {
@@ -88,7 +90,12 @@ final class MockGenerationFailedException extends Exception implements
             $renderedLines .= sprintf(
                 '%s%s%s %s',
                 PHP_EOL,
-                str_pad($lineNumber + 1, $padSize, ' ', STR_PAD_LEFT),
+                str_pad(
+                    (string) ($lineNumber + 1),
+                    $padSize,
+                    ' ',
+                    STR_PAD_LEFT
+                ),
                 $highlight ? ':' : ' ',
                 $line
             );
