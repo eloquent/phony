@@ -466,6 +466,14 @@ class StubVerifier extends SpyVerifier implements Stub
         return $this;
     }
 
+    /**
+     * Limits the output displayed when `var_dump` is used.
+     */
+    public function __debugInfo(): array
+    {
+        return ['stub' => $this->stub];
+    }
+
     private $stub;
     private $generatorAnswerBuilderFactory;
 }

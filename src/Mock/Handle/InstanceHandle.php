@@ -203,5 +203,13 @@ class InstanceHandle extends AbstractHandle
         return $this;
     }
 
+    /**
+     * Limits the output displayed when `var_dump` is used.
+     */
+    public function __debugInfo(): array
+    {
+        return ['mock' => $this->mock, 'label' => $this->state->label];
+    }
+
     private $callParentConstructorMethod;
 }

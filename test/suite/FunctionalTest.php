@@ -1456,4 +1456,39 @@ class FunctionalTest extends TestCase
         $this->assertNull($stub());
         $this->assertSame('b', $stub());
     }
+
+    public function testMockDumping()
+    {
+        $handle = x\mock(TestClassA::class);
+        $static = x\onStatic($handle);
+        $mock = $handle->get();
+
+        ob_start();
+        var_dump($handle, $static, $mock);
+        $output = ob_get_clean();
+
+        $this->assertLessThan(800, strlen($output));
+    }
+
+    public function testStubDumping()
+    {
+        $stub = x\stub('implode');
+
+        ob_start();
+        var_dump($stub);
+        $output = ob_get_clean();
+
+        $this->assertLessThan(200, strlen($output));
+    }
+
+    public function testSpyDumping()
+    {
+        $spy = x\spy('implode');
+
+        ob_start();
+        var_dump($spy);
+        $output = ob_get_clean();
+
+        $this->assertLessThan(200, strlen($output));
+    }
 }

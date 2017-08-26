@@ -4,6 +4,8 @@
 
 - **[BC BREAK]** PHP 5 is no longer supported.
 - **[IMPROVED]** Support for PHP 7.2 features, including the `object` typehint.
+- **[IMPROVED]** Reduced the amount of output generated when mocks, stubs, and
+  spies are encountered by `var_dump()`.
 
 ## 1.0.1 (2017-07-04)
 

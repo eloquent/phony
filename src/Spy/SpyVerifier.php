@@ -907,6 +907,14 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         );
     }
 
+    /**
+     * Limits the output displayed when `var_dump` is used.
+     */
+    public function __debugInfo(): array
+    {
+        return ['spy' => $this->spy];
+    }
+
     private $spy;
     private $matcherFactory;
     private $matcherVerifier;

@@ -117,4 +117,12 @@ class StaticHandle extends AbstractHandle
 
         return $this;
     }
+
+    /**
+     * Limits the output displayed when `var_dump` is used.
+     */
+    public function __debugInfo(): array
+    {
+        return ['class' => $this->class];
+    }
 }

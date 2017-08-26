@@ -758,6 +758,14 @@ class StubData extends AbstractWrappedInvocable implements Stub
         );
     }
 
+    /**
+     * Limits the output displayed when `var_dump` is used.
+     */
+    public function __debugInfo(): array
+    {
+        return ['label' => $this->label];
+    }
+
     private $self;
     private $defaultAnswerCallback;
     private $matcherFactory;

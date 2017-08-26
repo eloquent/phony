@@ -384,6 +384,14 @@ class SpyData extends AbstractWrappedInvocable implements Spy
         return $returnValue;
     }
 
+    /**
+     * Limits the output displayed when `var_dump` is used.
+     */
+    public function __debugInfo(): array
+    {
+        return ['label' => $this->label];
+    }
+
     private function normalizeIndex($size, $index, &$normalized = null)
     {
         $normalized = null;
