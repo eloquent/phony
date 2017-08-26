@@ -10,7 +10,6 @@ use Eloquent\Phony\Test\Phony as TestPhony;
 
 $rootPath = dirname(__DIR__);
 require $rootPath . '/vendor/autoload.php';
-require $rootPath . '/test/src/TestClassOldConstructor.php';
 
 $fixturePath = $rootPath . '/test/fixture/';
 $detector = FeatureDetector::instance();
