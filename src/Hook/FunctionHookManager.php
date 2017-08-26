@@ -82,7 +82,6 @@ class FunctionHookManager
             $source = $this->hookGenerator
                 ->generateHook($name, $namespace, $signature);
             $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
-            $error = null;
 
             try {
                 eval($source);

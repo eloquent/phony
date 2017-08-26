@@ -86,7 +86,6 @@ class MockFactory
 
         $source = $this->generator->generate($definition, $className);
         $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
-        $error = null;
 
         try {
             eval($source);
