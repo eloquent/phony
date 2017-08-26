@@ -22,9 +22,9 @@ use ReflectionClass;
 use Throwable;
 
 /**
- * INTERNAL USE ONLY. An abstract base class for implementing facades.
+ * Used for implementing facades.
  */
-abstract class AbstractFacade
+trait FacadeTrait
 {
     /**
      * Create a new mock builder.

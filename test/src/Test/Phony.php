@@ -2,13 +2,15 @@
 
 namespace Eloquent\Phony\Test;
 
-use Eloquent\Phony\Facade\AbstractFacade;
+use Eloquent\Phony\Facade\FacadeTrait;
 
 /**
  * A facade for Phony integration tests.
  */
-class Phony extends AbstractFacade
+class Phony
 {
+    use FacadeTrait;
+
     public static function reset()
     {
         self::driver()->reset();
