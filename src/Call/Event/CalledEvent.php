@@ -9,8 +9,10 @@ use Eloquent\Phony\Call\Arguments;
 /**
  * Represents the start of a call.
  */
-class CalledEvent extends AbstractCallEvent
+class CalledEvent implements CallEvent
 {
+    use CallEventTrait;
+
     /**
      * Construct a new 'called' event.
      *
@@ -25,8 +27,8 @@ class CalledEvent extends AbstractCallEvent
         callable $callback,
         Arguments $arguments
     ) {
-        parent::__construct($sequenceNumber, $time);
-
+        $this->sequenceNumber = $sequenceNumber;
+        $this->time = $time;
         $this->callback = $callback;
         $this->arguments = $arguments;
     }

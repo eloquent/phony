@@ -7,8 +7,10 @@ namespace Eloquent\Phony\Call\Event;
 /**
  * Represents the end of a call by returning a value.
  */
-class ReturnedEvent extends AbstractCallEvent implements ResponseEvent
+class ReturnedEvent implements ResponseEvent
 {
+    use CallEventTrait;
+
     /**
      * Construct a 'returned' event.
      *
@@ -18,8 +20,8 @@ class ReturnedEvent extends AbstractCallEvent implements ResponseEvent
      */
     public function __construct(int $sequenceNumber, float $time, $value)
     {
-        parent::__construct($sequenceNumber, $time);
-
+        $this->sequenceNumber = $sequenceNumber;
+        $this->time = $time;
         $this->value = $value;
     }
 

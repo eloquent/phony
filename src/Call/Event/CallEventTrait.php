@@ -2,25 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Eloquent\Phony\Event;
+namespace Eloquent\Phony\Call\Event;
+
+use Eloquent\Phony\Call\Call;
 
 /**
- * An abstract base class for implementing events.
+ * Used for implementing call events.
  */
-abstract class AbstractEvent implements Event
+trait CallEventTrait
 {
-    /**
-     * Construct a new event.
-     *
-     * @param int   $sequenceNumber The sequence number.
-     * @param float $time           The time at which the event occurred, in seconds since the Unix epoch.
-     */
-    public function __construct(int $sequenceNumber, float $time)
-    {
-        $this->sequenceNumber = $sequenceNumber;
-        $this->time = $time;
-    }
-
     /**
      * Get the sequence number.
      *
@@ -45,6 +35,31 @@ abstract class AbstractEvent implements Event
         return $this->time;
     }
 
+    /**
+     * Set the call.
+     *
+     * @param Call $call The call.
+     *
+     * @return $this This event.
+     */
+    public function setCall(Call $call): CallEvent
+    {
+        $this->call = $call;
+
+        return $this;
+    }
+
+    /**
+     * Get the call.
+     *
+     * @return Call|null The call, or null if no call has been set.
+     */
+    public function call()
+    {
+        return $this->call;
+    }
+
     private $sequenceNumber;
     private $time;
+    private $call;
 }

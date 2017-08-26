@@ -7,8 +7,10 @@ namespace Eloquent\Phony\Call\Event;
 /**
  * Represents a value received by a generator.
  */
-class ReceivedEvent extends AbstractCallEvent implements IterableEvent
+class ReceivedEvent implements IterableEvent
 {
+    use CallEventTrait;
+
     /**
      * Construct a 'received' event.
      *
@@ -18,8 +20,8 @@ class ReceivedEvent extends AbstractCallEvent implements IterableEvent
      */
     public function __construct(int $sequenceNumber, float $time, $value)
     {
-        parent::__construct($sequenceNumber, $time);
-
+        $this->sequenceNumber = $sequenceNumber;
+        $this->time = $time;
         $this->value = $value;
     }
 

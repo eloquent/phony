@@ -9,8 +9,10 @@ use Throwable;
 /**
  * Represents the end of a call by throwing an exception.
  */
-class ThrewEvent extends AbstractCallEvent implements ResponseEvent
+class ThrewEvent implements ResponseEvent
 {
+    use CallEventTrait;
+
     /**
      * Construct a 'threw' event.
      *
@@ -23,8 +25,8 @@ class ThrewEvent extends AbstractCallEvent implements ResponseEvent
         float $time,
         Throwable $exception
     ) {
-        parent::__construct($sequenceNumber, $time);
-
+        $this->sequenceNumber = $sequenceNumber;
+        $this->time = $time;
         $this->exception = $exception;
     }
 

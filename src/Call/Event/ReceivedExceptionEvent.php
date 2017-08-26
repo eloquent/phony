@@ -9,8 +9,10 @@ use Throwable;
 /**
  * Represents an exception received by a generator.
  */
-class ReceivedExceptionEvent extends AbstractCallEvent implements IterableEvent
+class ReceivedExceptionEvent implements IterableEvent
 {
+    use CallEventTrait;
+
     /**
      * Construct a 'received exception' event.
      *
@@ -23,8 +25,8 @@ class ReceivedExceptionEvent extends AbstractCallEvent implements IterableEvent
         float $time,
         Throwable $exception
     ) {
-        parent::__construct($sequenceNumber, $time);
-
+        $this->sequenceNumber = $sequenceNumber;
+        $this->time = $time;
         $this->exception = $exception;
     }
 

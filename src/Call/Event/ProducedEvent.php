@@ -7,8 +7,10 @@ namespace Eloquent\Phony\Call\Event;
 /**
  * Represents a produced key-value pair.
  */
-class ProducedEvent extends AbstractCallEvent implements IterableEvent
+class ProducedEvent implements IterableEvent
 {
+    use CallEventTrait;
+
     /**
      * Construct a 'produced' event.
      *
@@ -19,8 +21,8 @@ class ProducedEvent extends AbstractCallEvent implements IterableEvent
      */
     public function __construct(int $sequenceNumber, float $time, $key, $value)
     {
-        parent::__construct($sequenceNumber, $time);
-
+        $this->sequenceNumber = $sequenceNumber;
+        $this->time = $time;
         $this->key = $key;
         $this->value = $value;
     }
