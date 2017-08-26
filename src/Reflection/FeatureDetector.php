@@ -237,7 +237,7 @@ class FeatureDetector
         try {
             $result = eval(sprintf('%s;return true;', $source));
         } catch (Throwable $e) {
-            // re-thrown after cleanup
+            // intentionally silenced
         }
 
         if (false === $result) {

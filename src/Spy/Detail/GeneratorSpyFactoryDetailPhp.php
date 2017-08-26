@@ -55,10 +55,6 @@ abstract class GeneratorSpyFactoryDetailPhp
                     return $returnValue;
                 }
             } catch (Throwable $thrown) {
-                // re-thrown after recording
-            }
-
-            if ($thrown) {
                 $call->setEndEvent(
                     $callEventFactory->createThrew($thrown)
                 );

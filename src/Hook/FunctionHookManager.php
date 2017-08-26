@@ -10,7 +10,6 @@ use Eloquent\Phony\Hook\Exception\FunctionHookGenerationFailedException;
 use Eloquent\Phony\Hook\Exception\FunctionSignatureMismatchException;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use ParseError;
-use Throwable;
 
 /**
  * Allows control over the behavior of function hooks.
@@ -88,23 +87,15 @@ class FunctionHookManager
             try {
                 eval($source);
             } catch (ParseError $e) {
-                $error = new FunctionHookGenerationFailedException(
+                throw new FunctionHookGenerationFailedException(
                     $fullName,
                     $callback,
                     $source,
                     error_get_last(),
                     $e
                 );
-                // @codeCoverageIgnoreStart
-            } catch (Throwable $error) {
-                // re-thrown after cleanup
-            }
-            // @codeCoverageIgnoreEnd
-
-            error_reporting($reporting);
-
-            if ($error) {
-                throw $error;
+            } finally {
+                error_reporting($reporting);
             }
 
             if (!function_exists($fullName)) {

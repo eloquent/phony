@@ -13,7 +13,6 @@ use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 use ParseError;
 use ReflectionClass;
-use Throwable;
 
 /**
  * Creates mock instances.
@@ -92,23 +91,15 @@ class MockFactory
         try {
             eval($source);
         } catch (ParseError $e) {
-            $error = new MockGenerationFailedException(
+            throw new MockGenerationFailedException(
                 $className,
                 $definition,
                 $source,
                 error_get_last(),
                 $e
             );
-            // @codeCoverageIgnoreStart
-        } catch (Throwable $error) {
-            // re-thrown after cleanup
-        }
-        // @codeCoverageIgnoreEnd
-
-        error_reporting($reporting);
-
-        if ($error) {
-            throw $error;
+        } finally {
+            error_reporting($reporting);
         }
 
         if (!class_exists($className, false)) {
