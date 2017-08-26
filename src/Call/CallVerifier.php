@@ -20,7 +20,9 @@ use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
-use Eloquent\Phony\Verification\AbstractCardinalityVerifier;
+use Eloquent\Phony\Verification\Cardinality;
+use Eloquent\Phony\Verification\CardinalityVerifier;
+use Eloquent\Phony\Verification\CardinalityVerifierTrait;
 use Eloquent\Phony\Verification\GeneratorVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifier;
@@ -34,8 +36,10 @@ use Traversable;
 /**
  * Provides convenience methods for verifying the details of a call.
  */
-class CallVerifier extends AbstractCardinalityVerifier implements Call
+class CallVerifier implements Call, CardinalityVerifier
 {
+    use CardinalityVerifierTrait;
+
     /**
      * Construct a new call verifier.
      *
@@ -56,8 +60,6 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer
     ) {
-        parent::__construct();
-
         $this->call = $call;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
@@ -65,6 +67,7 @@ class CallVerifier extends AbstractCardinalityVerifier implements Call
         $this->iterableVerifierFactory = $iterableVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
+        $this->cardinality = new Cardinality();
 
         $this->argumentCount = count($call->arguments());
     }

@@ -7,18 +7,10 @@ namespace Eloquent\Phony\Verification;
 use Eloquent\Phony\Verification\Exception\InvalidCardinalityException;
 
 /**
- * An abstract base class for implementing cardinality verifiers.
+ * Used for implementing cardinality verifiers.
  */
-abstract class AbstractCardinalityVerifier implements CardinalityVerifier
+trait CardinalityVerifierTrait
 {
-    /**
-     * Construct a new cardinality verifier.
-     */
-    public function __construct()
-    {
-        $this->cardinality = new Cardinality(1, -1);
-    }
-
     /**
      * Requires that the next verification never matches.
      *
@@ -148,7 +140,7 @@ abstract class AbstractCardinalityVerifier implements CardinalityVerifier
     public function resetCardinality(): Cardinality
     {
         $cardinality = $this->cardinality;
-        $this->cardinality = new Cardinality(1, -1);
+        $this->cardinality = new Cardinality();
 
         return $cardinality;
     }

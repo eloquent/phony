@@ -20,7 +20,9 @@ use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
-use Eloquent\Phony\Verification\AbstractCardinalityVerifier;
+use Eloquent\Phony\Verification\Cardinality;
+use Eloquent\Phony\Verification\CardinalityVerifier;
+use Eloquent\Phony\Verification\CardinalityVerifierTrait;
 use Eloquent\Phony\Verification\GeneratorVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifier;
@@ -34,8 +36,10 @@ use Traversable;
 /**
  * Provides convenience methods for verifying interactions with a spy.
  */
-class SpyVerifier extends AbstractCardinalityVerifier implements Spy
+class SpyVerifier implements Spy, CardinalityVerifier
 {
+    use CardinalityVerifierTrait;
+
     /**
      * Construct a new spy verifier.
      *
@@ -58,8 +62,6 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         AssertionRecorder $assertionRecorder,
         AssertionRenderer $assertionRenderer
     ) {
-        parent::__construct();
-
         $this->spy = $spy;
         $this->matcherFactory = $matcherFactory;
         $this->matcherVerifier = $matcherVerifier;
@@ -68,6 +70,7 @@ class SpyVerifier extends AbstractCardinalityVerifier implements Spy
         $this->callVerifierFactory = $callVerifierFactory;
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
+        $this->cardinality = new Cardinality();
     }
 
     /**

@@ -4,22 +4,29 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Verification;
 
+use ArrayIterator;
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\ProducedEvent;
 use Eloquent\Phony\Call\Event\UsedEvent;
+use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Spy\Spy;
+use Iterator;
 use Throwable;
 
 /**
  * Checks and asserts the behavior of iterables.
  */
-class IterableVerifier extends AbstractCardinalityVerifierEventCollection
+class IterableVerifier implements EventCollection, CardinalityVerifier
 {
+    use CardinalityVerifierTrait;
+
     /**
      * Construct a new iterable verifier.
      *
@@ -43,8 +50,192 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
         $this->isGenerator = false;
+        $this->events = $calls;
+        $this->calls = $calls;
+        $this->eventCount = $this->callCount = count($calls);
+        $this->callVerifierFactory = $callVerifierFactory;
+        $this->cardinality = new Cardinality();
+    }
 
-        parent::__construct($calls, $callVerifierFactory);
+    /**
+     * Returns true if this collection contains any events.
+     *
+     * @return bool True if this collection contains any events.
+     */
+    public function hasEvents(): bool
+    {
+        return $this->eventCount > 0;
+    }
+
+    /**
+     * Returns true if this collection contains any calls.
+     *
+     * @return bool True if this collection contains any calls.
+     */
+    public function hasCalls(): bool
+    {
+        return $this->callCount > 0;
+    }
+
+    /**
+     * Get the number of events.
+     *
+     * @return int The event count.
+     */
+    public function eventCount(): int
+    {
+        return $this->eventCount;
+    }
+
+    /**
+     * Get the number of calls.
+     *
+     * @return int The call count.
+     */
+    public function callCount(): int
+    {
+        return $this->callCount;
+    }
+
+    /**
+     * Get the event count.
+     *
+     * @return int The event count.
+     */
+    public function count(): int
+    {
+        return $this->eventCount;
+    }
+
+    /**
+     * Get all events as an array.
+     *
+     * @return array<Event> The events.
+     */
+    public function allEvents(): array
+    {
+        return $this->events;
+    }
+
+    /**
+     * Get all calls as an array.
+     *
+     * @return array<Call> The calls.
+     */
+    public function allCalls(): array
+    {
+        return $this->callVerifierFactory->fromCalls($this->calls);
+    }
+
+    /**
+     * Get the first event.
+     *
+     * @return Event                   The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function firstEvent(): Event
+    {
+        if ($this->eventCount < 1) {
+            throw new UndefinedEventException(0);
+        }
+
+        return $this->events[0];
+    }
+
+    /**
+     * Get the last event.
+     *
+     * @return Event                   The event.
+     * @throws UndefinedEventException If there are no events.
+     */
+    public function lastEvent(): Event
+    {
+        if ($this->eventCount) {
+            return $this->events[$this->eventCount - 1];
+        }
+
+        throw new UndefinedEventException(0);
+    }
+
+    /**
+     * Get an event by index.
+     *
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param int $index The index.
+     *
+     * @return Event                   The event.
+     * @throws UndefinedEventException If the requested event is undefined, or there are no events.
+     */
+    public function eventAt(int $index = 0): Event
+    {
+        if (!$this->normalizeIndex($this->eventCount, $index, $normalized)) {
+            throw new UndefinedEventException($index);
+        }
+
+        return $this->events[$normalized];
+    }
+
+    /**
+     * Get the first call.
+     *
+     * @return Call                   The call.
+     * @throws UndefinedCallException If there are no calls.
+     */
+    public function firstCall(): Call
+    {
+        if (isset($this->calls[0])) {
+            return $this->callVerifierFactory->fromCall($this->calls[0]);
+        }
+
+        throw new UndefinedCallException(0);
+    }
+
+    /**
+     * Get the last call.
+     *
+     * @return Call                   The call.
+     * @throws UndefinedCallException If there are no calls.
+     */
+    public function lastCall(): Call
+    {
+        if ($this->callCount) {
+            return $this->callVerifierFactory
+                ->fromCall($this->calls[$this->callCount - 1]);
+        }
+
+        throw new UndefinedCallException(0);
+    }
+
+    /**
+     * Get a call by index.
+     *
+     * Negative indices are offset from the end of the list. That is, `-1`
+     * indicates the last element, and `-2` indicates the second last element.
+     *
+     * @param int $index The index.
+     *
+     * @return Call                   The call.
+     * @throws UndefinedCallException If the requested call is undefined, or there are no calls.
+     */
+    public function callAt(int $index = 0): Call
+    {
+        if (!$this->normalizeIndex($this->callCount, $index, $normalized)) {
+            throw new UndefinedCallException($index);
+        }
+
+        return $this->callVerifierFactory->fromCall($this->calls[$normalized]);
+    }
+
+    /**
+     * Get an iterator for this collection.
+     *
+     * @return Iterator The iterator.
+     */
+    public function getIterator(): Iterator
+    {
+        return new ArrayIterator($this->allCalls());
     }
 
     /**
@@ -288,9 +479,38 @@ class IterableVerifier extends AbstractCardinalityVerifierEventCollection
         );
     }
 
+    private function normalizeIndex($size, $index, &$normalized = null)
+    {
+        $normalized = null;
+
+        if ($index < 0) {
+            $potential = $size + $index;
+
+            if ($potential < 0) {
+                return false;
+            }
+        } else {
+            $potential = $index;
+        }
+
+        if ($potential >= $size) {
+            return false;
+        }
+
+        $normalized = $potential;
+
+        return true;
+    }
+
     protected $subject;
     protected $matcherFactory;
     protected $assertionRecorder;
     protected $assertionRenderer;
     protected $isGenerator;
+    protected $events;
+    protected $calls;
+    protected $eventCount;
+    protected $callCount;
+    protected $callVerifierFactory;
+    protected $cardinality;
 }
