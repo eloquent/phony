@@ -65,5 +65,5 @@ class WrappedMatcher implements Matcher
         return '<' . strval($this->matcher) . '>';
     }
 
-    protected $matcher;
+    private $matcher;
 }

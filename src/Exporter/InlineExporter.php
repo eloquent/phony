@@ -355,12 +355,16 @@ class InlineExporter implements Exporter
                     if ($isHandle) {
                         if ($isStaticHandle) {
                             $result->child = (object) [
-                                'final' => $phpValues["\0*\0class"]->getName(),
+                                'final' => $phpValues[
+                                    "\0" . StaticHandle::class . "\0class"
+                                ]->getName(),
                             ];
                         } else {
                             $result->child = (object) [];
                             $stack[] = [
-                                $phpValues["\0*\0mock"],
+                                $phpValues[
+                                    "\0" . InstanceHandle::class . "\0mock"
+                                ],
                                 $result->child,
                                 $currentDepth,
                                 'object',
@@ -369,7 +373,7 @@ class InlineExporter implements Exporter
                     } elseif ($isSpy) {
                         if ($isSpyVerifier) {
                             $phpValues = (array) $phpValues[
-                                "\0Eloquent\Phony\Spy\SpyVerifier\0spy"
+                                "\0" . SpyVerifier::class . "\0spy"
                             ];
                         }
 
@@ -385,7 +389,7 @@ class InlineExporter implements Exporter
                     } elseif ($isStub) {
                         if ($isStubVerifier) {
                             $phpValues = (array) $phpValues[
-                                "\0Eloquent\Phony\Stub\StubVerifier\0stub"
+                                "\0" . StubVerifier::class . "\0stub"
                             ];
                         }
 

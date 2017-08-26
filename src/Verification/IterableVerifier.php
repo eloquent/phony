@@ -512,5 +512,4 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
     protected $eventCount;
     protected $callCount;
     protected $callVerifierFactory;
-    protected $cardinality;
 }

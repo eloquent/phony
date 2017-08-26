@@ -239,15 +239,7 @@ trait HandleTrait
         return $this->state;
     }
 
-    /**
-     * Create a new stub verifier.
-     *
-     * @param string $name The method name.
-     *
-     * @return StubVerifier  The stub verifier.
-     * @throws MockException If the method does not exist.
-     */
-    protected function createStub(string $name)
+    private function createStub($name)
     {
         $isMagic = !$this->class->hasMethod($name);
         $callMagicMethod = $this->callMagicMethod;
@@ -389,9 +381,9 @@ trait HandleTrait
         $this->customMethods = $customMethodsProperty->getValue(null);
     }
 
-    protected $state;
-    protected $class;
-    protected $mock;
+    private $state;
+    private $class;
+    private $mock;
     private $uncallableMethods;
     private $traitMethods;
     private $callParentMethod;

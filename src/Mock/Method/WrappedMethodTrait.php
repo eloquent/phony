@@ -75,8 +75,8 @@ trait WrappedMethodTrait
         }
     }
 
-    protected $method;
-    protected $handle;
-    protected $mock;
-    protected $name;
+    private $method;
+    private $handle;
+    private $mock;
+    private $name;
 }
