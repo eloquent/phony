@@ -29,7 +29,12 @@ class FacadeDriver
         return self::$instance;
     }
 
-    private function __construct(AssertionRecorder $assertionRecorder)
+    /**
+     * Construct a new facade driver.
+     *
+     * @param AssertionRecorder $assertionRecorder The assertion recorder to use.
+     */
+    public function __construct(AssertionRecorder $assertionRecorder)
     {
         $this->initializeFacadeDriver($assertionRecorder);
     }
