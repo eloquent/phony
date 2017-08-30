@@ -6,7 +6,7 @@ namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Integration\HamcrestMatcherDriver;
+use Eloquent\Phony\Hamcrest\HamcrestMatcherDriver;
 
 /**
  * Creates matchers.
@@ -26,7 +26,8 @@ class MatcherFactory
                 WildcardMatcher::instance(),
                 InlineExporter::instance()
             );
-            self::$instance->addDefaultMatcherDrivers();
+            self::$instance
+                ->addMatcherDriver(HamcrestMatcherDriver::instance());
         }
 
         return self::$instance;
@@ -67,14 +68,6 @@ class MatcherFactory
                 }
             }
         }
-    }
-
-    /**
-     * Add the default matcher drivers.
-     */
-    public function addDefaultMatcherDrivers()
-    {
-        $this->addMatcherDriver(HamcrestMatcherDriver::instance());
     }
 
     /**

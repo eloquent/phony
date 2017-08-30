@@ -2,23 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Eloquent\Phony\Matcher;
+namespace Eloquent\Phony\Hamcrest;
 
 use Eloquent\Phony\Exporter\Exporter;
+use Eloquent\Phony\Matcher\Matcher;
+use Hamcrest\Matcher as ExternalMatcher;
 
 /**
- * Used for implementing wrapped matchers.
+ * Wraps a Hamcrest matcher.
  */
-trait WrappedMatcherTrait
+class HamcrestMatcher implements Matcher
 {
     /**
-     * Get the wrapped matcher.
+     * Construct a new Hamcrest matcher.
      *
-     * @return object The matcher.
+     * @param ExternalMatcher $matcher The matcher to wrap.
      */
-    public function matcher()
+    public function __construct(ExternalMatcher $matcher)
     {
-        return $this->matcher;
+        $this->matcher = $matcher;
     }
 
     /**

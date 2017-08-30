@@ -3,7 +3,7 @@
 namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Integration\HamcrestMatcherDriver;
+use Eloquent\Phony\Hamcrest\HamcrestMatcherDriver;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestMatcherA;
@@ -39,19 +39,6 @@ class MatcherFactoryTest extends TestCase
         $this->subject->addMatcherDriver($this->driverB);
 
         $this->assertSame($this->drivers, $this->subject->drivers());
-    }
-
-    public function testAddDefaultMatcherDrivers()
-    {
-        $this->subject = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher, $this->exporter);
-        $this->subject->addDefaultMatcherDrivers();
-
-        $this->assertSame(
-            [
-                HamcrestMatcherDriver::instance(),
-            ],
-            $this->subject->drivers()
-        );
     }
 
     public function testIsMatcher()

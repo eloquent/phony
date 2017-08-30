@@ -1,8 +1,8 @@
 <?php
 
-namespace Eloquent\Phony\Integration;
+namespace Eloquent\Phony\Hamcrest;
 
-use Eloquent\Phony\Matcher\WrappedMatcher;
+use Hamcrest\Matcher;
 use Hamcrest\Util;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -25,12 +25,12 @@ class HamcrestMatcherDriverTest extends TestCase
 
     public function testMatcherClassNames()
     {
-        $this->assertSame(['Hamcrest\Matcher'], $this->subject->matcherClassNames());
+        $this->assertSame([Matcher::class], $this->subject->matcherClassNames());
     }
 
     public function testWrapMatcher()
     {
-        $this->assertEquals(new WrappedMatcher($this->matcher), $this->subject->wrapMatcher($this->matcher));
+        $this->assertEquals(new HamcrestMatcher($this->matcher), $this->subject->wrapMatcher($this->matcher));
     }
 
     public function testInstance()

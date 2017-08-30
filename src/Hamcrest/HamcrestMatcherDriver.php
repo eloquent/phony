@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Eloquent\Phony\Integration;
+namespace Eloquent\Phony\Hamcrest;
 
 use Eloquent\Phony\Matcher\Matchable;
 use Eloquent\Phony\Matcher\MatcherDriver;
-use Eloquent\Phony\Matcher\WrappedMatcher;
 use Hamcrest\Matcher;
 
 /**
@@ -57,7 +56,7 @@ class HamcrestMatcherDriver implements MatcherDriver
      */
     public function wrapMatcher($matcher): Matchable
     {
-        return new WrappedMatcher($matcher);
+        return new HamcrestMatcher($matcher);
     }
 
     private static $instance;

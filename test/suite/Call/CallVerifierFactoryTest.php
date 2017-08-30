@@ -17,7 +17,6 @@ class CallVerifierFactoryTest extends TestCase
     protected function setUp()
     {
         $this->matcherFactory = MatcherFactory::instance();
-        $this->matcherFactory->addDefaultMatcherDrivers();
         $this->matcherVerifier = new MatcherVerifier();
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
         $this->iterableVerifierFactory = IterableVerifierFactory::instance();
