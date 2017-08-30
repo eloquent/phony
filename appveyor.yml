@@ -13,6 +13,7 @@ install:
   - copy php.ini-production php.ini
   - echo date.timezone="UTC" >> php.ini
   - echo extension_dir=ext >> php.ini
+  - echo extension=php_mbstring.dll >> php.ini
   - echo extension=php_openssl.dll >> php.ini
   - cd C:\projects\eloquent
   - SET PATH=C:\tools\php71;%PATH%
