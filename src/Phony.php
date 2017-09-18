@@ -14,12 +14,7 @@ class Phony
 {
     use FacadeTrait;
 
-    /**
-     * Get the facade driver.
-     *
-     * @return FacadeDriver The facade driver.
-     */
-    private static function driver(): FacadeDriver
+    private static function driver()
     {
         return FacadeDriver::instance();
     }
