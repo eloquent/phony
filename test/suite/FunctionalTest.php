@@ -1032,7 +1032,8 @@ class FunctionalTest extends TestCase
         $mock = $builder->get();
         $handle = x\on($mock)->setLabel('label');
 
-        $this->expectException(AssertionException::class, 'PhonyTestAdHocMocksWithMagicSelfOutput[label]->test');
+        $this->expectException(AssertionException::class);
+        $this->expectExceptionMessage('PhonyTestAdHocMocksWithMagicSelfOutput[label]->test');
         $handle->test->calledWith('a');
     }
 

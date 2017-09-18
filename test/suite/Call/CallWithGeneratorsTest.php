@@ -193,7 +193,8 @@ class CallWithGeneratorsTest extends TestCase
         $this->subject->setResponseEvent($generatedEvent);
         $this->subject->setEndEvent($endEvent);
 
-        $this->expectException(InvalidArgumentException::class, 'Call already completed.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Call already completed.');
         $this->subject->addIterableEvent($this->callEventFactory->createReceived('e'));
     }
 }

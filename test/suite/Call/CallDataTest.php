@@ -244,7 +244,8 @@ class CallDataTest extends TestCase
 
     public function testAddIterableEventFailureNotIterable()
     {
-        $this->expectException(InvalidArgumentException::class, 'Not an iterable call.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Not an iterable call.');
         $this->subject->addIterableEvent($this->callEventFactory->createReceived('e'));
     }
 
@@ -256,7 +257,8 @@ class CallDataTest extends TestCase
         $this->subject->setResponseEvent($returnedEvent);
         $this->subject->setEndEvent($endEvent);
 
-        $this->expectException(InvalidArgumentException::class, 'Call already completed.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Call already completed.');
         $this->subject->addIterableEvent($this->callEventFactory->createProduced('a', 'b'));
     }
 
@@ -273,7 +275,8 @@ class CallDataTest extends TestCase
     {
         $this->subject->setResponseEvent($this->returnedEvent);
 
-        $this->expectException(InvalidArgumentException::class, 'Call already responded.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Call already responded.');
         $this->subject->setResponseEvent($this->returnedEvent);
     }
 
@@ -292,7 +295,8 @@ class CallDataTest extends TestCase
     {
         $this->subject->setEndEvent($this->returnedEvent);
 
-        $this->expectException(InvalidArgumentException::class, 'Call already completed.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Call already completed.');
         $this->subject->setEndEvent($this->returnedEvent);
     }
 

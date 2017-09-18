@@ -864,7 +864,8 @@ class GeneratorVerifierTest extends TestCase
     {
         $this->setUpWith([]);
 
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against 111.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against 111.');
         $this->subject->receivedException(111);
     }
 
@@ -872,7 +873,8 @@ class GeneratorVerifierTest extends TestCase
     {
         $this->setUpWith([]);
 
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against #0{}.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against #0{}.');
         $this->subject->receivedException((object) []);
     }
 
@@ -1132,7 +1134,8 @@ class GeneratorVerifierTest extends TestCase
     {
         $this->setUpWith([]);
 
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against 111.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against 111.');
         $this->subject->checkThrew(111);
     }
 
@@ -1140,7 +1143,8 @@ class GeneratorVerifierTest extends TestCase
     {
         $this->setUpWith([]);
 
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against #0{}.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against #0{}.');
         $this->subject->checkThrew((object) []);
     }
 
@@ -1248,7 +1252,8 @@ class GeneratorVerifierTest extends TestCase
     {
         $this->setUpWith([]);
 
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against 111.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against 111.');
         $this->subject->threw(111);
     }
 
@@ -1256,7 +1261,8 @@ class GeneratorVerifierTest extends TestCase
     {
         $this->setUpWith([]);
 
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against #0{}.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against #0{}.');
         $this->subject->threw((object) []);
     }
 

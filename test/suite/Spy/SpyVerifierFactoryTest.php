@@ -136,13 +136,15 @@ class SpyVerifierFactoryTest extends TestCase
 
     public function testCreateGlobalFailureEmptyNamespace()
     {
-        $this->expectException(InvalidArgumentException::class, 'The supplied namespace must not be empty.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The supplied namespace must not be empty.');
         $this->subject->createGlobal('implode', '');
     }
 
     public function testCreateGlobalFailureGlobalNamespace()
     {
-        $this->expectException(InvalidArgumentException::class, 'The supplied namespace must not be empty.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The supplied namespace must not be empty.');
         $this->subject->createGlobal('implode', '\\');
     }
 

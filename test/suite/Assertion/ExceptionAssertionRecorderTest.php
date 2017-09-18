@@ -45,7 +45,8 @@ class ExceptionAssertionRecorderTest extends TestCase
     {
         $description = 'description';
 
-        $this->expectException(AssertionException::class, $description);
+        $this->expectException(AssertionException::class);
+        $this->expectExceptionMessage($description);
         $this->subject->createFailure($description);
     }
 

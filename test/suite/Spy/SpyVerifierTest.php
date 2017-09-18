@@ -630,7 +630,8 @@ class SpyVerifierTest extends TestCase
 
     public function testCalledFailure()
     {
-        $this->expectException(AssertionException::class, 'Never called.');
+        $this->expectException(AssertionException::class);
+        $this->expectExceptionMessage('Never called.');
         $this->subject->called();
     }
 
@@ -1485,13 +1486,15 @@ class SpyVerifierTest extends TestCase
 
     public function testCheckThrewFailureInvalidInput()
     {
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against 111.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against 111.');
         $this->subject->checkThrew(111);
     }
 
     public function testCheckThrewFailureInvalidInputObject()
     {
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against #0{}.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against #0{}.');
         $this->subject->checkThrew((object) []);
     }
 
@@ -1654,13 +1657,15 @@ class SpyVerifierTest extends TestCase
 
     public function testThrewFailureInvalidInput()
     {
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against 111.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against 111.');
         $this->subject->threw(111);
     }
 
     public function testThrewFailureInvalidInputObject()
     {
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against #0{}.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against #0{}.');
         $this->subject->threw((object) []);
     }
 

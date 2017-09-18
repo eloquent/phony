@@ -119,7 +119,8 @@ class IterableSpyFactoryTest extends TestCase
     {
         $this->call = $this->callFactory->create();
 
-        $this->expectException(InvalidArgumentException::class, 'Unsupported iterable of type NULL.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unsupported iterable of type NULL.');
         $this->subject->create($this->call, null);
     }
 
@@ -127,7 +128,8 @@ class IterableSpyFactoryTest extends TestCase
     {
         $this->call = $this->callFactory->create();
 
-        $this->expectException(InvalidArgumentException::class, "Unsupported iterable of type 'stdClass'.");
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Unsupported iterable of type 'stdClass'.");
         $this->subject->create($this->call, (object) []);
     }
 

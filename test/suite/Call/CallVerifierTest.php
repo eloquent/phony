@@ -609,13 +609,15 @@ class CallVerifierTest extends TestCase
 
     public function testCheckThrewFailureInvalidInput()
     {
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against 111.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against 111.');
         $this->subjectWithException->checkThrew(111);
     }
 
     public function testCheckThrewFailureInvalidInputObject()
     {
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against #0{}.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against #0{}.');
         $this->subjectWithException->checkThrew((object) []);
     }
 
@@ -743,13 +745,15 @@ class CallVerifierTest extends TestCase
 
     public function testThrewFailureInvalidInput()
     {
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against 111.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against 111.');
         $this->subjectWithException->threw(111);
     }
 
     public function testThrewFailureInvalidInputObject()
     {
-        $this->expectException(InvalidArgumentException::class, 'Unable to match exceptions against #0{}.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to match exceptions against #0{}.');
         $this->subjectWithException->threw((object) []);
     }
 
