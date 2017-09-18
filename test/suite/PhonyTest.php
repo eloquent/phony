@@ -6,6 +6,7 @@ use Countable;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Event\EventSequence;
+use Eloquent\Phony\Facade as TestNamespace;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -231,19 +232,19 @@ class PhonyTest extends TestCase
 
     public function testSpyGlobal()
     {
-        $actual = Phony::spyGlobal('sprintf', Facade::class);
+        $actual = Phony::spyGlobal('sprintf', TestNamespace::class);
 
         $this->assertInstanceOf(SpyVerifier::class, $actual);
-        $this->assertSame('a, b', \Eloquent\Phony\Facade\sprintf('%s, %s', 'a', 'b'));
+        $this->assertSame('a, b', TestNamespace\sprintf('%s, %s', 'a', 'b'));
         $this->assertTrue((bool) $actual->calledWith('%s, %s', 'a', 'b'));
     }
 
     public function testSpyGlobalFunction()
     {
-        $actual = spyGlobal('vsprintf', Facade::class);
+        $actual = spyGlobal('vsprintf', TestNamespace::class);
 
         $this->assertInstanceOf(SpyVerifier::class, $actual);
-        $this->assertSame('a, b', \Eloquent\Phony\Facade\vsprintf('%s, %s', ['a', 'b']));
+        $this->assertSame('a, b', TestNamespace\vsprintf('%s, %s', ['a', 'b']));
         $this->assertTrue((bool) $actual->calledWith('%s, %s', ['a', 'b']));
     }
 
@@ -269,52 +270,52 @@ class PhonyTest extends TestCase
 
     public function testStubGlobal()
     {
-        $actual = Phony::stubGlobal('sprintf', Facade::class);
+        $actual = Phony::stubGlobal('sprintf', TestNamespace::class);
         $actual->with('%s, %s', 'a', 'b')->forwards();
 
         $this->assertInstanceOf(StubVerifier::class, $actual);
-        $this->assertSame('a, b', \Eloquent\Phony\Facade\sprintf('%s, %s', 'a', 'b'));
-        $this->assertNull(\Eloquent\Phony\Facade\sprintf('x', 'y'));
+        $this->assertSame('a, b', TestNamespace\sprintf('%s, %s', 'a', 'b'));
+        $this->assertNull(TestNamespace\sprintf('x', 'y'));
         $this->assertTrue((bool) $actual->calledWith('%s, %s', 'a', 'b'));
     }
 
     public function testStubGlobalFunction()
     {
-        $actual = stubGlobal('vsprintf', Facade::class);
+        $actual = stubGlobal('vsprintf', TestNamespace::class);
         $actual->with('%s, %s', ['a', 'b'])->forwards();
 
         $this->assertInstanceOf(StubVerifier::class, $actual);
-        $this->assertSame('a, b', \Eloquent\Phony\Facade\vsprintf('%s, %s', ['a', 'b']));
-        $this->assertNull(\Eloquent\Phony\Facade\vsprintf('x', 'y'));
+        $this->assertSame('a, b', TestNamespace\vsprintf('%s, %s', ['a', 'b']));
+        $this->assertNull(TestNamespace\vsprintf('x', 'y'));
         $this->assertTrue((bool) $actual->calledWith('%s, %s', ['a', 'b']));
     }
 
     public function testRestoreGlobalFunctions()
     {
-        Phony::stubGlobal('sprintf', Facade::class);
-        Phony::stubGlobal('vsprintf', Facade::class);
+        Phony::stubGlobal('sprintf', TestNamespace::class);
+        Phony::stubGlobal('vsprintf', TestNamespace::class);
 
-        $this->assertNull(\Eloquent\Phony\Facade\sprintf('%s, %s', 'a', 'b'));
-        $this->assertNull(\Eloquent\Phony\Facade\vsprintf('%s, %s', ['a', 'b']));
+        $this->assertNull(TestNamespace\sprintf('%s, %s', 'a', 'b'));
+        $this->assertNull(TestNamespace\vsprintf('%s, %s', ['a', 'b']));
 
         Phony::restoreGlobalFunctions();
 
-        $this->assertSame('a, b', \Eloquent\Phony\Facade\sprintf('%s, %s', 'a', 'b'));
-        $this->assertSame('a, b', \Eloquent\Phony\Facade\vsprintf('%s, %s', ['a', 'b']));
+        $this->assertSame('a, b', TestNamespace\sprintf('%s, %s', 'a', 'b'));
+        $this->assertSame('a, b', TestNamespace\vsprintf('%s, %s', ['a', 'b']));
     }
 
     public function testRestoreGlobalFunctionsFunction()
     {
-        stubGlobal('sprintf', Facade::class);
-        stubGlobal('vsprintf', Facade::class);
+        stubGlobal('sprintf', TestNamespace::class);
+        stubGlobal('vsprintf', TestNamespace::class);
 
-        $this->assertNull(\Eloquent\Phony\Facade\sprintf('%s, %s', 'a', 'b'));
-        $this->assertNull(\Eloquent\Phony\Facade\vsprintf('%s, %s', ['a', 'b']));
+        $this->assertNull(TestNamespace\sprintf('%s, %s', 'a', 'b'));
+        $this->assertNull(TestNamespace\vsprintf('%s, %s', ['a', 'b']));
 
         restoreGlobalFunctions();
 
-        $this->assertSame('a, b', \Eloquent\Phony\Facade\sprintf('%s, %s', 'a', 'b'));
-        $this->assertSame('a, b', \Eloquent\Phony\Facade\vsprintf('%s, %s', ['a', 'b']));
+        $this->assertSame('a, b', TestNamespace\sprintf('%s, %s', 'a', 'b'));
+        $this->assertSame('a, b', TestNamespace\vsprintf('%s, %s', ['a', 'b']));
     }
 
     public function testEventOrderMethods()
