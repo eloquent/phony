@@ -1187,7 +1187,9 @@ var_dump($stubA()); // outputs 'NULL'
 var_dump($stubB()); // outputs 'int(0)'
 ```
 
-See [Default values for return types] for a full list of types and values.
+See [Default values for return types] for more information, and
+[`emptyValue()`](#facade.emptyValue) for a full list of types and associated
+"empty" values.
 
 The stub can be configured to behave differently in specific circumstances,
 whilst falling back to the default behavior during regular operation:
@@ -1626,23 +1628,10 @@ $stub->returns();
 var_dump($stubA()); // outputs 'int(0)'
 ```
 
-This table details the return types that *Phony* handles, and the values
-returned for each:
+See [`emptyValue()`](#facade.emptyValue) for a full list of types and associated
+"empty" values.
 
-Return type   | Returned value
---------------|---------------
-*(none)*      | `null`
-`bool`        | `false`
-`int`         | `0`
-`float`       | `.0`
-`string`      | `''`
-`array`       | `[]`
-`stdClass`    | `(object) []`
-`callable`    | `stub()`
-`Closure`     | `function () {}`
-`Generator`   | `(function () {return; yield;})()`
-
-When using a [return type] that is not listed above, the return value will be a
+When using a specific class name as a [return type], the return value will be a
 [mock] of the specified type:
 
 ```php
@@ -4787,6 +4776,7 @@ functions or static methods depending on the method of importing:
 - [`any()`](#facade.any)
 - [`equalTo()`](#facade.equalTo)
 - [`wildcard()`](#facade.wildcard)
+- [`emptyValue()`](#facade.emptyValue)
 - [`inOrder()`](#facade.inOrder)
 - [`checkInOrder()`](#facade.checkInOrder)
 - [`anyOrder()`](#facade.anyOrder)
@@ -4967,6 +4957,37 @@ Create a new ["wildcard" matcher].
 argument that the wildcard matches.*
 
 *Negative values for `$maximumArguments` represent "no maximum".*
+
+<a name="facade.emptyValue" />
+
+----
+
+> *mixed* [**emptyValue**](#facade.emptyValue)($type) *(with [use function])*<br />
+> *mixed* x\\[**emptyValue**](#facade.emptyValue)($type) *(without [use function])*<br />
+> *mixed* Phony::[**emptyValue**](#facade.emptyValue)($type) *(static)*
+
+Create a new "empty" value.
+
+*The `$type` parameter accepts a [ReflectionType], which can be created via
+PHP's built-in [reflection] API.*
+
+*This table details the "empty" value that will be returned for each type:*
+
+Type                        | Empty value
+----------------------------|---------------
+*no type, or nullable type* | `null`
+`bool`                      | `false`
+`int`                       | `0`
+`float`                     | `.0`
+`string`                    | `''`
+`array`                     | `[]`
+`iterable`                  | `[]`
+`object`                    | `(object) []`
+`stdClass`                  | `(object) []`
+`callable`                  | `stub()`
+`Closure`                   | `function () {}`
+`Generator`                 | `(function () {return; yield;})()`
+`ClassName`                 | `mock(ClassName::class)->get()`
 
 <a name="facade.inOrder" />
 
@@ -8499,7 +8520,9 @@ For the full copyright and license information, please view the [LICENSE file].
 [phony-examples]: https://github.com/eloquent/phony-examples
 [phpunit matchers]: https://phpunit.de/manual/current/en/appendixes.assertions.html#appendixes.assertions.assertThat
 [phpunit]: https://phpunit.de/
+[reflection]: http://php.net/reflection
 [reflectionclass]: http://php.net/reflectionclass
+[reflectiontype]: http://php.net/reflectiontype
 [return type]: http://php.net/functions.returning-values#functions.returning-values.type-declaration
 [simpletest matchers]: http://www.simpletest.org/en/expectation_documentation.html
 [simpletest]: https://github.com/simpletest/simpletest

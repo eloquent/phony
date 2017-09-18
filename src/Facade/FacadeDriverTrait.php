@@ -235,6 +235,7 @@ trait FacadeDriverTrait
         $this->exporter = $exporter;
         $this->assertionRenderer = $assertionRenderer;
         $this->differenceEngine = $differenceEngine;
+        $this->emptyValueFactory = $emptyValueFactory;
     }
 
     public $mockBuilderFactory;
@@ -247,5 +248,6 @@ trait FacadeDriverTrait
     public $exporter;
     public $assertionRenderer;
     public $differenceEngine;
+    public $emptyValueFactory;
     protected $sequences;
 }

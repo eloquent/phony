@@ -22,6 +22,7 @@ use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestEvent;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 
 class PhonyTest extends TestCase
 {
@@ -434,6 +435,28 @@ class PhonyTest extends TestCase
         $this->assertSame('a', $actual->matcher()->value());
         $this->assertSame(1, $actual->minimumArguments());
         $this->assertSame(2, $actual->maximumArguments());
+    }
+
+    public function testEmptyValue()
+    {
+        $typeA = (new ReflectionFunction(function (): bool {}))->getReturnType();
+        $typeB = (new ReflectionFunction(function (): int {}))->getReturnType();
+        $typeC = (new ReflectionFunction(function (): string {}))->getReturnType();
+
+        $this->assertFalse(Phony::emptyValue($typeA));
+        $this->assertSame(0, Phony::emptyValue($typeB));
+        $this->assertSame('', Phony::emptyValue($typeC));
+    }
+
+    public function testEmptyValueFunction()
+    {
+        $typeA = (new ReflectionFunction(function (): bool {}))->getReturnType();
+        $typeB = (new ReflectionFunction(function (): int {}))->getReturnType();
+        $typeC = (new ReflectionFunction(function (): string {}))->getReturnType();
+
+        $this->assertFalse(emptyValue($typeA));
+        $this->assertSame(0, emptyValue($typeB));
+        $this->assertSame('', emptyValue($typeC));
     }
 
     public function testSetExportDepth()
