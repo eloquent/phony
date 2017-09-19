@@ -192,7 +192,7 @@ class MatcherFactory
     /**
      * Create a new equal to matcher.
      *
-     * @param mixed $value           The value to check.
+     * @param mixed $value           The value to check against.
      * @param bool  $useSubstitution True to use substitution for wrapper types.
      *
      * @return Matcher The newly created matcher.
@@ -200,6 +200,22 @@ class MatcherFactory
     public function equalTo($value, bool $useSubstitution = false): Matcher
     {
         return new EqualToMatcher($value, $useSubstitution, $this->exporter);
+    }
+
+    /**
+     * Create a new implementing matcher.
+     *
+     * @param string|object $type The type to check against.
+     *
+     * @return Matcher The newly created matcher.
+     */
+    public function implementing($type): Matcher
+    {
+        if (is_object($type)) {
+            $type = get_class($type);
+        }
+
+        return new ImplementingMatcher($type);
     }
 
     /**

@@ -6,6 +6,7 @@ use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Hamcrest\HamcrestMatcherDriver;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestMatcherA;
 use Eloquent\Phony\Test\TestMatcherB;
 use Eloquent\Phony\Test\TestMatcherDriverA;
@@ -125,6 +126,14 @@ class MatcherFactoryTest extends TestCase
         $expected = new EqualToMatcher('x', false, $this->exporter);
 
         $this->assertEquals($expected, $this->subject->equalTo('x'));
+    }
+
+    public function testImplementing()
+    {
+        $expected = new ImplementingMatcher(TestClassA::class);
+
+        $this->assertEquals($expected, $this->subject->implementing(TestClassA::class));
+        $this->assertEquals($expected, $this->subject->implementing(new TestClassA()));
     }
 
     public function testWildcard()

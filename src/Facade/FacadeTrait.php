@@ -254,13 +254,25 @@ trait FacadeTrait
     /**
      * Create a new equal to matcher.
      *
-     * @param mixed $value The value to check.
+     * @param mixed $value The value to check against.
      *
      * @return Matcher The newly created matcher.
      */
     public static function equalTo($value): Matcher
     {
         return static::driver()->matcherFactory->equalTo($value, false);
+    }
+
+    /**
+     * Create a new implementing matcher.
+     *
+     * @param string|object $type The type to check against.
+     *
+     * @return Matcher The newly created matcher.
+     */
+    public static function implementing($type): Matcher
+    {
+        return static::driver()->matcherFactory->implementing($type);
     }
 
     /**

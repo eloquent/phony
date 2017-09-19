@@ -248,13 +248,25 @@ function any(): Matcher
 /**
  * Create a new equal to matcher.
  *
- * @param mixed $value The value to check.
+ * @param mixed $value The value to check against.
  *
  * @return Matcher The newly created matcher.
  */
 function equalTo($value): Matcher
 {
     return FacadeDriver::instance()->matcherFactory->equalTo($value, false);
+}
+
+/**
+ * Create a new implementing matcher.
+ *
+ * @param string|object $type The type to check against.
+ *
+ * @return Matcher The newly created matcher.
+ */
+function implementing($type): Matcher
+{
+    return FacadeDriver::instance()->matcherFactory->implementing($type);
 }
 
 /**

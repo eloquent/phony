@@ -11,7 +11,6 @@ use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Stub;
 use Exception;
-use RuntimeException;
 use Throwable;
 
 /**
@@ -299,8 +298,7 @@ class GeneratorAnswerBuilder
      *
      * @param mixed ...$values The return values.
      *
-     * @return Stub             The stub.
-     * @throws RuntimeException If the current runtime does not support the supplied return value.
+     * @return Stub The stub.
      */
     public function returns(...$values): Stub
     {

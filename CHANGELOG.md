@@ -4,6 +4,7 @@
 
 - **[BC BREAK]** PHP 5 is no longer supported.
 - **[BC BREAK]** HHVM is no longer supported.
+- **[NEW]** Implemented `implementing()`.
 - **[NEW]** Implemented `emptyValue()`.
 - **[IMPROVED]** Support for PHP 7.2 features, including the `object` typehint.
 - **[IMPROVED]** Reduced the amount of output generated when mocks, stubs, and
