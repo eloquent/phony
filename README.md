@@ -26,6 +26,8 @@
 Available as various [Composer] packages, depending on the test framework in
 use:
 
+- For [Kahlan], use [eloquent/phony-kahlan] and import
+  `Eloquent\Phony\Kahlan`.
 - For [PHPUnit], use [eloquent/phony-phpunit] and import
   `Eloquent\Phony\Phpunit`.
 - For [Peridot], use [eloquent/phony-peridot] and import `Eloquent\Phony`.
@@ -62,7 +64,8 @@ passed-by-reference arguments), typically "just work" with *Phony*.
 
 Amongst other features, *Phony* supports:
 
-- PHP from 7.0 onward
+- Function-level [stubs] and [spies], which negate the need for object mocking
+  in many cases
 - Generator [stubbing][generator stubbing] and
   [verification][generator verification]
 - [Mocking of traits]
@@ -85,11 +88,13 @@ integrations seamless and intuitive:
 
 - [No configuration or bootstrap code necessary]
 - [Most test frameworks need no special treatment]
-- Tight integration with [PHPUnit][phpunit integration],
-  [Pho][pho integration] and [SimpleTest][simpletest integration]
+- Tight integration with [Kahlan][kahlan integration],
+  [PHPUnit][phpunit integration], [Pho][pho integration] and
+  [SimpleTest][simpletest integration]
 - [Can be used standalone, too]
 - Supports matchers from [Hamcrest][hamcrest matchers],
-  [PHPUnit][phpunit matchers], and [SimpleTest][simpletest matchers].
+  [Kahlan][kahlan matchers], [PHPUnit][phpunit matchers], and
+  [SimpleTest][simpletest matchers].
 
 Interested in better integration with other test frameworks? So are we! Just
 open a [GitHub issue] if there's something we can do.
@@ -98,6 +103,8 @@ open a [GitHub issue] if there's something we can do.
 [choosing the correct namespace to import]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
 [hamcrest matchers]: http://eloquent-software.com/phony/latest/#hamcrest-matchers
 [integrates seamlessly with other testing libraries and tools]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
+[kahlan integration]: http://eloquent-software.com/phony/latest/#kahlan-usage
+[kahlan matchers]: http://eloquent-software.com/phony/latest/#kahlan-argument-matchers
 [most test frameworks need no special treatment]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
 [no configuration or bootstrap code necessary]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
 [pho integration]: http://eloquent-software.com/phony/latest/#pho-usage
@@ -244,6 +251,42 @@ $mock = $handle->get();
 
 assert($mock->methodA('argument') === 'value');
 $handle->methodA->calledWith('argument');
+```
+
+### [Kahlan] usage
+
+Install the [eloquent/phony-kahlan] package, then:
+
+```php
+use function Eloquent\Phony\mock;
+
+describe('Phony', function () {
+    it('integrates with Kahlan', function () {
+        $handle = mock('ClassA');
+        $handle->methodA->with('argument')->returns('value');
+
+        $mock = $handle->get();
+
+        expect($mock->methodA('argument'))->toBe('value');
+        $handle->methodA->calledWith('argument');
+    });
+});
+```
+
+The [eloquent/phony-kahlan] package also provides auto-wired mocks:
+
+```php
+use function Eloquent\Phony\on;
+
+describe('Phony for Kahlan', function () {
+    it('supports auto-wiring', function (ClassA $mock) {
+        $handle = on($mock);
+        $handle->methodA->with('argument')->returns('value');
+
+        expect($mock->methodA('argument'))->toBe('value');
+        $handle->methodA->calledWith('argument');
+    });
+});
 ```
 
 ### [Peridot] usage
@@ -464,11 +507,13 @@ Special thanks to the following people:
 - [@cjohansen], and everyone who contributed to [Sinon.JS].
 - [@everzet], and everyone who contributed to [Prophecy].
 - [@sebastianbergmann], and everyone who contributed to [PHPUnit].
+- [@jails], and everyone who contributed to [Kahlan].
 
 [@cjohansen]: https://github.com/cjohansen
 [@darianbr]: https://github.com/darianbr
 [@everzet]: https://github.com/everzet
 [@ezzatron]: https://github.com/ezzatron
+[@jails]: https://github.com/jails
 [@jmalloc]: https://github.com/jmalloc
 [@koden-km]: https://github.com/koden-km
 [@mlively]: https://github.com/mlively
@@ -485,6 +530,7 @@ For the full copyright and license information, please view the [LICENSE file].
 <!-- References -->
 
 [documentation]: http://eloquent-software.com/phony/latest/
+[eloquent/phony-kahlan]: https://packagist.org/packages/eloquent/phony-kahlan
 [eloquent/phony-peridot]: https://packagist.org/packages/eloquent/phony-peridot
 [eloquent/phony-pho]: https://packagist.org/packages/eloquent/phony-pho
 [eloquent/phony-phpunit]: https://packagist.org/packages/eloquent/phony-phpunit
@@ -492,6 +538,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
 [github issue]: https://github.com/eloquent/phony/issues
 [hhvm]: http://hhvm.com/
+[kahlan]: https://kahlan.github.io/docs/
 [mockito]: http://mockito.org/
 [peridot]: http://peridot-php.github.io/
 [phake]: http://phake.readthedocs.org/
