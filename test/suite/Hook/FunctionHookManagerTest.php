@@ -6,7 +6,7 @@ use Eloquent\Phony\Hook\Exception\FunctionExistsException;
 use Eloquent\Phony\Hook\Exception\FunctionHookGenerationFailedException;
 use Eloquent\Phony\Hook\Exception\FunctionSignatureMismatchException;
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspectorFactory;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Test\FunctionHookManager as TestNamespace;
 use Eloquent\Phony\Test\TestFunctionHookGenerator;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ class FunctionHookManagerTest extends TestCase
     protected function setUp()
     {
         $this->invocableInspector = InvocableInspector::instance();
-        $this->functionSignatureInspector = FunctionSignatureInspectorFactory::create();
+        $this->functionSignatureInspector = FunctionSignatureInspector::instance();
         $this->hookGenerator = FunctionHookGenerator::instance();
         $this->subject = new FunctionHookManager(
             $this->invocableInspector,

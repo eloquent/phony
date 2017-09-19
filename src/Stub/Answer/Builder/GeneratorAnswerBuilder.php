@@ -47,7 +47,7 @@ class GeneratorAnswerBuilder
      *
      * @return $this This builder.
      */
-    public function calls(...$callbacks): self
+    public function calls(callable ...$callbacks): self
     {
         foreach ($callbacks as $callback) {
             $this->callsWith($callback);
@@ -112,7 +112,7 @@ class GeneratorAnswerBuilder
      *
      * @return $this This builder.
      */
-    public function callsArgument(...$indices): self
+    public function callsArgument(int ...$indices): self
     {
         if (empty($indices)) {
             $this->callsArgumentWith(0);

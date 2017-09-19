@@ -7,19 +7,14 @@ use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 
-class HhvmFunctionSignatureInspectorTest extends TestCase
+class FunctionSignatureInspectorTest extends TestCase
 {
     const CONSTANT_A = 'a';
 
     protected function setUp()
     {
         $this->featureDetector = new FeatureDetector();
-
-        if (!$this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('Requires HHVM.');
-        }
-
-        $this->subject = new HhvmFunctionSignatureInspector($this->featureDetector);
+        $this->subject = new FunctionSignatureInspector($this->featureDetector);
     }
 
     public function testSignature()
@@ -133,8 +128,8 @@ class HhvmFunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionMethod($this, 'methodB');
         $actual = $this->subject->signature($function);
         $expected = [
-            'a' => ['\Eloquent\Phony\Reflection\HhvmFunctionSignatureInspectorTest ', '', '', ' = null'],
-            'b' => ['\Eloquent\Phony\Reflection\HhvmFunctionSignatureInspectorTest ', '', '', ''],
+            'a' => ['\Eloquent\Phony\Reflection\FunctionSignatureInspectorTest ', '', '', ' = null'],
+            'b' => ['\Eloquent\Phony\Reflection\FunctionSignatureInspectorTest ', '', '', ''],
         ];
 
         $this->assertEquals($expected, $actual);
@@ -149,6 +144,19 @@ class HhvmFunctionSignatureInspectorTest extends TestCase
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
+    }
+
+    public function testInstance()
+    {
+        $class = get_class($this->subject);
+        $reflector = new ReflectionClass($class);
+        $property = $reflector->getProperty('instance');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+        $instance = $class::instance();
+
+        $this->assertInstanceOf($class, $instance);
+        $this->assertSame($instance, $class::instance());
     }
 
     protected function methodA($a = ReflectionMethod::IS_FINAL, $b = self::CONSTANT_A)

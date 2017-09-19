@@ -6,7 +6,7 @@ use Eloquent\Phony\Hook\FunctionHookGenerator;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspectorFactory;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Test\Phony as TestPhony;
 
 $rootPath = dirname(__DIR__);
@@ -44,7 +44,7 @@ foreach (scandir($mockGeneratorFixturePath) as $name) {
 
 $hookGeneratorFixturePath = $fixturePath . '/hook-generator';
 $invocableInspector = InvocableInspector::instance();
-$signatureInspector = FunctionSignatureInspectorFactory::create();
+$signatureInspector = FunctionSignatureInspector::instance();
 $hookGenerator = FunctionHookGenerator::instance();
 
 foreach (scandir($hookGeneratorFixturePath) as $name) {

@@ -1,11 +1,7 @@
 {
-    "Can use by-reference variadic parameters":    ["parameter.variadic.reference", "5.6.x", "999", [], "3.17.x", "999", [], "3.17.x", "999", []],
-    "Can use type hints with variadic parameters": ["parameter.variadic.type",      "5.6.x", "999", [], "999",    "0.x", [], "999",    "0.x", []],
-    "HHVM runtime":                                ["runtime.hhvm",                 "999",   "0.x", [], "0.x",    "999", [], "0.x",    "999", []],
-    "PHP runtime":                                 ["runtime.php",                  "0.x",   "999", [], "999",    "0.x", [], "999",    "0.x", []],
-    "Can use ANSI escape codes with STDOUT":       ["stdout.ansi",                  "0.x",   "999", [], "0.x",    "999", [], "0.x",    "999", []],
-    "Can use the iterable psuedo-type":            ["type.iterable",                "7.1.x", "999", [], "999",    "0.x", [], "999",    "0.x", []],
-    "Can use nullable types":                      ["type.nullable",                "7.1.x", "999", [], "999",    "0.x", [], "999",    "0.x", []],
-    "Can use the object psuedo-type":              ["type.object",                  "7.2.x", "999", [], "999",    "0.x", [], "999",    "0.x", []],
-    "Can use void return type declarations":       ["type.void",                    "7.1.x", "999", [], "999",    "0.x", [], "999",    "0.x", []]
+    "Can use ANSI escape codes with STDOUT": ["stdout.ansi",   "0.x",   "999", []],
+    "Can use the iterable psuedo-type":      ["type.iterable", "7.1.x", "999", []],
+    "Can use nullable types":                ["type.nullable", "7.1.x", "999", []],
+    "Can use the object psuedo-type":        ["type.object",   "7.2.x", "999", []],
+    "Can use void return type declarations": ["type.void",     "7.1.x", "999", []]
 }

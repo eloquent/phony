@@ -6,13 +6,4 @@ if (!class_exists('Phar')) {
     return false;
 }
 
-if (
-    !$detector->isSupported('runtime.php') ||
-    version_compare(PHP_VERSION, '7.x', '<')
-) {
-    $message = 'Requires PHP 7.';
-
-    return false;
-}
-
 return true;

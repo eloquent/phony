@@ -26,9 +26,7 @@ if [[ -z "$ELOQUENT_PUBLISH_VERSION" ]]; then
     exit 1
 fi
 
-if [[ -n "$HHVM" ]]; then
-    make test-hhvm
-elif [[ "$TRAVIS_PHP_VERSION" == "$ELOQUENT_PUBLISH_VERSION" ]]; then
+if [[ "$TRAVIS_PHP_VERSION" == "$ELOQUENT_PUBLISH_VERSION" ]]; then
     make coverage
 else
     make test

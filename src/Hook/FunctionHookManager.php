@@ -10,7 +10,6 @@ use Eloquent\Phony\Hook\Exception\FunctionHookGenerationFailedException;
 use Eloquent\Phony\Hook\Exception\FunctionSignatureMismatchException;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspectorFactory;
 use ParseError;
 
 /**
@@ -28,7 +27,7 @@ class FunctionHookManager
         if (!self::$instance) {
             self::$instance = new self(
                 InvocableInspector::instance(),
-                FunctionSignatureInspectorFactory::create(),
+                FunctionSignatureInspector::instance(),
                 FunctionHookGenerator::instance()
             );
         }

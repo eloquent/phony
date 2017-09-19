@@ -27,8 +27,7 @@ use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Mock\MockGenerator;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Reflection\HhvmFunctionSignatureInspector;
-use Eloquent\Phony\Reflection\PhpFunctionSignatureInspector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\IterableSpyFactory;
@@ -62,17 +61,8 @@ trait FacadeDriverTrait
         $featureDetector = new FeatureDetector();
         $invoker = new Invoker();
         $matcherVerifier = new MatcherVerifier();
-
-        if ($featureDetector->isSupported('runtime.hhvm')) {
-            // @codeCoverageIgnoreStart
-            $functionSignatureInspector =
-                new HhvmFunctionSignatureInspector($featureDetector);
-            // @codeCoverageIgnoreEnd
-        } else {
-            $functionSignatureInspector =
-                new PhpFunctionSignatureInspector($featureDetector);
-        }
-
+        $functionSignatureInspector =
+            new FunctionSignatureInspector($featureDetector);
         $mockClassLabelSequence = Sequencer::sequence('mock-class-label');
         $this->sequences[] = $mockClassLabelSequence;
         $mockGenerator = new MockGenerator(

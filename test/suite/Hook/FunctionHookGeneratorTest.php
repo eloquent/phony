@@ -4,7 +4,7 @@ namespace Eloquent\Phony\Hook;
 
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspectorFactory;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -15,7 +15,7 @@ class FunctionHookGeneratorTest extends TestCase
         $this->subject = new FunctionHookGenerator();
 
         $this->invocableInspector = InvocableInspector::instance();
-        $this->signatureInspector = FunctionSignatureInspectorFactory::create();
+        $this->signatureInspector = FunctionSignatureInspector::instance();
     }
 
     public function generateData()

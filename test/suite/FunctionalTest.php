@@ -139,10 +139,6 @@ class FunctionalTest extends TestCase
 
     public function testVariadicParameterMockingWithType()
     {
-        if (!$this->featureDetector->isSupported('parameter.variadic.type')) {
-            $this->markTestSkipped('Requires type hint support for variadic parameters.');
-        }
-
         $handle = x\mock(TestInterfaceWithVariadicParameterWithType::class);
         $handle->method->does(
             function () {
@@ -157,10 +153,6 @@ class FunctionalTest extends TestCase
 
     public function testVariadicParameterMockingByReference()
     {
-        if (!$this->featureDetector->isSupported('parameter.variadic.reference')) {
-            $this->markTestSkipped('Requires by-reference variadic parameters.');
-        }
-
         $handle = x\mock(TestInterfaceWithVariadicParameterByReference::class);
         $handle->method
             ->setsArgument(0, 'a')

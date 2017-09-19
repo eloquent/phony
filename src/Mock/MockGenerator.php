@@ -8,7 +8,6 @@ use Eloquent\Phony\Mock\Builder\Method\TraitMethodDefinition;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspectorFactory;
 use Eloquent\Phony\Sequencer\Sequencer;
 
 /**
@@ -26,7 +25,7 @@ class MockGenerator
         if (!self::$instance) {
             self::$instance = new self(
                 Sequencer::sequence('mock-class-label'),
-                FunctionSignatureInspectorFactory::create(),
+                FunctionSignatureInspector::instance(),
                 FeatureDetector::instance()
             );
         }
@@ -52,10 +51,6 @@ class MockGenerator
 
         $this->isNullableTypeSupported =
             $this->featureDetector->isSupported('type.nullable');
-        $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
-
-        $this->canMockPharDestruct =
-            $this->isHhvm || !version_compare(PHP_VERSION, '7.x', '<');
     }
 
     /**
@@ -258,28 +253,10 @@ EOD;
             $type = $methodReflector->getReturnType();
             $isBuiltin = $type->isBuiltin();
 
-            if ($this->isHhvm) {
-                // @codeCoverageIgnoreStart
-                $typeString = $methodReflector->getReturnTypeText();
-
-                if (0 === strpos($typeString, '?')) {
-                    $typeString = '';
-                } else {
-                    $genericPosition = strpos($typeString, '<');
-
-                    if (false !== $genericPosition) {
-                        $typeString = substr($typeString, 0, $genericPosition);
-                    }
-                }
-
-                $isBuiltin = $isBuiltin && false === strpos($typeString, '\\');
-                // @codeCoverageIgnoreEnd
+            if ($type->allowsNull()) {
+                $typeString = '?' . $type;
             } else {
-                if ($type->allowsNull()) {
-                    $typeString = '?' . $type;
-                } else {
-                    $typeString = (string) $type;
-                }
+                $typeString = (string) $type;
             }
 
             if ('self' === $typeString) {
@@ -339,19 +316,7 @@ EOD;
             }
 
             if (!$destructor && $type->hasMethod('__destruct')) {
-                switch ($name) {
-                    case 'phar':
-                    case 'phardata':
-                    case 'pharfileinfo':
-                        if ($this->canMockPharDestruct) {
-                            $destructor = $type->getMethod('__destruct');
-                        }
-
-                        break;
-
-                    default:
-                        $destructor = $type->getMethod('__destruct');
-                }
+                $destructor = $type->getMethod('__destruct');
             }
         }
 
@@ -451,30 +416,10 @@ EOD;
                 $type = $methodReflector->getReturnType();
                 $isBuiltin = $type->isBuiltin();
 
-                if ($this->isHhvm) {
-                    // @codeCoverageIgnoreStart
-                    $typeString = $methodReflector->getReturnTypeText();
-
-                    if (0 === strpos($typeString, '?')) {
-                        $typeString = '';
-                    } else {
-                        $genericPosition = strpos($typeString, '<');
-
-                        if (false !== $genericPosition) {
-                            $typeString =
-                                substr($typeString, 0, $genericPosition);
-                        }
-                    }
-
-                    $isBuiltin =
-                        $isBuiltin && false === strpos($typeString, '\\');
-                    // @codeCoverageIgnoreEnd
+                if ($type->allowsNull()) {
+                    $typeString = '?' . $type;
                 } else {
-                    if ($type->allowsNull()) {
-                        $typeString = '?' . $type;
-                    } else {
-                        $typeString = (string) $type;
-                    }
+                    $typeString = (string) $type;
                 }
 
                 if ('self' === $typeString) {
@@ -630,28 +575,10 @@ EOD;
             $type = $methodReflector->getReturnType();
             $isBuiltin = $type->isBuiltin();
 
-            if ($this->isHhvm) {
-                // @codeCoverageIgnoreStart
-                $typeString = $methodReflector->getReturnTypeText();
-
-                if (0 === strpos($typeString, '?')) {
-                    $typeString = '';
-                } else {
-                    $genericPosition = strpos($typeString, '<');
-
-                    if (false !== $genericPosition) {
-                        $typeString = substr($typeString, 0, $genericPosition);
-                    }
-                }
-
-                $isBuiltin = $isBuiltin && false === strpos($typeString, '\\');
-                // @codeCoverageIgnoreEnd
+            if ($type->allowsNull()) {
+                $typeString = '?' . $type;
             } else {
-                if ($type->allowsNull()) {
-                    $typeString = '?' . $type;
-                } else {
-                    $typeString = (string) $type;
-                }
+                $typeString = (string) $type;
             }
 
             if ('self' === $typeString) {
@@ -1016,6 +943,4 @@ EOD;
     private $signatureInspector;
     private $featureDetector;
     private $isNullableTypeSupported;
-    private $canMockPharDestruct;
-    private $isHhvm;
 }

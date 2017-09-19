@@ -81,33 +81,11 @@ class FeatureDetectorTest extends TestCase
     /**
      * @dataProvider featureData
      */
-    public function testFeatureDetection(
-        $feature,
-        $minimum,
-        $maximum,
-        $exclude,
-        $hhvmMinimum,
-        $hhvmMaximum,
-        $hhvmExclude,
-        $hhvmPhp7ModeMinimum,
-        $hhvmPhp7ModeMaximum,
-        $hhvmPhp7ModeExclude
-    ) {
-        if (defined('HHVM_VERSION')) {
-            if (version_compare(PHP_VERSION, '7.x', '>=')) {
-                $expected = version_compare(HHVM_VERSION, $hhvmPhp7ModeMinimum, '>=') &&
-                    version_compare(HHVM_VERSION, $hhvmPhp7ModeMaximum, '<') &&
-                    $this->checkVersionIncluded(HHVM_VERSION, $hhvmPhp7ModeExclude);
-            } else {
-                $expected = version_compare(HHVM_VERSION, $hhvmMinimum, '>=') &&
-                    version_compare(HHVM_VERSION, $hhvmMaximum, '<') &&
-                    $this->checkVersionIncluded(HHVM_VERSION, $hhvmExclude);
-            }
-        } else {
-            $expected = version_compare(PHP_VERSION, $minimum, '>=') &&
-                version_compare(PHP_VERSION, $maximum, '<') &&
-                $this->checkVersionIncluded(PHP_VERSION, $exclude);
-        }
+    public function testFeatureDetection($feature, $minimum, $maximum, $exclude)
+    {
+        $expected = version_compare(PHP_VERSION, $minimum, '>=') &&
+            version_compare(PHP_VERSION, $maximum, '<') &&
+            $this->checkVersionIncluded(PHP_VERSION, $exclude);
 
         if ('stdout.ansi' === $feature) {
             if (DIRECTORY_SEPARATOR === '\\') {
@@ -128,15 +106,6 @@ class FeatureDetectorTest extends TestCase
         }
 
         $this->assertSame($expected, $this->subject->isSupported($feature));
-    }
-
-    public function testRuntime()
-    {
-        if (defined('HHVM_VERSION')) {
-            $this->assertSame('hhvm', $this->subject->runtime());
-        } else {
-            $this->assertSame('php', $this->subject->runtime());
-        }
     }
 
     public function testCheckStatement()

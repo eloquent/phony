@@ -4607,9 +4607,7 @@ $closure = function () {}; // file path is /path/to/example.php, line number is 
 // $closure is exported as 'Closure#0{}[example.php:123]'
 ```
 
-Only the basename of the path is included, for brevity. Also note that the class
-name will always be exported as `Closure`, even for runtimes such as [HHVM] that
-use different class names for closures.
+Only the basename of the path is included, for brevity.
 
 ##### Exporting exceptions
 
@@ -8511,7 +8509,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [github issue]: https://github.com/eloquent/phony/issues
 [global function fallback]: http://php.net/language.namespaces.fallback
 [hamcrest]: https://github.com/hamcrest/hamcrest-php
-[hhvm]: http://hhvm.com/
 [isolator]: https://github.com/IcecaveStudios/isolator
 [liberator]: https://github.com/eloquent/liberator
 [license file]: https://github.com/eloquent/phony/blob/HEAD/LICENSE

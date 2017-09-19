@@ -119,23 +119,6 @@ class FeatureDetector
     public function standardFeatures(): array
     {
         return [
-            'parameter.variadic.reference' => function ($detector) {
-                return $detector->checkStatement('function (&...$a) {};');
-            },
-
-           'parameter.variadic.type' => function ($detector) {
-                return $detector
-                    ->checkStatement('function (stdClass ...$a) {};');
-            },
-
-            'runtime.hhvm' => function ($detector) {
-                return 'hhvm' === $detector->runtime();
-            },
-
-            'runtime.php' => function ($detector) {
-                return 'php' === $detector->runtime();
-            },
-
             'stdout.ansi' => function () {
                 // @codeCoverageIgnoreStart
                 if (DIRECTORY_SEPARATOR === '\\') {
@@ -172,11 +155,6 @@ class FeatureDetector
             },
 
             'type.nullable' => function ($detector) {
-                // syntax causes fatal on HHVM
-                if ($detector->isSupported('runtime.hhvm')) {
-                    return false; // @codeCoverageIgnore
-                }
-
                 return $detector->checkStatement('function(?int $a){}');
             },
 
@@ -202,24 +180,6 @@ class FeatureDetector
                 );
             },
         ];
-    }
-
-    /**
-     * Determine the current PHP runtime.
-     *
-     * @return string The runtime.
-     */
-    public function runtime(): string
-    {
-        if (!$this->runtime) {
-            if (false === strpos(phpversion(), 'hhvm')) {
-                $this->runtime = 'php';
-            } else {
-                $this->runtime = 'hhvm'; // @codeCoverageIgnore
-            }
-        }
-
-        return $this->runtime;
     }
 
     /**
@@ -260,7 +220,6 @@ class FeatureDetector
     private static $instance;
     private $features;
     private $supported;
-    private $runtime;
     private $isErrorClearLastSupported;
     private $nullErrorHandler;
 }

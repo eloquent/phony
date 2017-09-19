@@ -191,7 +191,7 @@ class StubData implements Stub
      *
      * @return $this This stub.
      */
-    public function calls(...$callbacks): Stub
+    public function calls(callable ...$callbacks): Stub
     {
         foreach ($callbacks as $callback) {
             $this->callsWith($callback);
@@ -258,7 +258,7 @@ class StubData implements Stub
      *
      * @return $this This stub.
      */
-    public function callsArgument(...$indices): Stub
+    public function callsArgument(int ...$indices): Stub
     {
         if (empty($indices)) {
             $this->callsArgumentWith(0);
@@ -375,7 +375,7 @@ class StubData implements Stub
      *
      * @return $this This stub.
      */
-    public function does(...$callbacks): Stub
+    public function does(callable ...$callbacks): Stub
     {
         foreach ($callbacks as $callback) {
             $this->doesWith($callback);

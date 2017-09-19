@@ -5,17 +5,14 @@
 [![Current version image][version-image]][current version]
 [![Current build status image][build-image]][current build status]
 [![Current Windows build status image][windows-build-image]][current windows build status]
-[![Tested against HHVM][hhvm-image]][current hhvm build status]
 [![Current coverage status image][coverage-image]][current coverage status]
 
 [build-image]: https://img.shields.io/travis/eloquent/phony/master.svg?style=flat-square "Current build status for the master branch"
 [coverage-image]: https://img.shields.io/codecov/c/github/eloquent/phony/master.svg?style=flat-square "Current test coverage for the master branch"
 [current build status]: https://travis-ci.org/eloquent/phony
 [current coverage status]: https://codecov.io/github/eloquent/phony
-[current hhvm build status]: https://travis-ci.org/eloquent/phony
 [current version]: https://packagist.org/packages/eloquent/phony
 [current windows build status]: https://ci.appveyor.com/project/eloquent/phony
-[hhvm-image]: https://img.shields.io/badge/hhvm-tested-brightgreen.svg?style=flat-square "Tested against HHVM"
 [version-image]: https://img.shields.io/packagist/v/eloquent/phony.svg?style=flat-square "This project uses semantic versioning"
 [windows-build-image]: https://img.shields.io/appveyor/ci/eloquent/phony/master.svg?label=windows&style=flat-square "Current Windows build status for the master branch"
 
@@ -49,8 +46,9 @@ Full [documentation] is available.
 
 ## What is *Phony*?
 
-*Phony* is a PHP library for creating [test doubles], with support for PHP 7+
-and [HHVM] 3.21+.
+*Phony* is a PHP library for creating [test doubles], supporting PHP 7+. Legacy
+support for PHP 5 and [HHVM] is also available in previous major versions of
+*Phony*.
 
 [test doubles]: https://en.wikipedia.org/wiki/Test_double
 
@@ -65,11 +63,10 @@ passed-by-reference arguments), typically "just work" with *Phony*.
 Amongst other features, *Phony* supports:
 
 - PHP from 7.0 onward
-- [HHVM] from 3.21 onward (with ini setting `hhvm.php7.all=1`)
 - Generator [stubbing][generator stubbing] and
   [verification][generator verification]
 - [Mocking of traits]
-- [Stubbing of functions and methods with PHP 7 return types]
+- [Stubbing of functions and methods with return types]
 - Modern [variable-length argument lists] using the `...` token
 - [Setting of passed-by-reference arguments], and reference arguments in general
 
@@ -77,7 +74,7 @@ Amongst other features, *Phony* supports:
 [generator verification]: http://eloquent-software.com/phony/latest/#generator-and-iterable-verification
 [mocking of traits]: http://eloquent-software.com/phony/latest/#mocking-basics
 [setting of passed-by-reference arguments]: http://eloquent-software.com/phony/latest/#setting-passed-by-reference-arguments
-[stubbing of functions and methods with php 7 return types]: http://eloquent-software.com/phony/latest/#default-values-for-return-types
+[stubbing of functions and methods with return types]: http://eloquent-software.com/phony/latest/#default-values-for-return-types
 [variable-length argument lists]: http://php.net/functions.arguments#functions.variable-arg-list
 
 ### Zero-configuration integrations

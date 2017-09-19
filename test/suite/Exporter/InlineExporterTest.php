@@ -147,29 +147,14 @@ class InlineExporterTest extends TestCase
     public function testExportInaccessibleIneritedProperties()
     {
         $value = new TestDerivedClassA();
-
-        if (
-            !$this->featureDetector->isSupported('runtime.hhvm') &&
-            version_compare(PHP_VERSION, '5.4.x', '>=')
-        ) {
-            $expected = TestDerivedClassA::class . '#0{' .
-                'derivedPublic: "<derived-public>", ' .
-                'derivedPrivate: "<derived-private>", ' .
-                'basePrivate: "<derived-base-private>", ' .
-                'derivedProtected: "<derived-protected>", ' .
-                'basePublic: "<base-public>", ' .
-                'baseProtected: "<base-protected>", ' .
-                TestBaseClass::class . '.basePrivate: "<base-private>"}';
-        } else {
-            $expected = TestDerivedClassA::class . '#0{' .
-                'derivedPublic: "<derived-public>", ' .
-                'derivedPrivate: "<derived-private>", ' .
-                'basePrivate: "<derived-base-private>", ' .
-                'derivedProtected: "<derived-protected>", ' .
-                'basePublic: "<base-public>", ' .
-                TestBaseClass::class . '.basePrivate: "<base-private>", ' .
-                'baseProtected: "<base-protected>"}';
-        }
+        $expected = TestDerivedClassA::class . '#0{' .
+            'derivedPublic: "<derived-public>", ' .
+            'derivedPrivate: "<derived-private>", ' .
+            'basePrivate: "<derived-base-private>", ' .
+            'derivedProtected: "<derived-protected>", ' .
+            'basePublic: "<base-public>", ' .
+            'baseProtected: "<base-protected>", ' .
+            TestBaseClass::class . '.basePrivate: "<base-private>"}';
 
         $this->assertSame($expected, $this->subject->export($value));
     }

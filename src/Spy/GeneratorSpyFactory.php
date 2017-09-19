@@ -36,14 +36,10 @@ class GeneratorSpyFactory
      * Construct a new generator spy factory.
      *
      * @param CallEventFactory $callEventFactory The call event factory to use.
-     * @param FeatureDetector  $featureDetector  The feature detector to use.
      */
-    public function __construct(
-        CallEventFactory $callEventFactory,
-        FeatureDetector $featureDetector
-    ) {
+    public function __construct(CallEventFactory $callEventFactory)
+    {
         $this->callEventFactory = $callEventFactory;
-        $this->isHhvm = $featureDetector->isSupported('runtime.hhvm');
     }
 
     /**
@@ -127,5 +123,4 @@ class GeneratorSpyFactory
 
     private static $instance;
     private $callEventFactory;
-    private $isHhvm;
 }

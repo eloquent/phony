@@ -72,8 +72,6 @@ class EdgeCaseTest extends TestCase
             $typeNames = array_merge(get_declared_classes(), get_declared_interfaces());
         }
 
-        $isHhvm = FeatureDetector::instance()->isSupported('runtime.hhvm');
-
         foreach ($typeNames as $typeName) {
             $reflector = new ReflectionClass($typeName);
 
@@ -95,20 +93,6 @@ class EdgeCaseTest extends TestCase
                 case 'IntlGregorianCalendar':
 
                     continue 2;
-            }
-
-            if ($isHhvm) {
-                switch ($typeName) {
-                    // for some reason, Closure is not a final class in HHVM
-                    case 'Closure':
-
-                    // WaitHandles may not be directly instantiated
-                    case 'HH\WaitableWaitHandle':
-                    case 'HH\WaitHandle':
-                    case 'HH\ResumableWaitHandle':
-
-                        continue 2;
-                }
             }
 
             $data[$typeName] = [$typeName];

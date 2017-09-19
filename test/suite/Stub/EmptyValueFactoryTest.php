@@ -381,10 +381,6 @@ class EmptyValueFactoryTest extends TestCase
 
     public function testFromFunctionWithScalarType()
     {
-        if ($this->featureDetector->isSupported('runtime.hhvm')) {
-            $this->markTestSkipped('Requires non-HHVM runtime.');
-        }
-
         $function = new ReflectionMethod(TestInterfaceWithReturnType::class, 'scalarType');
 
         $this->assertSame(0, $this->subject->fromFunction($function));

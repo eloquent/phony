@@ -6,11 +6,6 @@ matrix:
         - php: 7.1
         - php: 7.2
         - php: nightly
-        - php: hhvm-3.18
-          sudo: required
-          services:
-              - docker
-          env: HHVM=1
     fast_finish: true
     allow_failures:
         - php: nightly

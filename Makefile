@@ -3,10 +3,6 @@ test: install
 	php --version
 	PHP_ERROR_EXCEPTION_DEPRECATIONS=1 vendor/bin/phpunit --no-coverage
 
-.PHONY: test-hhvm
-test-hhvm: install
-	test/bin/hhvm-3.21 sh -c "php --version; PHP_ERROR_EXCEPTION_DEPRECATIONS=1 php -d 'hhvm.php7.all=1' -d 'hhvm.hack.lang.look_for_typechecker=0' vendor/bin/phpunit --no-coverage"
-
 .PHONY: coverage
 coverage: install
 	phpdbg --version

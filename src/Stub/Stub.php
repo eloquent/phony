@@ -68,7 +68,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function calls(...$callbacks): self;
+    public function calls(callable ...$callbacks): self;
 
     /**
      * Add a callback to be called as part of an answer.
@@ -108,7 +108,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function callsArgument(...$indices): self;
+    public function callsArgument(int ...$indices): self;
 
     /**
      * Add an argument callback to be called as part of an answer.
@@ -158,7 +158,7 @@ interface Stub extends WrappedInvocable
      *
      * @return $this This stub.
      */
-    public function does(...$callbacks): self;
+    public function does(callable ...$callbacks): self;
 
     /**
      * Add a callback as an answer.
