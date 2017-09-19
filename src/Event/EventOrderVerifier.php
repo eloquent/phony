@@ -119,11 +119,11 @@ class EventOrderVerifier
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection          The result.
+     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function inOrder(...$events): EventCollection
+    public function inOrder(...$events)
     {
         if ($result = $this->checkInOrder(...$events)) {
             return $result;
@@ -160,11 +160,11 @@ class EventOrderVerifier
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection          The result.
+     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function anyOrder(...$events): EventCollection
+    public function anyOrder(...$events)
     {
         if ($result = $this->checkAnyOrder(...$events)) {
             return $result;

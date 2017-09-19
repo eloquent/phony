@@ -206,10 +206,10 @@ trait FacadeTrait
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public static function inOrder(...$events): EventCollection
+    public static function inOrder(...$events)
     {
         return static::driver()->eventOrderVerifier->inOrder(...$events);
     }
@@ -232,11 +232,11 @@ trait FacadeTrait
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection          The result.
+     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public static function anyOrder(...$events): EventCollection
+    public static function anyOrder(...$events)
     {
         return static::driver()->eventOrderVerifier->anyOrder(...$events);
     }

@@ -122,10 +122,10 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function received($value = null): EventCollection
+    public function received($value = null)
     {
         $cardinality = $this->cardinality;
         $argumentCount = func_num_args();
@@ -278,11 +278,11 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection          The result.
+     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function receivedException($type = null): EventCollection
+    public function receivedException($type = null)
     {
         $cardinality = $this->cardinality;
 
@@ -368,10 +368,10 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function returned($value = null): EventCollection
+    public function returned($value = null)
     {
         $cardinality = $this->cardinality;
         $argumentCount = func_num_args();
@@ -495,11 +495,11 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection          The result.
+     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function threw($type = null): EventCollection
+    public function threw($type = null)
     {
         $cardinality = $this->cardinality;
 

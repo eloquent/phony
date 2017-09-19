@@ -107,12 +107,12 @@ interface Handle
     public function checkNoInteraction();
 
     /**
-     * Throws an exception unless there was no interaction with the mock.
+     * Record an assertion failure unless there was no interaction with the mock.
      *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function noInteraction(): EventCollection;
+    public function noInteraction();
 
     /**
      * Stop recording calls.

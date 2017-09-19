@@ -598,11 +598,11 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param mixed ...$argument The arguments.
      *
-     * @return EventCollection             The result.
+     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function calledWith(...$arguments): EventCollection
+    public function calledWith(...$arguments)
     {
         $cardinality = $this->cardinality;
         $matchers = $this->matcherFactory->adaptAll($arguments);
@@ -639,11 +639,11 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Throws an exception unless this call responded.
      *
-     * @return EventCollection             The result.
+     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function responded(): EventCollection
+    public function responded()
     {
         $cardinality = $this->cardinality;
 
@@ -678,11 +678,11 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Throws an exception unless this call completed.
      *
-     * @return EventCollection             The result.
+     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function completed(): EventCollection
+    public function completed()
     {
         $cardinality = $this->cardinality;
 
@@ -750,11 +750,11 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection             The result.
+     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function returned($value = null): EventCollection
+    public function returned($value = null)
     {
         $cardinality = $this->cardinality;
         $argumentCount = func_num_args();
@@ -857,12 +857,12 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection             The result.
+     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws InvalidArgumentException    If the type is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function threw($type = null): EventCollection
+    public function threw($type = null)
     {
         $cardinality = $this->cardinality;
 

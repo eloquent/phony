@@ -271,10 +271,10 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
     /**
      * Throws an exception unless iteration of the subject commenced.
      *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function used(): EventCollection
+    public function used()
     {
         $cardinality = $this->cardinality;
 
@@ -387,10 +387,10 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function produced($keyOrValue = null, $value = null): EventCollection
+    public function produced($keyOrValue = null, $value = null)
     {
         $cardinality = $this->cardinality;
         $argumentCount = func_num_args();
@@ -459,10 +459,10 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
     /**
      * Throws an exception unless the subject was completely consumed.
      *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function consumed(): EventCollection
+    public function consumed()
     {
         $cardinality = $this->cardinality;
 

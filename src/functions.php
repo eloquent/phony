@@ -199,10 +199,10 @@ function checkInOrder(...$events)
  *
  * @param Event|EventCollection ...$events The events.
  *
- * @return EventCollection The result.
- * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+ * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+ * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
  */
-function inOrder(...$events): EventCollection
+function inOrder(...$events)
 {
     return FacadeDriver::instance()->eventOrderVerifier->inOrder(...$events);
 }
@@ -226,11 +226,11 @@ function checkAnyOrder(...$events)
  *
  * @param Event|EventCollection ...$events The events.
  *
- * @return EventCollection          The result.
+ * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
  * @throws InvalidArgumentException If invalid input is supplied.
  * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
  */
-function anyOrder(...$events): EventCollection
+function anyOrder(...$events)
 {
     return FacadeDriver::instance()->eventOrderVerifier->anyOrder(...$events);
 }

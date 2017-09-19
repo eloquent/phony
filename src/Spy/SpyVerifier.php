@@ -436,10 +436,10 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Throws an exception unless called.
      *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function called(): EventCollection
+    public function called()
     {
         $cardinality = $this->cardinality;
 
@@ -489,10 +489,10 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function calledWith(...$arguments): EventCollection
+    public function calledWith(...$arguments)
     {
         $cardinality = $this->cardinality;
         $matchers = $this->matcherFactory->adaptAll($arguments);
@@ -536,10 +536,10 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Throws an exception unless this spy responded.
      *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function responded(): EventCollection
+    public function responded()
     {
         $cardinality = $this->cardinality;
 
@@ -581,10 +581,10 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Throws an exception unless this spy completed.
      *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function completed(): EventCollection
+    public function completed()
     {
         $cardinality = $this->cardinality;
 
@@ -653,10 +653,10 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection The result.
-     * @throws Throwable       If the assertion fails, and the assertion recorder throws exceptions.
+     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function returned($value = null): EventCollection
+    public function returned($value = null)
     {
         $cardinality = $this->cardinality;
         $argumentCount = func_num_args();
@@ -774,11 +774,11 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection          The result.
+     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function threw($type = null): EventCollection
+    public function threw($type = null)
     {
         $cardinality = $this->cardinality;
 
