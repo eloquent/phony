@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CallEventFactory;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Generator;
 use Throwable;
 
@@ -23,10 +22,7 @@ class GeneratorSpyFactory
     public static function instance(): self
     {
         if (!self::$instance) {
-            self::$instance = new self(
-                CallEventFactory::instance(),
-                FeatureDetector::instance()
-            );
+            self::$instance = new self(CallEventFactory::instance());
         }
 
         return self::$instance;

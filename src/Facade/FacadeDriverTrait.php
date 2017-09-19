@@ -111,8 +111,7 @@ trait FacadeDriverTrait
             $invoker
         );
         $generatorSpyFactory = new GeneratorSpyFactory(
-            $eventFactory,
-            $featureDetector
+            $eventFactory
         );
         $iterableSpyFactory = new IterableSpyFactory(
             $eventFactory
