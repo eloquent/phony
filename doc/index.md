@@ -155,7 +155,7 @@
         - [Special cases for the "equal to" matcher]
             - [Comparing exceptions]
             - [Comparing mocks]
-    - [The "implementing" matcher]
+    - [The "instance of" matcher]
     - [The "wildcard" matcher]
 - [The exporter]
     - [The export format]
@@ -4381,20 +4381,20 @@ echo $stub($a); // outputs 'a'
 echo $stub($b); // outputs 'b'
 ```
 
-### The "implementing" matcher
+### The "instance of" matcher
 
-The "implementing" matcher is a matcher that is functionally equivalent to the
+The "instance of" matcher is a matcher that is functionally equivalent to the
 `instanceof` operator:
 
 ```php
-$matcher = implementing($type);        // with `use function`
-$matcher = x\implementing($type);      // without `use function`
-$matcher = Phony::implementing($type); // static
+$matcher = anInstanceOf($type);        // with `use function`
+$matcher = x\anInstanceOf($type);      // without `use function`
+$matcher = Phony::anInstanceOf($type); // static
 
-$spy->calledWith(implementing(Iterator::class)); // typical usage
+$spy->calledWith(anInstanceOf(Iterator::class)); // typical usage
 ```
 
-Just like `instanceof`, the "implementing" matcher supports both class names and
+Just like `instanceof`, the "instance of" matcher supports both class names and
 interfaces; which can be specified as either a string, or an object:
 
 ```php
@@ -4402,13 +4402,13 @@ $arrayIterator = new ArrayIterator([]);
 $emptyIterator = new EmptyIterator();
 $nonIterator = (object) [];
 
-$matcher = implementing(Iterator::class);
+$matcher = anInstanceOf(Iterator::class);
 
 var_dump($matcher->matches($arrayIterator)); // outputs 'bool(true)'
 var_dump($matcher->matches($emptyIterator)); // outputs 'bool(true)'
 var_dump($matcher->matches($nonIterator));   // outputs 'bool(false)'
 
-$matcher = implementing(new ArrayIterator([]));
+$matcher = anInstanceOf(new ArrayIterator([]));
 
 var_dump($matcher->matches($arrayIterator)); // outputs 'bool(true)'
 var_dump($matcher->matches($emptyIterator)); // outputs 'bool(false)'
@@ -4808,7 +4808,7 @@ functions or static methods depending on the method of importing:
 - [`restoreGlobalFunctions()`](#facade.restoreGlobalFunctions)
 - [`any()`](#facade.any)
 - [`equalTo()`](#facade.equalTo)
-- [`implementing()`](#facade.implementing)
+- [`anInstanceOf()`](#facade.anInstanceOf)
 - [`wildcard()`](#facade.wildcard)
 - [`emptyValue()`](#facade.emptyValue)
 - [`inOrder()`](#facade.inOrder)
@@ -4977,15 +4977,15 @@ Create a new ["any" matcher].
 
 Create a new ["equal to" matcher].
 
-<a name="facade.implementing" />
+<a name="facade.anInstanceOf" />
 
 ----
 
-> *[matcher][matcher-api]* [**implementing**](#facade.implementing)($type) *(with [use function])*<br />
-> *[matcher][matcher-api]* x\\[**implementing**](#facade.implementing)($type) *(without [use function])*<br />
-> *[matcher][matcher-api]* Phony::[**implementing**](#facade.implementing)($type) *(static)*
+> *[matcher][matcher-api]* [**anInstanceOf**](#facade.anInstanceOf)($type) *(with [use function])*<br />
+> *[matcher][matcher-api]* x\\[**anInstanceOf**](#facade.anInstanceOf)($type) *(without [use function])*<br />
+> *[matcher][matcher-api]* Phony::[**anInstanceOf**](#facade.anInstanceOf)($type) *(static)*
 
-Create a new ["implementing" matcher].
+Create a new ["instance of" matcher].
 
 *The `$type` parameter accepts either a class name, an interface name, or an
 object.*
@@ -8103,7 +8103,7 @@ See also:
 
 - [`any()`](#facade.any)
 - [`equalTo()`](#facade.equalTo)
-- [`implementing()`](#facade.implementing)
+- [`anInstanceOf()`](#facade.anInstanceOf)
 - [`$wildcard->matcher()`](#wildcard.matcher)
 
 <a name="matcher.matches" />
@@ -8376,7 +8376,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [terminology]: #terminology
 [the "any" matcher]: #the-any-matcher
 [the "equal to" matcher]: #the-equal-to-matcher
-[the "implementing" matcher]: #the-implementing-matcher
+[the "instance of" matcher]: #the-instance-of-matcher
 [the "wildcard" matcher]: #the-wildcard-matcher
 [the api]: #the-api
 [the arguments api]: #the-arguments-api
@@ -8460,7 +8460,7 @@ For the full copyright and license information, please view the [LICENSE file].
 
 ["any" matcher]: #the-any-matcher
 ["equal to" matcher]: #the-equal-to-matcher
-["implementing" matcher]: #the-implementing-matcher
+["instance of" matcher]: #the-instance-of-matcher
 ["wildcard" matcher]: #the-wildcard-matcher
 [ad hoc mock]: #ad-hoc-mocks
 [api]: #api

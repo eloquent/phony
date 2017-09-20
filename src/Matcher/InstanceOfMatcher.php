@@ -11,10 +11,10 @@ use Eloquent\Phony\Matcher\Exception\UndefinedTypeException;
  * A matcher that tests if the value is an instance of a given interface or
  * class.
  */
-class ImplementingMatcher implements Matcher
+class InstanceOfMatcher implements Matcher
 {
     /**
-     * Construct a new implementing matcher.
+     * Construct a new instance of matcher.
      *
      * @param string $type The type to check against.
      */

@@ -264,15 +264,15 @@ trait FacadeTrait
     }
 
     /**
-     * Create a new implementing matcher.
+     * Create a new instance of matcher.
      *
      * @param string|object $type The type to check against.
      *
      * @return Matcher The newly created matcher.
      */
-    public static function implementing($type): Matcher
+    public static function anInstanceOf($type): Matcher
     {
-        return static::driver()->matcherFactory->implementing($type);
+        return static::driver()->matcherFactory->anInstanceOf($type);
     }
 
     /**

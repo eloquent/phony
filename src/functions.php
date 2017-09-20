@@ -258,15 +258,15 @@ function equalTo($value): Matcher
 }
 
 /**
- * Create a new implementing matcher.
+ * Create a new instance of matcher.
  *
  * @param string|object $type The type to check against.
  *
  * @return Matcher The newly created matcher.
  */
-function implementing($type): Matcher
+function anInstanceOf($type): Matcher
 {
-    return FacadeDriver::instance()->matcherFactory->implementing($type);
+    return FacadeDriver::instance()->matcherFactory->anInstanceOf($type);
 }
 
 /**

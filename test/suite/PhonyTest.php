@@ -9,7 +9,7 @@ use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Facade as TestNamespace;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Matcher\ImplementingMatcher;
+use Eloquent\Phony\Matcher\InstanceOfMatcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
@@ -416,19 +416,19 @@ class PhonyTest extends TestCase
         $this->assertSame('a', $actual->value());
     }
 
-    public function testImplementing()
+    public function testAnInstanceOf()
     {
-        $actual = Phony::implementing(TestClassA::class);
+        $actual = Phony::anInstanceOf(TestClassA::class);
 
-        $this->assertInstanceOf(ImplementingMatcher::class, $actual);
+        $this->assertInstanceOf(InstanceOfMatcher::class, $actual);
         $this->assertSame(TestClassA::class, $actual->type());
     }
 
-    public function testImplementingFunction()
+    public function testAnInstanceOfFunction()
     {
-        $actual = implementing(TestClassA::class);
+        $actual = anInstanceOf(TestClassA::class);
 
-        $this->assertInstanceOf(ImplementingMatcher::class, $actual);
+        $this->assertInstanceOf(InstanceOfMatcher::class, $actual);
         $this->assertSame(TestClassA::class, $actual->type());
     }
 

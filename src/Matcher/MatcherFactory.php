@@ -203,19 +203,19 @@ class MatcherFactory
     }
 
     /**
-     * Create a new implementing matcher.
+     * Create a new instance of matcher.
      *
      * @param string|object $type The type to check against.
      *
      * @return Matcher The newly created matcher.
      */
-    public function implementing($type): Matcher
+    public function anInstanceOf($type): Matcher
     {
         if (is_object($type)) {
             $type = get_class($type);
         }
 
-        return new ImplementingMatcher($type);
+        return new InstanceOfMatcher($type);
     }
 
     /**

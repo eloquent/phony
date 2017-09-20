@@ -128,12 +128,12 @@ class MatcherFactoryTest extends TestCase
         $this->assertEquals($expected, $this->subject->equalTo('x'));
     }
 
-    public function testImplementing()
+    public function testAnInstanceOf()
     {
-        $expected = new ImplementingMatcher(TestClassA::class);
+        $expected = new InstanceOfMatcher(TestClassA::class);
 
-        $this->assertEquals($expected, $this->subject->implementing(TestClassA::class));
-        $this->assertEquals($expected, $this->subject->implementing(new TestClassA()));
+        $this->assertEquals($expected, $this->subject->anInstanceOf(TestClassA::class));
+        $this->assertEquals($expected, $this->subject->anInstanceOf(new TestClassA()));
     }
 
     public function testWildcard()
