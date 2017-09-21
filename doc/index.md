@@ -14,7 +14,6 @@
     - [Importing]
         - [Importing with use function]
         - [Importing without use function]
-        - [Importing a static facade]
 - [Mocks]
     - [Mocking basics]
     - [Partial mocks]
@@ -386,19 +385,8 @@ $handle = mock(ClassA::class);
 
 #### Importing without [use function]
 
-When [use function] is unavailable, the namespace itself can be imported, and an
-alias can be used to make short references to the same functions:
-
-```php
-use Eloquent\Phony as x;
-
-$handle = x\mock(ClassA::class);
-```
-
-#### Importing a static facade
-
 A static facade implementation is also provided for those who prefer a more
-traditional approach:
+"traditional" approach:
 
 ```php
 use Eloquent\Phony\Phony;
@@ -418,8 +406,7 @@ Any class, interface, or trait can be mocked. To create a mock, use
 
 ```php
 $handle = mock(ClassA::class);        // with `use function`
-$handle = x\mock(ClassA::class);      // without `use function`
-$handle = Phony::mock(ClassA::class); // static
+$handle = Phony::mock(ClassA::class); // without `use function`
 ```
 
 The object returned by [`mock()`](#facade.mock) is **not** the mock object
@@ -452,8 +439,7 @@ default. To create a partial mock, use [`partialMock()`](#facade.partialMock):
 
 ```php
 $handle = partialMock(ClassA::class);        // with `use function`
-$handle = x\partialMock(ClassA::class);      // without `use function`
-$handle = Phony::partialMock(ClassA::class); // static
+$handle = Phony::partialMock(ClassA::class); // without `use function`
 ```
 
 Constructor arguments can be passed to [`partialMock()`](#facade.partialMock) as
@@ -512,16 +498,14 @@ array of types to [`mock()`](#facade.mock) or
 
 ```php
 $handle = mock([InterfaceA::class, InterfaceB::class, TraitA::class]);        // with `use function`
-$handle = x\mock([InterfaceA::class, InterfaceB::class, TraitA::class]);      // without `use function`
-$handle = Phony::mock([InterfaceA::class, InterfaceB::class, TraitA::class]); // static
+$handle = Phony::mock([InterfaceA::class, InterfaceB::class, TraitA::class]); // without `use function`
 ```
 
 A single base class may also be mocked with other types:
 
 ```php
 $handle = mock([ClassA::class, InterfaceA::class, TraitA::class]);        // with `use function`
-$handle = x\mock([ClassA::class, InterfaceA::class, TraitA::class]);      // without `use function`
-$handle = Phony::mock([ClassA::class, InterfaceA::class, TraitA::class]); // static
+$handle = Phony::mock([ClassA::class, InterfaceA::class, TraitA::class]); // without `use function`
 ```
 
 ### Ad hoc mocks
@@ -677,12 +661,10 @@ $handle = mock(DateTime::class);
 $mock = $handle->get();
 
 $static = onStatic($handle);        // with `use function`
-$static = x\onStatic($handle);      // without `use function`
-$static = Phony::onStatic($handle); // static
+$static = Phony::onStatic($handle); // without `use function`
 
 $static = onStatic($mock);        // with `use function`
-$static = x\onStatic($mock);      // without `use function`
-$static = Phony::onStatic($mock); // static
+$static = Phony::onStatic($mock); // without `use function`
 ```
 
 This static handle is just like a normal [mock handle], except that it refers to
@@ -792,12 +774,10 @@ by using [`on()`](#facade.on):
 
 ```php
 $handle = on($mock);        // with `use function`
-$handle = x\on($mock);      // without `use function`
-$handle = Phony::on($mock); // static
+$handle = Phony::on($mock); // without `use function`
 
 $handle = on($otherHandle);        // with `use function`
-$handle = x\on($otherHandle);      // without `use function`
-$handle = Phony::on($otherHandle); // static
+$handle = Phony::on($otherHandle); // without `use function`
 ```
 
 To access the actual mock object, call the [`get()`](#handle.get) method of the
@@ -864,8 +844,7 @@ when more fine-grained control is desired. To create a mock builder, use
 
 ```php
 $builder = mockBuilder();        // with `use function`
-$builder = x\mockBuilder();      // without `use function`
-$builder = Phony::mockBuilder(); // static
+$builder = Phony::mockBuilder(); // without `use function`
 ```
 
 Types to mock can be passed directly to [`mockBuilder()`](#facade.mockBuilder)
@@ -1165,8 +1144,7 @@ Any callable can be stubbed, by passing the callable to
 
 ```php
 $stub = stub($callable);        // with `use function`
-$stub = x\stub($callable);      // without `use function`
-$stub = Phony::stub($callable); // static
+$stub = Phony::stub($callable); // without `use function`
 ```
 
 By default, the created stub will return "empty" values. The exact value depends
@@ -1230,8 +1208,7 @@ To stub a function in the global namespace, use
 
 ```php
 $stub = stubGlobal($function, $namespace);        // with `use function`
-$stub = x\stubGlobal($function, $namespace);      // without `use function`
-$stub = Phony::stubGlobal($function, $namespace); // static
+$stub = Phony::stubGlobal($function, $namespace); // without `use function`
 ```
 
 Where `$function` is the name of the function in the global namespace, and
@@ -1278,8 +1255,7 @@ To restore all stubbed and/or spied global functions, use
 
 ```php
 restoreGlobalFunctions();        // with `use function`
-x\restoreGlobalFunctions();      // without `use function`
-Phony::restoreGlobalFunctions(); // static
+Phony::restoreGlobalFunctions(); // without `use function`
 ```
 
 This method is suitable for use in the "tear down" phase of a test.
@@ -1315,8 +1291,7 @@ stub is created by calling [`stub()`](#facade.stub) without passing a callable:
 
 ```php
 $stub = stub();        // with `use function`
-$stub = x\stub();      // without `use function`
-$stub = Phony::stub(); // static
+$stub = Phony::stub(); // without `use function`
 ```
 
 By default, anonymous stubs will always return `null` regardless of input
@@ -2684,8 +2659,7 @@ Any callable can be wrapped in a spy, by passing the callable to
 
 ```php
 $spy = spy($callable);        // with `use function`
-$spy = x\spy($callable);      // without `use function`
-$spy = Phony::spy($callable); // static
+$spy = Phony::spy($callable); // without `use function`
 ```
 
 The created spy will behave exactly like the wrapped callable:
@@ -2715,8 +2689,7 @@ To spy on a function in the global namespace, use
 
 ```php
 $spy = spyGlobal($function, $namespace);        // with `use function`
-$spy = x\spyGlobal($function, $namespace);      // without `use function`
-$spy = Phony::spyGlobal($function, $namespace); // static
+$spy = Phony::spyGlobal($function, $namespace); // without `use function`
 ```
 
 Where `$function` is the name of the function in the global namespace, and
@@ -2749,8 +2722,7 @@ To restore all spied and/or stubbed global functions, use
 
 ```php
 restoreGlobalFunctions();        // with `use function`
-x\restoreGlobalFunctions();      // without `use function`
-Phony::restoreGlobalFunctions(); // static
+Phony::restoreGlobalFunctions(); // without `use function`
 ```
 
 This method is suitable for use in the "tear down" phase of a test.
@@ -2789,8 +2761,7 @@ purpose is to record input arguments. An anonymous spy is created by calling
 
 ```php
 $spy = spy();        // with `use function`
-$spy = x\spy();      // without `use function`
-$spy = Phony::spy(); // static
+$spy = Phony::spy(); // without `use function`
 ```
 
 Regardless of input arguments, anonymous spies will always return `null`:
@@ -3970,14 +3941,6 @@ inOrder(
 );
 
 // without `use function`
-x\inOrder(
-    $spyA->calledWith('a'),
-    $spyA->returned('x'),
-    $spyB->calledWith('b'),
-    $spyB->returned('y')
-);
-
-// static
 Phony::inOrder(
     $spyA->calledWith('a'),
     $spyA->returned('x'),
@@ -4003,18 +3966,6 @@ inOrder(
 );
 
 // without `use function`
-x\inOrder(
-    x\anyOrder(
-        $spyA->calledWith('a'),
-        $spyB->calledWith('b')
-    ),
-    x\anyOrder(
-        $spyA->returned('x'),
-        $spyB->returned('y')
-    )
-);
-
-// static
 Phony::inOrder(
     Phony::anyOrder(
         $spyA->calledWith('a'),
@@ -4057,12 +4008,6 @@ inOrder(
 );
 
 // without `use function`
-x\inOrder(
-    x\anyOrder(...$calledEvents),
-    x\anyOrder(...$returnedEvents)
-);
-
-// static
 Phony::inOrder(
     Phony::anyOrder(...$calledEvents),
     Phony::anyOrder(...$returnedEvents)
@@ -4170,8 +4115,7 @@ To control the use of [ANSI colored output], use
 
 ```php
 setUseColor($useColor);        // with `use function`
-x\setUseColor($useColor);      // without `use function`
-Phony::setUseColor($useColor); // static
+Phony::setUseColor($useColor); // without `use function`
 ```
 
 Passing `true` turns color on, passing `false` turns color off, and passing
@@ -4257,8 +4201,7 @@ This matcher matches a single argument of any value:
 
 ```php
 $matcher = any();        // with `use function`
-$matcher = x\any();      // without `use function`
-$matcher = Phony::any(); // static
+$matcher = Phony::any(); // without `use function`
 
 $spy->calledWith(any()); // typical usage
 ```
@@ -4270,8 +4213,7 @@ matches values that are equal to that argument:
 
 ```php
 $matcher = equalTo($value);        // with `use function`
-$matcher = x\equalTo($value);      // without `use function`
-$matcher = Phony::equalTo($value); // static
+$matcher = Phony::equalTo($value); // without `use function`
 
 $spy->calledWith(equalTo('a')); // typical usage
 ```
@@ -4388,8 +4330,7 @@ The "instance of" matcher is a matcher that is functionally equivalent to the
 
 ```php
 $matcher = anInstanceOf($type);        // with `use function`
-$matcher = x\anInstanceOf($type);      // without `use function`
-$matcher = Phony::anInstanceOf($type); // static
+$matcher = Phony::anInstanceOf($type); // without `use function`
 
 $spy->calledWith(anInstanceOf(Iterator::class)); // typical usage
 ```
@@ -4777,8 +4718,7 @@ To set the export depth, use [`setExportDepth()`](#facade.setExportDepth):
 
 ```php
 setExportDepth($depth);        // with `use function`
-x\setExportDepth($depth);      // without `use function`
-Phony::setExportDepth($depth); // static
+Phony::setExportDepth($depth); // without `use function`
 ```
 
 Where `$depth` is an integer indicating the desired export depth.
@@ -4823,8 +4763,7 @@ functions or static methods depending on the method of importing:
 ----
 
 > *[handle][handle-api]* [**mock**](#facade.mock)($types = []) *(with [use function])*<br />
-> *[handle][handle-api]* x\\[**mock**](#facade.mock)($types = []) *(without [use function])*<br />
-> *[handle][handle-api]* Phony::[**mock**](#facade.mock)($types = []) *(static)*
+> *[handle][handle-api]* Phony::[**mock**](#facade.mock)($types = []) *(without [use function])*
 
 Create a new [full mock], and return a [mock handle].
 
@@ -4839,8 +4778,7 @@ can be passed without being wrapped in an array.*
 ----
 
 > *[handle][handle-api]* [**partialMock**](#facade.partialMock)($types = [], $arguments = []) *(with [use function])*<br />
-> *[handle][handle-api]* x\\[**partialMock**](#facade.partialMock)($types = [], $arguments = []) *(without [use function])*<br />
-> *[handle][handle-api]* Phony::[**partialMock**](#facade.partialMock)($types = [], $arguments = []) *(static)*
+> *[handle][handle-api]* Phony::[**partialMock**](#facade.partialMock)($types = [], $arguments = []) *(without [use function])*
 
 Create a new [partial mock], and return a [mock handle].
 
@@ -4859,8 +4797,7 @@ the original constructor will not be called at all.*
 ----
 
 > *[builder][mock-builder-api]* [**mockBuilder**](#facade.mockBuilder)($types = []) *(with [use function])*<br />
-> *[builder][mock-builder-api]* x\\[**mockBuilder**](#facade.mockBuilder)($types = []) *(without [use function])*<br />
-> *[builder][mock-builder-api]* Phony::[**mockBuilder**](#facade.mockBuilder)($types = []) *(static)*
+> *[builder][mock-builder-api]* Phony::[**mockBuilder**](#facade.mockBuilder)($types = []) *(without [use function])*
 
 Create a new [mock builder].
 
@@ -4873,8 +4810,7 @@ can be passed without being wrapped in an array.*
 ----
 
 > *[handle][handle-api]* [**on**](#facade.on)($mock) *(with [use function])*<br />
-> *[handle][handle-api]* x\\[**on**](#facade.on)($mock) *(without [use function])*<br />
-> *[handle][handle-api]* Phony::[**on**](#facade.on)($mock) *(static)*
+> *[handle][handle-api]* Phony::[**on**](#facade.on)($mock) *(without [use function])*
 
 Returns a [mock handle] for `$mock`.
 
@@ -4883,8 +4819,7 @@ Returns a [mock handle] for `$mock`.
 ----
 
 > *[handle][handle-api]* [**onStatic**](#facade.onStatic)($class) *(with [use function])*<br />
-> *[handle][handle-api]* x\\[**onStatic**](#facade.onStatic)($class) *(without [use function])*<br />
-> *[handle][handle-api]* Phony::[**onStatic**](#facade.onStatic)($class) *(static)*
+> *[handle][handle-api]* Phony::[**onStatic**](#facade.onStatic)($class) *(without [use function])*
 
 Returns a static [static handle] for `$class`.
 
@@ -4895,8 +4830,7 @@ Returns a static [static handle] for `$class`.
 ----
 
 > *[stub][stub-api]* [**stub**](#facade.stub)($callback = null) *(with [use function])*<br />
-> *[stub][stub-api]* x\\[**stub**](#facade.stub)($callback = null) *(without [use function])*<br />
-> *[stub][stub-api]* Phony::[**stub**](#facade.stub)($callback = null) *(static)*
+> *[stub][stub-api]* Phony::[**stub**](#facade.stub)($callback = null) *(without [use function])*
 
 Create a new [stub].
 
@@ -4907,8 +4841,7 @@ Create a new [stub].
 ----
 
 > *[spy][spy-api]* [**spy**](#facade.spy)($callback = null) *(with [use function])*<br />
-> *[spy][spy-api]* x\\[**spy**](#facade.spy)($callback = null) *(without [use function])*<br />
-> *[spy][spy-api]* Phony::[**spy**](#facade.spy)($callback = null) *(static)*
+> *[spy][spy-api]* Phony::[**spy**](#facade.spy)($callback = null) *(without [use function])*
 
 Create a new [spy].
 
@@ -4919,8 +4852,7 @@ Create a new [spy].
 ----
 
 > *[stub][stub-api]* [**stubGlobal**](#facade.stubGlobal)($function, $namespace) *(with [use function])*<br />
-> *[stub][stub-api]* x\\[**stubGlobal**](#facade.stubGlobal)($function, $namespace) *(without [use function])*<br />
-> *[stub][stub-api]* Phony::[**stubGlobal**](#facade.stubGlobal)($function, $namespace) *(static)*
+> *[stub][stub-api]* Phony::[**stubGlobal**](#facade.stubGlobal)($function, $namespace) *(without [use function])*
 
 Create a stub of a function in the global namespace, and declare it as a
 function in another namespace.
@@ -4935,8 +4867,7 @@ default. This differs from stubs created by other methods.*
 ----
 
 > *[spy][spy-api]* [**spyGlobal**](#facade.spyGlobal)($function, $namespace) *(with [use function])*<br />
-> *[spy][spy-api]* x\\[**spyGlobal**](#facade.spyGlobal)($function, $namespace) *(without [use function])*<br />
-> *[spy][spy-api]* Phony::[**spyGlobal**](#facade.spyGlobal)($function, $namespace) *(static)*
+> *[spy][spy-api]* Phony::[**spyGlobal**](#facade.spyGlobal)($function, $namespace) *(without [use function])*
 
 Create a spy of a function in the global namespace, and declare it as a function
 in another namespace.
@@ -4948,8 +4879,7 @@ in another namespace.
 ----
 
 > *void* [**restoreGlobalFunctions**](#facade.restoreGlobalFunctions)() *(with [use function])*<br />
-> *void* x\\[**restoreGlobalFunctions**](#facade.restoreGlobalFunctions)() *(without [use function])*<br />
-> *void* Phony::[**restoreGlobalFunctions**](#facade.restoreGlobalFunctions)() *(static)*
+> *void* Phony::[**restoreGlobalFunctions**](#facade.restoreGlobalFunctions)() *(without [use function])*
 
 Restores the behavior of any functions in the global namespace that have been
 altered via [`spyGlobal()`](#facade.spyGlobal) or
@@ -4962,8 +4892,7 @@ altered via [`spyGlobal()`](#facade.spyGlobal) or
 ----
 
 > *[matcher][matcher-api]* [**any**](#facade.any)() *(with [use function])*<br />
-> *[matcher][matcher-api]* x\\[**any**](#facade.any)() *(without [use function])*<br />
-> *[matcher][matcher-api]* Phony::[**any**](#facade.any)() *(static)*
+> *[matcher][matcher-api]* Phony::[**any**](#facade.any)() *(without [use function])*
 
 Create a new ["any" matcher].
 
@@ -4972,8 +4901,7 @@ Create a new ["any" matcher].
 ----
 
 > *[matcher][matcher-api]* [**equalTo**](#facade.equalTo)($value) *(with [use function])*<br />
-> *[matcher][matcher-api]* x\\[**equalTo**](#facade.equalTo)($value) *(without [use function])*<br />
-> *[matcher][matcher-api]* Phony::[**equalTo**](#facade.equalTo)($value) *(static)*
+> *[matcher][matcher-api]* Phony::[**equalTo**](#facade.equalTo)($value) *(without [use function])*
 
 Create a new ["equal to" matcher].
 
@@ -4982,8 +4910,7 @@ Create a new ["equal to" matcher].
 ----
 
 > *[matcher][matcher-api]* [**anInstanceOf**](#facade.anInstanceOf)($type) *(with [use function])*<br />
-> *[matcher][matcher-api]* x\\[**anInstanceOf**](#facade.anInstanceOf)($type) *(without [use function])*<br />
-> *[matcher][matcher-api]* Phony::[**anInstanceOf**](#facade.anInstanceOf)($type) *(static)*
+> *[matcher][matcher-api]* Phony::[**anInstanceOf**](#facade.anInstanceOf)($type) *(without [use function])*
 
 Create a new ["instance of" matcher].
 
@@ -4995,8 +4922,7 @@ object.*
 ----
 
 > *[wildcard][wildcard-api]* [**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = -1) *(with [use function])*<br />
-> *[wildcard][wildcard-api]* x\\[**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = -1) *(without [use function])*<br />
-> *[wildcard][wildcard-api]* Phony::[**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = -1) *(static)*
+> *[wildcard][wildcard-api]* Phony::[**wildcard**](#facade.wildcard)($value = null, $minimumArguments = 0, $maximumArguments = -1) *(without [use function])*
 
 Create a new ["wildcard" matcher].
 
@@ -5010,8 +4936,7 @@ argument that the wildcard matches.*
 ----
 
 > *mixed* [**emptyValue**](#facade.emptyValue)($type) *(with [use function])*<br />
-> *mixed* x\\[**emptyValue**](#facade.emptyValue)($type) *(without [use function])*<br />
-> *mixed* Phony::[**emptyValue**](#facade.emptyValue)($type) *(static)*
+> *mixed* Phony::[**emptyValue**](#facade.emptyValue)($type) *(without [use function])*
 
 Create a new "empty" value.
 
@@ -5042,9 +4967,7 @@ Type                        | Empty value
 
 > *[verification][verification-api]* [**inOrder**](#facade.inOrder)(...$events) *(with [use function])*
 > throws [AssertionException]<br />
-> *[verification][verification-api]* x\\[**inOrder**](#facade.inOrder)(...$events) *(without [use function])*
-> throws [AssertionException]<br />
-> *[verification][verification-api]* Phony::[**inOrder**](#facade.inOrder)(...$events) *(static)*
+> *[verification][verification-api]* Phony::[**inOrder**](#facade.inOrder)(...$events) *(without [use function])*
 > throws [AssertionException]
 
 Throws an exception unless the supplied events happened in chronological order.
@@ -5058,8 +4981,7 @@ Throws an exception unless the supplied events happened in chronological order.
 ----
 
 > *[verification][verification-api]|null* [**checkInOrder**](#facade.checkInOrder)(...$events) *(with [use function])*<br />
-> *[verification][verification-api]|null* x\\[**checkInOrder**](#facade.checkInOrder)(...$events) *(without [use function])*<br />
-> *[verification][verification-api]|null* Phony::[**checkInOrder**](#facade.checkInOrder)(...$events) *(static)*
+> *[verification][verification-api]|null* Phony::[**checkInOrder**](#facade.checkInOrder)(...$events) *(without [use function])*
 
 Checks if the supplied events happened in chronological order.
 
@@ -5073,9 +4995,7 @@ Checks if the supplied events happened in chronological order.
 
 > *[verification][verification-api]* [**anyOrder**](#facade.anyOrder)(...$events) *(with [use function])*
 > throws [AssertionException]<br />
-> *[verification][verification-api]* x\\[**anyOrder**](#facade.anyOrder)(...$events) *(without [use function])*
-> throws [AssertionException]<br />
-> *[verification][verification-api]* Phony::[**anyOrder**](#facade.anyOrder)(...$events) *(static)*
+> *[verification][verification-api]* Phony::[**anyOrder**](#facade.anyOrder)(...$events) *(without [use function])*
 > throws [AssertionException]
 
 Throws an exception unless at least one event is supplied.
@@ -5089,8 +5009,7 @@ Throws an exception unless at least one event is supplied.
 ----
 
 > *[verification][verification-api]|null* [**checkAnyOrder**](#facade.checkAnyOrder)(...$events) *(with [use function])*<br />
-> *[verification][verification-api]|null* x\\[**checkAnyOrder**](#facade.checkAnyOrder)(...$events) *(without [use function])*<br />
-> *[verification][verification-api]|null* Phony::[**checkAnyOrder**](#facade.checkAnyOrder)(...$events) *(static)*
+> *[verification][verification-api]|null* Phony::[**checkAnyOrder**](#facade.checkAnyOrder)(...$events) *(without [use function])*
 
 Checks that at least one event is supplied.
 
@@ -5103,8 +5022,7 @@ Checks that at least one event is supplied.
 ----
 
 > *void* [**setUseColor**](#facade.setUseColor)($useColor) *(with [use function])*<br />
-> *void* x\\[**setUseColor**](#facade.setUseColor)($useColor) *(without [use function])*<br />
-> *void* Phony::[**setUseColor**](#facade.setUseColor)($useColor) *(static)*
+> *void* Phony::[**setUseColor**](#facade.setUseColor)($useColor) *(without [use function])*
 
 Turn on or off the use of [ANSI colored output].
 
@@ -5117,8 +5035,7 @@ Turn on or off the use of [ANSI colored output].
 ----
 
 > *int* [**setExportDepth**](#facade.setExportDepth)($depth) *(with [use function])*<br />
-> *int* x\\[**setExportDepth**](#facade.setExportDepth)($depth) *(without [use function])*<br />
-> *int* Phony::[**setExportDepth**](#facade.setExportDepth)($depth) *(static)*
+> *int* Phony::[**setExportDepth**](#facade.setExportDepth)($depth) *(without [use function])*
 
 Set the default export depth, and return the previous depth.
 
@@ -8298,7 +8215,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [generator iterations that perform multiple actions]: #generator-iterations-that-perform-multiple-actions
 [hamcrest matchers]: #hamcrest-matchers
 [help]: #help
-[importing a static facade]: #importing-a-static-facade
 [importing with use function]: #importing-with-use-function
 [importing without use function]: #importing-without-use-function
 [importing]: #importing
