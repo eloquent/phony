@@ -13,8 +13,8 @@ open-coverage:
 	open coverage/index.html
 
 .PHONY: lint
-lint: test/bin/php-cs-fixer
-	test/bin/php-cs-fixer fix
+lint:
+	vendor/bin/php-cs-fixer fix
 
 .PHONY: install
 install:
@@ -56,7 +56,3 @@ publish: web
 .PHONY: test-fixtures
 test-fixtures:
 	scripts/build-test-fixtures
-
-test/bin/php-cs-fixer:
-	curl -sSL http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -o test/bin/php-cs-fixer
-	chmod +x test/bin/php-cs-fixer
