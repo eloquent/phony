@@ -243,7 +243,7 @@ Install the [eloquent/phony] package, then:
 ```php
 use function Eloquent\Phony\mock;
 
-$handle = mock('ClassA');
+$handle = mock(ClassA::class);
 $handle->methodA->with('argument')->returns('value');
 
 $mock = $handle->get();
@@ -261,7 +261,7 @@ use function Eloquent\Phony\mock;
 
 describe('Phony', function () {
     it('integrates with Peridot', function () {
-        $handle = mock('ClassA');
+        $handle = mock(ClassA::class);
         $handle->methodA->with('argument')->returns('value');
 
         $mock = $handle->get();
@@ -297,7 +297,7 @@ use function Eloquent\Phony\Pho\mock;
 
 describe('Phony', function () {
     it('integrates with Pho', function () {
-        $handle = mock('ClassA');
+        $handle = mock(ClassA::class);
         $handle->methodA->with('argument')->returns('value');
 
         $mock = $handle->get();
@@ -319,7 +319,7 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 {
     public function testIntegration()
     {
-        $handle = Phony::mock('ClassA');
+        $handle = Phony::mock(ClassA::class);
         $handle->methodA->with('argument')->returns('value');
 
         $mock = $handle->get();
@@ -341,7 +341,7 @@ class PhonyTest extends UnitTestCase
 {
     public function testIntegration()
     {
-        $handle = Phony::mock('ClassA');
+        $handle = Phony::mock(ClassA::class);
         $handle->methodA->with('argument')->returns('value');
 
         $mock = $handle->get();
@@ -381,7 +381,7 @@ can be imported from the appropriate namespace and used directly:
 ```php
 use function Eloquent\Phony\mock;
 
-$handle = mock('ClassA');
+$handle = mock(ClassA::class);
 ```
 
 #### Importing without [use function]
@@ -392,7 +392,7 @@ alias can be used to make short references to the same functions:
 ```php
 use Eloquent\Phony as x;
 
-$handle = x\mock('ClassA');
+$handle = x\mock(ClassA::class);
 ```
 
 #### Importing a static facade
@@ -403,7 +403,7 @@ traditional approach:
 ```php
 use Eloquent\Phony\Phony;
 
-$handle = Phony::mock('ClassA');
+$handle = Phony::mock(ClassA::class);
 ```
 
 ## Mocks
@@ -417,9 +417,9 @@ Any class, interface, or trait can be mocked. To create a mock, use
 [`mock()`](#facade.mock):
 
 ```php
-$handle = mock('ClassA');        // with `use function`
-$handle = x\mock('ClassA');      // without `use function`
-$handle = Phony::mock('ClassA'); // static
+$handle = mock(ClassA::class);        // with `use function`
+$handle = x\mock(ClassA::class);      // without `use function`
+$handle = Phony::mock(ClassA::class); // static
 ```
 
 The object returned by [`mock()`](#facade.mock) is **not** the mock object
@@ -451,16 +451,16 @@ $mock = $handle->get();
 default. To create a partial mock, use [`partialMock()`](#facade.partialMock):
 
 ```php
-$handle = partialMock('ClassA');        // with `use function`
-$handle = x\partialMock('ClassA');      // without `use function`
-$handle = Phony::partialMock('ClassA'); // static
+$handle = partialMock(ClassA::class);        // with `use function`
+$handle = x\partialMock(ClassA::class);      // without `use function`
+$handle = Phony::partialMock(ClassA::class); // static
 ```
 
 Constructor arguments can be passed to [`partialMock()`](#facade.partialMock) as
 the second parameter:
 
 ```php
-$handle = partialMock('ClassA', ['argumentA', 'argumentB']);
+$handle = partialMock(ClassA::class, ['argumentA', 'argumentB']);
 ```
 
 ### Proxy mocks
@@ -491,7 +491,7 @@ function listen(Animal $animal)
 
 $cat = new Cat();
 
-$handle = mock('Animal'); // a generic animal mock
+$handle = mock(Animal::class); // a generic animal mock
 $handle->proxy($cat);     // now it behaves exactly like `$cat`
 
 listen($handle->get());  // outputs 'It said: Meow meow meow? Meow.'
@@ -501,7 +501,7 @@ The [`proxy()`](#handle.proxy) method is also fluent, meaning that mock creation
 and proxying can be done in a single expression:
 
 ```php
-$handle = mock('Animal')->proxy(new Cat());
+$handle = mock(Animal::class)->proxy(new Cat());
 ```
 
 ### Mocking multiple types
@@ -511,17 +511,17 @@ array of types to [`mock()`](#facade.mock) or
 [`partialMock()`](#facade.partialMock):
 
 ```php
-$handle = mock(['InterfaceA', 'InterfaceB', 'TraitA']);        // with `use function`
-$handle = x\mock(['InterfaceA', 'InterfaceB', 'TraitA']);      // without `use function`
-$handle = Phony::mock(['InterfaceA', 'InterfaceB', 'TraitA']); // static
+$handle = mock([InterfaceA::class, InterfaceB::class, TraitA::class]);        // with `use function`
+$handle = x\mock([InterfaceA::class, InterfaceB::class, TraitA::class]);      // without `use function`
+$handle = Phony::mock([InterfaceA::class, InterfaceB::class, TraitA::class]); // static
 ```
 
 A single base class may also be mocked with other types:
 
 ```php
-$handle = mock(['ClassA', 'InterfaceA', 'TraitA']);        // with `use function`
-$handle = x\mock(['ClassA', 'InterfaceA', 'TraitA']);      // without `use function`
-$handle = Phony::mock(['ClassA', 'InterfaceA', 'TraitA']); // static
+$handle = mock([ClassA::class, InterfaceA::class, TraitA::class]);        // with `use function`
+$handle = x\mock([ClassA::class, InterfaceA::class, TraitA::class]);      // without `use function`
+$handle = Phony::mock([ClassA::class, InterfaceA::class, TraitA::class]); // static
 ```
 
 ### Ad hoc mocks
@@ -673,7 +673,7 @@ classes. To modify the behavior of a static method, use
 existing handle, or a mock instance:
 
 ```php
-$handle = mock('DateTime');
+$handle = mock(DateTime::class);
 $mock = $handle->get();
 
 $static = onStatic($handle);        // with `use function`
@@ -711,7 +711,7 @@ necessary to defer construction of the mock object. To accomplish this, pass
 will cause *Phony* to bypass the constructor:
 
 ```php
-$handle = partialMock('ClassA', null);
+$handle = partialMock(ClassA::class, null);
 ```
 
 Note that omitting the second argument will **not** have the same effect as
@@ -752,7 +752,7 @@ The label can be changed at any time by using [`setLabel()`](#handle.setLabel)
 on any mock handle associated with the mock:
 
 ```php
-$handle = mock('ClassA');
+$handle = mock(ClassA::class);
 $mock = $handle->get();
 
 $handle->setLabel('a');
@@ -765,7 +765,7 @@ The [`setLabel()`](#handle.setLabel) method is also fluent, meaning that mock
 creation and label setting can be done in a single expression:
 
 ```php
-$mock = mock('ClassA')->setLabel('a')->get();
+$mock = mock(ClassA::class)->setLabel('a')->get();
 ```
 
 When a verification fails for a labeled mock, the output is similar to the
@@ -783,8 +783,8 @@ Mock handles are returned when [`mock()`](#facade.mock) or
 [`partialMock()`](#facade.partialMock) is called:
 
 ```php
-$handle = mock('ClassA');
-$handle = partialMock('ClassA');
+$handle = mock(ClassA::class);
+$handle = partialMock(ClassA::class);
 ```
 
 They can also be retrieved at any time from a mock instance, or another handle,
@@ -820,8 +820,8 @@ stubbed mock methods). Returning a handle from a stub is equivalent to returning
 the mock itself:
 
 ```php
-$database = mock('Database');
-$result = mock('Result');
+$database = mock(Database::class);
+$result = mock(Result::class);
 
 // these two statements are equivalent
 $database->select->returns($result);
@@ -833,9 +833,9 @@ Another common situation is the use of a mock handle when
 to use of the mock itself:
 
 ```php
-$database = mock('Database');
-$query = mock('Query');
-$result = mock('Result');
+$database = mock(Database::class);
+$query = mock(Query::class);
+$result = mock(Result::class);
 
 // these two statements are equivalent
 $database->select->with($query)->returns($result);
@@ -845,8 +845,8 @@ $database->select->with($query->get())->returns($result);
 The same is true when [verifying that a spy was called with specific arguments]:
 
 ```php
-$database = mock('Database');
-$query = mock('Query');
+$database = mock(Database::class);
+$query = mock(Query::class);
 
 // these two statements are equivalent
 $database->select->calledWith($query);
@@ -872,7 +872,7 @@ Types to mock can be passed directly to [`mockBuilder()`](#facade.mockBuilder)
 in a similar fashion to [`mock()`](#facade.mock):
 
 ```php
-$builder = mockBuilder(['ClassA', 'InterfaceA']);
+$builder = mockBuilder([ClassA::class, InterfaceA::class]);
 ```
 
 #### Customizing the mock class
@@ -882,7 +882,7 @@ the generated mock class:
 
 ```php
 $builder
-    ->like('ClassA', 'InterfaceA')
+    ->like(ClassA::class, InterfaceA::class)
     ->named('CustomClassName')
     ->addMethod(
         'methodA',
@@ -1070,7 +1070,7 @@ class Cat
     }
 }
 
-$handle = partialMock('Cat');
+$handle = partialMock(Cat::class);
 $cat = $handle->get();
 
 $cat->speak();            // outputs 'Meow.'
@@ -1379,7 +1379,7 @@ When stubs are retrieved from a [mock], their "self" value is automatically set
 to the mock itself:
 
 ```php
-$handle = mock('ClassA');
+$handle = mock(ClassA::class);
 $mock = $handle->get();
 $stub = $handle->methodA;
 
@@ -1666,13 +1666,13 @@ the mock itself. This allows mocking of [fluent interfaces] with the
 [`returnsSelf()`](#stub.returnsSelf) method:
 
 ```php
-interface FluentInterface
+interface Fluent
 {
     public function methodA();
     public function methodB();
 }
 
-$handle = mock('FluentInterface')
+$handle = mock(Fluent::class)
 $handle->methodA->returnsSelf();
 $handle->methodB->returns('x');
 
@@ -1821,7 +1821,7 @@ class Cat
     }
 }
 
-$handle = mock('Cat');
+$handle = mock(Cat::class);
 $handle->speak->returns('Meow.');
 $handle->speak(true)->forwards();
 
@@ -4147,7 +4147,7 @@ To verify that there was no interaction with a mock, use
 [`noInteraction()`](#handle.noInteraction) on any [mock handle]:
 
 ```php
-$handle = mock('ClassA');
+$handle = mock(ClassA::class);
 $mock = $handle->get();
 
 $handle->noInteraction(); // passes
@@ -4351,15 +4351,15 @@ In the following example, note that differing mock behaviors are ignored, but
 differing labels are not:
 
 ```php
-$matcher = equalTo(mock('ClassX')->setLabel('x')->get());
+$matcher = equalTo(mock(ClassX::class)->setLabel('x')->get());
 
-$a = mock('ClassX')->setLabel('x');
+$a = mock(ClassX::class)->setLabel('x');
 $a->methodX->returns('x');
 
 echo $matcher->matches($a->get()) ? 'true' : 'false'; // outputs 'true'
 
-$b = mock('ClassX')->setLabel('y');
-$c = mock('ClassX');
+$b = mock(ClassX::class)->setLabel('y');
+$c = mock(ClassX::class);
 
 echo $matcher->matches($b->get()) ? 'true' : 'false'; // outputs 'false'
 echo $matcher->matches($c->get()) ? 'true' : 'false'; // outputs 'false'
@@ -4370,8 +4370,8 @@ used to differentiate calls without requiring the use of an 'identical to'
 matcher:
 
 ```php
-$a = mock('ClassX')->get();
-$b = mock('ClassX')->get();
+$a = mock(ClassX::class)->get();
+$b = mock(ClassX::class)->get();
 
 $stub = stub();
 $stub->with($a)->returns('a');
@@ -4526,7 +4526,7 @@ $inner = (object) ['a' => 1];
 $value = (object) ['b' => $inner, 'c' => $inner];
 // $value is exported as '#0{b: #1{a: 1}, c: &1{}}'
 
-$inner = mock('ClassA')->setLabel('mock-label');
+$inner = mock(ClassA::class)->setLabel('mock-label');
 $value = [$inner, $inner];
 // $value is exported as '#0[handle#1(PhonyMock_ClassA_0#0{}[mock-label]), &1()]'
 ```
@@ -4669,7 +4669,7 @@ output. In addition, if a [label][labeling mocks] has been set on the mock, this
 will be included in the output:
 
 ```php
-$handle = mock('ClassA')->setLabel('mock-label');
+$handle = mock(ClassA::class)->setLabel('mock-label');
 
 $mock = $handle->get();
 // $mock is exported as 'PhonyMock_ClassA_0#0{}[mock-label]'
@@ -4679,7 +4679,7 @@ When a [mock handle] is exported, it is represented as a wrapper around the mock
 itself:
 
 ```php
-$handle = mock('ClassA')->setLabel('mock-label');
+$handle = mock(ClassA::class)->setLabel('mock-label');
 // $handle is exported as 'handle#1(PhonyMock_ClassA_0#0{}[mock-label])'
 ```
 
@@ -4712,7 +4712,7 @@ $stub = stub()->setLabel('stub-label');
 In the case of method stubs, class name information is also included:
 
 ```php
-$handle = mock('ClassA')->setLabel('mock-label');
+$handle = mock(ClassA::class)->setLabel('mock-label');
 $staticHandle = onStatic($handle);
 
 $stub = $handle->methodA->setLabel('stub-label');
