@@ -223,7 +223,7 @@ Alternatively, [@ezzatron] may be contacted directly via [Twitter].
 ### Using this documentation
 
 - The documentation can be searched with the standard search shortcut:
-    - <kbd>⌘</kbd> + <kbd>F</kbd> for Mac OS
+    - <kbd>⌘</kbd> + <kbd>F</kbd> for macOS and OS X
     - <kbd>Ctrl</kbd> + <kbd>F</kbd> for other platforms
 - The menu automatically opens to the correct section as the documentation is
   scrolled.
