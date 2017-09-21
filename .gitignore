@@ -1,7 +1,6 @@
 /build/
 /coverage/
 /doc/*.html
-/test/bin/php-cs-fixer
 /vendor/
 /web/
 /.php_cs.cache
