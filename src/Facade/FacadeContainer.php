@@ -11,6 +11,7 @@ use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Difference\DifferenceEngine;
+use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventOrderVerifier;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Hamcrest\HamcrestMatcherDriver;
@@ -24,6 +25,7 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Mock\MockGenerator;
 use Eloquent\Phony\Reflection\FeatureDetector;
@@ -41,15 +43,18 @@ use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 
 /**
- * Used for implementing facade drivers.
+ * A service container for Phony facades.
  */
-trait FacadeDriverTrait
+class FacadeContainer
 {
-    private function initializeFacadeDriver(
-        AssertionRecorder $assertionRecorder
-    ) {
-        $this->sequences = [];
-
+    /**
+     * Construct a new facade container.
+     *
+     * @param AssertionRecorder $assertionRecorder The assertion recorder to use.
+     */
+    public function __construct(AssertionRecorder $assertionRecorder)
+    {
+        $sequences = [];
         $anyMatcher = new AnyMatcher();
         $objectIdSequence = Sequencer::sequence('exporter-object-id');
         $invocableInspector = new InvocableInspector();
@@ -64,7 +69,7 @@ trait FacadeDriverTrait
         $functionSignatureInspector =
             new FunctionSignatureInspector($featureDetector);
         $mockClassLabelSequence = Sequencer::sequence('mock-class-label');
-        $this->sequences[] = $mockClassLabelSequence;
+        $sequences[] = $mockClassLabelSequence;
         $mockGenerator = new MockGenerator(
             $mockClassLabelSequence,
             $functionSignatureInspector,
@@ -89,7 +94,7 @@ trait FacadeDriverTrait
             $invoker
         );
         $stubLabelSequence = Sequencer::sequence('stub-label');
-        $this->sequences[] = $stubLabelSequence;
+        $sequences[] = $stubLabelSequence;
         $stubFactory = new StubFactory(
             $stubLabelSequence,
             $matcherFactory,
@@ -101,7 +106,7 @@ trait FacadeDriverTrait
         );
         $clock = new SystemClock('microtime');
         $eventSequence = Sequencer::sequence('event-sequence-number');
-        $this->sequences[] = $eventSequence;
+        $sequences[] = $eventSequence;
         $eventFactory = new CallEventFactory(
             $eventSequence,
             $clock
@@ -117,7 +122,7 @@ trait FacadeDriverTrait
             $eventFactory
         );
         $spyLabelSequence = Sequencer::sequence('spy-label');
-        $this->sequences[] = $spyLabelSequence;
+        $sequences[] = $spyLabelSequence;
         $spyFactory = new SpyFactory(
             $spyLabelSequence,
             $callFactory,
@@ -181,7 +186,7 @@ trait FacadeDriverTrait
             $invoker
         );
         $mockLabelSequence = Sequencer::sequence('mock-label');
-        $this->sequences[] = $mockLabelSequence;
+        $sequences[] = $mockLabelSequence;
         $mockFactory = new MockFactory(
             $mockLabelSequence,
             $mockGenerator,
@@ -225,6 +230,7 @@ trait FacadeDriverTrait
         $this->assertionRenderer = $assertionRenderer;
         $this->differenceEngine = $differenceEngine;
         $this->emptyValueFactory = $emptyValueFactory;
+        $this->sequences = $sequences;
     }
 
     public $mockBuilderFactory;
@@ -238,5 +244,5 @@ trait FacadeDriverTrait
     public $assertionRenderer;
     public $differenceEngine;
     public $emptyValueFactory;
-    protected $sequences;
+    public $sequences;
 }

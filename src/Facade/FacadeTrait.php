@@ -40,7 +40,9 @@ trait FacadeTrait
      */
     public static function mockBuilder($types = []): MockBuilder
     {
-        return static::driver()->mockBuilderFactory->create($types);
+        $container = self::$globals::$container;
+
+        return $container->mockBuilderFactory->create($types);
     }
 
     /**
@@ -56,10 +58,10 @@ trait FacadeTrait
      */
     public static function mock($types = []): InstanceHandle
     {
-        $driver = static::driver();
+        $container = self::$globals::$container;
 
-        return $driver->handleFactory->instanceHandle(
-            $driver->mockBuilderFactory->create($types)->full()
+        return $container->handleFactory->instanceHandle(
+            $container->mockBuilderFactory->create($types)->full()
         );
     }
 
@@ -83,10 +85,11 @@ trait FacadeTrait
         $types = [],
         $arguments = []
     ): InstanceHandle {
-        $driver = static::driver();
+        $container = self::$globals::$container;
 
-        return $driver->handleFactory->instanceHandle(
-            $driver->mockBuilderFactory->create($types)->partialWith($arguments)
+        return $container->handleFactory->instanceHandle(
+            $container->mockBuilderFactory->create($types)
+                ->partialWith($arguments)
         );
     }
 
@@ -100,7 +103,9 @@ trait FacadeTrait
      */
     public static function on($mock): InstanceHandle
     {
-        return static::driver()->handleFactory->instanceHandle($mock);
+        $container = self::$globals::$container;
+
+        return $container->handleFactory->instanceHandle($mock);
     }
 
     /**
@@ -113,7 +118,9 @@ trait FacadeTrait
      */
     public static function onStatic($class): StaticHandle
     {
-        return static::driver()->handleFactory->staticHandle($class);
+        $container = self::$globals::$container;
+
+        return $container->handleFactory->staticHandle($class);
     }
 
     /**
@@ -125,8 +132,9 @@ trait FacadeTrait
      */
     public static function spy(callable $callback = null): SpyVerifier
     {
-        return
-            static::driver()->spyVerifierFactory->createFromCallback($callback);
+        $container = self::$globals::$container;
+
+        return $container->spyVerifierFactory->createFromCallback($callback);
     }
 
     /**
@@ -142,7 +150,9 @@ trait FacadeTrait
         string $function,
         string $namespace
     ): SpyVerifier {
-        return static::driver()->spyVerifierFactory
+        $container = self::$globals::$container;
+
+        return $container->spyVerifierFactory
             ->createGlobal($function, $namespace);
     }
 
@@ -155,8 +165,9 @@ trait FacadeTrait
      */
     public static function stub(callable $callback = null): StubVerifier
     {
-        return static::driver()->stubVerifierFactory
-            ->createFromCallback($callback);
+        $container = self::$globals::$container;
+
+        return $container->stubVerifierFactory->createFromCallback($callback);
     }
 
     /**
@@ -175,7 +186,9 @@ trait FacadeTrait
         string $function,
         string $namespace
     ): StubVerifier {
-        return static::driver()->stubVerifierFactory
+        $container = self::$globals::$container;
+
+        return $container->stubVerifierFactory
             ->createGlobal($function, $namespace);
     }
 
@@ -185,7 +198,9 @@ trait FacadeTrait
      */
     public static function restoreGlobalFunctions()
     {
-        return static::driver()->functionHookManager->restoreGlobalFunctions();
+        $container = self::$globals::$container;
+
+        return $container->functionHookManager->restoreGlobalFunctions();
     }
 
     /**
@@ -197,7 +212,9 @@ trait FacadeTrait
      */
     public static function checkInOrder(...$events)
     {
-        return static::driver()->eventOrderVerifier->checkInOrder(...$events);
+        $container = self::$globals::$container;
+
+        return $container->eventOrderVerifier->checkInOrder(...$events);
     }
 
     /**
@@ -211,7 +228,9 @@ trait FacadeTrait
      */
     public static function inOrder(...$events)
     {
-        return static::driver()->eventOrderVerifier->inOrder(...$events);
+        $container = self::$globals::$container;
+
+        return $container->eventOrderVerifier->inOrder(...$events);
     }
 
     /**
@@ -224,7 +243,9 @@ trait FacadeTrait
      */
     public static function checkAnyOrder(...$events)
     {
-        return static::driver()->eventOrderVerifier->checkAnyOrder(...$events);
+        $container = self::$globals::$container;
+
+        return $container->eventOrderVerifier->checkAnyOrder(...$events);
     }
 
     /**
@@ -238,7 +259,9 @@ trait FacadeTrait
      */
     public static function anyOrder(...$events)
     {
-        return static::driver()->eventOrderVerifier->anyOrder(...$events);
+        $container = self::$globals::$container;
+
+        return $container->eventOrderVerifier->anyOrder(...$events);
     }
 
     /**
@@ -248,7 +271,9 @@ trait FacadeTrait
      */
     public static function any(): Matcher
     {
-        return static::driver()->matcherFactory->any();
+        $container = self::$globals::$container;
+
+        return $container->matcherFactory->any();
     }
 
     /**
@@ -260,7 +285,9 @@ trait FacadeTrait
      */
     public static function equalTo($value): Matcher
     {
-        return static::driver()->matcherFactory->equalTo($value, false);
+        $container = self::$globals::$container;
+
+        return $container->matcherFactory->equalTo($value, false);
     }
 
     /**
@@ -272,7 +299,9 @@ trait FacadeTrait
      */
     public static function anInstanceOf($type): Matcher
     {
-        return static::driver()->matcherFactory->anInstanceOf($type);
+        $container = self::$globals::$container;
+
+        return $container->matcherFactory->anInstanceOf($type);
     }
 
     /**
@@ -291,7 +320,9 @@ trait FacadeTrait
         int $minimumArguments = 0,
         int $maximumArguments = -1
     ): WildcardMatcher {
-        return static::driver()->matcherFactory
+        $container = self::$globals::$container;
+
+        return $container->matcherFactory
             ->wildcard($value, $minimumArguments, $maximumArguments);
     }
 
@@ -304,7 +335,9 @@ trait FacadeTrait
      */
     public static function emptyValue(ReflectionType $type)
     {
-        return static::driver()->emptyValueFactory->fromType($type);
+        $container = self::$globals::$container;
+
+        return $container->emptyValueFactory->fromType($type);
     }
 
     /**
@@ -318,7 +351,9 @@ trait FacadeTrait
      */
     public static function setExportDepth(int $depth): int
     {
-        return static::driver()->exporter->setDepth($depth);
+        $container = self::$globals::$container;
+
+        return $container->exporter->setDepth($depth);
     }
 
     /**
@@ -330,7 +365,9 @@ trait FacadeTrait
      */
     public static function setUseColor(bool $useColor = null)
     {
-        static::driver()->assertionRenderer->setUseColor($useColor);
-        static::driver()->differenceEngine->setUseColor($useColor);
+        $container = self::$globals::$container;
+
+        $container->assertionRenderer->setUseColor($useColor);
+        $container->differenceEngine->setUseColor($useColor);
     }
 }

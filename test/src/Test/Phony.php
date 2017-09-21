@@ -3,6 +3,7 @@
 namespace Eloquent\Phony\Test;
 
 use Eloquent\Phony\Facade\FacadeTrait;
+use Eloquent\Phony\Facade\Globals;
 
 /**
  * A facade for Phony integration tests.
@@ -13,11 +14,12 @@ class Phony
 
     public static function reset()
     {
-        self::driver()->reset();
+        Globals::$container->exporter->reset();
+
+        foreach (Globals::$container->sequences as $sequence) {
+            $sequence->reset();
+        }
     }
 
-    protected static function driver()
-    {
-        return TestFacadeDriver::instance();
-    }
+    private static $globals = Globals::class;
 }
