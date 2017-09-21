@@ -16,5 +16,3 @@ class Globals
      */
     public static $container;
 }
-
-Globals::$container = new FacadeContainer();

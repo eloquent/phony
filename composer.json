@@ -26,6 +26,7 @@
             "Eloquent\\Phony\\": "src"
         },
         "files": [
+            "src/initialize.php",
             "src/functions.php"
         ]
     },
