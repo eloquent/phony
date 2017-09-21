@@ -200,7 +200,7 @@ trait FacadeTrait
     {
         $container = self::$globals::$container;
 
-        return $container->functionHookManager->restoreGlobalFunctions();
+        $container->functionHookManager->restoreGlobalFunctions();
     }
 
     /**
