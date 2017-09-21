@@ -13,7 +13,7 @@ open-coverage:
 	open coverage/index.html
 
 .PHONY: lint
-lint:
+lint: install
 	vendor/bin/php-cs-fixer fix
 
 .PHONY: install
