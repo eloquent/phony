@@ -1,20 +1,20 @@
 #!/usr/bin/env php
 <?php
 
-use Eloquent\Phony as x;
+use function Eloquent\Phony\mock;
 use Eloquent\Phony\Test\TestClassA;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
 // should record passing mock assertions
-$handle = x\mock(TestClassA::class);
+$handle = mock(TestClassA::class);
 $mock = $handle->get();
 $mock->testClassAMethodA('aardvark', 'bonobo');
 
 $handle->testClassAMethodA->calledWith('aardvark', 'bonobo');
 
 // should record failing mock assertions
-$handle = x\mock(TestClassA::class);
+$handle = mock(TestClassA::class);
 $mock = $handle->get();
 $mock->testClassAMethodA('aardvark', ['bonobo', 'capybara', 'dugong']);
 $mock->testClassAMethodA('armadillo', ['bonobo', 'chameleon', 'dormouse']);

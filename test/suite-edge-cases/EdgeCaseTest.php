@@ -1,9 +1,11 @@
 <?php
 
-use Eloquent\Phony as x;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\EdgeCase as TestNamespace;
 use PHPUnit\Framework\TestCase;
+use function Eloquent\Phony\mock;
+use function Eloquent\Phony\partialMock;
+use function Eloquent\Phony\stubGlobal;
 
 class EdgeCaseTest extends TestCase
 {
@@ -18,7 +20,7 @@ class EdgeCaseTest extends TestCase
             $this->markTestSkipped('Requires the SimpleXMLElement class.');
         }
 
-        $full = x\mock('SimpleXMLElement');
+        $full = mock('SimpleXMLElement');
         $mock = $full->get();
 
         $this->assertTrue($mock instanceof SimpleXMLElement);
@@ -30,7 +32,7 @@ class EdgeCaseTest extends TestCase
             $this->markTestSkipped('Requires the SimpleXMLElement class.');
         }
 
-        $partial = x\partialMock('SimpleXMLElement', ['<root><sub></sub></root>']);
+        $partial = partialMock('SimpleXMLElement', ['<root><sub></sub></root>']);
         $mock = $partial->get();
 
         $this->assertTrue($mock instanceof SimpleXMLElement);
@@ -43,7 +45,7 @@ class EdgeCaseTest extends TestCase
             $this->markTestSkipped('Requires the SimpleXMLIterator class.');
         }
 
-        $full = x\mock('SimpleXMLIterator');
+        $full = mock('SimpleXMLIterator');
         $mock = $full->get();
 
         $this->assertTrue($mock instanceof SimpleXMLIterator);
@@ -55,7 +57,7 @@ class EdgeCaseTest extends TestCase
             $this->markTestSkipped('Requires the SimpleXMLIterator class.');
         }
 
-        $partial = x\partialMock('SimpleXMLIterator', ['<root><sub></sub></root>']);
+        $partial = partialMock('SimpleXMLIterator', ['<root><sub></sub></root>']);
         $mock = $partial->get();
 
         $this->assertTrue($mock instanceof SimpleXMLIterator);
@@ -65,12 +67,7 @@ class EdgeCaseTest extends TestCase
     public function typeData()
     {
         $data = [];
-
-        if (function_exists('get_declared_traits')) {
-            $typeNames = array_merge(get_declared_classes(), get_declared_interfaces(), get_declared_traits());
-        } else {
-            $typeNames = array_merge(get_declared_classes(), get_declared_interfaces());
-        }
+        $typeNames = array_merge(get_declared_classes(), get_declared_interfaces());
 
         foreach ($typeNames as $typeName) {
             $reflector = new ReflectionClass($typeName);
@@ -107,10 +104,10 @@ class EdgeCaseTest extends TestCase
     public function testTypes($typeName)
     {
         // echo "class $typeName\n";
-        // echo x\mockBuilder($typeName)->source();
+        // echo mockBuilder($typeName)->source();
         // ob_flush();
 
-        $handle = x\mock($typeName);
+        $handle = mock($typeName);
         $mock = $handle->get();
 
         $this->assertTrue($mock instanceof $typeName);
@@ -147,7 +144,7 @@ class EdgeCaseTest extends TestCase
         // echo "function $functionName\n";
         // ob_flush();
 
-        $stub = x\stubGlobal($functionName, TestNamespace::class);
+        $stub = stubGlobal($functionName, TestNamespace::class);
 
         $this->assertTrue((bool) $stub);
     }
