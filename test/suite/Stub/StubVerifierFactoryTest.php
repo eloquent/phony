@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;

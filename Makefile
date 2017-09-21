@@ -14,7 +14,7 @@ open-coverage:
 
 .PHONY: lint
 lint: test/bin/php-cs-fixer
-	test/bin/php-cs-fixer fix --using-cache no
+	test/bin/php-cs-fixer fix
 
 .PHONY: install
 install:

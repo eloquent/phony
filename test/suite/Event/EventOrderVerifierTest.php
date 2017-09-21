@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Eloquent\Phony\Event;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;

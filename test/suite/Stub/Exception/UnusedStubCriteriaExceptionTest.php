@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Eloquent\Phony\Stub\Exception;
 
 use Eloquent\Phony\Matcher\MatcherFactory;

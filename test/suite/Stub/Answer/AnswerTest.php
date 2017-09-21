@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Eloquent\Phony\Stub\Answer;
 
 use Eloquent\Phony\Call\Arguments;

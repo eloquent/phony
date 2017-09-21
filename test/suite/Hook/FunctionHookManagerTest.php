@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Eloquent\Phony\Hook;
 
 use Eloquent\Phony\Hook\Exception\FunctionExistsException;
@@ -26,7 +28,7 @@ class FunctionHookManagerTest extends TestCase
         );
 
         $this->namespace = TestNamespace::class;
-        $this->name = 'phony_' . md5(mt_rand());
+        $this->name = 'phony_' . md5(strval(mt_rand()));
         $this->fullName = $this->namespace . '\\' . $this->name;
     }
 

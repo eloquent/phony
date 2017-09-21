@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Eloquent\Phony\Assertion;
 
 use Eloquent\Phony\Assertion\Exception\AssertionException;

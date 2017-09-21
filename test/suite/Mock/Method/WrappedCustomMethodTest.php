@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Invocation\Invoker;

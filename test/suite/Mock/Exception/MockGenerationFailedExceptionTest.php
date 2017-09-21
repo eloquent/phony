@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Eloquent\Phony\Mock\Exception;
 
 use Eloquent\Phony\Mock\Builder\MockDefinition;

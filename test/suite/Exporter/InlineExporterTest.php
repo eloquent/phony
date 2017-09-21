@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Eloquent\Phony\Exporter;
 
 use Eloquent\Phony\Invocation\InvocableInspector;

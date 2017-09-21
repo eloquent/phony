@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Eloquent\Phony\Verification\Exception;
 
 use Eloquent\Phony\Verification\Cardinality;

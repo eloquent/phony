@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Eloquent\Phony\Mock\Builder\Method;
 
 use Eloquent\Phony\Test\TestClassA;

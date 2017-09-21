@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -41,7 +43,7 @@ class StubFactoryTest extends TestCase
         $defaultAnswerCallback = function ($stub) { $stub->forwards(); };
         $expected = new StubData(
             $callback,
-            0,
+            '0',
             $defaultAnswerCallback,
             $this->matcherFactory,
             $this->matcherVerifier,
