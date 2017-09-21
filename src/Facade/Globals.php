@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Facade;
 
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
-
 /**
  * A place for namespaced global state.
  */
@@ -19,4 +17,4 @@ class Globals
     public static $container;
 }
 
-Globals::$container = new FacadeContainer(new ExceptionAssertionRecorder());
+Globals::$container = new FacadeContainer();
