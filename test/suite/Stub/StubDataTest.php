@@ -23,7 +23,6 @@ class StubDataTest extends TestCase
     protected function setUp()
     {
         $this->callback = 'implode';
-        $this->self = (object) [];
         $this->label = 'label';
         $this->defaultAnswerCallback = function ($stub) {
             $stub->returns('default answer');
@@ -37,7 +36,6 @@ class StubDataTest extends TestCase
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new StubData(
             $this->callback,
-            $this->self,
             $this->label,
             $this->defaultAnswerCallback,
             $this->matcherFactory,
@@ -47,6 +45,9 @@ class StubDataTest extends TestCase
             $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
+
+        $this->self = (object) [];
+        $this->subject->setSelf($this->self);
 
         $this->emptyValueFactory->setStubVerifierFactory(StubVerifierFactory::instance());
         $this->emptyValueFactory->setMockBuilderFactory(MockBuilderFactory::instance());
@@ -145,17 +146,29 @@ class StubDataTest extends TestCase
 
     public function testConstructor()
     {
+        $this->subject = new StubData(
+            $this->callback,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->emptyValueFactory,
+            $this->generatorAnswerBuilderFactory
+        );
+
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame($this->callback, $this->subject->callback());
-        $this->assertSame($this->self, $this->subject->self());
+        $this->assertSame($this->subject, $this->subject->self());
         $this->assertSame($this->label, $this->subject->label());
         $this->assertSame($this->defaultAnswerCallback, $this->subject->defaultAnswerCallback());
     }
 
     public function testSetSelf()
     {
-        $this->assertSame($this->subject, $this->subject->setSelf($this->subject));
-        $this->assertSame($this->subject, $this->subject->self());
+        $self = (object) [];
+
         $this->assertSame($this->subject, $this->subject->setSelf($this->self));
         $this->assertSame($this->self, $this->subject->self());
     }
@@ -379,10 +392,8 @@ class StubDataTest extends TestCase
 
     public function testCallsWithSelfParameterAutoDetection()
     {
-        $self = (object) [];
         $subject = new StubData(
             null,
-            $self,
             $this->label,
             $this->defaultAnswerCallback,
             $this->matcherFactory,
@@ -392,6 +403,8 @@ class StubDataTest extends TestCase
             $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
+        $self = (object) [];
+        $subject->setSelf($self);
 
         $actual = null;
         $subject->callsWith(
@@ -705,10 +718,8 @@ class StubDataTest extends TestCase
 
     public function testDoesWithSelfParameterAutoDetection()
     {
-        $self = (object) [];
         $subject = new StubData(
             null,
-            $self,
             $this->label,
             $this->defaultAnswerCallback,
             $this->matcherFactory,
@@ -718,6 +729,8 @@ class StubDataTest extends TestCase
             $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
+        $self = (object) [];
+        $subject->setSelf($self);
         $actual = null;
         $subject->doesWith(
             function ($phonySelf) use (&$actual) {
@@ -748,7 +761,6 @@ class StubDataTest extends TestCase
     {
         $this->subject = new StubData(
             $this->callbackA,
-            $this->self,
             $this->label,
             $this->defaultAnswerCallback,
             $this->matcherFactory,
@@ -758,6 +770,7 @@ class StubDataTest extends TestCase
             $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
+        $this->subject->setSelf($this->self);
 
         $this->assertSame($this->subject, $this->subject->forwards([1, 2], true, true, true));
         $this->assertEquals(
@@ -836,7 +849,6 @@ class StubDataTest extends TestCase
     {
         $subject = new StubData(
             $callback,
-            $self,
             $this->label,
             $this->defaultAnswerCallback,
             $this->matcherFactory,
@@ -846,6 +858,7 @@ class StubDataTest extends TestCase
             $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
+        $subject->setSelf($self);
         $subject->forwards();
 
         $this->assertEquals($expected, call_user_func_array($subject, $arguments));
@@ -855,7 +868,6 @@ class StubDataTest extends TestCase
     {
         $this->subject = new StubData(
             $this->referenceCallback,
-            $this->self,
             $this->label,
             $this->defaultAnswerCallback,
             $this->matcherFactory,
@@ -906,7 +918,6 @@ class StubDataTest extends TestCase
     {
         $this->subject = new StubData(
             eval("return function (): $type {};"),
-            null,
             $this->label,
             $this->defaultAnswerCallback,
             $this->matcherFactory,
@@ -1144,7 +1155,6 @@ class StubDataTest extends TestCase
     public function testInvokeWithNoRules()
     {
         $stub = new StubData(
-            null,
             null,
             '',
             $this->defaultAnswerCallback,

@@ -279,7 +279,6 @@ trait HandleTrait
                     $this,
                     $returnValue
                 ),
-                $mock,
                 $this->state->defaultAnswerCallback
             );
         } elseif (isset($this->uncallableMethods[$key])) {
@@ -290,7 +289,6 @@ trait HandleTrait
                     $this,
                     $this->emptyValueFactory->fromFunction($method)
                 ),
-                $mock,
                 $this->state->defaultAnswerCallback
             );
         } elseif (isset($this->traitMethods[$key])) {
@@ -301,7 +299,6 @@ trait HandleTrait
                     $this->class->getMethod($name),
                     $this
                 ),
-                $mock,
                 $this->state->defaultAnswerCallback
             );
         } elseif (array_key_exists($key, $this->customMethods)) {
@@ -312,7 +309,6 @@ trait HandleTrait
                     $this,
                     $this->invoker
                 ),
-                $mock,
                 $this->state->defaultAnswerCallback
             );
         } else {
@@ -327,12 +323,11 @@ trait HandleTrait
 
             $stub = $this->stubFactory->create(
                 new WrappedParentMethod($this->callParentMethod, $method, $this),
-                $mock,
                 $this->state->defaultAnswerCallback
             );
         }
 
-        $stubVerifier = $this->stubVerifierFactory->create($stub);
+        $stubVerifier = $this->stubVerifierFactory->create($stub, $mock);
 
         if (!$this->state->isRecording) {
             $stubVerifier->stopRecording();

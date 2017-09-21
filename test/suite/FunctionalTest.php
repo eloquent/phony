@@ -351,13 +351,13 @@ class FunctionalTest extends TestCase
 
     public function testStubMagicSelf()
     {
-        $callback = function ($phonySelf) {
-            return $phonySelf;
-        };
+        $stub = x\stub(
+            function ($phonySelf) {
+                return $phonySelf;
+            }
+        )->forwards();
 
-        $stub = x\stub($callback)->forwards();
-
-        $this->assertSame($callback, $stub());
+        $this->assertSame($stub, $stub());
     }
 
     public function testStubReturnType()

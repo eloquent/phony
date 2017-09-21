@@ -1366,13 +1366,12 @@ echo $stub('a'); // outputs 'x'
 ### Stub "self" values
 
 All stubs have a special "self" value that is used in multiple ways by *Phony*.
-The self value defaults to the callback passed to [`stub()`](#facade.stub):
+The self value defaults to the stub itself:
 
 ```php
-$callback = function () {};
-$stub = stub($callback);
+$stub = stub();
 
-echo $stub->self() === $callback ? 'true' : 'false'; // outputs 'true'
+echo $stub->self() === $stub ? 'true' : 'false'; // outputs 'true'
 ```
 
 The self value can also be set manually by calling [`setSelf()`](#stub.setSelf):
@@ -1407,9 +1406,9 @@ echo $stub->self() === $mock ? 'true' : 'false'; // outputs 'true'
 A stubbed callback that has a first parameter named `$phonySelf`, regardless of
 the parameter's type, will receive the stub [self value] as the first argument.
 
-In the case of stubs created outside of a mock, this self value will be the
-callback passed to [`stub()`](#facade.stub), allowing recursive calls without
-creating an explicit reference to the callback:
+In the case of stubs created outside of a mock, this self value will be the stub
+itself, allowing recursive calls without creating an explicit reference to the
+callback:
 
 ```php
 $factorial = stub(
@@ -1418,7 +1417,7 @@ $factorial = stub(
             return 1;
         }
 
-        return $n * $phonySelf($phonySelf, $n - 1);
+        return $n * $phonySelf($n - 1);
     }
 );
 $factorial->forwards();

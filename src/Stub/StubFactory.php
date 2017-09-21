@@ -71,14 +71,12 @@ class StubFactory
      * Create a new stub.
      *
      * @param callable|null $callback              The callback, or null to create an anonymous stub.
-     * @param mixed         $self                  The self value.
      * @param callable|null $defaultAnswerCallback The callback to use when creating a default answer.
      *
      * @return Stub The newly created stub.
      */
     public function create(
         callable $callback = null,
-        $self = null,
         callable $defaultAnswerCallback = null
     ): Stub {
         if (null === $defaultAnswerCallback) {
@@ -88,7 +86,6 @@ class StubFactory
 
         return new StubData(
             $callback,
-            $self,
             strval($this->labelSequencer->next()),
             $defaultAnswerCallback,
             $this->matcherFactory,

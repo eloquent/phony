@@ -6,6 +6,8 @@
 - **[BC BREAK]** HHVM is no longer supported ([#216], [#219]).
 - **[BC BREAK]** Removed `inOrderSequence`, `checkInOrderSequence`,
   `anyOrderSequence`, and `checkAnyOrderSequence` from the facade ([#215]).
+- **[BC BREAK]** Stubs created outside of a mock now have their "self" value set
+  to the stub itself, instead of the stubbed callback ([#226]).
 - **[NEW]** Implemented `anInstanceOf()` ([#220]).
 - **[NEW]** Implemented `emptyValue()` ([#218]).
 - **[IMPROVED]** Support for PHP 7.2 features, including the `object` typehint
@@ -19,6 +21,7 @@
 [#220]: https://github.com/eloquent/phony/issues/220
 [#223]: https://github.com/eloquent/phony/issues/223
 [#224]: https://github.com/eloquent/phony/issues/224
+[#226]: https://github.com/eloquent/phony/issues/226
 
 ## 1.0.1 (2017-07-04)
 

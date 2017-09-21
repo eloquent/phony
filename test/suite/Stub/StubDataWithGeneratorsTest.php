@@ -17,7 +17,6 @@ class StubDataWithGeneratorsTest extends TestCase
     protected function setUp()
     {
         $this->callback = 'implode';
-        $this->self = (object) [];
         $this->label = 'label';
         $this->defaultAnswerCallback = function ($stub) {
             $stub->returns('default answer');
@@ -31,7 +30,6 @@ class StubDataWithGeneratorsTest extends TestCase
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->subject = new StubData(
             $this->callback,
-            $this->self,
             $this->label,
             $this->defaultAnswerCallback,
             $this->matcherFactory,
@@ -41,6 +39,9 @@ class StubDataWithGeneratorsTest extends TestCase
             $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
+
+        $this->self = (object) [];
+        $this->subject->setSelf($this->self);
 
         $this->callsA = [];
         $callsA = &$this->callsA;

@@ -38,11 +38,9 @@ class StubFactoryTest extends TestCase
     public function testCreate()
     {
         $callback = function () { return 'a'; };
-        $self = (object) [];
         $defaultAnswerCallback = function ($stub) { $stub->forwards(); };
         $expected = new StubData(
             $callback,
-            $self,
             0,
             $defaultAnswerCallback,
             $this->matcherFactory,
@@ -52,11 +50,11 @@ class StubFactoryTest extends TestCase
             $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory
         );
-        $actual = $this->subject->create($callback, $self, $defaultAnswerCallback);
+        $actual = $this->subject->create($callback, $defaultAnswerCallback);
 
         $this->assertEquals($expected, $actual);
         $this->assertSame('a', call_user_func($actual->callback()));
-        $this->assertSame($self, $actual->self());
+        $this->assertSame($actual, $actual->self());
     }
 
     public function testInstance()

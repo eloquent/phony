@@ -73,7 +73,7 @@ class StubVerifierFactoryTest extends TestCase
     public function testCreate()
     {
         $stub = $this->stubFactory->create();
-        $spy = $this->spyFactory->create($stub)->setLabel('0');
+        $spy = $this->spyFactory->create($stub)->setLabel('1');
         $expected = new StubVerifier(
             $stub,
             $spy,
@@ -86,11 +86,11 @@ class StubVerifierFactoryTest extends TestCase
             $this->assertionRenderer,
             $this->generatorAnswerBuilderFactory
         );
-        $actual = $this->subject->create($stub, $spy);
+        $expected->setSelf($expected);
+        $actual = $this->subject->create($stub);
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($stub, $actual->stub());
-        $this->assertSame($spy, $actual->spy());
     }
 
     public function testCreateDefaults()
@@ -109,6 +109,7 @@ class StubVerifierFactoryTest extends TestCase
             $this->assertionRenderer,
             $this->generatorAnswerBuilderFactory
         );
+        $expected->setSelf($expected);
         $actual = $this->subject->create();
 
         $this->assertEquals($expected, $actual);
@@ -131,6 +132,7 @@ class StubVerifierFactoryTest extends TestCase
             $this->assertionRenderer,
             $this->generatorAnswerBuilderFactory
         );
+        $expected->setSelf($expected);
         $actual = $this->subject->createFromCallback($callback);
 
         $this->assertEquals($expected, $actual);

@@ -23,10 +23,9 @@ class StubVerifierTest extends TestCase
     protected function setUp()
     {
         $this->callback = 'implode';
-        $this->self = (object) [];
         $this->label = 'label';
         $this->stubFactory = StubFactory::instance();
-        $this->stub = $this->stubFactory->create($this->callback, $this->self)->setLabel($this->label);
+        $this->stub = $this->stubFactory->create($this->callback)->setLabel($this->label);
         $this->spyFactory = SpyFactory::instance();
         $this->spy = $this->spyFactory->create($this->stub);
         $this->matcherFactory = MatcherFactory::instance();
@@ -49,6 +48,9 @@ class StubVerifierTest extends TestCase
             $this->assertionRenderer,
             $this->generatorAnswerBuilderFactory
         );
+
+        $this->self = (object) [];
+        $this->subject->setSelf($this->self);
 
         $this->callsA = [];
         $callsA = &$this->callsA;
@@ -156,10 +158,10 @@ class StubVerifierTest extends TestCase
 
     public function testSetSelf()
     {
-        $this->assertSame($this->subject, $this->subject->setSelf($this->subject));
-        $this->assertSame($this->subject, $this->subject->self());
-        $this->assertSame($this->subject, $this->subject->setSelf($this->self));
-        $this->assertSame($this->self, $this->subject->self());
+        $self = (object) [];
+
+        $this->assertSame($this->subject, $this->subject->setSelf($self));
+        $this->assertSame($self, $this->subject->self());
     }
 
     public function testSetDefaultAnswerCallback()
@@ -674,7 +676,7 @@ class StubVerifierTest extends TestCase
 
     public function testForwards()
     {
-        $this->stub = $this->stubFactory->create($this->callbackA, $this->self);
+        $this->stub = $this->stubFactory->create($this->callbackA);
         $this->spy = $this->spyFactory->create($this->stub);
         $this->subject = new StubVerifier(
             $this->stub,
@@ -688,6 +690,7 @@ class StubVerifierTest extends TestCase
             $this->assertionRenderer,
             $this->generatorAnswerBuilderFactory
         );
+        $this->subject->setSelf($this->self);
 
         $this->assertSame($this->subject, $this->subject->forwards([1, 2], true, true, true));
         $this->assertEquals(
@@ -764,7 +767,7 @@ class StubVerifierTest extends TestCase
      */
     public function testForwardsSelfParameterAutoDetection($callback, $self, $arguments, $expected)
     {
-        $stub = $this->stubFactory->create($callback, $self);
+        $stub = $this->stubFactory->create($callback);
         $stub->forwards();
         $spy = $this->spyFactory->create($stub);
         $subject = new StubVerifier(
@@ -779,13 +782,14 @@ class StubVerifierTest extends TestCase
             $this->assertionRenderer,
             $this->generatorAnswerBuilderFactory
         );
+        $subject->setSelf($self);
 
         $this->assertEquals($expected, call_user_func_array($subject, $arguments));
     }
 
     public function testForwardsWithReferenceParameters()
     {
-        $this->stub = $this->stubFactory->create($this->referenceCallback, $this->self);
+        $this->stub = $this->stubFactory->create($this->referenceCallback);
         $this->spy = $this->spyFactory->create($this->stub);
         $this->subject = new StubVerifier(
             $this->stub,
@@ -799,6 +803,7 @@ class StubVerifierTest extends TestCase
             $this->assertionRenderer,
             $this->generatorAnswerBuilderFactory
         );
+        $this->subject->setSelf($this->self);
         $a = null;
         $b = null;
         $c = null;

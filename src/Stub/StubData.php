@@ -51,7 +51,6 @@ class StubData implements Stub
      * Construct a new stub data instance.
      *
      * @param callable|null                 $callback                      The callback, or null to create an anonymous stub.
-     * @param mixed                         $self                          The self value.
      * @param string                        $label                         The label.
      * @param callable                      $defaultAnswerCallback         The callback to use when creating a default answer.
      * @param MatcherFactory                $matcherFactory                The matcher factory to use.
@@ -63,7 +62,6 @@ class StubData implements Stub
      */
     public function __construct(
         callable $callback = null,
-        $self,
         string $label,
         callable $defaultAnswerCallback,
         MatcherFactory $matcherFactory,
@@ -81,10 +79,7 @@ class StubData implements Stub
             $this->callback = $callback;
         }
 
-        if (empty($self)) {
-            $self = $this->callback;
-        }
-
+        $this->self = $this;
         $this->label = $label;
         $this->defaultAnswerCallback = $defaultAnswerCallback;
         $this->matcherFactory = $matcherFactory;
@@ -97,8 +92,6 @@ class StubData implements Stub
         $this->secondaryRequests = [];
         $this->answers = [];
         $this->rules = [];
-
-        $this->setSelf($self);
     }
 
     /**
@@ -122,10 +115,6 @@ class StubData implements Stub
      */
     public function setSelf($self): Stub
     {
-        if ($self === $this) {
-            $self = null;
-        }
-
         $this->self = $self;
 
         return $this;
@@ -138,11 +127,7 @@ class StubData implements Stub
      */
     public function self()
     {
-        if ($this->self) {
-            return $this->self;
-        }
-
-        return $this;
+        return $this->self;
     }
 
     /**

@@ -93,23 +93,22 @@ class StubVerifierFactory
     /**
      * Create a new stub verifier.
      *
+     * If the "self" value is omitted, it will be set to the verifier itself.
+     *
      * @param Stub|null $stub The stub, or null to create an anonymous stub.
-     * @param Spy|null  $spy  The spy, or null to spy on the supplied stub.
+     * @param mixed     $self The "self" value.
      *
      * @return StubVerifier The newly created stub verifier.
      */
-    public function create(Stub $stub = null, Spy $spy = null): StubVerifier
+    public function create(Stub $stub = null, $self = null): StubVerifier
     {
         if (!$stub) {
             $stub = $this->stubFactory->create();
         }
-        if (!$spy) {
-            $spy = $this->spyFactory->create($stub);
-        }
 
-        return new StubVerifier(
+        $verifier = new StubVerifier(
             $stub,
-            $spy,
+            $this->spyFactory->create($stub),
             $this->matcherFactory,
             $this->matcherVerifier,
             $this->generatorVerifierFactory,
@@ -119,6 +118,14 @@ class StubVerifierFactory
             $this->assertionRenderer,
             $this->generatorAnswerBuilderFactory
         );
+
+        if (func_num_args() > 1) {
+            $verifier->setSelf($self);
+        } else {
+            $verifier->setSelf($verifier);
+        }
+
+        return $verifier;
     }
 
     /**
@@ -132,7 +139,7 @@ class StubVerifierFactory
     {
         $stub = $this->stubFactory->create($callback);
 
-        return new StubVerifier(
+        $verifier = new StubVerifier(
             $stub,
             $this->spyFactory->create($stub),
             $this->matcherFactory,
@@ -144,6 +151,9 @@ class StubVerifierFactory
             $this->assertionRenderer,
             $this->generatorAnswerBuilderFactory
         );
+        $verifier->setSelf($verifier);
+
+        return $verifier;
     }
 
     /**
@@ -178,7 +188,7 @@ class StubVerifierFactory
         $spy = $this->spyFactory->create($stub);
         $this->functionHookManager->defineFunction($function, $namespace, $spy);
 
-        return new StubVerifier(
+        $verifier = new StubVerifier(
             $stub,
             $spy,
             $this->matcherFactory,
@@ -190,6 +200,9 @@ class StubVerifierFactory
             $this->assertionRenderer,
             $this->generatorAnswerBuilderFactory
         );
+        $verifier->setSelf($verifier);
+
+        return $verifier;
     }
 
     private static $instance;
