@@ -6,6 +6,7 @@
     - [Using this documentation]
     - [Example test suites]
     - [Standalone usage]
+    - [Kahlan usage]
     - [Peridot usage]
     - [Pho usage]
     - [PHPUnit usage]
@@ -199,6 +200,8 @@
 Available as various [Composer] packages, depending on the test framework in
 use:
 
+- For [Kahlan], use [eloquent/phony-kahlan] and import
+  `Eloquent\Phony\Kahlan`.
 - For [PHPUnit], use [eloquent/phony-phpunit] and import
   `Eloquent\Phony\Phpunit`.
 - For [Peridot], use [eloquent/phony-peridot] and import `Eloquent\Phony`.
@@ -249,6 +252,42 @@ $mock = $handle->get();
 
 assert($mock->methodA('argument') === 'value');
 $handle->methodA->calledWith('argument');
+```
+
+### [Kahlan] usage
+
+Install the [eloquent/phony-kahlan] package, then:
+
+```php
+use function Eloquent\Phony\Kahlan\mock;
+
+describe('Phony', function () {
+    it('integrates with Kahlan', function () {
+        $handle = mock('ClassA');
+        $handle->methodA->with('argument')->returns('value');
+
+        $mock = $handle->get();
+
+        expect($mock->methodA('argument'))->toBe('value');
+        $handle->methodA->calledWith('argument');
+    });
+});
+```
+
+The [eloquent/phony-kahlan] package also provides auto-wired mocks:
+
+```php
+use function Eloquent\Phony\Kahlan\on;
+
+describe('Phony for Kahlan', function () {
+    it('supports auto-wiring', function (ClassA $mock) {
+        $handle = on($mock);
+        $handle->methodA->with('argument')->returns('value');
+
+        expect($mock->methodA('argument'))->toBe('value');
+        $handle->methodA->calledWith('argument');
+    });
+});
 ```
 
 ### [Peridot] usage
@@ -358,6 +397,8 @@ exposes the same [API] through multiple namespaces. Integration is as simple as
 picking the correct [Composer] package for the framework in use, and importing
 the relevant namespace:
 
+- For [Kahlan], use [eloquent/phony-kahlan] and import
+  `Eloquent\Phony\Kahlan`.
 - For [PHPUnit], use [eloquent/phony-phpunit] and import
   `Eloquent\Phony\Phpunit`.
 - For [Peridot], use [eloquent/phony-peridot] and import `Eloquent\Phony`.
@@ -369,7 +410,7 @@ the relevant namespace:
 
 ### Importing
 
-There are three ways to import *Phony*'s [API]. The most appropriate choice will
+There are two ways to import *Phony*'s [API]. The most appropriate choice will
 depend on the test framework in use, and the user's preferred coding style.
 
 #### Importing with [use function]
@@ -478,9 +519,9 @@ function listen(Animal $animal)
 $cat = new Cat();
 
 $handle = mock(Animal::class); // a generic animal mock
-$handle->proxy($cat);     // now it behaves exactly like `$cat`
+$handle->proxy($cat);          // now it behaves exactly like `$cat`
 
-listen($handle->get());  // outputs 'It said: Meow meow meow? Meow.'
+listen($handle->get());        // outputs 'It said: Meow meow meow? Meow.'
 ```
 
 The [`proxy()`](#handle.proxy) method is also fluent, meaning that mock creation
@@ -739,7 +780,7 @@ $mock = $handle->get();
 
 $handle->setLabel('a');
 
-echo $handle->label(); // outputs 'a'
+echo $handle->label();   // outputs 'a'
 echo on($mock)->label(); // outputs 'a'
 ```
 
@@ -1157,7 +1198,7 @@ $stubA = stub(
     }
 );
 $stubB = stub(
-    function () : int {
+    function (): int {
         return 111;
     }
 );
@@ -1371,23 +1412,23 @@ callback passed to [`stub()`](#facade.stub), allowing recursive calls without
 creating an explicit reference to the callback:
 
 ```php
-$stub = stub(
-    function ($phonySelf, $n, $total = 1) {
-        if ($n < 2) {
-            return $total;
+$factorial = stub(
+    function ($phonySelf, $n) {
+        if (0 === $n) {
+            return 1;
         }
 
-        return $phonySelf($n - 1, $total * $n);
+        return $n * $phonySelf($phonySelf, $n - 1);
     }
 );
-$stub->forwards();
+$factorial->forwards();
 
-echo $stub(0); // outputs '1'
-echo $stub(1); // outputs '1'
-echo $stub(2); // outputs '2'
-echo $stub(3); // outputs '6'
-echo $stub(4); // outputs '24'
-echo $stub(5); // outputs '120'
+echo $factorial(0); // outputs '1'
+echo $factorial(1); // outputs '1'
+echo $factorial(2); // outputs '2'
+echo $factorial(3); // outputs '6'
+echo $factorial(4); // outputs '24'
+echo $factorial(5); // outputs '120'
 ```
 
 ### Stub rules and answers
@@ -4132,6 +4173,18 @@ improve the quality of a test suite.
 for numerous third-party matcher libraries.
 
 ### Matcher integrations
+
+#### [Kahlan] argument matchers
+
+[Kahlan] is a popular "describe-it" style testing framework.
+[Kahlan argument matchers] can be used in any *Phony* verification:
+
+```php
+$spy->calledWith(Arg::toBe('a'));
+```
+
+Kahlan argument matchers are supported when using the [eloquent/phony-kahlan]
+package.
 
 #### [Hamcrest] matchers
 
@@ -8229,6 +8282,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [invoking spies]: #invoking-spies
 [iterable spy substitution]: #iterable-spy-substitution
 [iterable verification caveats]: #iterable-verification-caveats
+[kahlan usage]: #kahlan-usage
 [labeling mocks]: #labeling-mocks
 [labeling spies]: #labeling-spies
 [license]: #license
@@ -8464,6 +8518,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [code smell]: https://en.wikipedia.org/wiki/Code_smell
 [composer]: http://getcomposer.org/
 [countable]: http://php.net/countable
+[eloquent/phony-kahlan]: https://packagist.org/packages/eloquent/phony-kahlan
 [eloquent/phony-peridot]: https://packagist.org/packages/eloquent/phony-peridot
 [eloquent/phony-pho]: https://packagist.org/packages/eloquent/phony-pho
 [eloquent/phony-phpunit]: https://packagist.org/packages/eloquent/phony-phpunit
@@ -8478,6 +8533,8 @@ For the full copyright and license information, please view the [LICENSE file].
 [global function fallback]: http://php.net/language.namespaces.fallback
 [hamcrest]: https://github.com/hamcrest/hamcrest-php
 [isolator]: https://github.com/IcecaveStudios/isolator
+[kahlan]: https://kahlan.github.io/docs/
+[kahlan argument matchers]: https://kahlan.github.io/docs/matchers.html#argument
 [liberator]: https://github.com/eloquent/liberator
 [license file]: https://github.com/eloquent/phony/blob/HEAD/LICENSE
 [peridot]: http://peridot-php.github.io/

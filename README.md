@@ -258,7 +258,7 @@ $handle->methodA->calledWith('argument');
 Install the [eloquent/phony-kahlan] package, then:
 
 ```php
-use function Eloquent\Phony\mock;
+use function Eloquent\Phony\Kahlan\mock;
 
 describe('Phony', function () {
     it('integrates with Kahlan', function () {
@@ -276,7 +276,7 @@ describe('Phony', function () {
 The [eloquent/phony-kahlan] package also provides auto-wired mocks:
 
 ```php
-use function Eloquent\Phony\on;
+use function Eloquent\Phony\Kahlan\on;
 
 describe('Phony for Kahlan', function () {
     it('supports auto-wiring', function (ClassA $mock) {
