@@ -2,6 +2,8 @@
 
 ## Next release
 
+See the [migration guide][migration-2] for detailed upgrade information.
+
 - **[BC BREAK]** PHP 5 is no longer supported ([#216]).
 - **[BC BREAK]** HHVM is no longer supported ([#216], [#219]).
 - **[BC BREAK]** Removed `inOrderSequence`, `checkInOrderSequence`,
@@ -15,6 +17,7 @@
 - **[IMPROVED]** Reduced the amount of output generated when mocks, stubs, and
   spies are encountered by `var_dump()` ([#223]).
 
+[migration-2]: MIGRATING.md#migrating-from-1-x-to-2-x
 [#215]: https://github.com/eloquent/phony/issues/215
 [#218]: https://github.com/eloquent/phony/issues/218
 [#219]: https://github.com/eloquent/phony/issues/219

@@ -5530,7 +5530,7 @@ Create a new [partial mock].
 
 ----
 
-> *mock* $builder->[**partialWith**](#builder.partialWith)($arguments = [], $label = '')
+> *mock* $builder->[**partialWith**](#builder.partialWith)($arguments = [])
 
 Create a new [partial mock].
 
