@@ -102,7 +102,11 @@ $factorial = stub(
             return 1;
         }
 
+        // with the "self" value set to the stub itself (2.x default):
         return $n * $phonySelf($n - 1);
+
+        // with the "self" value set to the wrapped callback (1.x default):
+        return $n * $phonySelf($phonySelf, $n - 1);
     }
 );
 $factorial->forwards();
