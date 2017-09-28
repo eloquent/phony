@@ -44,17 +44,17 @@ In addition; some values that were previously represented as a scalar value OR
     - [`wildcard()`]
     - [`$wildcard->maximumArguments()`]
 
-[mock labels]: http://eloquent-software.com/phony/latest/#labeling-mocks
-[spy labels]: http://eloquent-software.com/phony/latest/#labeling-spies
-[`$handle->setLabel()`]: http://eloquent-software.com/phony/latest/#handle.setLabel
-[`$handle->label()`]: http://eloquent-software.com/phony/latest/#handle.label
-[`$spy->setLabel()`]: http://eloquent-software.com/phony/latest/#spy.setLabel
-[`$spy->label()`]: http://eloquent-software.com/phony/latest/#spy.label
-[`$spy->between()`]: http://eloquent-software.com/phony/latest/#spy.between
-[`$call->between()`]: http://eloquent-software.com/phony/latest/#call.between
-[`$verification->between()`]: http://eloquent-software.com/phony/latest/#verification.between
-[`wildcard()`]: http://eloquent-software.com/phony/latest/#facade.wildcard
-[`$wildcard->maximumArguments()`]: http://eloquent-software.com/phony/latest/#wildcard.maximumArguments
+[mock labels]: http://eloquent-software.com/phony/2.0/#labeling-mocks
+[spy labels]: http://eloquent-software.com/phony/2.0/#labeling-spies
+[`$handle->setLabel()`]: http://eloquent-software.com/phony/2.0/#handle.setLabel
+[`$handle->label()`]: http://eloquent-software.com/phony/2.0/#handle.label
+[`$spy->setLabel()`]: http://eloquent-software.com/phony/2.0/#spy.setLabel
+[`$spy->label()`]: http://eloquent-software.com/phony/2.0/#spy.label
+[`$spy->between()`]: http://eloquent-software.com/phony/2.0/#spy.between
+[`$call->between()`]: http://eloquent-software.com/phony/2.0/#call.between
+[`$verification->between()`]: http://eloquent-software.com/phony/2.0/#verification.between
+[`wildcard()`]: http://eloquent-software.com/phony/2.0/#facade.wildcard
+[`$wildcard->maximumArguments()`]: http://eloquent-software.com/phony/2.0/#wildcard.maximumArguments
 
 ### Dynamic order verification functions removed
 
@@ -118,5 +118,5 @@ echo $factorial(5); // outputs '120'
 Stubs associated with a mock are not affected, and will continue to have their
 "self" value default to the mock instance.
 
-["self" value]: http://eloquent-software.com/phony/latest/#stub-self-values
-[magic "self" values]: http://eloquent-software.com/phony/latest/#magic-self-values
+["self" value]: http://eloquent-software.com/phony/2.0/#stub-self-values
+[magic "self" values]: http://eloquent-software.com/phony/2.0/#magic-self-values
