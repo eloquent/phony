@@ -17,7 +17,7 @@ See the [migration guide][migration-2] for detailed upgrade information.
 - **[IMPROVED]** Reduced the amount of output generated when mocks, stubs, and
   spies are encountered by `var_dump()` ([#223]).
 
-[migration-2]: MIGRATING.md#migrating-from-1-x-to-2-x
+[migration-2]: MIGRATING.md#migrating-from-1x-to-2x
 [#215]: https://github.com/eloquent/phony/issues/215
 [#218]: https://github.com/eloquent/phony/issues/218
 [#219]: https://github.com/eloquent/phony/issues/219

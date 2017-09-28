@@ -7,12 +7,17 @@
 - [Dynamic order verification functions removed]
 - [Improved "self" value behavior for stubs]
 
+[php 5 and hhvm are no longer supported]: #php-5-and-hhvm-are-no-longer-supported
+[more type hints, less squishy types]: #more-type-hints-less-squishy-types
+[dynamic order verification functions removed]: #dynamic-order-verification-functions-removed
+[improved "self" value behavior for stubs]: #improved-self-value-behavior-for-stubs
+
 ### PHP 5 and HHVM are no longer supported
 
-The *Phony* 2.x release is primarily about dropping support for PHP 5 and HHVM.
-If you only need to support PHP 7, then it is recommended that you upgrade to
-*Phony* `2.x`. If you still need to support PHP 5, then you are free to continue
-using the `1.x` version of *Phony*.
+The *Phony* `2.x` release is primarily about dropping support for PHP 5 and
+HHVM. If you only need to support PHP 7, then it is recommended that you upgrade
+to *Phony* `2.x`. If you still need to support PHP 5, then you are free to
+continue using the `1.x` version of *Phony*.
 
 ### More type hints, less squishy types
 
@@ -25,14 +30,17 @@ If your tests use [strict typing], and you are passing an incorrect type to
 In addition; some values that were previously represented as a scalar value OR
 `null`, have been changed to use a scalar value only:
 
-- [Mock labels] ans [spy labels] now use an empty string instead of `null` to
+- [Mock labels] and [spy labels] now use an empty string instead of `null` to
   represent "no label". Affects:
     - [`$handle->setLabel()`]
     - [`$handle->label()`]
     - [`$spy->setLabel()`]
     - [`$spy->label()`]
-- ["Wildcard" matchers] with unlimited "maximum arguments" values now use a
-  negative integer instead of `null` to represent "no maximum". Affects:
+- Places where a "no maximum" amount is represented now use negative integers
+  instead of `null`. Affects:
+    - [`$spy->between()`]
+    - [`$call->between()`]
+    - [`$verification->between()`]
     - [`wildcard()`]
     - [`$wildcard->maximumArguments()`]
 
@@ -42,7 +50,9 @@ In addition; some values that were previously represented as a scalar value OR
 [`$handle->label()`]: http://eloquent-software.com/phony/latest/#handle.label
 [`$spy->setLabel()`]: http://eloquent-software.com/phony/latest/#spy.setLabel
 [`$spy->label()`]: http://eloquent-software.com/phony/latest/#spy.label
-["wildcard" matchers]: http://eloquent-software.com/phony/latest/#the-wildcard-matcher
+[`$spy->between()`]: http://eloquent-software.com/phony/latest/#spy.between
+[`$call->between()`]: http://eloquent-software.com/phony/latest/#call.between
+[`$verification->between()`]: http://eloquent-software.com/phony/latest/#verification.between
 [`wildcard()`]: http://eloquent-software.com/phony/latest/#facade.wildcard
 [`$wildcard->maximumArguments()`]: http://eloquent-software.com/phony/latest/#wildcard.maximumArguments
 
