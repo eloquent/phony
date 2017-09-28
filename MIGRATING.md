@@ -5,12 +5,12 @@
 - [PHP 5 and HHVM are no longer supported]
 - [More type hints, less squishy types]
 - [Dynamic order verification functions removed]
-- [Improved "self" value behavior for stubs]
+- [Improved "self" value behavior for function-level stubs]
 
 [php 5 and hhvm are no longer supported]: #php-5-and-hhvm-are-no-longer-supported
 [more type hints, less squishy types]: #more-type-hints-less-squishy-types
 [dynamic order verification functions removed]: #dynamic-order-verification-functions-removed
-[improved "self" value behavior for stubs]: #improved-self-value-behavior-for-stubs
+[improved "self" value behavior for function-level stubs]: #improved-self-value-behavior-for-function-level-stubs
 
 ### PHP 5 and HHVM are no longer supported
 
@@ -83,7 +83,7 @@ anyOrder(...$events);
 anyOrderSequence(...$events);
 ```
 
-### Improved "self" value behavior for stubs
+### Improved "self" value behavior for function-level stubs
 
 By default, a function-level stub's ["self" value] is now set to the stub
 itself, rather than the callback wrapped by the stub. This was changed to
