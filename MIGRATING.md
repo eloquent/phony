@@ -2,17 +2,17 @@
 
 ## Migrating from `1.x` to `2.x`
 
-- [PHP 5 and HHVM are no longer supported]
+- [The `2.x` release only supports PHP 7]
 - [More type hints, less squishy types]
 - [Dynamic order verification functions removed]
 - [Improved "self" value behavior for function-level stubs]
 
-[php 5 and hhvm are no longer supported]: #php-5-and-hhvm-are-no-longer-supported
+[the `2.x` release only supports php 7]: #the-2x-release-only-supports-php-7
 [more type hints, less squishy types]: #more-type-hints-less-squishy-types
 [dynamic order verification functions removed]: #dynamic-order-verification-functions-removed
 [improved "self" value behavior for function-level stubs]: #improved-self-value-behavior-for-function-level-stubs
 
-### PHP 5 and HHVM are no longer supported
+### The `2.x` release only supports PHP 7
 
 The *Phony* `2.x` release is primarily about dropping support for PHP 5 and
 HHVM. If you only need to support PHP 7, then it is recommended that you upgrade
@@ -71,8 +71,8 @@ been made redundant:
 [`anyOrderSequence()`]: http://eloquent-software.com/phony/1.0/#facade.anyOrderSequence
 [`checkAnyOrderSequence()`]: http://eloquent-software.com/phony/1.0/#facade.checkAnyOrderSequence
 
-In order to perform dynamic order verification under Phony `2.x`, simply use the
-`...` operator:
+In order to perform dynamic order verification under *Phony* `2.x`, simply use
+the `...` operator:
 
 ```php
 $events = [$spyA->called(), $spyB->called()];
