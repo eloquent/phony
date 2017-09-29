@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 2.0.0 (2017-09-29)
 
 See the [migration guide][migration-2] for detailed upgrade information.
 
