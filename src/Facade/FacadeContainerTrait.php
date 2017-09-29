@@ -110,7 +110,8 @@ trait FacadeContainerTrait
             $invoker,
             $invocableInspector,
             $emptyValueFactory,
-            $generatorAnswerBuilderFactory
+            $generatorAnswerBuilderFactory,
+            $exporter
         );
         $clock = new SystemClock('microtime');
         $eventSequence = Sequencer::sequence('event-sequence-number');

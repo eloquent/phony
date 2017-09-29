@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub;
 
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -26,6 +27,7 @@ class StubFactoryTest extends TestCase
         $this->featureDetector = FeatureDetector::instance();
         $this->emptyValueFactory = new EmptyValueFactory($this->featureDetector);
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
+        $this->exporter = InlineExporter::instance();
         $this->subject = new StubFactory(
             $this->labelSequencer,
             $this->matcherFactory,
@@ -33,7 +35,8 @@ class StubFactoryTest extends TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
     }
 
@@ -50,7 +53,8 @@ class StubFactoryTest extends TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
         $actual = $this->subject->create($callback, $defaultAnswerCallback);
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -13,9 +14,11 @@ use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Exception\FinalReturnTypeException;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
+use Eloquent\Phony\Test\TestFinalClass;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -36,6 +39,7 @@ class StubDataTest extends TestCase
         $this->featureDetector = FeatureDetector::instance();
         $this->emptyValueFactory = new EmptyValueFactory($this->featureDetector);
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
+        $this->exporter = InlineExporter::instance();
         $this->subject = new StubData(
             $this->callback,
             $this->label,
@@ -45,7 +49,8 @@ class StubDataTest extends TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
 
         $this->self = (object) [];
@@ -157,7 +162,8 @@ class StubDataTest extends TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
 
         $this->assertFalse($this->subject->isAnonymous());
@@ -403,7 +409,8 @@ class StubDataTest extends TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
         $self = (object) [];
         $subject->setSelf($self);
@@ -729,7 +736,8 @@ class StubDataTest extends TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
         $self = (object) [];
         $subject->setSelf($self);
@@ -770,7 +778,8 @@ class StubDataTest extends TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
         $this->subject->setSelf($this->self);
 
@@ -858,7 +867,8 @@ class StubDataTest extends TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
         $subject->setSelf($self);
         $subject->forwards();
@@ -877,7 +887,8 @@ class StubDataTest extends TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
         $a = null;
         $b = null;
@@ -927,7 +938,8 @@ class StubDataTest extends TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
         $this->subject->returns();
 
@@ -940,6 +952,32 @@ class StubDataTest extends TestCase
         $this->subject->returns($handle);
 
         $this->assertSame($handle->get(), call_user_func($this->subject));
+    }
+
+    public function testReturnsWithDefaultValueAndFinalClassTypeHint()
+    {
+        $callback = function (): TestFinalClass {};
+        $callbackString = $this->exporter->exportCallable($callback);
+        $subject = new StubData(
+            $callback,
+            $this->label,
+            $this->defaultAnswerCallback,
+            $this->matcherFactory,
+            $this->matcherVerifier,
+            $this->invoker,
+            $this->invocableInspector,
+            $this->emptyValueFactory,
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
+        );
+        $subject->returns();
+
+        $this->expectException(FinalReturnTypeException::class);
+        $this->expectExceptionMessage(
+            "Unable to create a default return value for '$callbackString', which has a final return type of " .
+                "'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+        );
+        $subject();
     }
 
     public function testReturnsArgument()
@@ -1165,7 +1203,8 @@ class StubDataTest extends TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
 
         $this->assertSame('default answer', $stub());

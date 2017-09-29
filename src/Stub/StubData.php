@@ -5,17 +5,20 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\WrappedInvocableTrait;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Mock\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Method\WrappedCustomMethod;
 use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\Answer\CallRequest;
+use Eloquent\Phony\Stub\Exception\FinalReturnTypeException;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Exception;
 use Throwable;
@@ -59,6 +62,7 @@ class StubData implements Stub
      * @param InvocableInspector            $invocableInspector            The invocable inspector to use.
      * @param EmptyValueFactory             $emptyValueFactory             The empty value factory to use.
      * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
+     * @param Exporter                      $exporter                      The exporter to use.
      */
     public function __construct(
         callable $callback = null,
@@ -69,7 +73,8 @@ class StubData implements Stub
         Invoker $invoker,
         InvocableInspector $invocableInspector,
         EmptyValueFactory $emptyValueFactory,
-        GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory
+        GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory,
+        Exporter $exporter
     ) {
         if (!$callback) {
             $this->isAnonymous = true;
@@ -88,6 +93,7 @@ class StubData implements Stub
         $this->invocableInspector = $invocableInspector;
         $this->emptyValueFactory = $emptyValueFactory;
         $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
+        $this->exporter = $exporter;
 
         $this->secondaryRequests = [];
         $this->answers = [];
@@ -511,7 +517,15 @@ class StubData implements Stub
                             $type = $invocableInspector
                                 ->callbackReturnType($callback)
                         ) {
-                            $value = $emptyValueFactory->fromType($type);
+                            try {
+                                $value = $emptyValueFactory->fromType($type);
+                            } catch (FinalClassException $e){
+                                throw new FinalReturnTypeException(
+                                    $this->exporter->exportCallable($callback),
+                                    strval($type),
+                                    $e
+                                );
+                            }
                         } else {
                             $value = null;
                         }
@@ -768,6 +782,7 @@ class StubData implements Stub
     private $invocableInspector;
     private $emptyValueFactory;
     private $generatorAnswerBuilderFactory;
+    private $exporter;
     private $criteria;
     private $secondaryRequests;
     private $answers;

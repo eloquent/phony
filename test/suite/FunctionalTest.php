@@ -1,6 +1,5 @@
 <?php
 
-use Eloquent\Phony as x;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Mock\Exception\AnonymousClassException;
@@ -9,6 +8,7 @@ use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Spy\SpyVerifier;
+use Eloquent\Phony\Stub\Exception\FinalReturnTypeException;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Test;
 use Eloquent\Phony\Test\TestClassA;
@@ -17,6 +17,7 @@ use Eloquent\Phony\Test\TestClassC;
 use Eloquent\Phony\Test\TestClassD;
 use Eloquent\Phony\Test\TestClassG;
 use Eloquent\Phony\Test\TestClassI;
+use Eloquent\Phony\Test\TestClassWithFinalReturnType;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestInterfaceC;
 use Eloquent\Phony\Test\TestInterfaceD;
@@ -1497,5 +1498,35 @@ class FunctionalTest extends TestCase
         $output = ob_get_clean();
 
         $this->assertLessThan(200, strlen($output));
+    }
+
+    public function testFinalDefaultReturnValueWithStub()
+    {
+        $stub = stub(Test::class . '\testFunctionWithFinalReturnType');
+
+        $this->expectException(FinalReturnTypeException::class);
+        $this->expectExceptionMessage(
+            'Unable to create a default return value for ' .
+                "'Eloquent\\\\Phony\\\\Test\\\\testFunctionWithFinalReturnType', which has a final return type of " .
+                "'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+        );
+        $stub();
+    }
+
+    public function testFinalDefaultReturnValueWithMock()
+    {
+        $mock = mock(TestClassWithFinalReturnType::class)->get();
+
+        $this->expectException(FinalReturnTypeException::class);
+        $this->expectExceptionMessageRegExp(
+            '/^' .
+            preg_quote("Unable to create a default return value for 'TestClassWithFinalReturnType[", '/') .
+            '\d+' .
+            preg_quote(
+                "]->finalReturnType', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+            ) .
+            '$/'
+        );
+        $mock->finalReturnType();
     }
 }

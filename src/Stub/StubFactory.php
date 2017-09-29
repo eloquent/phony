@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub;
 
+use Eloquent\Phony\Exporter\Exporter;
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -31,7 +33,8 @@ class StubFactory
                 Invoker::instance(),
                 InvocableInspector::instance(),
                 EmptyValueFactory::instance(),
-                GeneratorAnswerBuilderFactory::instance()
+                GeneratorAnswerBuilderFactory::instance(),
+                InlineExporter::instance()
             );
         }
 
@@ -48,6 +51,7 @@ class StubFactory
      * @param InvocableInspector            $invocableInspector            The invocable inspector to use.
      * @param EmptyValueFactory             $emptyValueFactory             The empty value factory to use.
      * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
+     * @param Exporter                      $exporter                      The exporter to use.
      */
     public function __construct(
         Sequencer $labelSequencer,
@@ -56,7 +60,8 @@ class StubFactory
         Invoker $invoker,
         InvocableInspector $invocableInspector,
         EmptyValueFactory $emptyValueFactory,
-        GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory
+        GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory,
+        Exporter $exporter
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->matcherFactory = $matcherFactory;
@@ -65,6 +70,7 @@ class StubFactory
         $this->invocableInspector = $invocableInspector;
         $this->emptyValueFactory = $emptyValueFactory;
         $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
+        $this->exporter = $exporter;
     }
 
     /**
@@ -93,7 +99,8 @@ class StubFactory
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
     }
 
@@ -105,4 +112,5 @@ class StubFactory
     private $invocableInspector;
     private $emptyValueFactory;
     private $generatorAnswerBuilderFactory;
+    private $exporter;
 }

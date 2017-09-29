@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub;
 
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -30,6 +31,7 @@ class StubDataWithGeneratorsTest extends TestCase
         $this->featureDetector = FeatureDetector::instance();
         $this->emptyValueFactory = new EmptyValueFactory($this->featureDetector);
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
+        $this->exporter = InlineExporter::instance();
         $this->subject = new StubData(
             $this->callback,
             $this->label,
@@ -39,7 +41,8 @@ class StubDataWithGeneratorsTest extends TestCase
             $this->invoker,
             $this->invocableInspector,
             $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory
+            $this->generatorAnswerBuilderFactory,
+            $this->exporter
         );
 
         $this->self = (object) [];

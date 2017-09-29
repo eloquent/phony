@@ -14,6 +14,8 @@ See the [migration guide][migration-2] for detailed upgrade information.
 - **[NEW]** Implemented `emptyValue()` ([#218]).
 - **[IMPROVED]** Support for PHP 7.2 features, including the `object` typehint
   ([#224]).
+- **[IMPROVED]** Improved the error message produced when a default return value
+  cannot be produced, because the return type is a final class ([#228]).
 - **[IMPROVED]** Reduced the amount of output generated when mocks, stubs, and
   spies are encountered by `var_dump()` ([#223]).
 
@@ -25,6 +27,7 @@ See the [migration guide][migration-2] for detailed upgrade information.
 [#223]: https://github.com/eloquent/phony/issues/223
 [#224]: https://github.com/eloquent/phony/issues/224
 [#226]: https://github.com/eloquent/phony/issues/226
+[#228]: https://github.com/eloquent/phony/issues/228
 
 ## 1.0.1 (2017-07-04)
 

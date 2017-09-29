@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Stub;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
+use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
@@ -48,7 +49,8 @@ class StubVerifierFactoryTest extends TestCase
             Invoker::instance(),
             InvocableInspector::instance(),
             new EmptyValueFactory($this->featureDetector),
-            GeneratorAnswerBuilderFactory::instance()
+            GeneratorAnswerBuilderFactory::instance(),
+            InlineExporter::instance()
         );
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
         $this->iterableVerifierFactory = IterableVerifierFactory::instance();
