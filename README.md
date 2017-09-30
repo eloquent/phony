@@ -1,4 +1,4 @@
-# Phony
+<p align="center"><img alt="Phony" src="assets/img/phony-logo-with-text.png" width="400" /></p>
 
 *Mocks, stubs, and spies for PHP.*
 
