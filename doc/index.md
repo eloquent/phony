@@ -1,6 +1,7 @@
 # Phony
 
 - [Installation]
+- [Guides]
 - [Help]
 - [Usage]
     - [Using this documentation]
@@ -212,6 +213,13 @@ use:
   `Eloquent\Phony`.
 
 See [Integration with test frameworks].
+
+## Guides
+
+In addition to this documentation, the following guides are available, focusing
+on particular topics related to *Phony*:
+
+- [Phony and Kahlan by example]
 
 ## Help
 
@@ -8265,6 +8273,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [generating mock classes from a builder]: #generating-mock-classes-from-a-builder
 [generator and iterable verification]: #generator-and-iterable-verification
 [generator iterations that perform multiple actions]: #generator-iterations-that-perform-multiple-actions
+[guides]: #guides
 [hamcrest matchers]: #hamcrest-matchers
 [help]: #help
 [importing with use function]: #importing-with-use-function
@@ -8532,12 +8541,13 @@ For the full copyright and license information, please view the [LICENSE file].
 [global function fallback]: http://php.net/language.namespaces.fallback
 [hamcrest]: https://github.com/hamcrest/hamcrest-php
 [isolator]: https://github.com/IcecaveStudios/isolator
-[kahlan]: https://kahlan.github.io/docs/
 [kahlan argument matchers]: https://kahlan.github.io/docs/matchers.html#argument
+[kahlan]: https://kahlan.github.io/docs/
 [liberator]: https://github.com/eloquent/liberator
 [license file]: https://github.com/eloquent/phony/blob/HEAD/LICENSE
 [peridot]: http://peridot-php.github.io/
 [pho]: https://github.com/danielstjules/pho
+[phony and kahlan by example]: kahlan-by-example
 [phony-examples]: https://github.com/eloquent/phony-examples
 [phpunit matchers]: https://phpunit.de/manual/current/en/appendixes.assertions.html#appendixes.assertions.assertThat
 [phpunit]: https://phpunit.de/

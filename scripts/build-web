@@ -7,58 +7,91 @@ echo 'Generating website... ';
 
 passthru('mkdir -p build');
 
-$hash = sha1_file('doc/index.md');
-$content = null;
-
 if (file_exists('build/web.json')) {
-    $meta = json_decode(file_get_contents('build/web.json'));
-    $needsRender = $meta->hash !== $hash;
-    $content = $meta->content;
+    $meta = json_decode(file_get_contents('build/web.json'), true);
 } else {
-    $needsRender = true;
+    $meta = [];
 }
 
-if ($needsRender) {
-    $header = "Content-type: text/plain\r\n";
+$markdownPaths = glob('doc/*.md');
+$markdownHashes = array_combine(
+    $markdownPaths,
+    array_map('sha1_file', $markdownPaths)
+);
+$markdownDirty = array_combine(
+    $markdownPaths,
+    array_map(
+        function ($markdownPath) use ($meta, $markdownHashes) {
+            $lastHash = $meta[$markdownPath]['hash'] ?? null;
 
-    if ($token = getenv('GITHUB_TOKEN')) {
-        $header .= "Authorization: token $token\r\n";
-    }
+            return $markdownHashes[$markdownPath] !== $lastHash;
+        },
+        $markdownPaths
+    )
+);
 
-    $content = strtr(
-        file_get_contents(
-            'https://api.github.com/markdown/raw',
-            false,
-            stream_context_create(
-                [
-                    'http' => [
-                        'user_agent' => 'PHP',
-                        'header' => $header,
-                        'method' => 'POST',
-                        'content' => file_get_contents('doc/index.md'),
-                    ],
-                ]
-            )
-        ),
-        [
-            'id="user-content-' => 'id="',
-            'name="user-content-' => 'name="',
-        ]
-    );
+$isDirty = array_reduce(
+    $markdownDirty,
+    function ($isDirty, $pathIsDirty) {
+        return $isDirty || $pathIsDirty;
+    },
+    false
+);
 
-    file_put_contents(
-        'build/web.json',
-        json_encode(
-            ['content' => $content, 'hash' => $hash],
-            JSON_PRETTY_PRINT
-        )
-    );
+if (!$isDirty) {
+    echo "nothing to do.\n";
+    exit;
+}
+
+passthru('rm -rf web');
+passthru('mkdir -p web');
+
+$httpHeaders = "Content-type: text/plain\r\n";
+
+if ($token = getenv('GITHUB_TOKEN')) {
+    $httpHeaders .= "Authorization: token $token\r\n";
 }
 
 $header = file_get_contents('assets/web/header.tpl.html');
 $footer = file_get_contents('assets/web/footer.tpl.html');
-$content = rtrim($content, "\n");
-$content = <<<EOD
+
+$newMeta = [];
+
+foreach ($markdownDirty as $markdownPath => $isDirty) {
+    if ($isDirty) {
+        $markdownContent = file_get_contents($markdownPath);
+        $content = strtr(
+            file_get_contents(
+                'https://api.github.com/markdown/raw',
+                false,
+                stream_context_create(
+                    [
+                        'http' => [
+                            'user_agent' => 'PHP',
+                            'header' => $httpHeaders,
+                            'method' => 'POST',
+                            'content' => $markdownContent,
+                        ],
+                    ]
+                )
+            ),
+            [
+                'id="user-content-' => 'id="',
+                'name="user-content-' => 'name="',
+            ]
+        );
+        $content = rtrim($content, "\n");
+
+        $newMeta[$markdownPath] = [
+            'content' => $content,
+            'hash' => sha1($markdownContent),
+        ];
+    } else {
+        $content = $meta[$markdownPath]['content'];
+        $newMeta[$markdownPath] = $meta[$markdownPath];
+    }
+
+    $content = <<<EOD
 $header
 <!-- START content -->
 
@@ -69,15 +102,17 @@ $content
 $footer
 EOD;
 
-passthru('rm -rf web');
-passthru('mkdir -p web');
+    $htmlPath = sprintf('web/%s.html', basename($markdownPath, '.md'));
+    file_put_contents($htmlPath, $content);
 
-file_put_contents('web/index.html', $content);
+}
 
 passthru('cp -a assets/web/css web/');
 passthru('cp -a assets/web/data web/');
 passthru('cp -a assets/web/img web/');
 passthru('cp -a assets/web/js web/');
 passthru('cp -a doc/img web/');
+
+file_put_contents('build/web.json', json_encode($newMeta, JSON_PRETTY_PRINT));
 
 echo "done.\n";
