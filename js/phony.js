@@ -16,6 +16,9 @@ var run = function () {
                 return;
             }
 
+            var pageMatch = window.location.pathname.match(/\/([^/]+)$/)
+            var page = pageMatch ? pageMatch[1] : ''
+
             var versions = JSON.parse(request.responseText);
             var currentVersion = document.body.getAttribute('data-version');
             var versionList = document.getElementById('versions');
@@ -24,7 +27,10 @@ var run = function () {
             var latestItem = document.createElement('li');
             var latest = document.createElement('a');
             latest.textContent = 'latest (' + versions[0] + ')';
-            latest.setAttribute('href', '../latest/' + window.location.hash);
+            latest.setAttribute(
+                'href',
+                '../latest/' + page + window.location.hash
+            );
 
             if (isLatest) {
                 latest.setAttribute('class', 'current');
@@ -40,7 +46,7 @@ var run = function () {
                 version.setAttribute(
                     'href',
                     '../' + encodeURIComponent(versions[i]) +
-                        '/' + window.location.hash
+                        '/' + page + window.location.hash
                 );
 
                 if (!isLatest && versions[i] === currentVersion) {
@@ -100,16 +106,19 @@ var run = function () {
         return true;
     });
 
-    var phonyLink = document.createElement('a');
-    phonyLink.href = '#phony';
-    phonyLink.appendChild(document.createTextNode('Phony'));
+    var mainHeading = document.querySelector('h1')
+    var mainHeadingAnchor = mainHeading.querySelector('a')
 
-    var phonyListItem = document.createElement('li');
-    phonyListItem.style.display = 'none';
-    phonyListItem.appendChild(phonyLink);
+    var mainHeadingLink = document.createElement('a');
+    mainHeadingLink.href = mainHeadingAnchor.hash;
+    mainHeadingLink.appendChild(document.createTextNode(mainHeading.innerText));
+
+    var mainHeadingListItem = document.createElement('li');
+    mainHeadingListItem.style.display = 'none';
+    mainHeadingListItem.appendChild(mainHeadingLink);
 
     tocListElementCopy.insertBefore(
-        phonyListItem,
+        mainHeadingListItem,
         tocListElementCopy.querySelector('li')
     );
 
@@ -173,6 +182,8 @@ var run = function () {
         gumshoe.setDistances();
     };
 
+    var documentTitle = mainHeading.innerText;
+
     var dispatch = function (event) {
         var versionLinks = document.querySelectorAll('#versions a');
 
@@ -195,7 +206,8 @@ var run = function () {
             }
 
             if (target && target.classList.contains('anchor')) {
-                document.title = target.parentNode.innerText + ' - Phony';
+                document.title =
+                    target.parentNode.innerText + ' - ' + documentTitle;
             }
 
             target = null;
@@ -211,10 +223,12 @@ var run = function () {
 
                 if (matches) {
                     if ('facade' === matches[1]) {
-                        document.title = matches[2] + '() - Phony';
+                        document.title = matches[2] + '() - ' + documentTitle;
                     } else {
                         document.title =
-                            '$' + matches[1] + '->' + matches[2] + '() - Phony';
+                            '$' + matches[1] +
+                            '->' + matches[2] +
+                            '() - ' + documentTitle;
                     }
                 }
 
@@ -225,11 +239,11 @@ var run = function () {
                         '$' + matches[1] +
                         ' ' + matches[2] +
                         ' ' + matches[3] +
-                        ' - Phony';
+                        ' - ' + documentTitle;
                 }
             }
         } else {
-            document.title = 'Phony';
+            document.title = documentTitle;
         }
 
         if ('#toc' === window.location.hash) {
