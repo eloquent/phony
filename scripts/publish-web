@@ -172,18 +172,31 @@ passthru(
     escapeshellarg($currentVersionPath . '/img')
 );
 
-$html = file_get_contents($webPath . '/index.html');
-$html = strtr(
-    $html,
-    [
-        'data-version="master"' => sprintf(
-            'data-version="%s"',
-            htmlspecialchars($currentVersionRendered)
-        ),
-    ]
+$pages = array_map(
+    function ($path) {
+        return basename($path, '.html');
+    },
+    glob($webPath . '/*.html')
 );
 
-file_put_contents($currentVersionPath . '/index.html', $html);
+foreach ($pages as $page) {
+    if (!is_file("$webPath/$page.html")) {
+        continue;
+    }
+
+    $html = file_get_contents("$webPath/$page.html");
+    $html = strtr(
+        $html,
+        [
+            'data-version="master"' => sprintf(
+                'data-version="%s"',
+                htmlspecialchars($currentVersionRendered)
+            ),
+        ]
+    );
+
+    file_put_contents("$currentVersionPath/$page.html", $html);
+}
 
 echo "Updating headers and footers...\n";
 
@@ -199,20 +212,26 @@ foreach ($versionStrings as $version) {
 
     $versionPath = $workPath . '/' . $version;
 
-    $html = file_get_contents($versionPath . '/index.html');
-    $html = preg_replace('/^(.*)(?=<!-- START content -->)/s', $header, $html);
-    $html = preg_replace('/(?<=<!-- END content -->)(.*)$/s', $footer, $html);
-    $html = strtr(
-        $html,
-        [
-            'data-version="master"' => sprintf(
-                'data-version="%s"',
-                htmlspecialchars($version)
-            ),
-        ]
-    );
+    foreach ($pages as $page) {
+        if (!is_file("$versionPath/$page.html")) {
+            continue;
+        }
 
-    file_put_contents($versionPath . '/index.html', $html);
+        $html = file_get_contents("$versionPath/$page.html");
+        $html = preg_replace('/^(.*)(?=<!-- START content -->)/s', $header, $html);
+        $html = preg_replace('/(?<=<!-- END content -->)(.*)$/s', $footer, $html);
+        $html = strtr(
+            $html,
+            [
+                'data-version="master"' => sprintf(
+                    'data-version="%s"',
+                    htmlspecialchars($version)
+                ),
+            ]
+        );
+
+        file_put_contents("$versionPath/$page.html", $html);
+    }
 }
 
 echo "Checking for differences...\n";
