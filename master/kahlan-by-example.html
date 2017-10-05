@@ -111,11 +111,8 @@ a combination of the features provided by Phony and Kahlan.</p>
 <a id="project-setup" class="anchor" href="#project-setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project setup</h2>
 <p>To install Phony and Kahlan, use <a href="https://getcomposer.org/">Composer</a>'s <a href="https://getcomposer.org/doc/03-cli.md#require"><code>require</code></a> command to add them as
 development dependencies:</p>
-<pre><code>composer require --dev kahlan/kahlan:4.0.x-dev eloquent/phony-kahlan
+<pre><code>composer require --dev kahlan/kahlan eloquent/phony-kahlan
 </code></pre>
-<p><em>The <code>4.0.x-dev</code> constraint is currently necessary for Kahlan, because Phony
-supports Kahlan from version <code>4.x</code> onward. At the time of writing, Kahlan <code>4.x</code>
-does not yet have a stable release.</em></p>
 <p>For the examples used in this guide, we'll also be making use of the <a href="http://php-fig.org/psr/psr-16/">PSR-16</a>
 cache interfaces, which can be installed by adding the <a href="https://packagist.org/packages/psr/simple-cache">psr/simple-cache</a>
 package as a regular dependency:</p>
@@ -130,11 +127,11 @@ system we'll be testing:</p>
         }
     },
     <span class="pl-s"><span class="pl-pds">"</span>require-dev<span class="pl-pds">"</span></span>: {
-        <span class="pl-s"><span class="pl-pds">"</span>kahlan/kahlan<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>4.0.x-dev<span class="pl-pds">"</span></span>,
-        <span class="pl-s"><span class="pl-pds">"</span>eloquent/phony-kahlan<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^0.3<span class="pl-pds">"</span></span>
+        <span class="pl-s"><span class="pl-pds">"</span>kahlan/kahlan<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^4<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>eloquent/phony-kahlan<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^1<span class="pl-pds">"</span></span>
     },
     <span class="pl-s"><span class="pl-pds">"</span>require<span class="pl-pds">"</span></span>: {
-        <span class="pl-s"><span class="pl-pds">"</span>psr/simple-cache<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^1.0<span class="pl-pds">"</span></span>
+        <span class="pl-s"><span class="pl-pds">"</span>psr/simple-cache<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^1<span class="pl-pds">"</span></span>
     }
 }</pre></div>
 <h2>
@@ -251,7 +248,7 @@ PPPPPPPP                                                            8 / 8 (100%)
 Expectations   : 0 Executed
 Specifications : 8 Pending, 0 Excluded, 0 Skipped
 
-Passed 0 of 0 PASS in 0.004 seconds (using 2Mo)
+Passed 0 of 0 PASS in 0.004 seconds (using 2MB)
 </code></pre>
 <h2>
 <a id="top-level-test-setup-and-teardown" class="anchor" href="#top-level-test-setup-and-teardown" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Top-level test setup and teardown</h2>
@@ -665,7 +662,7 @@ spec directory : ./spec
 Expectations   : 11 Executed
 Specifications : 0 Pending, 0 Excluded, 0 Skipped
 
-Passed 8 of 8 PASS in 0.027 seconds (using 7Mo)
+Passed 8 of 8 PASS in 0.027 seconds (using 7MB)
 
 Coverage Summary
 ----------------
@@ -678,7 +675,7 @@ Coverage Summary
 
 Total: 100.00% (7/7)
 
-Coverage collected in 0.002 seconds (using an additional 0o)
+Coverage collected in 0.002 seconds (using an additional 0B)
 </code></pre>
 <p>Our coverage is at 100%, and that's definitely good enough for the purposes of
 this guide.</p>
