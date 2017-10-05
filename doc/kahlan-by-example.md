@@ -43,11 +43,7 @@ a combination of the features provided by Phony and Kahlan.
 To install Phony and Kahlan, use [Composer]'s [`require`] command to add them as
 development dependencies:
 
-    composer require --dev kahlan/kahlan:4.0.x-dev eloquent/phony-kahlan
-
-*The `4.0.x-dev` constraint is currently necessary for Kahlan, because Phony
-supports Kahlan from version `4.x` onward. At the time of writing, Kahlan `4.x`
-does not yet have a stable release.*
+    composer require --dev kahlan/kahlan eloquent/phony-kahlan
 
 For the examples used in this guide, we'll also be making use of the [PSR-16]
 cache interfaces, which can be installed by adding the [psr/simple-cache]
@@ -66,11 +62,11 @@ system we'll be testing:
         }
     },
     "require-dev": {
-        "kahlan/kahlan": "4.0.x-dev",
-        "eloquent/phony-kahlan": "^0.3"
+        "kahlan/kahlan": "^4",
+        "eloquent/phony-kahlan": "^1"
     },
     "require": {
-        "psr/simple-cache": "^1.0"
+        "psr/simple-cache": "^1"
     }
 }
 ```
@@ -198,7 +194,7 @@ Since the specs make no assertions, Kahlan will mark them all as "pending":
     Expectations   : 0 Executed
     Specifications : 8 Pending, 0 Excluded, 0 Skipped
 
-    Passed 0 of 0 PASS in 0.004 seconds (using 2Mo)
+    Passed 0 of 0 PASS in 0.004 seconds (using 2MB)
 
 ## Top-level test setup and teardown
 
@@ -691,7 +687,7 @@ Let's use Kahlan to run the suite, and see how we did in terms of test coverage:
     Expectations   : 11 Executed
     Specifications : 0 Pending, 0 Excluded, 0 Skipped
 
-    Passed 8 of 8 PASS in 0.027 seconds (using 7Mo)
+    Passed 8 of 8 PASS in 0.027 seconds (using 7MB)
 
     Coverage Summary
     ----------------
@@ -704,7 +700,7 @@ Let's use Kahlan to run the suite, and see how we did in terms of test coverage:
 
     Total: 100.00% (7/7)
 
-    Coverage collected in 0.002 seconds (using an additional 0o)
+    Coverage collected in 0.002 seconds (using an additional 0B)
 
 Our coverage is at 100%, and that's definitely good enough for the purposes of
 this guide.
