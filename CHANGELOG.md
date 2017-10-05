@@ -1,5 +1,11 @@
 # Phony changelog
 
+## 2.0.1 (2017-10-06)
+
+- **[IMPROVED]** Added the [Phony and Kahlan by example] guide.
+
+[phony and kahlan by example]: http://eloquent-software.com/phony/2.0/kahlan-by-example
+
 ## 2.0.0 (2017-09-29)
 
 See the [migration guide][migration-2] for detailed upgrade information.
