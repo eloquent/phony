@@ -21,7 +21,7 @@ class ArgumentsTest extends TestCase
     {
         $this->assertSame($this->arguments, $this->subject->all());
         $this->assertSame($this->arguments, iterator_to_array($this->subject));
-        $this->assertSame(2, count($this->subject));
+        $this->assertCount(2, $this->subject);
     }
 
     public function testCopy()

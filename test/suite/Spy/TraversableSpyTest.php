@@ -38,24 +38,24 @@ class TraversableSpyTest extends TestCase
     {
         $this->assertSame('b', $this->subject['a']);
         $this->assertSame('d', $this->subject['c']);
-        $this->assertFalse(isset($this->subject['e']));
+        $this->assertArrayNotHasKey('e', $this->subject);
 
         $this->subject['e'] = 'f';
 
-        $this->assertTrue(isset($this->subject['e']));
+        $this->assertArrayHasKey('e', $this->subject);
         $this->assertSame('f', $this->subject['e']);
 
         unset($this->subject['e']);
 
-        $this->assertFalse(isset($this->subject['e']));
+        $this->assertArrayNotHasKey('e', $this->subject);
     }
 
     public function testCountable()
     {
-        $this->assertSame(2, count($this->subject));
+        $this->assertCount(2, $this->subject);
 
         $this->subject['e'] = 'f';
 
-        $this->assertSame(3, count($this->subject));
+        $this->assertCount(3, $this->subject);
     }
 }

@@ -333,7 +333,7 @@ class EmptyValueFactoryTest extends TestCase
         $this->assertInstanceOf($type, $actual);
         $this->assertInstanceOf(Mock::class, $actual);
         $this->assertSame([], iterator_to_array($actual));
-        $this->assertSame(0, count($actual));
+        $this->assertCount(0, $actual);
     }
 
     public function testFromTypeWithArrayAccess()
@@ -343,7 +343,7 @@ class EmptyValueFactoryTest extends TestCase
 
         $this->assertInstanceOf($type, $actual);
         $this->assertInstanceOf(Mock::class, $actual);
-        $this->assertFalse(isset($actual[0]));
+        $this->assertArrayNotHasKey(0, $actual);
     }
 
     public function testFromTypeWithCountable()
@@ -353,7 +353,7 @@ class EmptyValueFactoryTest extends TestCase
 
         $this->assertInstanceOf($type, $actual);
         $this->assertInstanceOf(Mock::class, $actual);
-        $this->assertSame(0, count($actual));
+        $this->assertCount(0, $actual);
     }
 
     public function testFromTypeWithClass()

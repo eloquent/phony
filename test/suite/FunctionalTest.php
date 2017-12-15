@@ -430,7 +430,7 @@ class FunctionalTest extends TestCase
         $this->assertTrue((bool) $stub->iterated()->produced('c', 'd'));
 
         $this->assertSame('b', $result['a']);
-        $this->assertSame(2, count($result));
+        $this->assertCount(2, $result);
     }
 
     public function testIterableSpyingWithArrayLikeObject()
@@ -452,7 +452,7 @@ class FunctionalTest extends TestCase
         $this->assertTrue((bool) $stub->iterated()->produced('c', 'd'));
 
         $this->assertSame('b', $result['a']);
-        $this->assertSame(2, count($result));
+        $this->assertCount(2, $result);
     }
 
     public function testDefaultStubAnswerCanBeOverridden()
