@@ -193,7 +193,7 @@ class CallVerifierTest extends TestCase
         $this->assertTrue($this->subject->hasCalls());
         $this->assertSame(2, $this->subject->eventCount());
         $this->assertSame(1, $this->subject->callCount());
-        $this->assertSame(2, count($this->subject));
+        $this->assertCount(2, $this->subject);
         $this->assertSame($this->calledEvent, $this->subject->calledEvent());
         $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
         $this->assertSame([], $this->subject->iterableEvents());

@@ -120,12 +120,12 @@ class SpyDataTest extends TestCase
     public function testCallCount()
     {
         $this->assertSame(0, $this->subject->callCount());
-        $this->assertSame(0, count($this->subject));
+        $this->assertCount(0, $this->subject);
 
         $this->subject->addCall($this->callA);
 
         $this->assertSame(1, $this->subject->callCount());
-        $this->assertSame(1, count($this->subject));
+        $this->assertCount(1, $this->subject);
     }
 
     public function testAllEvents()

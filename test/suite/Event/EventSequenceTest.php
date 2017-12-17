@@ -39,7 +39,7 @@ class EventSequenceTest extends TestCase
         $this->assertSame($this->events, $this->subject->allEvents());
         $this->assertSame(2, $this->subject->callCount());
         $this->assertSame(4, $this->subject->eventCount());
-        $this->assertSame(4, count($this->subject));
+        $this->assertCount(4, $this->subject);
     }
 
     public function testConstructorDefaults()
@@ -52,7 +52,7 @@ class EventSequenceTest extends TestCase
         $this->assertSame([], $this->subject->allCalls());
         $this->assertSame(0, $this->subject->callCount());
         $this->assertSame(0, $this->subject->eventCount());
-        $this->assertSame(0, count($this->subject));
+        $this->assertCount(0, $this->subject);
     }
 
     public function testFirstEvent()

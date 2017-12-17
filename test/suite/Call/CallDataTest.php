@@ -39,7 +39,7 @@ class CallDataTest extends TestCase
         $this->assertTrue($this->subject->hasCalls());
         $this->assertSame(1, $this->subject->eventCount());
         $this->assertSame(1, $this->subject->callCount());
-        $this->assertSame(1, count($this->subject));
+        $this->assertCount(1, $this->subject);
         $this->assertNull($this->subject->responseEvent());
         $this->assertSame([], $this->subject->iterableEvents());
         $this->assertNull($this->subject->endEvent());

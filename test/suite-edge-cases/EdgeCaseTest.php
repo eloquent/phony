@@ -23,7 +23,7 @@ class EdgeCaseTest extends TestCase
         $full = mock('SimpleXMLElement');
         $mock = $full->get();
 
-        $this->assertTrue($mock instanceof SimpleXMLElement);
+        $this->assertInstanceOf(SimpleXMLElement::class, $mock);
     }
 
     public function testSimpleXmlElementPartial()
@@ -35,8 +35,8 @@ class EdgeCaseTest extends TestCase
         $partial = partialMock('SimpleXMLElement', ['<root><sub></sub></root>']);
         $mock = $partial->get();
 
-        $this->assertTrue($mock instanceof SimpleXMLElement);
-        $this->assertTrue($mock->sub instanceof SimpleXMLElement);
+        $this->assertInstanceOf(SimpleXMLElement::class, $mock);
+        $this->assertInstanceOf(SimpleXMLElement::class, $mock->sub);
     }
 
     public function testSimpleXmlIteratorFull()
@@ -48,7 +48,7 @@ class EdgeCaseTest extends TestCase
         $full = mock('SimpleXMLIterator');
         $mock = $full->get();
 
-        $this->assertTrue($mock instanceof SimpleXMLIterator);
+        $this->assertInstanceOf(SimpleXMLIterator::class, $mock);
     }
 
     public function testSimpleXmlIteratorPartial()
@@ -60,8 +60,8 @@ class EdgeCaseTest extends TestCase
         $partial = partialMock('SimpleXMLIterator', ['<root><sub></sub></root>']);
         $mock = $partial->get();
 
-        $this->assertTrue($mock instanceof SimpleXMLIterator);
-        $this->assertTrue($mock->sub instanceof SimpleXMLIterator);
+        $this->assertInstanceOf(SimpleXMLIterator::class, $mock);
+        $this->assertInstanceOf(SimpleXMLElement::class, $mock->sub);
     }
 
     public function typeData()
@@ -110,7 +110,7 @@ class EdgeCaseTest extends TestCase
         $handle = mock($typeName);
         $mock = $handle->get();
 
-        $this->assertTrue($mock instanceof $typeName);
+        $this->assertInstanceOf($typeName, $mock);
     }
 
     public function functionData()
