@@ -54,7 +54,7 @@ class EventOrderVerifier
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If invalid input is supplied.
      */
-    public function checkInOrder(...$events)
+    public function checkInOrder(...$events): ?EventCollection
     {
         if (!count($events)) {
             return null;
@@ -111,6 +111,8 @@ class EventOrderVerifier
         if ($isMatch) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -123,7 +125,7 @@ class EventOrderVerifier
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function inOrder(...$events)
+    public function inOrder(...$events): ?EventCollection
     {
         if ($result = $this->checkInOrder(...$events)) {
             return $result;
@@ -145,7 +147,7 @@ class EventOrderVerifier
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If invalid input is supplied.
      */
-    public function checkAnyOrder(...$events)
+    public function checkAnyOrder(...$events): ?EventCollection
     {
         if (!count($events)) {
             return null;
@@ -164,7 +166,7 @@ class EventOrderVerifier
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function anyOrder(...$events)
+    public function anyOrder(...$events): ?EventCollection
     {
         if ($result = $this->checkAnyOrder(...$events)) {
             return $result;

@@ -37,7 +37,7 @@ class SpyData implements Spy
      * @param IterableSpyFactory  $iterableSpyFactory  The iterable spy factory to use.
      */
     public function __construct(
-        callable $callback = null,
+        $callback,
         string $label,
         CallFactory $callFactory,
         Invoker $invoker,
@@ -151,7 +151,7 @@ class SpyData implements Spy
      *
      * @param array<Call> $calls The calls.
      */
-    public function setCalls(array $calls)
+    public function setCalls(array $calls): void
     {
         $this->calls = $calls;
     }
@@ -161,7 +161,7 @@ class SpyData implements Spy
      *
      * @param Call $call The call.
      */
-    public function addCall(Call $call)
+    public function addCall(Call $call): void
     {
         $this->calls[] = $call;
     }

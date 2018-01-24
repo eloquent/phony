@@ -35,7 +35,7 @@ class Invoker
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
      */
-    public function callWith(callable $callback, Arguments $arguments)
+    public function callWith($callback, Arguments $arguments)
     {
         if ($callback instanceof Invocable) {
             return $callback->invokeWith($arguments);

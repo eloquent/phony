@@ -38,7 +38,7 @@ class TraversableSpy implements IterableSpy
      *
      * @return iterable The original value.
      */
-    public function iterable()
+    public function iterable(): iterable
     {
         return $this->traversable;
     }
@@ -66,7 +66,7 @@ class TraversableSpy implements IterableSpy
     /**
      * Move the current position to the next element.
      */
-    public function next()
+    public function next(): void
     {
         $this->iterator->next();
     }
@@ -74,7 +74,7 @@ class TraversableSpy implements IterableSpy
     /**
      * Rewind the iterator.
      */
-    public function rewind()
+    public function rewind(): void
     {
         if ($this->iterator) {
             $this->iterator->rewind();
@@ -156,7 +156,7 @@ class TraversableSpy implements IterableSpy
      * @param mixed $key   The key.
      * @param mixed $value The value.
      */
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         $this->traversable[$key] = $value;
     }
@@ -166,7 +166,7 @@ class TraversableSpy implements IterableSpy
      *
      * @param mixed $key The key.
      */
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         unset($this->traversable[$key]);
     }

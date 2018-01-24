@@ -278,7 +278,7 @@ class CallData implements Call
      *
      * @throws InvalidArgumentException If the call has already responded.
      */
-    public function setResponseEvent(ResponseEvent $responseEvent)
+    public function setResponseEvent(ResponseEvent $responseEvent): void
     {
         if ($this->responseEvent) {
             throw new InvalidArgumentException('Call already responded.');
@@ -293,7 +293,7 @@ class CallData implements Call
      *
      * @return ResponseEvent|null The response event, or null if the call has not yet responded.
      */
-    public function responseEvent()
+    public function responseEvent(): ?ResponseEvent
     {
         return $this->responseEvent;
     }
@@ -305,7 +305,7 @@ class CallData implements Call
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function addIterableEvent(IterableEvent $iterableEvent)
+    public function addIterableEvent(IterableEvent $iterableEvent): void
     {
         if (!$this->isIterable()) {
             throw new InvalidArgumentException('Not an iterable call.');
@@ -335,7 +335,7 @@ class CallData implements Call
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function setEndEvent(EndEvent $endEvent)
+    public function setEndEvent(EndEvent $endEvent): void
     {
         if ($this->endEvent) {
             throw new InvalidArgumentException('Call already completed.');
@@ -355,7 +355,7 @@ class CallData implements Call
      *
      * @return EndEvent|null The end event, or null if the call has not yet completed.
      */
-    public function endEvent()
+    public function endEvent(): ?EndEvent
     {
         return $this->endEvent;
     }
@@ -454,7 +454,7 @@ class CallData implements Call
      *
      * @return callable The callback.
      */
-    public function callback(): callable
+    public function callback()
     {
         return $this->calledEvent->callback();
     }
@@ -600,7 +600,7 @@ class CallData implements Call
      *
      * @return float|null The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
      */
-    public function responseTime()
+    public function responseTime(): ?float
     {
         if ($this->responseEvent) {
             return $this->responseEvent->time();
@@ -622,7 +622,7 @@ class CallData implements Call
      *
      * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */
-    public function endTime()
+    public function endTime(): ?float
     {
         if ($this->endEvent) {
             return $this->endEvent->time();

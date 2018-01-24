@@ -59,7 +59,7 @@ class GeneratorVerifierFactory
      */
     public function setCallVerifierFactory(
         CallVerifierFactory $callVerifierFactory
-    ) {
+    ): void {
         $this->callVerifierFactory = $callVerifierFactory;
     }
 

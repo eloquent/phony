@@ -63,7 +63,7 @@ class SpyFactory
      *
      * @return Spy The newly created spy.
      */
-    public function create(callable $callback = null): Spy
+    public function create($callback = null): Spy
     {
         return new SpyData(
             $callback,

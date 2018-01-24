@@ -99,7 +99,7 @@ class RealMethodDefinition implements MethodDefinition
      */
     public function callback()
     {
-        return;
+        return null;
     }
 
     private $method;

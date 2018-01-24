@@ -139,7 +139,7 @@ class HandleFactory
         }
 
         if ($class instanceof Handle) {
-            $class = $class->clazz();
+            $class = $class->class();
         } elseif ($class instanceof Mock) {
             $class = new ReflectionClass($class);
         } elseif (is_string($class)) {

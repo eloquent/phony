@@ -2,7 +2,6 @@ language: php
 
 matrix:
     include:
-        - php: 7.0
         - php: 7.1
         - php: 7.2
         - php: nightly
@@ -21,18 +20,18 @@ deploy:
       script: make publish
       skip_cleanup: true
       on:
-          php: '7.1'
+          php: '7.2'
           branch: master
     - provider: script
       script: make publish
       skip_cleanup: true
       on:
-          php: '7.1'
+          php: '7.2'
           tags: true
 
 env:
     global:
-        - ELOQUENT_PUBLISH_VERSION=7.1
+        - ELOQUENT_PUBLISH_VERSION=7.2
         - secure: "o8G7oGV2ojgXwUppZiegNQy5Za2Bso5rvXUbdR41bSKZWUZM/l/J5/SxF5Ygf5sPSFBQ5LmbBb1juMU6WtCyDi74rMpzwhpEuTgqDwYlY2RFQ0QPb/Mq0S9BejAWLpa+yh2LrHDWQlG/M8Ns5ycAFxPtYNwx3QzJzOTLqy2uZ/c="
 
 cache:

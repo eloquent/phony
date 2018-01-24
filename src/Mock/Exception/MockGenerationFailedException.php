@@ -27,7 +27,7 @@ final class MockGenerationFailedException extends Exception implements
         string $className,
         MockDefinition $definition,
         string $source,
-        array $error = null,
+        ?array $error,
         Throwable $cause = null
     ) {
         $this->definition = $definition;
@@ -120,7 +120,7 @@ final class MockGenerationFailedException extends Exception implements
      *
      * @return array<string,mixed>|null The error details.
      */
-    public function error()
+    public function error(): ?array
     {
         return $this->error;
     }

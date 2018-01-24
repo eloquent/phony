@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Mock\Method;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\WrappedInvocableTrait;
 use Eloquent\Phony\Mock\Handle\Handle;
+use Eloquent\Phony\Mock\Mock;
 use ReflectionMethod;
 use Throwable;
 
@@ -96,7 +97,7 @@ class WrappedMagicMethod implements WrappedMethod
      *
      * @return Mock|null The mock.
      */
-    public function mock()
+    public function mock(): ?Mock
     {
         return $this->mock;
     }

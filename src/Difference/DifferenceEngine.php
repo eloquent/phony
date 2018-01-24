@@ -44,7 +44,7 @@ class DifferenceEngine
      *
      * @param bool|null $useColor True to use color.
      */
-    public function setUseColor(bool $useColor = null)
+    public function setUseColor(?bool $useColor): void
     {
         if (null === $useColor) {
             $useColor = $this->featureDetector->isSupported('stdout.ansi');

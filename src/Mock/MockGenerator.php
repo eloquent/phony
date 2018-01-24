@@ -48,9 +48,6 @@ class MockGenerator
         $this->labelSequencer = $labelSequencer;
         $this->signatureInspector = $signatureInspector;
         $this->featureDetector = $featureDetector;
-
-        $this->isNullableTypeSupported =
-            $this->featureDetector->isSupported('type.nullable');
     }
 
     /**
@@ -265,10 +262,7 @@ EOD;
 
             if ($isBuiltin) {
                 $source .= "\n    ) : " . $typeString . " {\n";
-            } elseif (
-                $this->isNullableTypeSupported &&
-                0 === strpos($typeString, '?')
-            ) {
+            } elseif (0 === strpos($typeString, '?')) {
                 $source .= "\n    ) : ?\\" . substr($typeString, 1) . " {\n";
             } else {
                 $source .= "\n    ) : \\" . $typeString . " {\n";
@@ -429,10 +423,7 @@ EOD;
 
                 if ($isBuiltin) {
                     $returnType = ' : ' . $typeString;
-                } elseif (
-                    $this->isNullableTypeSupported &&
-                    0 === strpos($typeString, '?')
-                ) {
+                } elseif (0 === strpos($typeString, '?')) {
                     $returnType = ' : ?\\' . substr($typeString, 1);
                 } else {
                     $returnType = ' : \\' . $typeString;
@@ -587,10 +578,7 @@ EOD;
 
             if ($isBuiltin) {
                 $source .= "\n    ) : " . $typeString . " {\n";
-            } elseif (
-                $this->isNullableTypeSupported &&
-                0 === strpos($typeString, '?')
-            ) {
+            } elseif (0 === strpos($typeString, '?')) {
                 $source .= "\n    ) : ?\\" . substr($typeString, 1) . " {\n";
             } else {
                 $source .= "\n    ) : \\" . $typeString . " {\n";
@@ -942,5 +930,4 @@ EOD;
     private $labelSequencer;
     private $signatureInspector;
     private $featureDetector;
-    private $isNullableTypeSupported;
 }

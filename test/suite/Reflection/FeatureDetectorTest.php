@@ -110,36 +110,6 @@ class FeatureDetectorTest extends TestCase
         $this->assertSame($expected, $this->subject->isSupported($feature));
     }
 
-    public function testCheckStatement()
-    {
-        $this->assertTrue($this->subject->checkStatement(''));
-        $this->assertTrue($this->subject->checkStatement('1 + 1'));
-        $this->assertFalse($this->subject->checkStatement('{'));
-
-        $error = error_get_last();
-
-        if (function_exists('error_clear_last')) {
-            $this->assertNull($error);
-        } else {
-            $this->assertSame(E_USER_NOTICE, $error['type']);
-            $this->assertSame('', $error['message']);
-        }
-    }
-
-    public function testCheckStatementFailure()
-    {
-        $this->assertFalse($this->subject->checkStatement('throw new RuntimeException()', false));
-
-        $error = error_get_last();
-
-        if (function_exists('error_clear_last')) {
-            $this->assertNull($error);
-        } else {
-            $this->assertSame(E_USER_NOTICE, $error['type']);
-            $this->assertSame('', $error['message']);
-        }
-    }
-
     public function testInstance()
     {
         $class = get_class($this->subject);

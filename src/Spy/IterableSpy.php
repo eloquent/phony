@@ -18,5 +18,5 @@ interface IterableSpy extends ArrayAccess, Countable, Iterator
      *
      * @return iterable The original value.
      */
-    public function iterable();
+    public function iterable(): iterable;
 }

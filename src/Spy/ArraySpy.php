@@ -36,7 +36,7 @@ class ArraySpy implements IterableSpy
      *
      * @return iterable The original value.
      */
-    public function iterable()
+    public function iterable(): iterable
     {
         return $this->array;
     }
@@ -64,7 +64,7 @@ class ArraySpy implements IterableSpy
     /**
      * Move the current position to the next element.
      */
-    public function next()
+    public function next(): void
     {
         next($this->array);
     }
@@ -72,7 +72,7 @@ class ArraySpy implements IterableSpy
     /**
      * Rewind the iterator.
      */
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->array);
     }
@@ -140,7 +140,7 @@ class ArraySpy implements IterableSpy
      * @param mixed $key   The key.
      * @param mixed $value The value.
      */
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         $this->array[$key] = $value;
     }
@@ -150,7 +150,7 @@ class ArraySpy implements IterableSpy
      *
      * @param mixed $key The key.
      */
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         unset($this->array[$key]);
     }

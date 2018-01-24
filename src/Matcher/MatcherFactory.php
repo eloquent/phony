@@ -57,7 +57,7 @@ class MatcherFactory
      *
      * @param MatcherDriver $driver The matcher driver.
      */
-    public function addMatcherDriver(MatcherDriver $driver)
+    public function addMatcherDriver(MatcherDriver $driver): void
     {
         if (!in_array($driver, $this->drivers, true)) {
             $this->drivers[] = $driver;

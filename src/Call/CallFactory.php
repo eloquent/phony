@@ -55,7 +55,7 @@ class CallFactory
      * @return CallData The newly created call.
      */
     public function record(
-        callable $callback,
+        $callback,
         Arguments $arguments,
         SpyData $spy
     ): CallData {

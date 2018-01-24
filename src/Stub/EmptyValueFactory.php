@@ -46,7 +46,7 @@ class EmptyValueFactory
      */
     public function setStubVerifierFactory(
         StubVerifierFactory $stubVerifierFactory
-    ) {
+    ): void {
         $this->stubVerifierFactory = $stubVerifierFactory;
     }
 
@@ -57,7 +57,7 @@ class EmptyValueFactory
      */
     public function setMockBuilderFactory(
         MockBuilderFactory $mockBuilderFactory
-    ) {
+    ): void {
         $this->mockBuilderFactory = $mockBuilderFactory;
     }
 
@@ -78,19 +78,15 @@ class EmptyValueFactory
 
         switch (strtolower($typeName)) {
             case 'bool':
-            case 'hh\bool':
                 return false;
 
             case 'int':
-            case 'hh\int':
                 return 0;
 
             case 'float':
-            case 'hh\float':
                 return .0;
 
             case 'string':
-            case 'hh\string':
                 return '';
 
             case 'array':
@@ -121,11 +117,8 @@ class EmptyValueFactory
                 return $fn();
 
             case 'void':
-            // @codeCoverageIgnoreStart
-            case 'hh\mixed':
                 return null;
         }
-        // @codeCoverageIgnoreEnd
 
         return $this->mockBuilderFactory->create($typeName)->full();
     }

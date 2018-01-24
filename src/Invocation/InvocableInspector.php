@@ -38,9 +38,8 @@ class InvocableInspector
      * @return ReflectionFunctionAbstract The reflector.
      * @throws ReflectionException        If the callback cannot be reflected.
      */
-    public function callbackReflector(
-        callable $callback
-    ): ReflectionFunctionAbstract {
+    public function callbackReflector($callback): ReflectionFunctionAbstract
+    {
         while ($callback instanceof WrappedInvocable) {
             $callback = $callback->callback();
         }
@@ -70,7 +69,7 @@ class InvocableInspector
      * @return ReflectionType|null The return type, or null if no return type is defined.
      * @throws ReflectionException If the callback cannot be reflected.
      */
-    public function callbackReturnType(callable $callback)
+    public function callbackReturnType($callback): ?ReflectionType
     {
         return $this->callbackReflector($callback)->getReturnType();
     }

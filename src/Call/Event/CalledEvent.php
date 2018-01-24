@@ -24,7 +24,7 @@ class CalledEvent implements CallEvent
     public function __construct(
         int $sequenceNumber,
         float $time,
-        callable $callback,
+        $callback,
         Arguments $arguments
     ) {
         $this->sequenceNumber = $sequenceNumber;
@@ -38,7 +38,7 @@ class CalledEvent implements CallEvent
      *
      * @return callable The callback.
      */
-    public function callback(): callable
+    public function callback()
     {
         return $this->callback;
     }

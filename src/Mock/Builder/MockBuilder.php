@@ -55,9 +55,6 @@ class MockBuilder
         $this->handleFactory = $handleFactory;
         $this->invocableInspector = $invocableInspector;
 
-        $this->isSystemlibThrowableSupported =
-            interface_exists('__systemlib\throwable');
-
         $this->types = [];
         $this->parentClassName = '';
         $this->customMethods = [];
@@ -586,16 +583,6 @@ class MockBuilder
             'datetime'
         );
         $this->resolveInternalInterface('throwable', 'exception', 'error');
-
-        // @codeCoverageIgnoreStart
-        if ($this->isSystemlibThrowableSupported) {
-            $this->resolveInternalInterface(
-                '__systemlib\throwable',
-                'exception',
-                'error'
-            );
-        }
-        // @codeCoverageIgnoreEnd
     }
 
     private function resolveInternalInterface(
@@ -678,7 +665,6 @@ class MockBuilder
     private $factory;
     private $handleFactory;
     private $invocableInspector;
-    private $isSystemlibThrowableSupported;
     private $types;
     private $parentClassName;
     private $customMethods;

@@ -65,7 +65,7 @@ class StubData implements Stub
      * @param Exporter                      $exporter                      The exporter to use.
      */
     public function __construct(
-        callable $callback = null,
+        $callback,
         string $label,
         callable $defaultAnswerCallback,
         MatcherFactory $matcherFactory,

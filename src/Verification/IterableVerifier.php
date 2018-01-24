@@ -243,7 +243,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
      *
      * @return EventCollection|null The result.
      */
-    public function checkUsed()
+    public function checkUsed(): ?EventCollection
     {
         $cardinality = $this->resetCardinality();
 
@@ -266,6 +266,8 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
         if ($cardinality->matches($matchCount, $this->callCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -274,7 +276,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function used()
+    public function used(): ?EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -308,8 +310,10 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
      *
      * @return EventCollection|null The result.
      */
-    public function checkProduced($keyOrValue = null, $value = null)
-    {
+    public function checkProduced(
+        $keyOrValue = null,
+        $value = null
+    ): ?EventCollection {
         $cardinality = $this->resetCardinality();
         $argumentCount = func_num_args();
 
@@ -370,6 +374,8 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
         if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -390,8 +396,10 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function produced($keyOrValue = null, $value = null)
-    {
+    public function produced(
+        $keyOrValue = null,
+        $value = null
+    ): ?EventCollection {
         $cardinality = $this->cardinality;
         $argumentCount = func_num_args();
 
@@ -428,7 +436,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
      *
      * @return EventCollection|null The result.
      */
-    public function checkConsumed()
+    public function checkConsumed(): ?EventCollection
     {
         $cardinality = $this->resetCardinality();
 
@@ -454,6 +462,8 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
         if ($cardinality->matches($matchCount, $this->callCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -462,7 +472,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function consumed()
+    public function consumed(): ?EventCollection
     {
         $cardinality = $this->cardinality;
 

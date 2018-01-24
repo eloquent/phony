@@ -83,7 +83,7 @@ class Cardinality
      *
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
-    public function setIsAlways(bool $isAlways)
+    public function setIsAlways(bool $isAlways): void
     {
         if ($isAlways && $this->isNever()) {
             throw new InvalidCardinalityStateException();

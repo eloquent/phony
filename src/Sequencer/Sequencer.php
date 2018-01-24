@@ -30,7 +30,7 @@ class Sequencer
      *
      * @param int $current The sequence number.
      */
-    public function set(int $current)
+    public function set(int $current): void
     {
         $this->current = $current;
     }
@@ -38,7 +38,7 @@ class Sequencer
     /**
      * Reset the sequence number to its initial value.
      */
-    public function reset()
+    public function reset(): void
     {
         $this->current = -1;
     }

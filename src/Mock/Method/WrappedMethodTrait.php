@@ -52,7 +52,7 @@ trait WrappedMethodTrait
      *
      * @return Mock|null The mock.
      */
-    public function mock()
+    public function mock(): ?Mock
     {
         return $this->mock;
     }

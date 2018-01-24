@@ -22,7 +22,7 @@ interface Handle
      *
      * @return ReflectionClass The class.
      */
-    public function clazz(): ReflectionClass;
+    public function class(): ReflectionClass;
 
     /**
      * Get the class name.
@@ -104,7 +104,7 @@ interface Handle
      *
      * @return EventCollection|null The result.
      */
-    public function checkNoInteraction();
+    public function checkNoInteraction(): ?EventCollection;
 
     /**
      * Record an assertion failure unless there was no interaction with the mock.
@@ -112,7 +112,7 @@ interface Handle
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function noInteraction();
+    public function noInteraction(): ?EventCollection;
 
     /**
      * Stop recording calls.

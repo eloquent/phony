@@ -196,7 +196,7 @@ trait FacadeTrait
      * Restores the behavior of any functions in the global namespace that have
      * been altered via spyGlobal() or stubGlobal().
      */
-    public static function restoreGlobalFunctions()
+    public static function restoreGlobalFunctions(): void
     {
         $container = self::$globals::$container;
 
@@ -210,7 +210,7 @@ trait FacadeTrait
      *
      * @return EventCollection|null The result.
      */
-    public static function checkInOrder(...$events)
+    public static function checkInOrder(...$events): ?EventCollection
     {
         $container = self::$globals::$container;
 
@@ -226,7 +226,7 @@ trait FacadeTrait
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public static function inOrder(...$events)
+    public static function inOrder(...$events): ?EventCollection
     {
         $container = self::$globals::$container;
 
@@ -241,7 +241,7 @@ trait FacadeTrait
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If invalid input is supplied.
      */
-    public static function checkAnyOrder(...$events)
+    public static function checkAnyOrder(...$events): ?EventCollection
     {
         $container = self::$globals::$container;
 
@@ -257,7 +257,7 @@ trait FacadeTrait
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public static function anyOrder(...$events)
+    public static function anyOrder(...$events): ?EventCollection
     {
         $container = self::$globals::$container;
 
@@ -363,7 +363,7 @@ trait FacadeTrait
      *
      * @param bool|null $useColor True to use color.
      */
-    public static function setUseColor(bool $useColor = null)
+    public static function setUseColor(?bool $useColor): void
     {
         $container = self::$globals::$container;
 

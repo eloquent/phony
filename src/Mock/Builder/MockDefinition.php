@@ -228,7 +228,7 @@ class MockDefinition
      *
      * @return bool True if equal.
      */
-    public function isEqualTo(MockDefinition $definition): bool
+    public function isEqualTo(self $definition): bool
     {
         return $definition->signature() === $this->signature;
     }

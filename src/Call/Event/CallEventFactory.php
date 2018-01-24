@@ -53,7 +53,7 @@ class CallEventFactory
      * @return CalledEvent The newly created event.
      */
     public function createCalled(
-        callable $callback,
+        $callback,
         Arguments $arguments
     ): CalledEvent {
         return new CalledEvent(

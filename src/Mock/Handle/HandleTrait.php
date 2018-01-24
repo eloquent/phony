@@ -30,7 +30,7 @@ trait HandleTrait
      *
      * @return ReflectionClass The class.
      */
-    public function clazz(): ReflectionClass
+    public function class(): ReflectionClass
     {
         return $this->class;
     }
@@ -163,11 +163,11 @@ trait HandleTrait
      *
      * @return EventCollection|null The result.
      */
-    public function checkNoInteraction()
+    public function checkNoInteraction(): ?EventCollection
     {
         foreach (get_object_vars($this->state->stubs) as $stub) {
             if ($stub->checkCalled()) {
-                return;
+                return null;
             }
         }
 
@@ -180,7 +180,7 @@ trait HandleTrait
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function noInteraction()
+    public function noInteraction(): ?EventCollection
     {
         if ($result = $this->checkNoInteraction()) {
             return $result;

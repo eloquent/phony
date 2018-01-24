@@ -170,7 +170,7 @@ function stubGlobal(string $function, string $namespace): StubVerifier
  * Restores the behavior of any functions in the global namespace that have been
  * altered via spyGlobal() or stubGlobal().
  */
-function restoreGlobalFunctions()
+function restoreGlobalFunctions(): void
 {
     Globals::$container->functionHookManager->restoreGlobalFunctions();
 }
@@ -182,7 +182,7 @@ function restoreGlobalFunctions()
  *
  * @return EventCollection|null The result.
  */
-function checkInOrder(...$events)
+function checkInOrder(...$events): ?EventCollection
 {
     return Globals::$container->eventOrderVerifier->checkInOrder(...$events);
 }
@@ -193,10 +193,10 @@ function checkInOrder(...$events)
  *
  * @param Event|EventCollection ...$events The events.
  *
- * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
- * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+ * @return EventCollection The result.
+ * @throws Throwable       If the assertion fails.
  */
-function inOrder(...$events)
+function inOrder(...$events): EventCollection
 {
     return Globals::$container->eventOrderVerifier->inOrder(...$events);
 }
@@ -209,7 +209,7 @@ function inOrder(...$events)
  * @return EventCollection|null     The result.
  * @throws InvalidArgumentException If invalid input is supplied.
  */
-function checkAnyOrder(...$events)
+function checkAnyOrder(...$events): ?EventCollection
 {
     return Globals::$container->eventOrderVerifier->checkAnyOrder(...$events);
 }
@@ -219,11 +219,11 @@ function checkAnyOrder(...$events)
  *
  * @param Event|EventCollection ...$events The events.
  *
- * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
+ * @return EventCollection          The result.
  * @throws InvalidArgumentException If invalid input is supplied.
- * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
+ * @throws Throwable                If the assertion fails.
  */
-function anyOrder(...$events)
+function anyOrder(...$events): EventCollection
 {
     return Globals::$container->eventOrderVerifier->anyOrder(...$events);
 }
@@ -315,7 +315,7 @@ function setExportDepth(int $depth): int
  *
  * @param bool|null $useColor True to use color.
  */
-function setUseColor(bool $useColor = null)
+function setUseColor(?bool $useColor): void
 {
     Globals::$container->assertionRenderer->setUseColor($useColor);
     Globals::$container->differenceEngine->setUseColor($useColor);

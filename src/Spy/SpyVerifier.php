@@ -96,7 +96,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Get the callback.
      *
-     * @return callable The callback.
+     * @return callable|array The callback.
      */
     public function callback()
     {
@@ -204,7 +204,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @param array<Call> $calls The calls.
      */
-    public function setCalls(array $calls)
+    public function setCalls(array $calls): void
     {
         $this->spy->setCalls($calls);
     }
@@ -214,7 +214,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @param Call $call The call.
      */
-    public function addCall(Call $call)
+    public function addCall(Call $call): void
     {
         $this->spy->addCall($call);
     }
@@ -421,7 +421,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @return EventCollection|null The result.
      */
-    public function checkCalled()
+    public function checkCalled(): ?EventCollection
     {
         $cardinality = $this->resetCardinality();
 
@@ -431,6 +431,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
         if ($cardinality->matches($callCount, $callCount)) {
             return $this->assertionRecorder->createSuccess($calls);
         }
+
+        return null;
     }
 
     /**
@@ -439,7 +441,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function called()
+    public function called(): ?EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -459,7 +461,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @return EventCollection|null The result.
      */
-    public function checkCalledWith(...$arguments)
+    public function checkCalledWith(...$arguments): ?EventCollection
     {
         $cardinality = $this->resetCardinality();
 
@@ -482,6 +484,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
         if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -492,7 +496,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function calledWith(...$arguments)
+    public function calledWith(...$arguments): ?EventCollection
     {
         $cardinality = $this->cardinality;
         $matchers = $this->matcherFactory->adaptAll($arguments);
@@ -512,7 +516,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @return EventCollection|null The result.
      */
-    public function checkResponded()
+    public function checkResponded(): ?EventCollection
     {
         $cardinality = $this->resetCardinality();
 
@@ -531,6 +535,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
         if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -539,7 +545,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function responded()
+    public function responded(): ?EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -557,7 +563,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @return EventCollection|null The result.
      */
-    public function checkCompleted()
+    public function checkCompleted(): ?EventCollection
     {
         $cardinality = $this->resetCardinality();
 
@@ -576,6 +582,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
         if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -584,7 +592,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function completed()
+    public function completed(): ?EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -604,7 +612,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @return EventCollection|null The result.
      */
-    public function checkReturned($value = null)
+    public function checkReturned($value = null): ?EventCollection
     {
         $cardinality = $this->resetCardinality();
 
@@ -646,6 +654,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
         if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -656,7 +666,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function returned($value = null)
+    public function returned($value = null): ?EventCollection
     {
         $cardinality = $this->cardinality;
         $argumentCount = func_num_args();
@@ -686,7 +696,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If the type is invalid.
      */
-    public function checkThrew($type = null)
+    public function checkThrew($type = null): ?EventCollection
     {
         $cardinality = $this->resetCardinality();
 
@@ -767,6 +777,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
         if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -778,7 +790,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function threw($type = null)
+    public function threw($type = null): ?EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -807,7 +819,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @return GeneratorVerifier|null The result.
      */
-    public function checkGenerated()
+    public function checkGenerated(): ?GeneratorVerifier
     {
         $cardinality = $this->resetCardinality();
 
@@ -835,15 +847,17 @@ class SpyVerifier implements Spy, CardinalityVerifier
                     ->create($this->spy, $matchingEvents)
             );
         }
+
+        return null;
     }
 
     /**
      * Throws an exception unless this spy returned a generator.
      *
-     * @return GeneratorVerifier The result.
+     * @return GeneratorVerifier The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable         If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function generated(): GeneratorVerifier
+    public function generated(): ?GeneratorVerifier
     {
         $cardinality = $this->cardinality;
 
@@ -861,7 +875,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @return IterableVerifier|null The result.
      */
-    public function checkIterated()
+    public function checkIterated(): ?IterableVerifier
     {
         $cardinality = $this->resetCardinality();
 
@@ -889,15 +903,17 @@ class SpyVerifier implements Spy, CardinalityVerifier
                     ->create($this->spy, $matchingEvents)
             );
         }
+
+        return null;
     }
 
     /**
      * Throws an exception unless this spy returned an iterable.
      *
-     * @return IterableVerifier The result.
+     * @return IterableVerifier The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function iterated(): IterableVerifier
+    public function iterated(): ?IterableVerifier
     {
         $cardinality = $this->cardinality;
 

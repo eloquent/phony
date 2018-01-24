@@ -54,7 +54,7 @@ trait CallEventTrait
      *
      * @return Call|null The call, or null if no call has been set.
      */
-    public function call()
+    public function call(): ?Call
     {
         return $this->call;
     }

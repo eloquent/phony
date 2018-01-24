@@ -157,28 +157,16 @@ class EmptyValueFactoryTest extends TestCase
 
     public function testFromTypeWithIterable()
     {
-        if (!$this->featureDetector->isSupported('type.iterable')) {
-            $this->markTestSkipped('Requires the iterable type.');
-        }
-
         $this->assertSame([], $this->subject->fromType($this->createType('iterable')));
     }
 
     public function testFromTypeWithVoid()
     {
-        if (!$this->featureDetector->isSupported('type.void')) {
-            $this->markTestSkipped('Requires the void type.');
-        }
-
         $this->assertNull($this->subject->fromType($this->createType('void')));
     }
 
     public function testFromTypeWithNullable()
     {
-        if (!$this->featureDetector->isSupported('type.nullable')) {
-            $this->markTestSkipped('Requires nullable types.');
-        }
-
         $this->assertNull($this->subject->fromType($this->createType('?int')));
         $this->assertNull($this->subject->fromType($this->createType('?stdClass')));
     }
@@ -343,7 +331,7 @@ class EmptyValueFactoryTest extends TestCase
 
         $this->assertInstanceOf($type, $actual);
         $this->assertInstanceOf(Mock::class, $actual);
-        $this->assertArrayNotHasKey(0, $actual);
+        $this->assertFalse(isset($actual[0]));
     }
 
     public function testFromTypeWithCountable()

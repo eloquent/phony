@@ -1,5 +1,43 @@
 # Migration guide
 
+## Migrating from `2.x` to `3.x`
+
+- [The `3.x` release only supports PHP 7.1 or later]
+- [Utilization of void and nullable type hints]
+- [Utilization of relaxed keywords]
+
+[the `3.x` release only supports php 7.1 or later]: #the-3x-release-only-supports-php-71-or-later
+[utilization of relaxed keywords]: #utilization-of-relaxed-keywords
+[utilization of void and nullable type hints]: #utilization-of-void-and-nullable-type-hints
+
+### The `3.x` release only supports PHP 7.1 or later
+
+The *Phony* `3.x` release drops support for PHP 7.0. If you only need to support
+PHP 7.1 or later, then it is recommended that you upgrade to *Phony* `3.x`. If
+you still need to support PHP 7.0, then you are free to continue using the `2.x`
+version of *Phony*.
+
+### Utilization of void and nullable type hints
+
+Where possible, the entire *Phony* `3.x` API now takes advantage of
+[nullable types] and [void functions].
+
+In terms of usage, this only affects [`setUseColor()`], which had an
+undocumented default value of `null` for its only argument. This function now
+requires an explicit `null` value if you wish to set color usage based upon the
+current environment.
+
+[`setUseColor()`]: http://eloquent-software.com/phony/3.0/#facade.setUseColor
+[nullable types]: http://php.net/manual/migration71.new-features.php#migration71.new-features.nullable-types
+[void functions]: http://php.net/manual/migration71.new-features.php#migration71.new-features.void-functions
+
+### Utilization of relaxed keywords
+
+The `handle->clazz()` method was renamed to [`handle->class()`], since PHP 7 now
+allows `class` as a method name.
+
+[`handle->class()`]: http://eloquent-software.com/phony/3.0/#handle.class
+
 ## Migrating from `1.x` to `2.x`
 
 - [The `2.x` release only supports PHP 7]

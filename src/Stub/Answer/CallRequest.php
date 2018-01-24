@@ -22,7 +22,7 @@ class CallRequest
      * @param bool      $suffixArguments       True if the arguments should be appended individually.
      */
     public function __construct(
-        callable $callback,
+        $callback,
         Arguments $arguments,
         bool $prefixSelf,
         bool $suffixArgumentsObject,
@@ -46,7 +46,7 @@ class CallRequest
      *
      * @return callable The callback.
      */
-    public function callback(): callable
+    public function callback()
     {
         return $this->callback;
     }

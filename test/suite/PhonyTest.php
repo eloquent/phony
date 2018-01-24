@@ -186,7 +186,7 @@ class PhonyTest extends TestCase
         $actual = Phony::onStatic($class);
 
         $this->assertInstanceOf(StaticHandle::class, $actual);
-        $this->assertSame($class, $actual->clazz());
+        $this->assertSame($class, $actual->class());
     }
 
     public function testOnStaticFunction()
@@ -195,7 +195,7 @@ class PhonyTest extends TestCase
         $actual = onStatic($class);
 
         $this->assertInstanceOf(StaticHandle::class, $actual);
-        $this->assertSame($class, $actual->clazz());
+        $this->assertSame($class, $actual->class());
     }
 
     public function testOn()

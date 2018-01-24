@@ -24,9 +24,9 @@ final class FunctionHookGenerationFailedException extends Exception implements
      */
     public function __construct(
         string $functionName,
-        callable $callback,
+        $callback,
         string $source,
-        array $error = null,
+        ?array $error,
         Throwable $cause = null
     ) {
         $this->functionName = $functionName;
@@ -110,7 +110,7 @@ final class FunctionHookGenerationFailedException extends Exception implements
      *
      * @return callable The callback.
      */
-    public function callback(): callable
+    public function callback()
     {
         return $this->callback;
     }
@@ -130,7 +130,7 @@ final class FunctionHookGenerationFailedException extends Exception implements
      *
      * @return array<string,mixed>|null The error details.
      */
-    public function error()
+    public function error(): ?array
     {
         return $this->error;
     }

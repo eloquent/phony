@@ -26,7 +26,7 @@ class WrappedCustomMethod implements WrappedMethod
      * @param Invoker          $invoker        The invoker to use.
      */
     public function __construct(
-        callable $customCallback,
+        $customCallback,
         ReflectionMethod $method,
         Handle $handle,
         Invoker $invoker
@@ -42,7 +42,7 @@ class WrappedCustomMethod implements WrappedMethod
      *
      * @return callable The custom callback.
      */
-    public function customCallback(): callable
+    public function customCallback()
     {
         return $this->customCallback;
     }

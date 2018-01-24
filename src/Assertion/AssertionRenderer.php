@@ -87,7 +87,7 @@ class AssertionRenderer
      *
      * @param bool|null $useColor True to use color.
      */
-    public function setUseColor(bool $useColor = null)
+    public function setUseColor(?bool $useColor): void
     {
         if (null === $useColor) {
             $useColor = $this->featureDetector->isSupported('stdout.ansi');
@@ -776,7 +776,7 @@ class AssertionRenderer
     public function renderReturned(
         $subject,
         Cardinality $cardinality,
-        Matcher $value = null
+        ?Matcher $value
     ): string {
         $isCall = $subject instanceof Call;
 
@@ -1655,8 +1655,8 @@ class AssertionRenderer
         $subject,
         Cardinality $cardinality,
         bool $isGenerator,
-        Matcher $key = null,
-        Matcher $value = null
+        ?Matcher $key,
+        ?Matcher $value
     ): string {
         $isCall = $subject instanceof Call;
 
@@ -2334,7 +2334,7 @@ class AssertionRenderer
     public function renderGeneratorReceived(
         $subject,
         Cardinality $cardinality,
-        Matcher $value = null
+        ?Matcher $value
     ): string {
         $isCall = $subject instanceof Call;
 
@@ -2925,7 +2925,7 @@ class AssertionRenderer
     public function renderGeneratorReturned(
         $subject,
         Cardinality $cardinality,
-        Matcher $value = null
+        ?Matcher $value
     ): string {
         $isCall = $subject instanceof Call;
 
@@ -3527,7 +3527,7 @@ class AssertionRenderer
      */
     public function renderNoInteraction(Handle $handle, array $calls): string
     {
-        $class = $handle->clazz();
+        $class = $handle->class();
 
         if ($parentClass = $class->getParentClass()) {
             $class = $parentClass;

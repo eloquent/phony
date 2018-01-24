@@ -73,7 +73,7 @@ interface Call extends Event, EventCollection
      *
      * @return callable The callback.
      */
-    public function callback(): callable;
+    public function callback();
 
     /**
      * Get the arguments.
@@ -150,7 +150,7 @@ interface Call extends Event, EventCollection
      *
      * @return float|null The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
      */
-    public function responseTime();
+    public function responseTime(): ?float;
 
     /**
      * Get the time at which the call completed.
@@ -165,7 +165,7 @@ interface Call extends Event, EventCollection
      *
      * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */
-    public function endTime();
+    public function endTime(): ?float;
 
     /**
      * Get the 'called' event.
@@ -181,14 +181,14 @@ interface Call extends Event, EventCollection
      *
      * @throws InvalidArgumentException If the call has already responded.
      */
-    public function setResponseEvent(ResponseEvent $responseEvent);
+    public function setResponseEvent(ResponseEvent $responseEvent): void;
 
     /**
      * Get the response event.
      *
      * @return ResponseEvent|null The response event, or null if the call has not yet responded.
      */
-    public function responseEvent();
+    public function responseEvent(): ?ResponseEvent;
 
     /**
      * Add an iterable event.
@@ -197,7 +197,7 @@ interface Call extends Event, EventCollection
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function addIterableEvent(IterableEvent $iterableEvent);
+    public function addIterableEvent(IterableEvent $iterableEvent): void;
 
     /**
      * Get the iterable events.
@@ -213,12 +213,12 @@ interface Call extends Event, EventCollection
      *
      * @throws InvalidArgumentException If the call has already completed.
      */
-    public function setEndEvent(EndEvent $endEvent);
+    public function setEndEvent(EndEvent $endEvent): void;
 
     /**
      * Get the end event.
      *
      * @return EndEvent|null The end event, or null if the call has not yet completed.
      */
-    public function endEvent();
+    public function endEvent(): ?EndEvent;
 }

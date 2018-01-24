@@ -5040,8 +5040,8 @@ Throws an exception unless the supplied events happened in chronological order.
 
 ----
 
-> *[verification][verification-api]|null* [**checkInOrder**](#facade.checkInOrder)(...$events) *(with [use function])*<br />
-> *[verification][verification-api]|null* Phony::[**checkInOrder**](#facade.checkInOrder)(...$events) *(without [use function])*
+> *?[verification][verification-api]* [**checkInOrder**](#facade.checkInOrder)(...$events) *(with [use function])*<br />
+> *?[verification][verification-api]* Phony::[**checkInOrder**](#facade.checkInOrder)(...$events) *(without [use function])*
 
 Checks if the supplied events happened in chronological order.
 
@@ -5068,8 +5068,8 @@ Throws an exception unless at least one event is supplied.
 
 ----
 
-> *[verification][verification-api]|null* [**checkAnyOrder**](#facade.checkAnyOrder)(...$events) *(with [use function])*<br />
-> *[verification][verification-api]|null* Phony::[**checkAnyOrder**](#facade.checkAnyOrder)(...$events) *(without [use function])*
+> *?[verification][verification-api]* [**checkAnyOrder**](#facade.checkAnyOrder)(...$events) *(with [use function])*<br />
+> *?[verification][verification-api]* Phony::[**checkAnyOrder**](#facade.checkAnyOrder)(...$events) *(without [use function])*
 
 Checks that at least one event is supplied.
 
@@ -5114,7 +5114,7 @@ Set the default export depth, and return the previous depth.
 - [`$handle->setLabel()`](#handle.setLabel)
 - [`$handle->construct()`](#handle.construct)
 - [`$handle->constructWith()`](#handle.constructWith)
-- [`$handle->clazz()`](#handle.clazz)
+- [`$handle->class()`](#handle.class)
 - [`$handle->className()`](#handle.className)
 - [`$handle->full()`](#handle.full)
 - [`$handle->partial()`](#handle.partial)
@@ -5207,11 +5207,11 @@ Call the original constructor.
 
 *See [Calling a constructor manually].*
 
-<a name="handle.clazz" />
+<a name="handle.class" />
 
 ----
 
-> *[ReflectionClass]* $handle->[**clazz**](#handle.clazz)()
+> *[ReflectionClass]* $handle->[**class**](#handle.class)()
 
 Get the generated mock class.
 
@@ -5285,7 +5285,7 @@ Throws an exception unless there was no interaction with the mock.
 
 ----
 
-> *[verification][verification-api]|null* $handle->[**checkNoInteraction**](#handle.checkNoInteraction)()
+> *?[verification][verification-api]* $handle->[**checkNoInteraction**](#handle.checkNoInteraction)()
 
 Checks if there was no interaction with the mock.
 
@@ -6300,7 +6300,7 @@ Throws an exception unless called.
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkCalled**](#spy.checkCalled)()
+> *?[verification][verification-api]* $spy->[**checkCalled**](#spy.checkCalled)()
 
 Checks if called.
 
@@ -6324,7 +6324,7 @@ Throws an exception unless called with the supplied arguments.
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkCalledWith**](#spy.checkCalledWith)(...$arguments)
+> *?[verification][verification-api]* $spy->[**checkCalledWith**](#spy.checkCalledWith)(...$arguments)
 
 Checks if called with the supplied arguments.
 
@@ -6355,7 +6355,7 @@ any value.*
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkReturned**](#spy.checkReturned)($value = null)
+> *?[verification][verification-api]* $spy->[**checkReturned**](#spy.checkReturned)($value = null)
 
 Checks if this spy returned the supplied value.
 
@@ -6397,7 +6397,7 @@ exception that matches the supplied matcher.*
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkThrew**](#spy.checkThrew)($type = null)
+> *?[verification][verification-api]* $spy->[**checkThrew**](#spy.checkThrew)($type = null)
 
 Checks if this spy threw an exception of the supplied type.
 
@@ -6435,7 +6435,7 @@ Throws an exception unless this spy responded.
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkResponded**](#spy.checkResponded)()
+> *?[verification][verification-api]* $spy->[**checkResponded**](#spy.checkResponded)()
 
 Checks if this spy responded.
 
@@ -6466,7 +6466,7 @@ consumed via iteration.*
 
 ----
 
-> *[verification][verification-api]|null* $spy->[**checkCompleted**](#spy.checkCompleted)()
+> *?[verification][verification-api]* $spy->[**checkCompleted**](#spy.checkCompleted)()
 
 Checks if this spy completed.
 
@@ -6496,7 +6496,7 @@ Throws an exception unless this spy returned a generator.
 
 ----
 
-> *[generator-verification][generator-verification-api]|null* $spy->[**checkGenerated**](#spy.checkGenerated)()
+> *?[generator-verification][generator-verification-api]* $spy->[**checkGenerated**](#spy.checkGenerated)()
 
 Checks if this spy returned a generator.
 
@@ -6519,7 +6519,7 @@ Throws an exception unless this spy returned an iterable.
 
 ----
 
-> *[iterable-verification][iterable-verification-api]|null* $spy->[**checkIterated**](#spy.checkIterated)()
+> *?[iterable-verification][iterable-verification-api]* $spy->[**checkIterated**](#spy.checkIterated)()
 
 Checks if this spy returned an iterable.
 
@@ -6777,7 +6777,7 @@ iteration, or if the generator ended by returning a value.*
 
 ----
 
-> *tuple\<[Throwable]|null,mixed>* $call->[**response**](#call.response)()
+> *tuple\<?[Throwable],mixed>* $call->[**response**](#call.response)()
 > throws [UndefinedResponseException]
 
 Get the response.
@@ -6795,7 +6795,7 @@ responded.*
 
 ----
 
-> *tuple\<[Throwable]|null,mixed>* $call->[**generatorResponse**](#call.generatorResponse)()
+> *tuple\<?[Throwable],mixed>* $call->[**generatorResponse**](#call.generatorResponse)()
 > throws [UndefinedResponseException]
 
 Get the generator response.
@@ -6878,7 +6878,7 @@ Get the time at which the call occurred, in seconds since the Unix epoch.
 
 ----
 
-> *float|null* $call->[**responseTime**](#call.responseTime)()
+> *?float* $call->[**responseTime**](#call.responseTime)()
 
 Get the time at which the call responded, in seconds since the Unix epoch.
 
@@ -6892,7 +6892,7 @@ Get the time at which the call responded, in seconds since the Unix epoch.
 
 ----
 
-> *float|null* $call->[**endTime**](#call.endTime)()
+> *?float* $call->[**endTime**](#call.endTime)()
 
 Get the time at which the call completed, in seconds since the Unix epoch.
 
@@ -6912,7 +6912,7 @@ consumed via iteration.*
 
 ----
 
-> *float|null* $call->[**responseDuration**](#call.responseDuration)()
+> *?float* $call->[**responseDuration**](#call.responseDuration)()
 
 Get the call response duration, in seconds.
 
@@ -6926,7 +6926,7 @@ Get the call response duration, in seconds.
 
 ----
 
-> *float|null* $call->[**duration**](#call.duration)()
+> *?float* $call->[**duration**](#call.duration)()
 
 Get the call response duration, in seconds.
 
@@ -6983,7 +6983,7 @@ Throws an exception unless called with the supplied arguments.
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkCalledWith**](#call.checkCalledWith)(...$arguments)
+> *?[verification][verification-api]* $call->[**checkCalledWith**](#call.checkCalledWith)(...$arguments)
 
 Checks if called with the supplied arguments.
 
@@ -7014,7 +7014,7 @@ any value.*
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkReturned**](#call.checkReturned)($value = null)
+> *?[verification][verification-api]* $call->[**checkReturned**](#call.checkReturned)($value = null)
 
 Checks if this call returned the supplied value.
 
@@ -7056,7 +7056,7 @@ exception that matches the supplied matcher.*
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkThrew**](#call.checkThrew)($type = null)
+> *?[verification][verification-api]* $call->[**checkThrew**](#call.checkThrew)($type = null)
 
 Checks if this call threw an exception of the supplied type.
 
@@ -7094,7 +7094,7 @@ Throws an exception unless this call responded.
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkResponded**](#call.checkResponded)()
+> *?[verification][verification-api]* $call->[**checkResponded**](#call.checkResponded)()
 
 Checks if this call responded.
 
@@ -7125,7 +7125,7 @@ consumed via iteration.*
 
 ----
 
-> *[verification][verification-api]|null* $call->[**checkCompleted**](#call.checkCompleted)()
+> *?[verification][verification-api]* $call->[**checkCompleted**](#call.checkCompleted)()
 
 Checks if this call completed.
 
@@ -7155,7 +7155,7 @@ Throws an exception unless this call returned a generator.
 
 ----
 
-> *[generator-verification][generator-verification-api]|null* $call->[**checkGenerated**](#call.checkGenerated)()
+> *?[generator-verification][generator-verification-api]* $call->[**checkGenerated**](#call.checkGenerated)()
 
 Checks if this call returned a generator.
 
@@ -7178,7 +7178,7 @@ Throws an exception unless this call returned an iterable.
 
 ----
 
-> *[iterable-verification][iterable-verification-api]|null* $call->[**checkIterated**](#call.checkIterated)()
+> *?[iterable-verification][iterable-verification-api]* $call->[**checkIterated**](#call.checkIterated)()
 
 Checks if this call returned an iterable.
 
@@ -7655,7 +7655,7 @@ Throws an exception unless iteration of the iterable commenced.
 
 ----
 
-> *[verification][verification-api]|null* $verification->[**checkUsed**](#verification.checkUsed)()
+> *?[verification][verification-api]* $verification->[**checkUsed**](#verification.checkUsed)()
 
 Checks if iteration of the iterable commenced.
 
@@ -7688,7 +7688,7 @@ arguments were produced together.*
 
 ----
 
-> *[verification][verification-api]|null* $verification->[**checkProduced**](#verification.checkProduced)($keyOrValue = null, $value = null)
+> *?[verification][verification-api]* $verification->[**checkProduced**](#verification.checkProduced)($keyOrValue = null, $value = null)
 
 Checks if the iterable produced the supplied values.
 
@@ -7721,7 +7721,7 @@ Throws an exception unless iteration of the iterable completed.
 
 ----
 
-> *[verification][verification-api]|null* $verification->[**checkConsumed**](#verification.checkConsumed)()
+> *?[verification][verification-api]* $verification->[**checkConsumed**](#verification.checkConsumed)()
 
 Checks if iteration of the iterable completed.
 
@@ -7881,7 +7881,7 @@ received any value.*
 
 ----
 
-> *[verification][verification-api]|null* $verification->[**checkReceived**](#verification.checkReceived)($value = null)
+> *?[verification][verification-api]* $verification->[**checkReceived**](#verification.checkReceived)($value = null)
 
 Checks if the generator received the supplied value.
 
@@ -7924,7 +7924,7 @@ exception that matches the supplied matcher.*
 
 ----
 
-> *[verification][verification-api]|null* $verification->[**checkReceivedException**](#verification.checkReceivedException)($type = null)
+> *?[verification][verification-api]* $verification->[**checkReceivedException**](#verification.checkReceivedException)($type = null)
 
 Checks if the generator received an exception of the supplied type.
 
@@ -7966,7 +7966,7 @@ returned any value.*
 
 ----
 
-> *[verification][verification-api]|null* $verification->[**checkReturned**](#verification.checkReturned)($value = null)
+> *?[verification][verification-api]* $verification->[**checkReturned**](#verification.checkReturned)($value = null)
 
 Checks if the generator returned the supplied value.
 
@@ -8009,7 +8009,7 @@ exception that matches the supplied matcher.*
 
 ----
 
-> *[verification][verification-api]|null* $verification->[**checkThrew**](#verification.checkThrew)($type = null)
+> *?[verification][verification-api]* $verification->[**checkThrew**](#verification.checkThrew)($type = null)
 
 Checks if this generator threw an exception of the supplied type.
 

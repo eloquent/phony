@@ -1,5 +1,16 @@
 # Phony changelog
 
+## Next release
+
+See the [migration guide][migration-3] for detailed upgrade information.
+
+- **[BC BREAK]** PHP 7.0 is no longer supported ([#233]).
+- **[BC BREAK]** An explicit argument is now required in `setUseColor()`.
+- **[BC BREAK]** The `handle->clazz()` method was renamed to `handle->class()`.
+
+[migration-3]: MIGRATING.md#migrating-from-2x-to-3x
+[#233]: https://github.com/eloquent/phony/issues/233
+
 ## 2.0.1 (2017-10-06)
 
 - **[IMPROVED]** Added the [Phony and Kahlan by example] guide.

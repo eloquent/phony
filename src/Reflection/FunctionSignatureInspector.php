@@ -34,8 +34,6 @@ class FunctionSignatureInspector
      */
     public function __construct(FeatureDetector $featureDetector)
     {
-        $this->isIterableTypeHintSupported = $featureDetector
-            ->isSupported('type.iterable');
         $this->isObjectTypeHintSupported = $featureDetector
             ->isSupported('type.object');
     }
@@ -76,10 +74,7 @@ class FunctionSignatureInspector
                 '' !== $typehint &&
                 'array ' !== $typehint &&
                 'callable ' !== $typehint &&
-                (
-                    !$this->isIterableTypeHintSupported ||
-                    'iterable ' !== $typehint
-                ) &&
+                'iterable ' !== $typehint &&
                 (
                     !$this->isObjectTypeHintSupported ||
                     'object ' !== $typehint
@@ -131,6 +126,5 @@ class FunctionSignatureInspector
     }
 
     private static $instance;
-    private $isIterableTypeHintSupported;
     private $isObjectTypeHintSupported;
 }

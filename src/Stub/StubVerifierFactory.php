@@ -135,7 +135,7 @@ class StubVerifierFactory
      *
      * @return StubVerifier The newly created stub verifier.
      */
-    public function createFromCallback(callable $callback = null): StubVerifier
+    public function createFromCallback($callback): StubVerifier
     {
         $stub = $this->stubFactory->create($callback);
 

@@ -639,7 +639,7 @@ class InlineExporter implements Exporter
      *
      * @return string The exported callable.
      */
-    public function exportCallable(callable $callback): string
+    public function exportCallable($callback): string
     {
         $wrappedCallback = null;
 
@@ -721,7 +721,7 @@ class InlineExporter implements Exporter
      *
      * Used for testing purposes only.
      */
-    public function reset()
+    public function reset(): void
     {
         $this->objectIds = [];
         $this->objectSequencer->reset();

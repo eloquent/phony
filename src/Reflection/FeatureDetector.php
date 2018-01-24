@@ -7,7 +7,6 @@ namespace Eloquent\Phony\Reflection;
 use Eloquent\Phony\Reflection\Exception\UndefinedFeatureException;
 use ReflectionException;
 use ReflectionFunction;
-use Throwable;
 
 /**
  * Detects support for language features in the current runtime environment.
@@ -44,14 +43,6 @@ class FeatureDetector
 
         $this->features = $features;
         $this->supported = $supported;
-
-        $this->isErrorClearLastSupported = function_exists('error_clear_last');
-
-        // @codeCoverageIgnoreStart
-        $this->nullErrorHandler = function () {
-            return false;
-        };
-        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -63,7 +54,7 @@ class FeatureDetector
      * @param string   $feature  The feature.
      * @param callable $callback The feature detection callback.
      */
-    public function addFeature(string $feature, callable $callback)
+    public function addFeature(string $feature, callable $callback): void
     {
         $this->features[$feature] = $callback;
     }
@@ -139,25 +130,6 @@ class FeatureDetector
                 return function_exists('posix_isatty') && @posix_isatty(STDOUT);
             },
 
-            'type.iterable' => function () {
-                try {
-                    $function =
-                        new ReflectionFunction(function (iterable $a) {});
-                    $parameters = $function->getParameters();
-                    $result = null === $parameters[0]->getClass();
-                    // @codeCoverageIgnoreStart
-                } catch (ReflectionException $e) {
-                    $result = false;
-                }
-                // @codeCoverageIgnoreEnd
-
-                return $result;
-            },
-
-            'type.nullable' => function ($detector) {
-                return $detector->checkStatement('function(?int $a){}');
-            },
-
             'type.object' => function () {
                 try {
                     $function =
@@ -172,54 +144,10 @@ class FeatureDetector
 
                 return $result;
             },
-
-            'type.void' => function ($detector) {
-                return $detector->checkStatement(
-                    '$r=new ReflectionFunction(function():void{});' .
-                        'return $r->getReturnType()->isBuiltin();'
-                );
-            },
         ];
-    }
-
-    /**
-     * Check that the supplied syntax is valid.
-     *
-     * @param string $source The source to check.
-     *
-     * @return bool True if the syntax is valid.
-     */
-    public function checkStatement(string $source): bool
-    {
-        $reporting = error_reporting(E_ERROR | E_COMPILE_ERROR);
-        $result = false;
-
-        try {
-            $result = eval(sprintf('%s;return true;', $source));
-        } catch (Throwable $e) {
-            // intentionally silenced
-        }
-
-        if (false === $result) {
-            if ($this->isErrorClearLastSupported) {
-                error_clear_last();
-                // @codeCoverageIgnoreStart
-            } else {
-                set_error_handler($this->nullErrorHandler);
-                @trigger_error('');
-                restore_error_handler();
-            }
-            // @codeCoverageIgnoreEnd
-        }
-
-        error_reporting($reporting);
-
-        return true === $result;
     }
 
     private static $instance;
     private $features;
     private $supported;
-    private $isErrorClearLastSupported;
-    private $nullErrorHandler;
 }

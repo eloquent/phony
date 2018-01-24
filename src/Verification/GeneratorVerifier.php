@@ -63,7 +63,7 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @return EventCollection|null The result.
      */
-    public function checkReceived($value = null)
+    public function checkReceived($value = null): ?EventCollection
     {
         $cardinality = $this->resetCardinality();
         $argumentCount = func_num_args();
@@ -112,6 +112,8 @@ class GeneratorVerifier extends IterableVerifier
         if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -125,7 +127,7 @@ class GeneratorVerifier extends IterableVerifier
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function received($value = null)
+    public function received($value = null): ?EventCollection
     {
         $cardinality = $this->cardinality;
         $argumentCount = func_num_args();
@@ -155,7 +157,7 @@ class GeneratorVerifier extends IterableVerifier
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If the type is invalid.
      */
-    public function checkReceivedException($type = null)
+    public function checkReceivedException($type = null): ?EventCollection
     {
         $cardinality = $this->resetCardinality();
 
@@ -270,6 +272,8 @@ class GeneratorVerifier extends IterableVerifier
         if ($cardinality->matches($matchCount, $totalCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -282,7 +286,7 @@ class GeneratorVerifier extends IterableVerifier
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function receivedException($type = null)
+    public function receivedException($type = null): ?EventCollection
     {
         $cardinality = $this->cardinality;
 
@@ -316,7 +320,7 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @return EventCollection|null The result.
      */
-    public function checkReturned($value = null)
+    public function checkReturned($value = null): ?EventCollection
     {
         $cardinality = $this->resetCardinality();
 
@@ -360,6 +364,8 @@ class GeneratorVerifier extends IterableVerifier
         if ($cardinality->matches($matchCount, $this->callCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -371,7 +377,7 @@ class GeneratorVerifier extends IterableVerifier
      * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function returned($value = null)
+    public function returned($value = null): ?EventCollection
     {
         $cardinality = $this->cardinality;
         $argumentCount = func_num_args();
@@ -401,7 +407,7 @@ class GeneratorVerifier extends IterableVerifier
      * @return EventCollection|null     The result.
      * @throws InvalidArgumentException If the type is invalid.
      */
-    public function checkThrew($type = null)
+    public function checkThrew($type = null): ?EventCollection
     {
         $cardinality = $this->resetCardinality();
 
@@ -487,6 +493,8 @@ class GeneratorVerifier extends IterableVerifier
         if ($cardinality->matches($matchCount, $this->callCount)) {
             return $this->assertionRecorder->createSuccess($matchingEvents);
         }
+
+        return null;
     }
 
     /**
@@ -499,7 +507,7 @@ class GeneratorVerifier extends IterableVerifier
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function threw($type = null)
+    public function threw($type = null): ?EventCollection
     {
         $cardinality = $this->cardinality;
 

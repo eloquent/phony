@@ -59,13 +59,13 @@ class FunctionHookManager
      * @param string   $namespace The namespace.
      * @param callable $callback  The callback.
      *
-     * @return callback|null         The replaced callback, or null if no callback was set.
+     * @return callable|null         The replaced callback, or null if no callback was set.
      * @throws FunctionHookException If the function hook generation fails.
      */
     public function defineFunction(
         string $name,
         string $namespace,
-        callable $callback
+        $callback
     ) {
         $signature = $this->signatureInspector->signature(
             $this->invocableInspector->callbackReflector($callback)
@@ -126,7 +126,7 @@ class FunctionHookManager
      * Effectively removes any function hooks for functions in the global
      * namespace.
      */
-    public function restoreGlobalFunctions()
+    public function restoreGlobalFunctions(): void
     {
         foreach (self::$hooks as $key => $data) {
             self::$hooks[$key]['callback'] = null;
