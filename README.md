@@ -48,10 +48,10 @@ Full [documentation] is available.
 
 ## What is *Phony*?
 
-*Phony* is a PHP library for creating [test doubles], supporting PHP 7+. Legacy
-support for PHP 5 and [HHVM] is also available in previous major versions of
-*Phony*.
+*Phony* is a PHP library for creating various kinds of [test doubles], including
+object [mocks], function [stubs], and function [spies].
 
+[mocks]: http://eloquent-software.com/phony/latest/#mocks
 [test doubles]: https://en.wikipedia.org/wiki/Test_double
 
 ## Why use *Phony*?
