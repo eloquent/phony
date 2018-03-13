@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 3.0.0 (2018-03-13)
 
 See the [migration guide][migration-3] for detailed upgrade information.
 
