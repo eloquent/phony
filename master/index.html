@@ -4114,8 +4114,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="facade.checkInOrder"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> <a href="#facade.checkInOrder"><strong>checkInOrder</strong></a>(...$events) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-verification-result-api">verification</a>|null</em> Phony::<a href="#facade.checkInOrder"><strong>checkInOrder</strong></a>(...$events) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> <a href="#facade.checkInOrder"><strong>checkInOrder</strong></a>(...$events) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em>?<a href="#the-verification-result-api">verification</a></em> Phony::<a href="#facade.checkInOrder"><strong>checkInOrder</strong></a>(...$events) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Checks if the supplied events happened in chronological order.</p>
 <p><em>Each value in <code>$events</code> should be an event, or a <a href="#the-verification-result-api">verification result</a>.</em></p>
@@ -4134,8 +4134,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="facade.checkAnyOrder"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> <a href="#facade.checkAnyOrder"><strong>checkAnyOrder</strong></a>(...$events) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-verification-result-api">verification</a>|null</em> Phony::<a href="#facade.checkAnyOrder"><strong>checkAnyOrder</strong></a>(...$events) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> <a href="#facade.checkAnyOrder"><strong>checkAnyOrder</strong></a>(...$events) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em>?<a href="#the-verification-result-api">verification</a></em> Phony::<a href="#facade.checkAnyOrder"><strong>checkAnyOrder</strong></a>(...$events) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Checks that at least one event is supplied.</p>
 <p><em>Each value in <code>$events</code> should be an event, or a <a href="#the-verification-result-api">verification result</a>.</em></p>
@@ -4169,7 +4169,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <li><a href="#handle.setLabel"><code>$handle-&gt;setLabel()</code></a></li>
 <li><a href="#handle.construct"><code>$handle-&gt;construct()</code></a></li>
 <li><a href="#handle.constructWith"><code>$handle-&gt;constructWith()</code></a></li>
-<li><a href="#handle.clazz"><code>$handle-&gt;clazz()</code></a></li>
+<li><a href="#handle.class"><code>$handle-&gt;class()</code></a></li>
 <li><a href="#handle.className"><code>$handle-&gt;className()</code></a></li>
 <li><a href="#handle.full"><code>$handle-&gt;full()</code></a></li>
 <li><a href="#handle.partial"><code>$handle-&gt;partial()</code></a></li>
@@ -4238,10 +4238,10 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p><em>This method supports reference parameters.</em></p>
 <p><em>This method is not available on <a href="#static-mocks">static mock handles</a>.</em></p>
 <p><em>See <a href="#calling-a-constructor-manually">Calling a constructor manually</a>.</em></p>
-<a name="handle.clazz"></a>
+<a name="handle.class"></a>
 <hr>
 <blockquote>
-<p><em><a href="http://php.net/reflectionclass" rel="nofollow">ReflectionClass</a></em> $handle-&gt;<a href="#handle.clazz"><strong>clazz</strong></a>()</p>
+<p><em><a href="http://php.net/reflectionclass" rel="nofollow">ReflectionClass</a></em> $handle-&gt;<a href="#handle.class"><strong>class</strong></a>()</p>
 </blockquote>
 <p>Get the generated mock class.</p>
 <a name="handle.className"></a>
@@ -4295,7 +4295,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="handle.checkNoInteraction"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $handle-&gt;<a href="#handle.checkNoInteraction"><strong>checkNoInteraction</strong></a>()</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $handle-&gt;<a href="#handle.checkNoInteraction"><strong>checkNoInteraction</strong></a>()</p>
 </blockquote>
 <p>Checks if there was no interaction with the mock.</p>
 <p><em>See <a href="#verifying-that-there-was-no-interaction-with-a-mock">Verifying that there was no interaction with a mock</a>,
@@ -5034,7 +5034,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="spy.checkCalled"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkCalled"><strong>checkCalled</strong></a>()</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.checkCalled"><strong>checkCalled</strong></a>()</p>
 </blockquote>
 <p>Checks if called.</p>
 <p><em>See <a href="#verifying-that-a-call-was-made">Verifying that a call was made</a>, <a href="#check-verification">Check verification</a>.</em></p>
@@ -5051,7 +5051,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="spy.checkCalledWith"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkCalledWith"><strong>checkCalledWith</strong></a>(...$arguments)</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.checkCalledWith"><strong>checkCalledWith</strong></a>(...$arguments)</p>
 </blockquote>
 <p>Checks if called with the supplied arguments.</p>
 <p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
@@ -5073,7 +5073,7 @@ any value.</em></p>
 <a name="spy.checkReturned"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkReturned"><strong>checkReturned</strong></a>($value = null)</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.checkReturned"><strong>checkReturned</strong></a>($value = null)</p>
 </blockquote>
 <p>Checks if this spy returned the supplied value.</p>
 <p><em>When called with no arguments, this method simply checks that the spy returned
@@ -5102,7 +5102,7 @@ exception that matches the supplied matcher.</em></p>
 <a name="spy.checkThrew"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkThrew"><strong>checkThrew</strong></a>($type = null)</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.checkThrew"><strong>checkThrew</strong></a>($type = null)</p>
 </blockquote>
 <p>Checks if this spy threw an exception of the supplied type.</p>
 <p><em>When called with no arguments, this method simply checks that the spy threw any
@@ -5128,7 +5128,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="spy.checkResponded"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkResponded"><strong>checkResponded</strong></a>()</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.checkResponded"><strong>checkResponded</strong></a>()</p>
 </blockquote>
 <p>Checks if this spy responded.</p>
 <p><em>A spy that has "responded" has returned a value, or thrown an exception.</em></p>
@@ -5150,7 +5150,7 @@ consumed via iteration.</em></p>
 <a name="spy.checkCompleted"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $spy-&gt;<a href="#spy.checkCompleted"><strong>checkCompleted</strong></a>()</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $spy-&gt;<a href="#spy.checkCompleted"><strong>checkCompleted</strong></a>()</p>
 </blockquote>
 <p>Checks if this spy completed.</p>
 <p><em>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
@@ -5172,7 +5172,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="spy.checkGenerated"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-generator-verification-result-api">generator-verification</a>|null</em> $spy-&gt;<a href="#spy.checkGenerated"><strong>checkGenerated</strong></a>()</p>
+<p><em>?<a href="#the-generator-verification-result-api">generator-verification</a></em> $spy-&gt;<a href="#spy.checkGenerated"><strong>checkGenerated</strong></a>()</p>
 </blockquote>
 <p>Checks if this spy returned a generator.</p>
 <p><em>See <a href="#verifying-generators-returned-by-spies">Verifying generators returned by spies</a>,
@@ -5189,7 +5189,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="spy.checkIterated"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-iterable-verification-result-api">iterable-verification</a>|null</em> $spy-&gt;<a href="#spy.checkIterated"><strong>checkIterated</strong></a>()</p>
+<p><em>?<a href="#the-iterable-verification-result-api">iterable-verification</a></em> $spy-&gt;<a href="#spy.checkIterated"><strong>checkIterated</strong></a>()</p>
 </blockquote>
 <p>Checks if this spy returned an iterable.</p>
 <p><em>See <a href="#verifying-iterables-returned-by-spies">Verifying iterables returned by spies</a>,
@@ -5391,7 +5391,7 @@ iteration, or if the generator ended by returning a value.</em></p>
 <a name="call.response"></a>
 <hr>
 <blockquote>
-<p><em>tuple&lt;<a href="http://php.net/class.throwable" rel="nofollow">Throwable</a>|null,mixed&gt;</em> $call-&gt;<a href="#call.response"><strong>response</strong></a>()
+<p><em>tuple&lt;?<a href="http://php.net/class.throwable" rel="nofollow">Throwable</a>,mixed&gt;</em> $call-&gt;<a href="#call.response"><strong>response</strong></a>()
 throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
 </blockquote>
 <p>Get the response.</p>
@@ -5404,7 +5404,7 @@ responded.</em></p>
 <a name="call.generatorResponse"></a>
 <hr>
 <blockquote>
-<p><em>tuple&lt;<a href="http://php.net/class.throwable" rel="nofollow">Throwable</a>|null,mixed&gt;</em> $call-&gt;<a href="#call.generatorResponse"><strong>generatorResponse</strong></a>()
+<p><em>tuple&lt;?<a href="http://php.net/class.throwable" rel="nofollow">Throwable</a>,mixed&gt;</em> $call-&gt;<a href="#call.generatorResponse"><strong>generatorResponse</strong></a>()
 throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
 </blockquote>
 <p>Get the generator response.</p>
@@ -5462,7 +5462,7 @@ consumed via iteration.</em></p>
 <a name="call.responseTime"></a>
 <hr>
 <blockquote>
-<p><em>float|null</em> $call-&gt;<a href="#call.responseTime"><strong>responseTime</strong></a>()</p>
+<p><em>?float</em> $call-&gt;<a href="#call.responseTime"><strong>responseTime</strong></a>()</p>
 </blockquote>
 <p>Get the time at which the call responded, in seconds since the Unix epoch.</p>
 <p><em>If the call has not yet responded, <code>null</code> will be returned.</em></p>
@@ -5471,7 +5471,7 @@ consumed via iteration.</em></p>
 <a name="call.endTime"></a>
 <hr>
 <blockquote>
-<p><em>float|null</em> $call-&gt;<a href="#call.endTime"><strong>endTime</strong></a>()</p>
+<p><em>?float</em> $call-&gt;<a href="#call.endTime"><strong>endTime</strong></a>()</p>
 </blockquote>
 <p>Get the time at which the call completed, in seconds since the Unix epoch.</p>
 <p><em>If the call has not yet completed, <code>null</code> will be returned.</em></p>
@@ -5485,7 +5485,7 @@ consumed via iteration.</em></p>
 <a name="call.responseDuration"></a>
 <hr>
 <blockquote>
-<p><em>float|null</em> $call-&gt;<a href="#call.responseDuration"><strong>responseDuration</strong></a>()</p>
+<p><em>?float</em> $call-&gt;<a href="#call.responseDuration"><strong>responseDuration</strong></a>()</p>
 </blockquote>
 <p>Get the call response duration, in seconds.</p>
 <p><em>If the call has not yet responded, <code>null</code> will be returned.</em></p>
@@ -5494,7 +5494,7 @@ consumed via iteration.</em></p>
 <a name="call.duration"></a>
 <hr>
 <blockquote>
-<p><em>float|null</em> $call-&gt;<a href="#call.duration"><strong>duration</strong></a>()</p>
+<p><em>?float</em> $call-&gt;<a href="#call.duration"><strong>duration</strong></a>()</p>
 </blockquote>
 <p>Get the call response duration, in seconds.</p>
 <p><em>If the call has not yet completed, <code>null</code> will be returned.</em></p>
@@ -5535,7 +5535,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="call.checkCalledWith"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkCalledWith"><strong>checkCalledWith</strong></a>(...$arguments)</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $call-&gt;<a href="#call.checkCalledWith"><strong>checkCalledWith</strong></a>(...$arguments)</p>
 </blockquote>
 <p>Checks if called with the supplied arguments.</p>
 <p><em>This method supports <a href="#mock-handle-substitution">mock handle substitution</a> and
@@ -5557,7 +5557,7 @@ any value.</em></p>
 <a name="call.checkReturned"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkReturned"><strong>checkReturned</strong></a>($value = null)</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $call-&gt;<a href="#call.checkReturned"><strong>checkReturned</strong></a>($value = null)</p>
 </blockquote>
 <p>Checks if this call returned the supplied value.</p>
 <p><em>When called with no arguments, this method simply checks that the call returned
@@ -5586,7 +5586,7 @@ exception that matches the supplied matcher.</em></p>
 <a name="call.checkThrew"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkThrew"><strong>checkThrew</strong></a>($type = null)</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $call-&gt;<a href="#call.checkThrew"><strong>checkThrew</strong></a>($type = null)</p>
 </blockquote>
 <p>Checks if this call threw an exception of the supplied type.</p>
 <p><em>When called with no arguments, this method simply checks that the call threw
@@ -5612,7 +5612,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="call.checkResponded"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkResponded"><strong>checkResponded</strong></a>()</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $call-&gt;<a href="#call.checkResponded"><strong>checkResponded</strong></a>()</p>
 </blockquote>
 <p>Checks if this call responded.</p>
 <p><em>A call that has "responded" has returned a value, or thrown an exception.</em></p>
@@ -5634,7 +5634,7 @@ consumed via iteration.</em></p>
 <a name="call.checkCompleted"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $call-&gt;<a href="#call.checkCompleted"><strong>checkCompleted</strong></a>()</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $call-&gt;<a href="#call.checkCompleted"><strong>checkCompleted</strong></a>()</p>
 </blockquote>
 <p>Checks if this call completed.</p>
 <p><em>When <a href="#generator-and-iterable-verification">generator spies</a> are in use, a call that returns a generator will not be
@@ -5656,7 +5656,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="call.checkGenerated"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-generator-verification-result-api">generator-verification</a>|null</em> $call-&gt;<a href="#call.checkGenerated"><strong>checkGenerated</strong></a>()</p>
+<p><em>?<a href="#the-generator-verification-result-api">generator-verification</a></em> $call-&gt;<a href="#call.checkGenerated"><strong>checkGenerated</strong></a>()</p>
 </blockquote>
 <p>Checks if this call returned a generator.</p>
 <p><em>See <a href="#verifying-generators-returned-by-calls">Verifying generators returned by calls</a>,
@@ -5673,7 +5673,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="call.checkIterated"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-iterable-verification-result-api">iterable-verification</a>|null</em> $call-&gt;<a href="#call.checkIterated"><strong>checkIterated</strong></a>()</p>
+<p><em>?<a href="#the-iterable-verification-result-api">iterable-verification</a></em> $call-&gt;<a href="#call.checkIterated"><strong>checkIterated</strong></a>()</p>
 </blockquote>
 <p>Checks if this call returned an iterable.</p>
 <p><em>See <a href="#verifying-iterables-returned-by-calls">Verifying iterables returned by calls</a>,
@@ -6053,7 +6053,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="verification.checkUsed"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkUsed"><strong>checkUsed</strong></a>()</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.checkUsed"><strong>checkUsed</strong></a>()</p>
 </blockquote>
 <p>Checks if iteration of the iterable commenced.</p>
 <p><em>See <a href="#verifying-iteration">Verifying iteration</a>, <a href="#check-verification">Check verification</a>.</em></p>
@@ -6076,7 +6076,7 @@ arguments were produced together.</em></p>
 <a name="verification.checkProduced"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkProduced"><strong>checkProduced</strong></a>($keyOrValue = null, $value = null)</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.checkProduced"><strong>checkProduced</strong></a>($keyOrValue = null, $value = null)</p>
 </blockquote>
 <p>Checks if the iterable produced the supplied values.</p>
 <p><em>When called with no arguments, this method simply checks that the iterable
@@ -6099,7 +6099,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="verification.checkConsumed"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkConsumed"><strong>checkConsumed</strong></a>()</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.checkConsumed"><strong>checkConsumed</strong></a>()</p>
 </blockquote>
 <p>Checks if iteration of the iterable completed.</p>
 <p><em>See <a href="#verifying-iteration">Verifying iteration</a>, <a href="#check-verification">Check verification</a>.</em></p>
@@ -6224,7 +6224,7 @@ received any value.</em></p>
 <a name="verification.checkReceived"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkReceived"><strong>checkReceived</strong></a>($value = null)</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.checkReceived"><strong>checkReceived</strong></a>($value = null)</p>
 </blockquote>
 <p>Checks if the generator received the supplied value.</p>
 <p><em>When called with no arguments, this method simply checks that the generator
@@ -6254,7 +6254,7 @@ exception that matches the supplied matcher.</em></p>
 <a name="verification.checkReceivedException"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkReceivedException"><strong>checkReceivedException</strong></a>($type = null)</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.checkReceivedException"><strong>checkReceivedException</strong></a>($type = null)</p>
 </blockquote>
 <p>Checks if the generator received an exception of the supplied type.</p>
 <p><em>When called with no arguments, this method simply checks that the generator
@@ -6283,7 +6283,7 @@ returned any value.</em></p>
 <a name="verification.checkReturned"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkReturned"><strong>checkReturned</strong></a>($value = null)</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.checkReturned"><strong>checkReturned</strong></a>($value = null)</p>
 </blockquote>
 <p>Checks if the generator returned the supplied value.</p>
 <p><em>When called with no arguments, this method simply checks that the generator
@@ -6313,7 +6313,7 @@ exception that matches the supplied matcher.</em></p>
 <a name="verification.checkThrew"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a>|null</em> $verification-&gt;<a href="#verification.checkThrew"><strong>checkThrew</strong></a>($type = null)</p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> $verification-&gt;<a href="#verification.checkThrew"><strong>checkThrew</strong></a>($type = null)</p>
 </blockquote>
 <p>Checks if this generator threw an exception of the supplied type.</p>
 <p><em>When called with no arguments, this method simply checks that the generator
