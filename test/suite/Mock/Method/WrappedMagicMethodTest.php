@@ -9,6 +9,7 @@ use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Test\TestClassB;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
+use RuntimeException;
 
 class WrappedMagicMethodTest extends TestCase
 {
@@ -28,6 +29,7 @@ class WrappedMagicMethodTest extends TestCase
             $this->callMagicMethod,
             $this->isUncallable,
             $this->handle,
+            null,
             'return-value'
         );
     }
@@ -53,6 +55,7 @@ class WrappedMagicMethodTest extends TestCase
             $this->callMagicMethod,
             $this->isUncallable,
             $this->handle,
+            null,
             'return-value'
         );
 
@@ -87,7 +90,7 @@ class WrappedMagicMethodTest extends TestCase
         $callMagicMethod->setAccessible(true);
         $mock = $mockBuilder->get();
         $handle = $this->handleFactory->instanceHandle($mock);
-        $subject = new WrappedMagicMethod($this->name, $callMagicMethod, false, $handle, 'return-value');
+        $subject = new WrappedMagicMethod($this->name, $callMagicMethod, false, $handle, null, 'return-value');
 
         $this->assertSame('magic nonexistent ab', $subject('a', 'b'));
         $this->assertSame('magic nonexistent ab', $subject->invoke('a', 'b'));
@@ -102,7 +105,7 @@ class WrappedMagicMethodTest extends TestCase
         $callMagicMethod = $class->getMethod('_callMagicStatic');
         $callMagicMethod->setAccessible(true);
         $handle = $this->handleFactory->staticHandle($mockBuilder->build());
-        $subject = new WrappedMagicMethod($this->name, $callMagicMethod, false, $handle, 'return-value');
+        $subject = new WrappedMagicMethod($this->name, $callMagicMethod, false, $handle, null, 'return-value');
 
         $this->assertSame('static magic nonexistent ab', $subject('a', 'b'));
         $this->assertSame('static magic nonexistent ab', $subject->invoke('a', 'b'));
@@ -112,11 +115,38 @@ class WrappedMagicMethodTest extends TestCase
 
     public function testInvokeMethodsWithUncallable()
     {
-        $subject = new WrappedMagicMethod($this->name, $this->callMagicMethod, true, $this->handle, 'return-value');
+        $subject = new WrappedMagicMethod($this->name, $this->callMagicMethod, true, $this->handle, null, 'return-value');
 
         $this->assertSame('return-value', $subject('a', 'b'));
         $this->assertSame('return-value', $subject->invoke('a', 'b'));
         $this->assertSame('return-value', $subject->invokeWith(['a', 'b']));
+        $this->assertSame('return-value', $subject->invokeWith());
+    }
+
+    public function testSystemInvokeWithException()
+    {
+        $expected = new RuntimeException('You done goofed.');
+        $subject = new WrappedMagicMethod($this->name, $this->callMagicMethod, true, $this->handle, $expected, null);
+
+        $this->expectExceptionObject($expected);
+        $this->assertSame('return-value', $subject());
+    }
+
+    public function testInvokeWithException()
+    {
+        $expected = new RuntimeException('You done goofed.');
+        $subject = new WrappedMagicMethod($this->name, $this->callMagicMethod, true, $this->handle, $expected, null);
+
+        $this->expectExceptionObject($expected);
+        $this->assertSame('return-value', $subject->invoke());
+    }
+
+    public function testInvokeWithWithException()
+    {
+        $expected = new RuntimeException('You done goofed.');
+        $subject = new WrappedMagicMethod($this->name, $this->callMagicMethod, true, $this->handle, $expected, null);
+
+        $this->expectExceptionObject($expected);
         $this->assertSame('return-value', $subject->invokeWith());
     }
 }

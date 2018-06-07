@@ -11,6 +11,7 @@ use Eloquent\Phony\Spy\SpyVerifier;
 use Eloquent\Phony\Stub\Exception\FinalReturnTypeException;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Test;
+use Eloquent\Phony\Test\AbstractTestClassWithFinalReturnType;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestClassC;
@@ -18,10 +19,12 @@ use Eloquent\Phony\Test\TestClassD;
 use Eloquent\Phony\Test\TestClassG;
 use Eloquent\Phony\Test\TestClassI;
 use Eloquent\Phony\Test\TestClassWithFinalReturnType;
+use Eloquent\Phony\Test\TestFinalClass;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestInterfaceC;
 use Eloquent\Phony\Test\TestInterfaceD;
 use Eloquent\Phony\Test\TestInterfaceE;
+use Eloquent\Phony\Test\TestInterfaceWithFinalReturnType;
 use Eloquent\Phony\Test\TestInterfaceWithReturnType;
 use Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint;
 use Eloquent\Phony\Test\TestInterfaceWithVariadicParameter;
@@ -1500,6 +1503,15 @@ class FunctionalTest extends TestCase
         $this->assertLessThan(200, strlen($output));
     }
 
+    public function testFinalReturnValueWithStub()
+    {
+        $expected = new TestFinalClass();
+        $stub = stub(Test::class . '\testFunctionWithFinalReturnType');
+        $stub->returns($expected);
+
+        $this->assertSame($expected, $stub());
+    }
+
     public function testFinalDefaultReturnValueWithStub()
     {
         $stub = stub(Test::class . '\testFunctionWithFinalReturnType');
@@ -1511,6 +1523,38 @@ class FunctionalTest extends TestCase
                 "'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
         );
         $stub();
+    }
+
+    public function testFinalReturnValueWithMock()
+    {
+        $expected = new TestFinalClass();
+        $handle = mock(TestClassWithFinalReturnType::class);
+        $handle->finalReturnType->returns($expected);
+        $handle->undefined->returns($expected);
+        $mock = $handle->get();
+
+        $this->assertSame($expected, $mock->finalReturnType());
+        $this->assertSame($expected, $mock->undefined());
+    }
+
+    public function testFinalReturnValueWithMockForwarding()
+    {
+        $handle = mock(TestClassWithFinalReturnType::class);
+        $handle->finalReturnType->forwards();
+        $handle->undefined->forwards();
+        $mock = $handle->get();
+
+        $this->assertInstanceOf(TestFinalClass::class, $mock->finalReturnType());
+        $this->assertInstanceOf(TestFinalClass::class, $mock->undefined());
+    }
+
+    public function testFinalReturnValueWithPartialMock()
+    {
+        $handle = partialMock(TestClassWithFinalReturnType::class);
+        $mock = $handle->get();
+
+        $this->assertInstanceOf(TestFinalClass::class, $mock->finalReturnType());
+        $this->assertInstanceOf(TestFinalClass::class, $mock->undefined());
     }
 
     public function testFinalDefaultReturnValueWithMock()
@@ -1528,5 +1572,114 @@ class FunctionalTest extends TestCase
             '$/'
         );
         $mock->finalReturnType();
+    }
+
+    public function testFinalDefaultReturnValueWithMockMagic()
+    {
+        $mock = mock(TestClassWithFinalReturnType::class)->get();
+
+        $this->expectException(FinalReturnTypeException::class);
+        $this->expectExceptionMessageRegExp(
+            '/^' .
+            preg_quote("Unable to create a default return value for 'TestClassWithFinalReturnType[", '/') .
+            '\d+' .
+            preg_quote(
+                "]->undefined', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+            ) .
+            '$/'
+        );
+        $mock->undefined();
+    }
+
+    public function testFinalReturnValueWithAbstractMock()
+    {
+        $expected = new TestFinalClass();
+        $handle = mock(AbstractTestClassWithFinalReturnType::class);
+        $handle->finalReturnType->returns($expected);
+        $handle->undefined->returns($expected);
+        $mock = $handle->get();
+
+        $this->assertSame($expected, $mock->finalReturnType());
+        $this->assertSame($expected, $mock->undefined());
+    }
+
+    public function testFinalDefaultReturnValueWithAbstractMock()
+    {
+        $mock = mock(AbstractTestClassWithFinalReturnType::class)->get();
+
+        $this->expectException(FinalReturnTypeException::class);
+        $this->expectExceptionMessageRegExp(
+            '/^' .
+            preg_quote("Unable to create a default return value for 'AbstractTestClassWithFinalReturnType[", '/') .
+            '\d+' .
+            preg_quote(
+                "]->finalReturnType', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+            ) .
+            '$/'
+        );
+        $mock->finalReturnType();
+    }
+
+    public function testFinalDefaultReturnValueWithAbstractMockMagic()
+    {
+        $mock = mock(AbstractTestClassWithFinalReturnType::class)->get();
+
+        $this->expectException(FinalReturnTypeException::class);
+        $this->expectExceptionMessageRegExp(
+            '/^' .
+            preg_quote("Unable to create a default return value for 'AbstractTestClassWithFinalReturnType[", '/') .
+            '\d+' .
+            preg_quote(
+                "]->undefined', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+            ) .
+            '$/'
+        );
+        $mock->undefined();
+    }
+
+    public function testFinalReturnValueWithInterfaceMock()
+    {
+        $expected = new TestFinalClass();
+        $handle = mock(TestInterfaceWithFinalReturnType::class);
+        $handle->finalReturnType->returns($expected);
+        $handle->undefined->returns($expected);
+        $mock = $handle->get();
+
+        $this->assertSame($expected, $mock->finalReturnType());
+        $this->assertSame($expected, $mock->undefined());
+    }
+
+    public function testFinalDefaultReturnValueWithInterfaceMock()
+    {
+        $mock = mock(TestInterfaceWithFinalReturnType::class)->get();
+
+        $this->expectException(FinalReturnTypeException::class);
+        $this->expectExceptionMessageRegExp(
+            '/^' .
+            preg_quote("Unable to create a default return value for 'TestInterfaceWithFinalReturnType[", '/') .
+            '\d+' .
+            preg_quote(
+                "]->finalReturnType', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+            ) .
+            '$/'
+        );
+        $mock->finalReturnType();
+    }
+
+    public function testFinalDefaultReturnValueWithInterfaceMockMagic()
+    {
+        $mock = mock(TestInterfaceWithFinalReturnType::class)->get();
+
+        $this->expectException(FinalReturnTypeException::class);
+        $this->expectExceptionMessageRegExp(
+            '/^' .
+            preg_quote("Unable to create a default return value for 'TestInterfaceWithFinalReturnType[", '/') .
+            '\d+' .
+            preg_quote(
+                "]->undefined', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+            ) .
+            '$/'
+        );
+        $mock->undefined();
     }
 }

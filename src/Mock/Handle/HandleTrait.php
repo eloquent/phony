@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Mock\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Exception\FinalMethodStubException;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Method\WrappedCustomMethod;
@@ -263,12 +264,20 @@ trait HandleTrait
 
             if (isset($this->uncallableMethods[$magicKey])) {
                 $isUncallable = true;
-                $returnValue = $this->emptyValueFactory->fromFunction(
-                    $this->class->getMethod($magicKey)
-                );
+
+                try {
+                    $returnValue = $this->emptyValueFactory->fromFunction(
+                        $this->class->getMethod($magicKey)
+                    );
+                    $exception = null;
+                } catch (FinalClassException $e) {
+                    $returnValue = null;
+                    $exception = $e;
+                }
             } else {
                 $isUncallable = false;
                 $returnValue = null;
+                $exception = null;
             }
 
             $stub = $this->stubFactory->create(
@@ -277,17 +286,28 @@ trait HandleTrait
                     $this->callMagicMethod,
                     $isUncallable,
                     $this,
+                    $exception,
                     $returnValue
                 ),
                 $this->state->defaultAnswerCallback
             );
         } elseif (isset($this->uncallableMethods[$key])) {
             $method = $this->class->getMethod($name);
+
+            try {
+                $returnValue = $this->emptyValueFactory->fromFunction($method);
+                $exception = null;
+            } catch (FinalClassException $e) {
+                $returnValue = null;
+                $exception = $e;
+            }
+
             $stub = $this->stubFactory->create(
                 new WrappedUncallableMethod(
                     $method,
                     $this,
-                    $this->emptyValueFactory->fromFunction($method)
+                    $exception,
+                    $returnValue
                 ),
                 $this->state->defaultAnswerCallback
             );
@@ -322,7 +342,11 @@ trait HandleTrait
             }
 
             $stub = $this->stubFactory->create(
-                new WrappedParentMethod($this->callParentMethod, $method, $this),
+                new WrappedParentMethod(
+                    $this->callParentMethod,
+                    $method,
+                    $this
+                ),
                 $this->state->defaultAnswerCallback
             );
         }

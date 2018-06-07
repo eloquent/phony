@@ -10,4 +10,9 @@ class TestClassWithFinalReturnType
     {
         return new TestFinalClass();
     }
+
+    public function __call(string $name, array $arguments): TestFinalClass
+    {
+        return new TestFinalClass();
+    }
 }

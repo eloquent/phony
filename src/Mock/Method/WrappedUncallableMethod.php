@@ -20,13 +20,16 @@ class WrappedUncallableMethod implements WrappedMethod
      *
      * @param ReflectionMethod $method      The method.
      * @param Handle           $handle      The handle.
+     * @param ?Throwable       $exception   An exception to throw.
      * @param mixed            $returnValue The return value.
      */
     public function __construct(
         ReflectionMethod $method,
         Handle $handle,
+        ?Throwable $exception,
         $returnValue
     ) {
+        $this->exception = $exception;
         $this->returnValue = $returnValue;
 
         $this->constructWrappedMethod($method, $handle);
@@ -44,8 +47,13 @@ class WrappedUncallableMethod implements WrappedMethod
      */
     public function invokeWith($arguments = [])
     {
+        if ($this->exception) {
+            throw $this->exception;
+        }
+
         return $this->returnValue;
     }
 
+    private $exception;
     private $returnValue;
 }

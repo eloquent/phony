@@ -25,6 +25,7 @@ class WrappedMagicMethod implements WrappedMethod
      * @param ReflectionMethod $callMagicMethod The _callMagic() method.
      * @param bool             $isUncallable    True if the underlying magic method is uncallable.
      * @param Handle           $handle          The handle.
+     * @param ?Throwable       $exception       An exception to throw.
      * @param mixed            $returnValue     The return value.
      */
     public function __construct(
@@ -32,12 +33,14 @@ class WrappedMagicMethod implements WrappedMethod
         ReflectionMethod $callMagicMethod,
         bool $isUncallable,
         Handle $handle,
+        ?Throwable $exception,
         $returnValue
     ) {
         $this->name = $name;
         $this->callMagicMethod = $callMagicMethod;
         $this->isUncallable = $isUncallable;
         $this->handle = $handle;
+        $this->exception = $exception;
         $this->returnValue = $returnValue;
 
         if ($callMagicMethod->isStatic()) {
@@ -114,6 +117,10 @@ class WrappedMagicMethod implements WrappedMethod
      */
     public function invokeWith($arguments = [])
     {
+        if ($this->exception) {
+            throw $this->exception;
+        }
+
         if ($this->isUncallable) {
             return $this->returnValue;
         }
@@ -131,5 +138,6 @@ class WrappedMagicMethod implements WrappedMethod
     private $isUncallable;
     private $handle;
     private $mock;
+    private $exception;
     private $returnValue;
 }
