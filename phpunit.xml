@@ -4,17 +4,16 @@
     beStrictAboutChangesToGlobalState="true"
     beStrictAboutOutputDuringTests="true"
     beStrictAboutTestsThatDoNotTestAnything="true"
-    mapTestClassNameToCoveredClassName="true"
     convertErrorsToExceptions="true"
 >
     <testsuites>
-        <testsuite>
+        <testsuite name="main">
             <directory>test/suite</directory>
         </testsuite>
     </testsuites>
 
     <logging>
-        <log type="coverage-html" target="coverage" charset="UTF-8" yui="true" highlight="true" />
+        <log type="coverage-html" target="coverage" />
         <log type="coverage-clover" target="coverage/coverage.xml" />
         <log type="coverage-text" target="coverage/coverage.txt" />
     </logging>

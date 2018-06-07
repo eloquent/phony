@@ -1,5 +1,12 @@
 # Phony changelog
 
+## 3.0.1 (2018-06-07)
+
+- **[FIXED]** Fixed a bug where creating handles for uncallable methods with
+ final class return types would throw exceptions ([#237] - thanks [@pmall]).
+
+[#237]: https://github.com/eloquent/phony/issues/237
+
 ## 3.0.0 (2018-03-13)
 
 See the [migration guide][migration-3] for detailed upgrade information.
@@ -561,4 +568,5 @@ and version constraint will need to be updated:
 
 [@jmalloc]: https://github.com/jmalloc
 [@keksa]: https://github.com/keksa
+[@pmall]: https://github.com/pmall
 [@shadowhand]: https://github.com/shadowhand
