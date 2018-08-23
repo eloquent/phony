@@ -910,7 +910,7 @@ creation and label setting can be done in a single expression:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$mock</span> <span class="pl-k">=</span> mock(<span class="pl-c1">ClassA</span><span class="pl-k">::</span><span class="pl-c1">class</span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>get();</span></pre></div>
 <p>When a verification fails for a labeled mock, the output is similar to the
 following:</p>
-<p><a href="img/verification/called-with/mock-label.svg" target="_blank"><img src="img/verification/called-with/mock-label.svg" alt="Example verification output when using a mock label" style="max-width:100%;"></a></p>
+<p><a href="img/verification/called-with/mock-label.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/called-with/mock-label.svg" alt="Example verification output when using a mock label" style="max-width:100%;"></a></p>
 <h3>
 <a id="mock-handles" class="anchor" href="#mock-handles" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Mock handles</h3>
 <p>Mock handles are objects that provide access to <a href="#stubs">stubs</a> for each method of a
@@ -2439,7 +2439,7 @@ The API for verifying calls mirrors the methods available for spy verification.<
 <p>To verify that a spy was called, use <a href="#spy.called"><code>called()</code></a>:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called();</span></pre></div>
 <p>Example output from <a href="#spy.called"><code>called()</code></a>:</p>
-<p><a href="img/verification/called/no-calls.svg" target="_blank"><img src="img/verification/called/no-calls.svg" alt="Example output from $spy-&gt;called()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/called/no-calls.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/called/no-calls.svg" alt="Example output from $spy-&gt;called()" style="max-width:100%;"></a></p>
 <h4>
 <a id="verifying-that-a-spy-was-called-with-specific-arguments" class="anchor" href="#verifying-that-a-spy-was-called-with-specific-arguments" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying that a spy was called with specific arguments</h4>
 <p>To verify input arguments, use <a href="#spy.calledWith"><code>calledWith()</code></a>. Arguments
@@ -2459,7 +2459,7 @@ passed to <a href="#spy.calledWith"><code>calledWith()</code></a> can be literal
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>argument();  <span class="pl-c"><span class="pl-c">//</span> first argument</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>argument(<span class="pl-c1">1</span>); <span class="pl-c"><span class="pl-c">//</span> second argument</span></span></pre></div>
 <p>Example output from <a href="#spy.calledWith"><code>calledWith()</code></a>:</p>
-<p><a href="img/verification/called-with/argument-mismatch.svg" target="_blank"><img src="img/verification/called-with/argument-mismatch.svg" alt="Example output from $spy-&gt;calledWith()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/called-with/argument-mismatch.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/called-with/argument-mismatch.svg" alt="Example output from $spy-&gt;calledWith()" style="max-width:100%;"></a></p>
 <h3>
 <a id="verifying-spy-output" class="anchor" href="#verifying-spy-output" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying spy output</h3>
 <h4>
@@ -2473,7 +2473,7 @@ on an <a href="#individual-calls">individual call</a> recorded via the spy:</p>
 <p>Calls can also be retrieved from any <a href="#the-verification-result-api">verification result</a>:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>returnValue();</span></pre></div>
 <p>Example output from <a href="#spy.returned"><code>returned()</code></a>:</p>
-<p><a href="img/verification/returned/value-mismatch.svg" target="_blank"><img src="img/verification/returned/value-mismatch.svg" alt="Example output from $spy-&gt;returned()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/returned/value-mismatch.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/returned/value-mismatch.svg" alt="Example output from $spy-&gt;returned()" style="max-width:100%;"></a></p>
 <h5>
 <a id="verifying-generators-returned-by-spies" class="anchor" href="#verifying-generators-returned-by-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying generators returned by spies</h5>
 <p>To verify that a spy returned a <a href="http://php.net/language.generators.overview" rel="nofollow">generator</a>, use
@@ -2488,7 +2488,7 @@ verification of the generator's behavior:</p>
 <p>See <a href="#generator-and-iterable-verification">Generator and iterable verification</a> for a complete explanation of the
 available verifications.</p>
 <p>Example output from <a href="#spy.generated"><code>generated()</code></a>:</p>
-<p><a href="img/verification/generated/no-generator.svg" target="_blank"><img src="img/verification/generated/no-generator.svg" alt="Example output from $spy-&gt;generated()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/generated/no-generator.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/generated/no-generator.svg" alt="Example output from $spy-&gt;generated()" style="max-width:100%;"></a></p>
 <h5>
 <a id="verifying-iterables-returned-by-spies" class="anchor" href="#verifying-iterables-returned-by-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying iterables returned by spies</h5>
 <p>To verify that a spy returned an iterable value, such as an array or iterator,
@@ -2504,7 +2504,7 @@ iterable's behavior:</p>
 <p>See <a href="#generator-and-iterable-verification">Generator and iterable verification</a> for a complete explanation of the
 available verifications.</p>
 <p>Example output from <a href="#spy.iterated"><code>iterated()</code></a>:</p>
-<p><a href="img/verification/iterated/no-iterable.svg" target="_blank"><img src="img/verification/iterated/no-iterable.svg" alt="Example output from $spy-&gt;iterated()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/iterated/no-iterable.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/iterated/no-iterable.svg" alt="Example output from $spy-&gt;iterated()" style="max-width:100%;"></a></p>
 <h4>
 <a id="verifying-spy-exceptions" class="anchor" href="#verifying-spy-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying spy exceptions</h4>
 <p>To verify that a spy threw an exception, use <a href="#spy.threw"><code>threw()</code></a>:</p>
@@ -2517,7 +2517,7 @@ on an <a href="#individual-calls">individual call</a> recorded via the spy:</p>
 <p>Calls can also be retrieved from any <a href="#the-verification-result-api">verification result</a>:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$exception</span> <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>exception();</span></pre></div>
 <p>Example output from <a href="#spy.threw"><code>threw()</code></a>:</p>
-<p><a href="img/verification/threw/value-mismatch.svg" target="_blank"><img src="img/verification/threw/value-mismatch.svg" alt="Example output from $spy-&gt;threw()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/threw/value-mismatch.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/threw/value-mismatch.svg" alt="Example output from $spy-&gt;threw()" style="max-width:100%;"></a></p>
 <h3>
 <a id="verifying-spy-progress" class="anchor" href="#verifying-spy-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying spy progress</h3>
 <p>To verify that a spy call has completed, use <a href="#spy.completed"><code>completed()</code></a>:</p>
@@ -2542,9 +2542,9 @@ recorded via the spy:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$exception</span>, <span class="pl-smi">$value</span>) <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>response();</span>
 <span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$exception</span>, <span class="pl-smi">$value</span>) <span class="pl-k">=</span> <span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>called()<span class="pl-k">-&gt;</span>firstCall()<span class="pl-k">-&gt;</span>generatorResponse();</span></pre></div>
 <p>Example output from <a href="#spy.completed"><code>completed()</code></a>:</p>
-<p><a href="img/verification/completed/none-completed.svg" target="_blank"><img src="img/verification/completed/none-completed.svg" alt="Example output from $spy-&gt;completed()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/completed/none-completed.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/completed/none-completed.svg" alt="Example output from $spy-&gt;completed()" style="max-width:100%;"></a></p>
 <p>Example output from <a href="#spy.responded"><code>responded()</code></a>:</p>
-<p><a href="img/verification/responded/no-responses.svg" target="_blank"><img src="img/verification/responded/no-responses.svg" alt="Example output from $spy-&gt;responded()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/responded/no-responses.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/responded/no-responses.svg" alt="Example output from $spy-&gt;responded()" style="max-width:100%;"></a></p>
 <h3>
 <a id="verifying-cardinality-with-spies" class="anchor" href="#verifying-cardinality-with-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying cardinality with spies</h3>
 <p>When used with a spy, cardinality modifiers change the amount of <strong>calls</strong> that
@@ -2612,7 +2612,7 @@ creation and label setting can be done in a single expression:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span> <span class="pl-k">=</span> spy()<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);</span></pre></div>
 <p>When a verification fails for a labeled spy, the output is similar to the
 following:</p>
-<p><a href="img/verification/called-with/spy-label.svg" target="_blank"><img src="img/verification/called-with/spy-label.svg" alt="Example verification output when using a spy label" style="max-width:100%;"></a></p>
+<p><a href="img/verification/called-with/spy-label.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/called-with/spy-label.svg" alt="Example verification output when using a spy label" style="max-width:100%;"></a></p>
 <h3>
 <a id="invoking-spies" class="anchor" href="#invoking-spies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Invoking spies</h3>
 <p>Spies can be invoked directly like any other dynamic callable:</p>
@@ -2687,7 +2687,7 @@ passed to <a href="#call.calledWith"><code>calledWith()</code></a> can be litera
 <span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>argument();  <span class="pl-c"><span class="pl-c">//</span> first argument</span></span>
 <span class="pl-s1"><span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>argument(<span class="pl-c1">1</span>); <span class="pl-c"><span class="pl-c">//</span> second argument</span></span></pre></div>
 <p>Example output from <a href="#call.calledWith"><code>calledWith()</code></a>:</p>
-<p><a href="img/verification/called-with/call-argument-mismatch.svg" target="_blank"><img src="img/verification/called-with/call-argument-mismatch.svg" alt="Example output from $call-&gt;calledWith()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/called-with/call-argument-mismatch.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/called-with/call-argument-mismatch.svg" alt="Example output from $call-&gt;calledWith()" style="max-width:100%;"></a></p>
 <h3>
 <a id="verifying-call-output" class="anchor" href="#verifying-call-output" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying call output</h3>
 <h4>
@@ -2698,7 +2698,7 @@ passed to <a href="#call.calledWith"><code>calledWith()</code></a> can be litera
 <p>Return values can be retrieved with <a href="#call.returnValue"><code>returnValue()</code></a>:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> <span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>returnValue();</span></pre></div>
 <p>Example output from <a href="#call.returned"><code>returned()</code></a>:</p>
-<p><a href="img/verification/returned/call-value-mismatch.svg" target="_blank"><img src="img/verification/returned/call-value-mismatch.svg" alt="Example output from $call-&gt;returned()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/returned/call-value-mismatch.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/returned/call-value-mismatch.svg" alt="Example output from $call-&gt;returned()" style="max-width:100%;"></a></p>
 <h5>
 <a id="verifying-generators-returned-by-calls" class="anchor" href="#verifying-generators-returned-by-calls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying generators returned by calls</h5>
 <p>To verify that a call returned a <a href="http://php.net/language.generators.overview" rel="nofollow">generator</a>, use
@@ -2713,7 +2713,7 @@ verification of the generator's behavior:</p>
 <p>See <a href="#generator-and-iterable-verification">Generator and iterable verification</a> for a complete explanation of the
 available verifications.</p>
 <p>Example output from <a href="#call.generated"><code>generated()</code></a>:</p>
-<p><a href="img/verification/generated/call-no-generator.svg" target="_blank"><img src="img/verification/generated/call-no-generator.svg" alt="Example output from $call-&gt;generated()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/generated/call-no-generator.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/generated/call-no-generator.svg" alt="Example output from $call-&gt;generated()" style="max-width:100%;"></a></p>
 <h5>
 <a id="verifying-iterables-returned-by-calls" class="anchor" href="#verifying-iterables-returned-by-calls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying iterables returned by calls</h5>
 <p>To verify that a call returned an iterable value, such as an array or iterator,
@@ -2729,7 +2729,7 @@ iterable's behavior:</p>
 <p>See <a href="#generator-and-iterable-verification">Generator and iterable verification</a> for a complete explanation of the
 available verifications.</p>
 <p>Example output from <a href="#call.iterated"><code>iterated()</code></a>:</p>
-<p><a href="img/verification/iterated/call-no-iterable.svg" target="_blank"><img src="img/verification/iterated/call-no-iterable.svg" alt="Example output from $call-&gt;iterated()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/iterated/call-no-iterable.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/iterated/call-no-iterable.svg" alt="Example output from $call-&gt;iterated()" style="max-width:100%;"></a></p>
 <h4>
 <a id="verifying-call-exceptions" class="anchor" href="#verifying-call-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying call exceptions</h4>
 <p>To verify that a call threw an exception, use <a href="#call.threw"><code>threw()</code></a>:</p>
@@ -2739,7 +2739,7 @@ available verifications.</p>
 <p>Thrown exceptions can be retrieved with <a href="#call.exception"><code>exception()</code></a>:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$exception</span> <span class="pl-k">=</span> <span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>exception();</span></pre></div>
 <p>Example output from <a href="#call.threw"><code>threw()</code></a>:</p>
-<p><a href="img/verification/threw/call-value-mismatch.svg" target="_blank"><img src="img/verification/threw/call-value-mismatch.svg" alt="Example output from $call-&gt;threw()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/threw/call-value-mismatch.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/threw/call-value-mismatch.svg" alt="Example output from $call-&gt;threw()" style="max-width:100%;"></a></p>
 <h3>
 <a id="verifying-call-progress" class="anchor" href="#verifying-call-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying call progress</h3>
 <p>To verify that a call has completed, use <a href="#call.completed"><code>completed()</code></a>:</p>
@@ -2758,9 +2758,9 @@ consumed via iteration.</p>
 <p>Generator responses can be retrieved with <a href="#call.exception"><code>exception()</code></a>:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$exception</span>, <span class="pl-smi">$value</span>) <span class="pl-k">=</span> <span class="pl-smi">$call</span><span class="pl-k">-&gt;</span>generatorResponse();</span></pre></div>
 <p>Example output from <a href="#call.completed"><code>completed()</code></a>:</p>
-<p><a href="img/verification/completed/call-none-completed.svg" target="_blank"><img src="img/verification/completed/call-none-completed.svg" alt="Example output from $call-&gt;completed()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/completed/call-none-completed.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/completed/call-none-completed.svg" alt="Example output from $call-&gt;completed()" style="max-width:100%;"></a></p>
 <p>Example output from <a href="#call.responded"><code>responded()</code></a>:</p>
-<p><a href="img/verification/responded/call-no-responses.svg" target="_blank"><img src="img/verification/responded/call-no-responses.svg" alt="Example output from $call-&gt;responded()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/responded/call-no-responses.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/responded/call-no-responses.svg" alt="Example output from $call-&gt;responded()" style="max-width:100%;"></a></p>
 <h3>
 <a id="verifying-cardinality-with-calls" class="anchor" href="#verifying-cardinality-with-calls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying cardinality with calls</h3>
 <p>When used with a call, cardinality modifiers change the amount of times that
@@ -2987,7 +2987,7 @@ not yet have first-class support in <em>Phony</em>:</p>
 <p>Typical verification output looks something like the following example. Hovering
 over a section of the example will provide an explanation of that part of the
 output:</p>
-<p><a href="img/verification.svg" target="_blank"><img src="img/verification.svg" alt="Example verification output" style="max-width:100%;"></a></p>
+<p><a href="img/verification.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification.svg" alt="Example verification output" style="max-width:100%;"></a></p>
 <h4>
 <a id="expected-behavior-output" class="anchor" href="#expected-behavior-output" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Expected behavior output</h4>
 <p>The first part of the output explains what was expected. In the above example:</p>
@@ -3069,9 +3069,9 @@ spy creation and setting of these options can be done in a single expression:</p
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>generated()<span class="pl-k">-&gt;</span>consumed(); <span class="pl-c"><span class="pl-c">//</span> iteration of the generator completed</span></span>
 <span class="pl-s1"><span class="pl-smi">$subject</span><span class="pl-k">-&gt;</span>iterated()<span class="pl-k">-&gt;</span>consumed();  <span class="pl-c"><span class="pl-c">//</span> iteration of the iterable completed</span></span></pre></div>
 <p>Example output from <a href="#verification.used"><code>used()</code></a>:</p>
-<p><a href="img/verification/used/iterated-unused.svg" target="_blank"><img src="img/verification/used/iterated-unused.svg" alt="Example output from $iterable-&gt;used()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/used/iterated-unused.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/used/iterated-unused.svg" alt="Example output from $iterable-&gt;used()" style="max-width:100%;"></a></p>
 <p>Example output from <a href="#verification.consumed"><code>consumed()</code></a>:</p>
-<p><a href="img/verification/consumed/iterated-unconsumed.svg" target="_blank"><img src="img/verification/consumed/iterated-unconsumed.svg" alt="Example output from $iterable-&gt;consumed()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/consumed/iterated-unconsumed.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/consumed/iterated-unconsumed.svg" alt="Example output from $iterable-&gt;consumed()" style="max-width:100%;"></a></p>
 <h4>
 <a id="verifying-produced-values" class="anchor" href="#verifying-produced-values" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying produced values</h4>
 <p>To verify that a value was yielded by a generator, use
@@ -3089,7 +3089,7 @@ spy creation and setting of these options can be done in a single expression:</p
 <span class="pl-s1"><span class="pl-smi">$iterable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>);      <span class="pl-c"><span class="pl-c">//</span> produced 'a' with any key</span></span>
 <span class="pl-s1"><span class="pl-smi">$iterable</span><span class="pl-k">-&gt;</span>produced(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>); <span class="pl-c"><span class="pl-c">//</span> produced 'b' with key 'a'</span></span></pre></div>
 <p>Example output from <a href="#verification.produced"><code>produced()</code></a>:</p>
-<p><a href="img/verification/produced/iterated-key-value-mismatch.svg" target="_blank"><img src="img/verification/produced/iterated-key-value-mismatch.svg" alt="Example output from $iterable-&gt;produced()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/produced/iterated-key-value-mismatch.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/produced/iterated-key-value-mismatch.svg" alt="Example output from $iterable-&gt;produced()" style="max-width:100%;"></a></p>
 <h4>
 <a id="verifying-values-received-by-generators" class="anchor" href="#verifying-values-received-by-generators" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying values received by generators</h4>
 <p>To verify that a value was received by a generator, use
@@ -3099,7 +3099,7 @@ spy creation and setting of these options can be done in a single expression:</p
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>received();    <span class="pl-c"><span class="pl-c">//</span> received anything</span></span>
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>received(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c"><span class="pl-c">//</span> received 'a'</span></span></pre></div>
 <p>Example output from <a href="#verification.received"><code>received()</code></a>:</p>
-<p><a href="img/verification/received/value-mismatch.svg" target="_blank"><img src="img/verification/received/value-mismatch.svg" alt="Example output from $generator-&gt;received()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/received/value-mismatch.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/received/value-mismatch.svg" alt="Example output from $generator-&gt;received()" style="max-width:100%;"></a></p>
 <h4>
 <a id="verifying-exceptions-received-by-generators" class="anchor" href="#verifying-exceptions-received-by-generators" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying exceptions received by generators</h4>
 <p>To verify that an exception was received by a generator, use
@@ -3111,7 +3111,7 @@ spy creation and setting of these options can be done in a single expression:</p
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>receivedException(<span class="pl-s"><span class="pl-pds">'</span>RuntimeException<span class="pl-pds">'</span></span>);                       <span class="pl-c"><span class="pl-c">//</span> received a runtime exception</span></span>
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>receivedException(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>You done goofed.<span class="pl-pds">'</span></span>)); <span class="pl-c"><span class="pl-c">//</span> received a runtime exception with a specific message</span></span></pre></div>
 <p>Example output from <a href="#verification.receivedException"><code>receivedException()</code></a>:</p>
-<p><a href="img/verification/received-exception/value-mismatch.svg" target="_blank"><img src="img/verification/received-exception/value-mismatch.svg" alt="Example output from $generator-&gt;receivedException()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/received-exception/value-mismatch.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/received-exception/value-mismatch.svg" alt="Example output from $generator-&gt;receivedException()" style="max-width:100%;"></a></p>
 <h4>
 <a id="verifying-generator-return-values" class="anchor" href="#verifying-generator-return-values" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying generator return values</h4>
 <p>To verify a generator's return value, use <a href="#verification.returned"><code>returned()</code></a>
@@ -3121,7 +3121,7 @@ on any <a href="#the-generator-verification-result-api">generator verification r
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>returned();    <span class="pl-c"><span class="pl-c">//</span> returned anything</span></span>
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>returned(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>); <span class="pl-c"><span class="pl-c">//</span> returned 'a'</span></span></pre></div>
 <p>Example output from <a href="#verification.returned"><code>returned()</code></a>:</p>
-<p><a href="img/verification/generated-returned/value-mismatch.svg" target="_blank"><img src="img/verification/generated-returned/value-mismatch.svg" alt="Example output from $generator-&gt;returned()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/generated-returned/value-mismatch.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/generated-returned/value-mismatch.svg" alt="Example output from $generator-&gt;returned()" style="max-width:100%;"></a></p>
 <h4>
 <a id="verifying-generator-exceptions" class="anchor" href="#verifying-generator-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying generator exceptions</h4>
 <p>To verify that a generator threw an exception, use
@@ -3132,7 +3132,7 @@ on any <a href="#the-generator-verification-result-api">generator verification r
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>threw(<span class="pl-s"><span class="pl-pds">'</span>RuntimeException<span class="pl-pds">'</span></span>);                       <span class="pl-c"><span class="pl-c">//</span> threw a runtime exception</span></span>
 <span class="pl-s1"><span class="pl-smi">$generator</span><span class="pl-k">-&gt;</span>threw(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>You done goofed.<span class="pl-pds">'</span></span>)); <span class="pl-c"><span class="pl-c">//</span> threw a runtime exception with a specific message</span></span></pre></div>
 <p>Example output from <a href="#verification.threw"><code>threw()</code></a>:</p>
-<p><a href="img/verification/generated-threw/value-mismatch.svg" target="_blank"><img src="img/verification/generated-threw/value-mismatch.svg" alt="Example output from $generator-&gt;threw()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/generated-threw/value-mismatch.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/generated-threw/value-mismatch.svg" alt="Example output from $generator-&gt;threw()" style="max-width:100%;"></a></p>
 <h4>
 <a id="verifying-cardinality-with-generators-and-iterables" class="anchor" href="#verifying-cardinality-with-generators-and-iterables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying cardinality with generators and iterables</h4>
 <p>When used <strong>before</strong> <code>generated()</code> or <code>iterated()</code>, cardinality modifiers change
@@ -3298,7 +3298,7 @@ any <a href="#verification">verification</a> implemented by <em>Phony</em>. Both
 and <a href="#facade.anyOrder"><code>anyOrder()</code></a> will accept any number of
 <a href="#the-verification-result-api">verification results</a> to verify.</p>
 <p>Example output from <a href="#facade.inOrder"><code>inOrder()</code></a>:</p>
-<p><a href="img/verification/in-order/unexpected-order.svg" target="_blank"><img src="img/verification/in-order/unexpected-order.svg" alt="Example output from inOrder()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/in-order/unexpected-order.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/in-order/unexpected-order.svg" alt="Example output from inOrder()" style="max-width:100%;"></a></p>
 <h4>
 <a id="dynamic-order-verification" class="anchor" href="#dynamic-order-verification" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dynamic order verification</h4>
 <p>When the number of events to verify is dynamic, the [<code>...</code> operator] can be
@@ -3391,7 +3391,7 @@ of other types of events:</p>
 <span class="pl-s1"><span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>noInteraction(); <span class="pl-c"><span class="pl-c">//</span> fails</span></span></pre></div>
 <p>This verification will fail if any of the mock's methods have been called.</p>
 <p>Example output from <a href="#handle.noInteraction"><code>noInteraction()</code></a>:</p>
-<p><a href="img/verification/no-interaction/parent-class.svg" target="_blank"><img src="img/verification/no-interaction/parent-class.svg" alt="Example output from $handle-&gt;noInteraction()" style="max-width:100%;"></a></p>
+<p><a href="img/verification/no-interaction/parent-class.svg" target="_blank" rel="noopener noreferrer"><img src="img/verification/no-interaction/parent-class.svg" alt="Example output from $handle-&gt;noInteraction()" style="max-width:100%;"></a></p>
 <h3>
 <a id="using-colored-verification-output" class="anchor" href="#using-colored-verification-output" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using colored verification output</h3>
 <p>To control the use of <a href="https://en.wikipedia.org/wiki/ANSI_escape_code#Colors" rel="nofollow">ANSI colored output</a>, use
