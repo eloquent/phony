@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+docker run --rm -it -v "$(pwd):/tmp" php:rc-cli-alpine sh -c "cd /tmp; vendor/bin/phpunit ""$@"

@@ -73,7 +73,9 @@ class FunctionSignatureInspector
             } elseif (
                 '' !== $typehint &&
                 'array ' !== $typehint &&
+                'bool ' !== $typehint &&
                 'callable ' !== $typehint &&
+                'int ' !== $typehint &&
                 'iterable ' !== $typehint &&
                 (
                     !$this->isObjectTypeHintSupported ||
