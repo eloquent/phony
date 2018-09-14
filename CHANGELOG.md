@@ -1,5 +1,11 @@
 # Phony changelog
 
+## Next release
+
+- **[IMPROVED]** Support for PHP 7.3 features ([#239]).
+
+[#239]: https://github.com/eloquent/phony/issues/239
+
 ## 3.0.1 (2018-06-07)
 
 - **[FIXED]** Fixed a bug where creating handles for uncallable methods with
