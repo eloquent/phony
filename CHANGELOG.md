@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 3.1.0 (2018-12-07)
 
 - **[IMPROVED]** Support for PHP 7.3 features ([#239]).
 
