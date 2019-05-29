@@ -11,7 +11,7 @@ use ReflectionMethod;
 
 class MethodDefinitionCollectionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->callbackA = function () {};
         $this->callbackB = function () {};

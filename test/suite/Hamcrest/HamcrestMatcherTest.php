@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class HamcrestMatcherTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->matcher = equalTo('value');
         $this->subject = new HamcrestMatcher($this->matcher);

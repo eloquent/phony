@@ -13,7 +13,7 @@ class FunctionSignatureInspectorTest extends TestCase
 {
     const CONSTANT_A = 'a';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->featureDetector = new FeatureDetector();
         $this->subject = new FunctionSignatureInspector($this->featureDetector);

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class CallRequestTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->callback = 'implode';
         $this->arguments = new Arguments(['a', 'b']);

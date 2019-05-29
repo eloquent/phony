@@ -11,7 +11,7 @@ use ReflectionClass;
 
 class HamcrestMatcherDriverTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         Util::registerGlobalFunctions();
 

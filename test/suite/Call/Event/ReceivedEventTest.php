@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class ReceivedEventTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->sequenceNumber = 111;
         $this->time = 1.11;

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class CardinalityTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->minimum = 111;
         $this->maximum = 222;

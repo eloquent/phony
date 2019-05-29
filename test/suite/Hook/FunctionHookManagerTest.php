@@ -16,7 +16,7 @@ use ReflectionClass;
 
 class FunctionHookManagerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->invocableInspector = InvocableInspector::instance();
         $this->functionSignatureInspector = FunctionSignatureInspector::instance();

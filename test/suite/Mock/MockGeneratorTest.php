@@ -20,7 +20,7 @@ use stdClass;
 
 class MockGeneratorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->labelSequencer = new Sequencer();
         $this->signatureInspector = FunctionSignatureInspector::instance();

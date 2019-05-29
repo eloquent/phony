@@ -29,7 +29,7 @@ use ReflectionFunction;
 
 class PhonyTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->handleFactory = HandleFactory::instance();
         $this->matcherFactory = MatcherFactory::instance();

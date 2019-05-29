@@ -18,7 +18,7 @@ use ReflectionClass;
 
 class MatcherFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->anyMatcher = new AnyMatcher();
         $this->wildcardAnyMatcher = WildcardMatcher::instance();

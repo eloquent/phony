@@ -19,7 +19,7 @@ use RuntimeException;
 
 class GeneratorAnswerBuilderTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->self = (object) [];
         $this->stub = StubFactory::instance()->create()->setSelf($this->self);

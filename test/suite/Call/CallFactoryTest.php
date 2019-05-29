@@ -15,7 +15,7 @@ use RuntimeException;
 
 class CallFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->eventFactory = new TestCallEventFactory();
         $this->invoker = new Invoker();

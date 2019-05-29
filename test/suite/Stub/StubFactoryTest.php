@@ -17,7 +17,7 @@ use ReflectionClass;
 
 class StubFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->labelSequencer = new Sequencer();
         $this->matcherFactory = MatcherFactory::instance();

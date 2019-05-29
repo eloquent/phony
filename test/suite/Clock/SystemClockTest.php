@@ -9,7 +9,7 @@ use ReflectionClass;
 
 class SystemClockTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $time = 0.123;
         $this->microtime = function ($isFloat) use (&$time) {
@@ -36,7 +36,7 @@ class SystemClockTest extends TestCase
     {
         $this->subject = new SystemClock('microtime');
 
-        $this->assertInternalType('float', $this->subject->time());
+        $this->assertIsFloat($this->subject->time());
     }
 
     public function testInstance()

@@ -43,7 +43,7 @@ use ReflectionMethod;
 
 class StaticHandleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->state = (object) [
             'stubs' => (object) [],

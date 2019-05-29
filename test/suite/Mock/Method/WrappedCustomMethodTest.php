@@ -13,7 +13,7 @@ use ReflectionMethod;
 
 class WrappedCustomMethodTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->customCallback = function () {
             return 'custom ' . implode(func_get_args());

@@ -22,7 +22,7 @@ use ReflectionClass;
 
 class EventOrderVerifierTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();

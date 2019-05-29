@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class StubRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->matcherFactory = MatcherFactory::instance();
         $this->criteria = [$this->matcherFactory->equalTo('a'), $this->matcherFactory->equalTo('b')];

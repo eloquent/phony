@@ -29,7 +29,7 @@ use ReflectionClass;
 
 class StubVerifierFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();
         $this->spyFactory = new SpyFactory(

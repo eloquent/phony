@@ -15,7 +15,7 @@ use RuntimeException;
 
 class CallDataTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->index = 111;
         $this->callFactory = new TestCallFactory();

@@ -9,7 +9,7 @@ use function Eloquent\Phony\stubGlobal;
 
 class EdgeCaseTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->featureDetector = FeatureDetector::instance();
     }

@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 
 class StubDataWithGeneratorsTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->callback = 'implode';
         $this->label = 'label';

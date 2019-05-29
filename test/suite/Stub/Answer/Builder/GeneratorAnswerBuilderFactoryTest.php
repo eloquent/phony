@@ -12,7 +12,7 @@ use ReflectionClass;
 
 class GeneratorAnswerBuilderFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->invocableInspector = new InvocableInspector();
         $this->invoker = new Invoker();

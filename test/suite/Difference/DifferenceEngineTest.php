@@ -10,7 +10,7 @@ use ReflectionClass;
 
 class DifferenceEngineTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->featureDetector = FeatureDetector::instance();
         $this->subject = new DifferenceEngine($this->featureDetector);

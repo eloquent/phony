@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class EqualToMatcherTest extends TestCase
 {
-    protected function setUp($value = '<string>')
+    protected function setUp($value = '<string>'): void
     {
         $this->value = 'x';
         $this->exporter = InlineExporter::instance();

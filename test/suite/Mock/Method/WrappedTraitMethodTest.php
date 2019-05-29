@@ -12,7 +12,7 @@ use ReflectionMethod;
 
 class WrappedTraitMethodTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockBuilderFactory = MockBuilderFactory::instance();
 

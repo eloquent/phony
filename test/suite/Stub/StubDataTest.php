@@ -25,7 +25,7 @@ use RuntimeException;
 
 class StubDataTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->callback = 'implode';
         $this->label = 'label';

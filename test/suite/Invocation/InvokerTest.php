@@ -11,7 +11,7 @@ use ReflectionClass;
 
 class InvokerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->subject = new Invoker();
 

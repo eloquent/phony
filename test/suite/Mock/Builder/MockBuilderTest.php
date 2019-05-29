@@ -49,7 +49,7 @@ use Traversable;
 
 class MockBuilderTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = new FeatureDetector();

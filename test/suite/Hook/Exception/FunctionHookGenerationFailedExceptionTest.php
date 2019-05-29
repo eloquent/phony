@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class FunctionHookGenerationFailedExceptionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->functionName = 'functionName';
         $this->callback = function () {};

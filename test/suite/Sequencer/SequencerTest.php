@@ -9,7 +9,7 @@ use ReflectionClass;
 
 class SequencerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->subject = new Sequencer();
     }

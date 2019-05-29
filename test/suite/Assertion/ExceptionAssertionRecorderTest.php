@@ -13,7 +13,7 @@ use ReflectionClass;
 
 class ExceptionAssertionRecorderTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->subject = new ExceptionAssertionRecorder();
 

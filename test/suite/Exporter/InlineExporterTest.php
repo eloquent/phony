@@ -26,7 +26,7 @@ use TestClass;
 
 class InlineExporterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->depth = -1;
         $this->objectSequencer = new Sequencer();

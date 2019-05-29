@@ -20,7 +20,7 @@
         "friendsofphp/php-cs-fixer": "^2",
         "hamcrest/hamcrest-php": "^2",
         "icecave/semver": "^3",
-        "phpunit/phpunit": "^7"
+        "phpunit/phpunit": "^7 || ^8"
     },
     "autoload": {
         "psr-4": {
@@ -41,11 +41,6 @@
             "test/src/Test/functions.php",
             "test/src/TestClass.php"
         ]
-    },
-    "config": {
-        "platform": {
-            "php": "7.1.99999"
-        }
     },
     "extra": {
         "branch-alias": {

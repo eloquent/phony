@@ -9,7 +9,7 @@ use ReflectionFunction;
 
 class CustomMethodDefinitionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->isStatic = false;
         $this->name = 'name';

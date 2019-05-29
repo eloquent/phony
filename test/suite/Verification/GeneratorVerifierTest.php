@@ -35,7 +35,7 @@ use RuntimeException;
 
 class GeneratorVerifierTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();
         $this->eventFactory = $this->callFactory->eventFactory();

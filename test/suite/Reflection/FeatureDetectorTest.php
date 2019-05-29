@@ -10,7 +10,7 @@ use ReflectionClass;
 
 class FeatureDetectorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->features = [
             'a' => function () { return true; },

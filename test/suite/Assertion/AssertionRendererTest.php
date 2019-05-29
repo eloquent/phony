@@ -24,7 +24,7 @@ use RuntimeException;
 
 class AssertionRendererTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->invocableInspector = new InvocableInspector();
         $this->matcherVerifier = MatcherVerifier::instance();

@@ -24,7 +24,7 @@ use stdClass;
 
 class HandleFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->stubFactory = StubFactory::instance();
         $this->stubVerifierFactory = StubVerifierFactory::instance();

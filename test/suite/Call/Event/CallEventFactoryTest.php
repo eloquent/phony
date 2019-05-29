@@ -13,7 +13,7 @@ use RuntimeException;
 
 class CallEventFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->sequencer = new Sequencer();
         $this->clock = new TestClock();

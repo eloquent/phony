@@ -22,7 +22,7 @@ use ReflectionClass;
 
 class SpyVerifierFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->spyFactory = new SpyFactory(
             new Sequencer(),

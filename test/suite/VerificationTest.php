@@ -12,7 +12,7 @@ use RuntimeException;
 
 class VerificationTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->featureDetector = FeatureDetector::instance();
 

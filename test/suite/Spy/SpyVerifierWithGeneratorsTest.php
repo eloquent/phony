@@ -29,7 +29,7 @@ use RuntimeException;
 
 class SpyVerifierWithGeneratorsTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->callback = 'implode';
         $this->callFactory = new TestCallFactory();

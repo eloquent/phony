@@ -13,7 +13,7 @@ use RuntimeException;
 
 class WrappedMagicMethodTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockBuilderFactory = MockBuilderFactory::instance();
 

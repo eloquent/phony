@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class ArgumentsTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->a = 'a';
         $this->b = 'b';

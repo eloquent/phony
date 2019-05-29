@@ -12,7 +12,7 @@ use ReflectionClass;
 
 class SpyFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->labelSequencer = new Sequencer();
         $this->callFactory = CallFactory::instance();

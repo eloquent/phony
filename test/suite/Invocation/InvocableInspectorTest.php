@@ -16,7 +16,7 @@ use ReflectionType;
 
 class InvocableInspectorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->subject = new InvocableInspector();
 

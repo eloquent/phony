@@ -27,7 +27,7 @@ use RuntimeException;
 
 class CallVerifierWithGeneratorsTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();

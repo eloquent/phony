@@ -26,7 +26,7 @@ use ReflectionMethod;
 
 class MockDefinitionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->featureDetector = new FeatureDetector();
 

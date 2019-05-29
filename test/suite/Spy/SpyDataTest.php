@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 class SpyDataTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->callback = 'implode';
         $this->label = 'label';

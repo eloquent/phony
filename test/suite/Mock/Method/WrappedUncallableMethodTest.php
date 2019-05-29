@@ -13,7 +13,7 @@ use RuntimeException;
 
 class WrappedUncallableMethodTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->method = new ReflectionMethod(TestClassA::class . '::testClassAMethodA');
         $this->mockBuilder = MockBuilderFactory::instance()->create();

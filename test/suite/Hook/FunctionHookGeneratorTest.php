@@ -12,7 +12,7 @@ use ReflectionClass;
 
 class FunctionHookGeneratorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->subject = new FunctionHookGenerator();
 

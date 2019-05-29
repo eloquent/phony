@@ -15,7 +15,7 @@ use ReflectionClass;
 
 class IterableVerifierFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->matcherFactory = MatcherFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();

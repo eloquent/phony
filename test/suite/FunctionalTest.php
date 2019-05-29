@@ -56,7 +56,7 @@ use function Eloquent\Phony\stubGlobal;
 
 class FunctionalTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->featureDetector = FeatureDetector::instance();
         $this->exporter = InlineExporter::instance();
@@ -796,7 +796,7 @@ class FunctionalTest extends TestCase
         }
 
         $this->assertNotNull($error);
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Expected TestClassA[label]->testClassAMethodA call with arguments',
             $error->getMessage()
         );
@@ -816,7 +816,7 @@ class FunctionalTest extends TestCase
         }
 
         $this->assertNotNull($error);
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Expected TestClassB[label]->magicMethod call with arguments',
             $error->getMessage()
         );
@@ -837,7 +837,7 @@ class FunctionalTest extends TestCase
         }
 
         $this->assertNotNull($error);
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Expected IteratorAggregate[label]->getIterator call with arguments',
             $error->getMessage()
         );
@@ -857,7 +857,7 @@ class FunctionalTest extends TestCase
         }
 
         $this->assertNotNull($error);
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Expected PhonyMockAssertionRenderingWithCustomMethod[label]->customMethod call with arguments',
             $error->getMessage()
         );

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class TraversableSpyTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();

@@ -14,7 +14,7 @@ use ReflectionClass;
 
 class MockBuilderFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockFactory = MockFactory::instance();
         $this->handleFactory = HandleFactory::instance();

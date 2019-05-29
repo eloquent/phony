@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class AnswerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->primaryRequest = new CallRequest('implode', Arguments::create(), false, false, false);
         $this->secondaryRequestA = new CallRequest('implode', Arguments::create(), false, false, false);

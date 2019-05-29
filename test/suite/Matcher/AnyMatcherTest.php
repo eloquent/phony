@@ -9,7 +9,7 @@ use ReflectionClass;
 
 class AnyMatcherTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->subject = new AnyMatcher();
     }

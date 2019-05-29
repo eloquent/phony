@@ -10,7 +10,7 @@ use ReflectionClass;
 
 class WildcardMatcherTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->exporter = InlineExporter::instance();
         $this->matcher = new EqualToMatcher('x', true, $this->exporter);

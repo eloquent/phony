@@ -18,7 +18,7 @@ use ReflectionClass;
 
 class MockFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->labelSequencer = new Sequencer();
         $this->generator = MockGenerator::instance();

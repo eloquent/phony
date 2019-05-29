@@ -10,7 +10,7 @@ matrix:
   allow_failures:
     - php: nightly
 before_install: phpenv config-rm xdebug.ini || true
-install: composer install
+install: make install
 script: scripts/travis
 after_script: scripts/travis-after
 deploy:
