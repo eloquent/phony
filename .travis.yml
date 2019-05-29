@@ -1,40 +1,32 @@
 language: php
-
 matrix:
-    include:
-        - php: 7.1
-        - php: 7.2
-        - php: 7.3
-        - php: nightly
-    fast_finish: true
-    allow_failures:
-        - php: nightly
-
+  include:
+    - php: 7.1
+    - php: 7.2
+    - php: 7.3
+    - php: nightly
+      env: PHP_CS_FIXER_IGNORE_ENV=1
+  fast_finish: true
+  allow_failures:
+    - php: nightly
 before_install: phpenv config-rm xdebug.ini || true
-install: composer install --no-progress --no-interaction
+install: composer install
 script: scripts/travis
 after_script: scripts/travis-after
 deploy:
-    - provider: script
-      script: make publish
-      skip_cleanup: true
-      on:
-          php: '7.3'
-          branch: master
-    - provider: script
-      script: make publish
-      skip_cleanup: true
-      on:
-          php: '7.3'
-          tags: true
-
+  - provider: script
+    script: make publish
+    skip_cleanup: true
+    on:
+      php: '7.3'
+      branch: master
+  - provider: script
+    script: make publish
+    skip_cleanup: true
+    on:
+      php: '7.3'
+      tags: true
 env:
-    global:
-        - ELOQUENT_PUBLISH_VERSION=7.3
-        - secure: "o8G7oGV2ojgXwUppZiegNQy5Za2Bso5rvXUbdR41bSKZWUZM/l/J5/SxF5Ygf5sPSFBQ5LmbBb1juMU6WtCyDi74rMpzwhpEuTgqDwYlY2RFQ0QPb/Mq0S9BejAWLpa+yh2LrHDWQlG/M8Ns5ycAFxPtYNwx3QzJzOTLqy2uZ/c="
-
-cache:
-    directories:
-        - $HOME/.composer
-
-sudo: false
+  global:
+    - ELOQUENT_PUBLISH_VERSION=7.3
+    - secure: "o8G7oGV2ojgXwUppZiegNQy5Za2Bso5rvXUbdR41bSKZWUZM/l/J5/SxF5Ygf5sPSFBQ5LmbBb1juMU6WtCyDi74rMpzwhpEuTgqDwYlY2RFQ0QPb/Mq0S9BejAWLpa+yh2LrHDWQlG/M8Ns5ycAFxPtYNwx3QzJzOTLqy2uZ/c="

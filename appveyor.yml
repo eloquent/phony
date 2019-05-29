@@ -1,25 +1,26 @@
 version: "{branch}-{build}"
 build: false
-clone_folder: C:\projects\eloquent
-platform: 'x86'
+platform: x86
+
+init:
+  - SET PATH=c:\php;%PATH%
+  - SET COMPOSER_NO_INTERACTION=1
+  - SET PHP=1
 
 install:
-  - cinst -y OpenSSL.Light
-  - SET PATH=C:\Program Files\OpenSSL;%PATH%
-  - sc config wuauserv start= auto
-  - net start wuauserv
-  - cinst -y php
-  - cd c:\tools\php72
-  - copy php.ini-production php.ini
+  - ps: Set-Service wuauserv -StartupType Manual
+  - cinst -y php composer
+  - refreshenv
+  - cd c:\tools\php73
+  - copy php.ini-production php.ini /Y
   - echo date.timezone="UTC" >> php.ini
   - echo extension_dir=ext >> php.ini
-  - echo extension=php_mbstring.dll >> php.ini
   - echo extension=php_openssl.dll >> php.ini
-  - cd C:\projects\eloquent
-  - SET PATH=C:\tools\php72;%PATH%
-  - appveyor-retry php -r "readfile('http://getcomposer.org/installer');" | php
-  - appveyor-retry php composer.phar install --prefer-source --no-interaction
+  - echo extension=php_mbstring.dll >> php.ini
+  - echo extension=php_curl.dll >> php.ini
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - composer install --no-progress
 
 test_script:
-  - cd C:\projects\eloquent
+  - cd %APPVEYOR_BUILD_FOLDER%
   - vendor/bin/phpunit --no-coverage
