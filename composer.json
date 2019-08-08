@@ -20,7 +20,7 @@
         "friendsofphp/php-cs-fixer": "^2",
         "hamcrest/hamcrest-php": "^2",
         "icecave/semver": "^3",
-        "phpunit/phpunit": "^7 || ^8"
+        "phpunit/phpunit": "^7 || ^8 <8.3.0 || ^8.3.4"
     },
     "autoload": {
         "psr-4": {
