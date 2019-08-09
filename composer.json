@@ -12,15 +12,15 @@
         }
     ],
     "require": {
-        "php": ">=7.1"
+        "php": ">=7.1",
+        "phpunit/phpunit": "^8.3.3"
     },
     "require-dev": {
         "ext-pdo": "*",
         "errors/exceptions": "^0.2",
         "friendsofphp/php-cs-fixer": "^2",
         "hamcrest/hamcrest-php": "^2",
-        "icecave/semver": "^3",
-        "phpunit/phpunit": "^7 || ^8 <8.3.0 || ^8.3.4"
+        "icecave/semver": "^3"
     },
     "autoload": {
         "psr-4": {
