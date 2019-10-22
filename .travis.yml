@@ -4,6 +4,7 @@ matrix:
     - php: 7.1
     - php: 7.2
     - php: 7.3
+    - php: 7.4snapshot
     - php: nightly
       env: PHP_CS_FIXER_IGNORE_ENV=1
   fast_finish: true
