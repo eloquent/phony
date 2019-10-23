@@ -4,7 +4,7 @@ class MockGeneratorParameterConstant
 implements \Eloquent\Phony\Mock\Mock
 {
     public function methodA(
-        $a0 = 256
+        $a0 = 1
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];
