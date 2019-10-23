@@ -14,7 +14,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!self::$_staticHandle) {
-            parent::staticMethod(...$arguments);
+            null;
 
             return;
         }
@@ -42,7 +42,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            parent::method(...$arguments);
+            null;
 
             return;
         }
@@ -62,7 +62,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            parent::customMethod(...$arguments);
+            null;
 
             return;
         }
@@ -83,16 +83,12 @@ implements \Eloquent\Phony\Mock\Mock,
     private static function _callMagicStatic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
-    ) {
-        return parent::__callStatic($name, $arguments->all());
-    }
+    ) {}
 
     private function _callMagic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
-    ) {
-        return parent::__call($name, $arguments->all());
-    }
+    ) {}
 
     private static $_uncallableMethods = array (
   'staticmethod' => true,

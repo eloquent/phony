@@ -24,7 +24,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::classType(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -46,7 +46,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::scalarType(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -68,7 +68,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::customMethodWithClassType(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -90,7 +90,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::customMethodWithScalarType(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -115,16 +115,12 @@ implements \Eloquent\Phony\Mock\Mock,
     private static function _callMagicStatic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
-    ) {
-        return parent::__callStatic($name, $arguments->all());
-    }
+    ) {}
 
     private function _callMagic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
-    ) {
-        return parent::__call($name, $arguments->all());
-    }
+    ) {}
 
     private static $_uncallableMethods = array (
   'classtype' => true,

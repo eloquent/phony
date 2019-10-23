@@ -104,20 +104,35 @@ class MockGenerator
             $className = $this->generateClassName($definition);
         }
 
+        $parentClassName = $definition->parentClassName();
+        $hasParentClass = '' !== $parentClassName;
+
         $source = $this->generateHeader($definition, $className) .
             $this->generateConstants($definition) .
             $this->generateMethods(
-                $definition->methods()->publicStaticMethods()
+                $definition->methods()->publicStaticMethods(),
+                $hasParentClass
             ) .
             $this->generateMagicCallStatic($definition) .
-            $this->generateStructors($definition) .
-            $this->generateMethods($definition->methods()->publicMethods()) .
+            $this->generateStructors($definition, $hasParentClass) .
+            $this->generateMethods(
+                $definition->methods()->publicMethods(),
+                $hasParentClass
+            ) .
             $this->generateMagicCall($definition) .
             $this->generateMethods(
-                $definition->methods()->protectedStaticMethods()
+                $definition->methods()->protectedStaticMethods(),
+                $hasParentClass
             ) .
-            $this->generateMethods($definition->methods()->protectedMethods()) .
-            $this->generateCallParentMethods($definition) .
+            $this->generateMethods(
+                $definition->methods()->protectedMethods(),
+                $hasParentClass
+            ) .
+            $this->generateCallParentMethods(
+                $definition,
+                $hasParentClass,
+                $parentClassName
+            ) .
             $this->generateProperties($definition) .
             "\n}\n";
 
@@ -295,7 +310,7 @@ EOD;
         return $source;
     }
 
-    private function generateStructors($definition)
+    private function generateStructors($definition, $hasParentClass)
     {
         $constructor = null;
         $destructor = null;
@@ -327,17 +342,19 @@ EOD;
         }
 
         if ($destructor) {
-            $source .= <<<'EOD'
+            $parentDestruct = $hasParentClass
+                ? "parent::__destruct();\n\n            "
+                : '';
+
+            $source .= <<<EOD
 
     public function __destruct()
     {
-        if (!$this->_handle) {
-            parent::__destruct();
-
-            return;
+        if (!\$this->_handle) {
+            ${parentDestruct}return;
         }
 
-        $this->_handle->spy('__destruct')->invokeWith([]);
+        \$this->_handle->spy('__destruct')->invokeWith([]);
     }
 
 EOD;
@@ -346,7 +363,7 @@ EOD;
         return $source;
     }
 
-    private function generateMethods($methods)
+    private function generateMethods($methods, $hasParentClass)
     {
         $source = '';
 
@@ -467,8 +484,14 @@ EOD;
                 $resultAssign = '$result = ';
             }
 
+            if ($hasParentClass) {
+                $resultExpression = "parent::$name(...\$arguments)";
+            } else {
+                $resultExpression = 'null';
+            }
+
             $body .=  <<<EOD
-            ${resultAssign}parent::$name(...\$arguments);
+            $resultAssign$resultExpression;
 EOD;
 
             if ($isVoidReturn) {
@@ -611,13 +634,14 @@ EOD;
         return $source;
     }
 
-    private function generateCallParentMethods($definition)
-    {
+    private function generateCallParentMethods(
+        $definition,
+        $hasParentClass,
+        $parentClassName
+    ) {
         $methods = $definition->methods();
         $traitNames = $definition->traitNames();
         $hasTraits = (bool) $traitNames;
-        $parentClassName = $definition->parentClassName();
-        $hasParentClass = '' !== $parentClassName;
         $constructor = null;
         $types = $definition->types();
         $source = '';
@@ -679,14 +703,17 @@ EOD;
             }
 
             if (null === $methodName) {
-                $source .= <<<'EOD'
+                $parentCall = $hasParentClass
+                    ? "\n        return parent::__callStatic" .
+                        "(\$name, \$arguments->all());\n    "
+                    : '';
+
+                $source .= <<<EOD
 
     private static function _callMagicStatic(
-        $name,
-        \Eloquent\Phony\Call\Arguments $arguments
-    ) {
-        return parent::__callStatic($name, $arguments->all());
-    }
+        \$name,
+        \Eloquent\Phony\Call\Arguments \$arguments
+    ) {{$parentCall}}
 
 EOD;
             } else {
@@ -831,14 +858,17 @@ EOD;
             }
 
             if (null === $methodName) {
-                $source .= <<<'EOD'
+                $parentCall = $hasParentClass
+                    ? "\n        return parent::__call" .
+                        "(\$name, \$arguments->all());\n    "
+                    : '';
+
+                $source .= <<<EOD
 
     private function _callMagic(
-        $name,
-        \Eloquent\Phony\Call\Arguments $arguments
-    ) {
-        return parent::__call($name, $arguments->all());
-    }
+        \$name,
+        \Eloquent\Phony\Call\Arguments \$arguments
+    ) {{$parentCall}}
 
 EOD;
             } else {

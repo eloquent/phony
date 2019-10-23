@@ -1,12 +1,13 @@
 <?php
 
-class MockGeneratorReturnTypeMagicCall
-implements \Eloquent\Phony\Mock\Mock
+class MockGeneratorInterfaceMagicCall
+implements \Eloquent\Phony\Mock\Mock,
+           \Eloquent\Phony\Test\TestInterfaceD
 {
     public static function __callStatic(
         $a0,
         array $a1
-    ) : \stdClass {
+    ) {
         $result = self::$_staticHandle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
 
@@ -16,7 +17,7 @@ implements \Eloquent\Phony\Mock\Mock
     public function __call(
         $a0,
         array $a1
-    ) : \stdClass {
+    ) {
         $result = $this->_handle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
 
@@ -33,7 +34,10 @@ implements \Eloquent\Phony\Mock\Mock
         \Eloquent\Phony\Call\Arguments $arguments
     ) {}
 
-    private static $_uncallableMethods = [];
+    private static $_uncallableMethods = array (
+  '__callstatic' => true,
+  '__call' => true,
+);
     private static $_traitMethods = [];
     private static $_customMethods = [];
     private static $_staticHandle;

@@ -14,7 +14,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::return(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -36,7 +36,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::throw(...$arguments);
+            $result = null;
 
             return $result;
         }

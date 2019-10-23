@@ -24,7 +24,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = parent::methodA(...$arguments);
+            $result = null;
 
             return $result;
         }

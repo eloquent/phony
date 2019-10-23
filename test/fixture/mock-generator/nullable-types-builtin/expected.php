@@ -23,7 +23,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!self::$_staticHandle) {
-            $result = parent::customStaticMethod(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -64,7 +64,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::staticMethodA(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -86,7 +86,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::staticMethodB(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -117,7 +117,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::methodA(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -139,7 +139,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::methodB(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -170,7 +170,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::customMethod(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -195,16 +195,12 @@ implements \Eloquent\Phony\Mock\Mock,
     private static function _callMagicStatic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
-    ) {
-        return parent::__callStatic($name, $arguments->all());
-    }
+    ) {}
 
     private function _callMagic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
-    ) {
-        return parent::__call($name, $arguments->all());
-    }
+    ) {}
 
     private static $_uncallableMethods = array (
   'staticmethoda' => true,

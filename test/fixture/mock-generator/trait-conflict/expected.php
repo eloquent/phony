@@ -38,7 +38,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!self::$_staticHandle) {
-            $result = parent::testClassAStaticMethodA(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -77,7 +77,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = parent::testClassAMethodB(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -99,7 +99,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = parent::testTraitBMethodA(...$arguments);
+            $result = null;
 
             return $result;
         }
@@ -121,7 +121,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         if (!$this->_handle) {
-            $result = parent::testTraitCMethodA(...$arguments);
+            $result = null;
 
             return $result;
         }
