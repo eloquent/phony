@@ -251,9 +251,9 @@ EOD;
             $isBuiltin = $type->isBuiltin();
 
             if ($type->allowsNull()) {
-                $typeString = '?' . $type;
+                $typeString = '?' . $type->getName();
             } else {
-                $typeString = (string) $type;
+                $typeString = $type->getName();
             }
 
             if ('self' === $typeString) {
@@ -411,9 +411,9 @@ EOD;
                 $isBuiltin = $type->isBuiltin();
 
                 if ($type->allowsNull()) {
-                    $typeString = '?' . $type;
+                    $typeString = '?' . $type->getName();
                 } else {
-                    $typeString = (string) $type;
+                    $typeString = $type->getName();
                 }
 
                 if ('self' === $typeString) {
@@ -567,9 +567,9 @@ EOD;
             $isBuiltin = $type->isBuiltin();
 
             if ($type->allowsNull()) {
-                $typeString = '?' . $type;
+                $typeString = '?' . $type->getName();
             } else {
-                $typeString = (string) $type;
+                $typeString = $type->getName();
             }
 
             if ('self' === $typeString) {

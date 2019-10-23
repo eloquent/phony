@@ -63,12 +63,12 @@ class InvocableInspectorTest extends TestCase
         $type = $this->subject->callbackReturnType(eval('return function () : int {};'));
 
         $this->assertInstanceOf(ReflectionType::class, $type);
-        $this->assertSame('int', strval($type));
+        $this->assertSame('int', $type->getName());
 
         $type = $this->subject->callbackReturnType(eval('return function () : stdClass {};'));
 
         $this->assertInstanceOf(ReflectionType::class, $type);
-        $this->assertSame('stdClass', strval($type));
+        $this->assertSame('stdClass', $type->getName());
     }
 
     public function testInstance()

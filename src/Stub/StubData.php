@@ -522,7 +522,7 @@ class StubData implements Stub
                             } catch (FinalClassException $e){
                                 throw new FinalReturnTypeException(
                                     $this->exporter->exportCallable($callback),
-                                    strval($type),
+                                    $type->getName(),
                                     $e
                                 );
                             }

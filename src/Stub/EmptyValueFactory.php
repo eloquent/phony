@@ -74,7 +74,7 @@ class EmptyValueFactory
             return null;
         }
 
-        $typeName = strval($type);
+        $typeName = $type->getName();
 
         switch (strtolower($typeName)) {
             case 'bool':
