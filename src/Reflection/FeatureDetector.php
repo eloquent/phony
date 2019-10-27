@@ -115,8 +115,8 @@ class FeatureDetector
                 if (DIRECTORY_SEPARATOR === '\\') {
                     return
                         0 >= version_compare(
-                        '10.0.10586',
-                        PHP_WINDOWS_VERSION_MAJOR .
+                            '10.0.10586',
+                            PHP_WINDOWS_VERSION_MAJOR .
                             '.' . PHP_WINDOWS_VERSION_MINOR .
                             '.' . PHP_WINDOWS_VERSION_BUILD
                         ) ||

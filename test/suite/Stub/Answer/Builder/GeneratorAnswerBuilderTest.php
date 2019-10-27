@@ -154,10 +154,10 @@ class GeneratorAnswerBuilderTest extends TestCase
     {
         $actual = null;
         $this->subject->callsWith(
-                function ($phonySelf) use (&$actual) {
+            function ($phonySelf) use (&$actual) {
                     $actual = func_get_args();
                 }
-            )
+        )
             ->returns();
         $arguments = Arguments::create('a', 'b');
         iterator_to_array(call_user_func($this->answer, $this->self, $arguments));

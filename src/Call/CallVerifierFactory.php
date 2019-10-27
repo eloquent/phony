@@ -97,7 +97,7 @@ class CallVerifierFactory
 
         foreach ($calls as $call) {
             $verifiers[] = new CallVerifier(
-            $call,
+                $call,
                 $this->matcherFactory,
                 $this->matcherVerifier,
                 $this->generatorVerifierFactory,

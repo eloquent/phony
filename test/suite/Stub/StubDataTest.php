@@ -417,10 +417,10 @@ class StubDataTest extends TestCase
 
         $actual = null;
         $subject->callsWith(
-                function ($phonySelf) use (&$actual) {
+            function ($phonySelf) use (&$actual) {
                     $actual = func_get_args();
                 }
-            )
+        )
             ->returns();
         $subject('a', 'b');
 

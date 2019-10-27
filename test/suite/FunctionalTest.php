@@ -1,15 +1,29 @@
 <?php
 
+use function Eloquent\Phony\anyOrder;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
+use function Eloquent\Phony\equalTo;
 use Eloquent\Phony\Exporter\InlineExporter;
+use function Eloquent\Phony\inOrder;
+use function Eloquent\Phony\mock;
 use Eloquent\Phony\Mock\Exception\AnonymousClassException;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Mock;
+use function Eloquent\Phony\mockBuilder;
+use function Eloquent\Phony\on;
+use function Eloquent\Phony\onStatic;
+use function Eloquent\Phony\partialMock;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use function Eloquent\Phony\restoreGlobalFunctions;
+use function Eloquent\Phony\setUseColor;
+use function Eloquent\Phony\spy;
 use Eloquent\Phony\Spy\SpyVerifier;
+use function Eloquent\Phony\spyGlobal;
+use function Eloquent\Phony\stub;
 use Eloquent\Phony\Stub\Exception\FinalReturnTypeException;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
+use function Eloquent\Phony\stubGlobal;
 use Eloquent\Phony\Test;
 use Eloquent\Phony\Test\AbstractTestClassWithFinalReturnType;
 use Eloquent\Phony\Test\TestClassA;
@@ -39,20 +53,6 @@ use Eloquent\Phony\Test\TestTraitF;
 use Eloquent\Phony\Test\TestTraitH;
 use Eloquent\Phony\Test\TestTraitJ;
 use PHPUnit\Framework\TestCase;
-use function Eloquent\Phony\anyOrder;
-use function Eloquent\Phony\equalTo;
-use function Eloquent\Phony\inOrder;
-use function Eloquent\Phony\mock;
-use function Eloquent\Phony\mockBuilder;
-use function Eloquent\Phony\on;
-use function Eloquent\Phony\onStatic;
-use function Eloquent\Phony\partialMock;
-use function Eloquent\Phony\restoreGlobalFunctions;
-use function Eloquent\Phony\setUseColor;
-use function Eloquent\Phony\spy;
-use function Eloquent\Phony\spyGlobal;
-use function Eloquent\Phony\stub;
-use function Eloquent\Phony\stubGlobal;
 
 class FunctionalTest extends TestCase
 {
