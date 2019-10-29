@@ -492,7 +492,7 @@ Thanks for listening.
 > Erin ([@ezzatron])
 
 [did not agree]: https://github.com/phpspec/prophecy/issues/130
-[expect-run-verify]: http://monkeyisland.pl/2008/02/01/deathwish/
+[expect-run-verify]: https://web.archive.org/web/20180824034235/http://monkeyisland.pl/2008/02/01/deathwish/
 [mockery]: http://docs.mockery.io/
 [pr]: https://github.com/mlively/Phake/pull/133
 
