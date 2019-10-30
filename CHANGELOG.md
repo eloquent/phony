@@ -1,5 +1,12 @@
 # Phony changelog
 
+## 3.2.0 (2019-10-30)
+
+- **[IMPROVED]** Compatibility with the current PHP 7.4 release candidate
+  ([#246]).
+
+[#246]: https://github.com/eloquent/phony/issues/246
+
 ## 3.1.0 (2018-12-07)
 
 - **[IMPROVED]** Support for PHP 7.3 features ([#239]).
