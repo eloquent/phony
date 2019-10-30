@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+<meta charset="utf-8">
+
+<title>Phony</title>
+
+<link rel="stylesheet" href="../css/markdown.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="../css/phony.css">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:400,700|Inconsolata:400,700">
+
+<link rel="shortcut icon" href="//eloquent-software.com/img/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="//eloquent-software.com/img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="57x57" href="//eloquent-software.com/img/apple-touch-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="//eloquent-software.com/img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="//eloquent-software.com/img/apple-touch-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="144x144" href="//eloquent-software.com/img/apple-touch-icon-144x144.png">
+
+</head>
+<body class="markdown-body" data-version="3.2">
+
+<div id="container">
+
+<div id="toc">
+    <h2>
+        <span>Phony</span>
+
+        <a href="#toc" title="Show expanded contents" id="toc-show"><i class="fa fa-plus-circle"></i></a>
+        <a href="#" title="Hide expanded contents" id="toc-hide" style="display: none;">
+            <i class="fa fa-minus-circle"></i>
+        </a>
+        <a href="#" title="Return to top"><i class="fa fa-chevron-circle-up"></i></a>
+        <a href="https://github.com/eloquent/phony" title="View on GitHub"><i class="fa fa-github"></i></a>
+    </h2>
+    <div id="toc-relative">
+        <div id="toc-scroll"></div>
+        <div id="toc-fade-top"></div>
+        <div id="toc-fade-bottom"></div>
+    </div>
+</div>
+
+<ul id="versions"></ul>
+
+<div id="content">
+
+<!-- START content -->
+
+<h1>
+<a id="phony-and-kahlan-by-example" class="anchor" href="#phony-and-kahlan-by-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Phony and Kahlan by example</h1>
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#project-setup">Project setup</a></li>
+<li><a href="#the-domain-resolver">The domain resolver</a></li>
+<li><a href="#creating-the-test-suite">Creating the test suite</a></li>
+<li>
+<a href="#top-level-test-setup-and-teardown">Top-level test setup and teardown</a>
+<ul>
+<li><a href="#instantiating-the-domain-resolver">Instantiating the domain resolver</a></li>
+<li><a href="#isolation-from-global-functions">Isolation from global functions</a></li>
+</ul>
+</li>
+<li>
+<a href="#testing-cache-hits">Testing cache hits</a>
+<ul>
+<li><a href="#cache-hit-setup">Cache hit setup</a></li>
+<li><a href="#cache-hit-specs">Cache hit specs</a></li>
+</ul>
+</li>
+<li>
+<a href="#testing-cache-misses">Testing cache misses</a>
+<ul>
+<li><a href="#cache-miss-setup">Cache miss setup</a></li>
+<li><a href="#cache-miss-specs">Cache miss specs</a></li>
+</ul>
+</li>
+<li>
+<a href="#testing-domain-lookup-failures">Testing domain lookup failures</a>
+<ul>
+<li><a href="#domain-lookup-failure-setup">Domain lookup failure setup</a></li>
+<li><a href="#domain-lookup-failure-specs">Domain lookup failure specs</a></li>
+</ul>
+</li>
+<li>
+<a href="#testing-cache-write-failures">Testing cache write failures</a>
+<ul>
+<li><a href="#cache-write-failure-setup">Cache write failure setup</a></li>
+<li><a href="#cache-write-failure-specs">Cache write failure specs</a></li>
+</ul>
+</li>
+<li><a href="#running-the-test-suite">Running the test suite</a></li>
+<li><a href="#auto-wired-test-dependencies">Auto-wired test dependencies</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+<li><a href="#following-on-from-this-guide">Following on from this guide</a></li>
+</ul>
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introduction</h2>
+<p>This guide is designed to help you get acquainted with the basics of writing
+tests using <a href=".">Phony</a> and <a href="https://kahlan.github.io/docs/" rel="nofollow">Kahlan</a>, without covering every possible detail of the
+features used. For more in-depth information, check out these sources of
+documentation:</p>
+<ul>
+<li><a href=".">Phony documentation</a></li>
+<li><a href="https://kahlan.github.io/docs/" rel="nofollow">Kahlan documentation</a></li>
+<li>The <a href="https://github.com/eloquent/phony-kahlan">Phony for Kahlan</a> repository</li>
+</ul>
+<p>The bulk of this guide will involve testing a simple caching DNS resolver, using
+a combination of the features provided by Phony and Kahlan.</p>
+<h2>
+<a id="project-setup" class="anchor" href="#project-setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project setup</h2>
+<p>To install Phony and Kahlan, use <a href="https://getcomposer.org/" rel="nofollow">Composer</a>'s <a href="https://getcomposer.org/doc/03-cli.md#require" rel="nofollow"><code>require</code></a> command to add them as
+development dependencies:</p>
+<pre><code>composer require --dev kahlan/kahlan eloquent/phony-kahlan
+</code></pre>
+<p>For the examples used in this guide, we'll also be making use of the <a href="http://php-fig.org/psr/psr-16/" rel="nofollow">PSR-16</a>
+cache interfaces, which can be installed by adding the <a href="https://packagist.org/packages/psr/simple-cache" rel="nofollow">psr/simple-cache</a>
+package as a regular dependency:</p>
+<pre><code>composer require psr/simple-cache
+</code></pre>
+<p>Let's also configure Composer to autoload the classes that make up the example
+system we'll be testing:</p>
+<div class="highlight highlight-source-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>autoload<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>psr-4<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>Example<span class="pl-cce">\\</span>Dns<span class="pl-cce">\\</span><span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>src<span class="pl-pds">"</span></span>
+        }
+    },
+    <span class="pl-s"><span class="pl-pds">"</span>require-dev<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>kahlan/kahlan<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^4<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>eloquent/phony-kahlan<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^1<span class="pl-pds">"</span></span>
+    },
+    <span class="pl-s"><span class="pl-pds">"</span>require<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>psr/simple-cache<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^1<span class="pl-pds">"</span></span>
+    }
+}</pre></div>
+<h2>
+<a id="the-domain-resolver" class="anchor" href="#the-domain-resolver" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The domain resolver</h2>
+<p>Our DNS resolver is a class that uses a <a href="http://php-fig.org/psr/psr-16/" rel="nofollow">PSR-16</a> cache to avoid making multiple
+DNS queries for the same domain name:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> <span class="pl-c"><span class="pl-c">//</span> src/DomainResolver.php</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Example\Dns</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Psr\SimpleCache\CacheInterface</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">RuntimeException</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">/**</span></span></span>
+<span class="pl-s1"><span class="pl-c"> * Resolves domain names to IPv4 addresses.</span></span>
+<span class="pl-s1"><span class="pl-c"> <span class="pl-c">*/</span></span></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">DomainResolver</span></span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-c1">__construct</span>(<span class="pl-c1">CacheInterface</span> <span class="pl-smi">$cache</span>)</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span> <span class="pl-k">=</span> <span class="pl-smi">$cache</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c"><span class="pl-c">/**</span></span></span>
+<span class="pl-s1"><span class="pl-c">     * Resolve a domain name.</span></span>
+<span class="pl-s1"><span class="pl-c">     *</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@param</span> string $name The domain name.</span></span>
+<span class="pl-s1"><span class="pl-c">     *</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@return</span> string           The resolved IPv4 address.</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@throws</span> RuntimeException If the domain name could not be resolved.</span></span>
+<span class="pl-s1"><span class="pl-c">     <span class="pl-c">*/</span></span></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">resolve</span>(<span class="pl-k">string</span> <span class="pl-smi">$name</span>): <span class="pl-k">string</span></span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$cached</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span>get(<span class="pl-smi">$name</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">if</span> (<span class="pl-smi">$cached</span> <span class="pl-k">!</span><span class="pl-k">==</span> <span class="pl-c1">null</span>) {</span>
+<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-smi">$cached</span>; <span class="pl-c"><span class="pl-c">//</span> cache hit</span></span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$address</span> <span class="pl-k">=</span> <span class="pl-c1">gethostbyname</span>(<span class="pl-smi">$name</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c"><span class="pl-c">//</span> handle gethostbyname() failure</span></span>
+<span class="pl-s1">        <span class="pl-k">if</span> (<span class="pl-smi">$address</span> <span class="pl-k">===</span> <span class="pl-smi">$name</span>) {</span>
+<span class="pl-s1">            <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>Unable to resolve.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c"><span class="pl-c">//</span> handle cache failure</span></span>
+<span class="pl-s1">        <span class="pl-k">if</span> (<span class="pl-k">!</span><span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span>set(<span class="pl-smi">$name</span>, <span class="pl-smi">$address</span>)) {</span>
+<span class="pl-s1">            <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>Unable to cache.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$address</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">private</span> <span class="pl-smi">$cache</span>;</span>
+<span class="pl-s1">}</span></pre></div>
+<h2>
+<a id="creating-the-test-suite" class="anchor" href="#creating-the-test-suite" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating the test suite</h2>
+<p>Let's lay out a Kahlan test suite. We'll leave the specs empty for now:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> <span class="pl-c"><span class="pl-c">//</span> spec/DomainResolver.spec.php</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Example\Dns</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">describe(<span class="pl-s"><span class="pl-pds">'</span>DomainResolver<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    describe(<span class="pl-s"><span class="pl-pds">'</span>resolve()<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        context(<span class="pl-s"><span class="pl-pds">'</span>when there is a matching cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should return the cached entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {});</span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should not attempt to resolve the name again<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {});</span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should not overwrite the cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {});</span>
+<span class="pl-s1">        });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        context(<span class="pl-s"><span class="pl-pds">'</span>when there is no matching cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should return the lookup result<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {});</span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should create a cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {});</span>
+<span class="pl-s1">        });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        context(<span class="pl-s"><span class="pl-pds">'</span>when domain lookup fails<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should throw an exception<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {});</span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should not create a cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {});</span>
+<span class="pl-s1">        });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        context(<span class="pl-s"><span class="pl-pds">'</span>when cache entry creation fails<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should throw an exception<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {});</span>
+<span class="pl-s1">        });</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1">});</span></pre></div>
+<p>Since the specs make no assertions, Kahlan will mark them all as "pending":</p>
+<pre><code>$ vendor/bin/kahlan
+            _     _
+  /\ /\__ _| |__ | | __ _ _ __
+ / //_/ _` | '_ \| |/ _` | '_ \
+/ __ \ (_| | | | | | (_| | | | |
+\/  \/\__,_|_| |_|_|\__,_|_| |_|
+
+The PHP Test Framework for Freedom, Truth and Justice.
+
+src directory  : ./src
+spec directory : ./spec
+
+PPPPPPPP                                                            8 / 8 (100%)
+
+
+  Pending specifications: 8
+  ./spec/DomainResolver.spec.php, line 8
+  ./spec/DomainResolver.spec.php, line 9
+  ./spec/DomainResolver.spec.php, line 10
+  ./spec/DomainResolver.spec.php, line 14
+  ./spec/DomainResolver.spec.php, line 15
+  ./spec/DomainResolver.spec.php, line 19
+  ./spec/DomainResolver.spec.php, line 20
+  ./spec/DomainResolver.spec.php, line 24
+
+
+Expectations   : 0 Executed
+Specifications : 8 Pending, 0 Excluded, 0 Skipped
+
+Passed 0 of 0 PASS in 0.004 seconds (using 2MB)
+</code></pre>
+<h2>
+<a id="top-level-test-setup-and-teardown" class="anchor" href="#top-level-test-setup-and-teardown" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Top-level test setup and teardown</h2>
+<h3>
+<a id="instantiating-the-domain-resolver" class="anchor" href="#instantiating-the-domain-resolver" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Instantiating the domain resolver</h3>
+<p>To avoid repeating code, we'll create the domain resolver in a <code>beforeEach()</code>
+block at the top-most level of the test suite. We'll use Phony's <a href=".#facade.mock"><code>mock()</code></a>
+function to create a test double of the cache dependency required by
+<code>DomainResolver</code>:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> <span class="pl-c"><span class="pl-c">//</span> spec/DomainResolver.spec.php</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Example\Dns</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Psr\SimpleCache\CacheInterface</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\mock</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">describe(<span class="pl-s"><span class="pl-pds">'</span>DomainResolver<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    beforeEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span> <span class="pl-k">=</span> mock(<span class="pl-c1">CacheInterface</span><span class="pl-k">::</span><span class="pl-c1">class</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">DomainResolver</span>(<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span>get());</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c"><span class="pl-c">//</span> ...</span></span>
+<span class="pl-s1">});</span></pre></div>
+<p>Notice that:</p>
+<ul>
+<li>We imported the <code>Psr\SimpleCache\CacheInterface</code> interface, and the
+<code>Eloquent\Phony\Kahlan\mock</code> function.</li>
+<li>The <a href=".#facade.mock"><code>mock()</code></a> function returns a <a href=".#mock-handles">mock handle</a>, which we've stored in
+<code>$this-&gt;cache</code>.</li>
+<li>We retrieved the actual mock object by calling <code>$this-&gt;cache-&gt;get()</code>, and
+passed it to the <code>DomainResolver</code>'s constructor.</li>
+</ul>
+<p>The separation of "mock handle" and "mock object" is important to understand.
+<a href=".#mock-handles">Mock handles</a> have two primary purposes:</p>
+<ul>
+<li>To allow for <a href=".#stubs">stubbing</a>, which lets us control how the mock object behaves.</li>
+<li>To allow for <a href=".#verification">verification</a>, which lets us determine what happened to the mock
+object during testing.</li>
+</ul>
+<p>In contrast to this, the "mock object" is what we pass into the system we're
+testing. It is responsible for recording incoming method calls, and responding
+to them according to rules that we configure via the mock handle.</p>
+<h3>
+<a id="isolation-from-global-functions" class="anchor" href="#isolation-from-global-functions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Isolation from global functions</h3>
+<p>The next thing that we need to take care of is the fact that our
+<code>DomainResolver</code> also makes use of the "global" function <a href="http://php.net/gethostbyname" rel="nofollow"><code>gethostbyname()</code></a>. If
+this function were called during test execution, real DNS queries would be
+issued, and it would be impossible to test how our system interacts with this
+function.</p>
+<p>We can prevent the actual <a href="http://php.net/gethostbyname" rel="nofollow"><code>gethostbyname()</code></a> function from being called by
+using Phony's <a href=".#facade.stubGlobal"><code>stubGlobal()</code></a> function in the top-level <code>beforeEach()</code> block.
+We must also use <a href=".#facade.restoreGlobalFunctions"><code>restoreGlobalFunctions()</code></a> in a matching <code>afterEach()</code> block
+to restore the original behavior of <a href="http://php.net/gethostbyname" rel="nofollow"><code>gethostbyname()</code></a> once each spec has
+completed:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> <span class="pl-c"><span class="pl-c">//</span> spec/DomainResolver.spec.php</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Example\Dns</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Psr\SimpleCache\CacheInterface</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\mock</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\restoreGlobalFunctions</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\stubGlobal</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">describe(<span class="pl-s"><span class="pl-pds">'</span>DomainResolver<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    beforeEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span> <span class="pl-k">=</span> mock(<span class="pl-c1">CacheInterface</span><span class="pl-k">::</span><span class="pl-c1">class</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">DomainResolver</span>(<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span>get());</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span> <span class="pl-k">=</span> stubGlobal(<span class="pl-s"><span class="pl-pds">'</span>gethostbyname<span class="pl-pds">'</span></span>, <span class="pl-c1">__NAMESPACE__</span>);</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    afterEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        restoreGlobalFunctions();</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c"><span class="pl-c">//</span> ...</span></span>
+<span class="pl-s1">});</span></pre></div>
+<p>Notice that:</p>
+<ul>
+<li>We imported the <code>Eloquent\Phony\Kahlan\stubGlobal</code> and
+<code>Eloquent\Phony\Kahlan\restoreGlobalFunctions</code> functions.</li>
+<li>The <a href=".#facade.stubGlobal"><code>stubGlobal()</code></a> function takes a function name and the namespace from
+which the function will be called, and returns a <a href=".#stubs">stub</a>, which we've stored in
+<code>$this-&gt;gethostbyname</code>.</li>
+</ul>
+<p>We can now move on to writing actual specs.</p>
+<h2>
+<a id="testing-cache-hits" class="anchor" href="#testing-cache-hits" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Testing cache hits</h2>
+<p>Let's test the behavior of our resolver when the cache already contains a
+resolved address for the supplied domain name.</p>
+<h3>
+<a id="cache-hit-setup" class="anchor" href="#cache-hit-setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cache hit setup</h3>
+<p>We can use our cache's handle to simulate a cache "hit":</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">context(<span class="pl-s"><span class="pl-pds">'</span>when there is a matching cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    beforeEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">get</span><span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>1.1.1.1<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c"><span class="pl-c">//</span> ...</span></span>
+<span class="pl-s1">});</span></pre></div>
+<p>In this <code>beforeEach()</code> block:</p>
+<ul>
+<li>We retrieved the <a href=".#stubs">stub</a> for the cache's <code>get()</code> method by accessing
+<code>$this-&gt;cache-&gt;get</code>.</li>
+<li>We used the <a href=".#stub.returns"><code>returns()</code></a> method of the stub to make the method return
+<code>'1.1.1.1'</code> when called.</li>
+</ul>
+<p>The net result of this, is that when our domain resolver calls <code>get()</code> on the
+cache, it will return the value we told it to. This is all the setup we require
+for this block of specs.</p>
+<h3>
+<a id="cache-hit-specs" class="anchor" href="#cache-hit-specs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cache hit specs</h3>
+<p>When a cache hit occurs, the resolver should return the cached address, so let's
+test that requirement with a spec:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">it(<span class="pl-s"><span class="pl-pds">'</span>should return the cached entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    <span class="pl-smi">$address</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    expect(<span class="pl-smi">$address</span>)<span class="pl-k">-&gt;</span>toBe(<span class="pl-s"><span class="pl-pds">'</span>1.1.1.1<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">get</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">});</span></pre></div>
+<p>In this spec:</p>
+<ul>
+<li>We called our resolver with an example domain of <code>'example.org.'</code>.</li>
+<li>We used Kahlan's <a href="https://kahlan.github.io/docs/dsl#expectations" rel="nofollow"><code>expect()</code></a> interface to assert that the returned address
+matches what the cache returned, using <code>toBe()</code>.</li>
+<li>We used Phony's <a href=".#spy.calledWith"><code>calledWith()</code></a> method to assert that our domain resolver
+uses the correct key when querying the cache.</li>
+</ul>
+<p>We also want to make sure that our domain resolver does <strong>not</strong> call
+<a href="http://php.net/gethostbyname" rel="nofollow"><code>gethostbyname()</code></a> when there's a cache hit:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">it(<span class="pl-s"><span class="pl-pds">'</span>should not attempt to resolve the name again<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span><span class="pl-k">-&gt;</span>never()<span class="pl-k">-&gt;</span>called();</span>
+<span class="pl-s1">});</span></pre></div>
+<p>In this spec:</p>
+<ul>
+<li>We called our resolver with an example domain of <code>'example.org.'</code>.</li>
+<li>We used Phony's <a href=".#spy.called"><code>called()</code></a> method in combination with the <a href=".#spy.never"><code>never()</code></a>
+modifier to assert that <a href="http://php.net/gethostbyname" rel="nofollow"><code>gethostbyname()</code></a> is not called by our resolver.</li>
+</ul>
+<p>We can take a similar approach to check that our resolver does <strong>not</strong> alter the
+cache if there's a cache hit:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">it(<span class="pl-s"><span class="pl-pds">'</span>should not overwrite the cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">set</span><span class="pl-k">-&gt;</span>never()<span class="pl-k">-&gt;</span>called();</span>
+<span class="pl-s1">});</span></pre></div>
+<p>Our cache hit specs are now complete.</p>
+<h2>
+<a id="testing-cache-misses" class="anchor" href="#testing-cache-misses" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Testing cache misses</h2>
+<p>We need to test the behavior of our resolver when no cache data exists for the
+supplied domain name.</p>
+<h3>
+<a id="cache-miss-setup" class="anchor" href="#cache-miss-setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cache miss setup</h3>
+<p>When there is a cache miss, the <a href="http://php.net/gethostbyname" rel="nofollow"><code>gethostbyname()</code></a> function will be called, and
+we need to instruct its stub to return a typical result. We also need to
+instruct the cache to return <code>true</code> from <code>set()</code>, in order to simulate a
+successful cache write:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">context(<span class="pl-s"><span class="pl-pds">'</span>when there is no matching cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    beforeEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span><span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>1.1.1.1<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">set</span><span class="pl-k">-&gt;</span>returns(<span class="pl-c1">true</span>);</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c"><span class="pl-c">//</span> ...</span></span>
+<span class="pl-s1">});</span></pre></div>
+<p>By default, our cache will return <code>null</code> when <code>get()</code> is called, unless we
+specify some other behavior. Since this is how the cache should behave when
+there is no matching entry, we do not need to modify the behavior of <code>get()</code> for
+this set of specs, so that's all the setup required here.</p>
+<h3>
+<a id="cache-miss-specs" class="anchor" href="#cache-miss-specs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cache miss specs</h3>
+<p>When a cache miss occurs, the resolver should perform a real DNS query, and
+return the result:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">it(<span class="pl-s"><span class="pl-pds">'</span>should return the lookup result<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    <span class="pl-smi">$address</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    expect(<span class="pl-smi">$address</span>)<span class="pl-k">-&gt;</span>toBe(<span class="pl-s"><span class="pl-pds">'</span>1.1.1.1<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">});</span></pre></div>
+<p>The result should also be stored in the cache for subsequent calls:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">it(<span class="pl-s"><span class="pl-pds">'</span>should create a cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">set</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>1.1.1.1<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">});</span></pre></div>
+<p>These two specs are all that are required for the cache miss block.</p>
+<h2>
+<a id="testing-domain-lookup-failures" class="anchor" href="#testing-domain-lookup-failures" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Testing domain lookup failures</h2>
+<p>It's important to test the error paths in our resolver. One error that can occur
+is a DNS lookup failure. Let's test this now.</p>
+<h3>
+<a id="domain-lookup-failure-setup" class="anchor" href="#domain-lookup-failure-setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Domain lookup failure setup</h3>
+<p>The manual entry for <a href="http://php.net/gethostbyname" rel="nofollow"><code>gethostbyname()</code></a> states that the function:</p>
+<blockquote>
+<p>Returns the IPv4 address <strong>or a string containing the unmodified hostname on
+failure.</strong></p>
+</blockquote>
+<p>So we need to configure <a href="http://php.net/gethostbyname" rel="nofollow"><code>gethostbyname()</code></a> to return whatever is passed to it:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">context(<span class="pl-s"><span class="pl-pds">'</span>when domain lookup fails<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    beforeEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span><span class="pl-k">-&gt;</span>returnsArgument();</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c"><span class="pl-c">//</span> ...</span></span>
+<span class="pl-s1">});</span></pre></div>
+<p>In this <code>beforeEach()</code> block:</p>
+<ul>
+<li>We used the <a href=".#stub.returnsArgument"><code>returnsArgument()</code></a> method of the stub to make
+<a href="http://php.net/gethostbyname" rel="nofollow"><code>gethostbyname()</code></a> return the first argument it is called with.</li>
+</ul>
+<h3>
+<a id="domain-lookup-failure-specs" class="anchor" href="#domain-lookup-failure-specs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Domain lookup failure specs</h3>
+<p>We're about to make use of the <code>RuntimeException</code> class, so we need to import it
+at the top of the test suite file:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Psr\SimpleCache\CacheInterface</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">RuntimeException</span>; <span class="pl-c"><span class="pl-c">//</span> &lt;-------------------------------- add this</span></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\mock</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\restoreGlobalFunctions</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\stubGlobal</span>;</span></pre></div>
+<p>When a domain lookup failure occurs, we want our resolver to throw an exception
+indicating the failure:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">it(<span class="pl-s"><span class="pl-pds">'</span>should throw an exception<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    <span class="pl-smi">$resolve</span> <span class="pl-k">=</span> <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">    };</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    expect(<span class="pl-smi">$resolve</span>)<span class="pl-k">-&gt;</span>toThrow(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>Unable to resolve.<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s1">});</span></pre></div>
+<p>In this spec:</p>
+<ul>
+<li>We created a closure in which we call our resolver.</li>
+<li>We used Kahlan's <a href="https://kahlan.github.io/docs/dsl#expectations" rel="nofollow"><code>expect()</code></a> interface to assert that this closure throws an
+exception like the one we expect, using <code>toThrow()</code>.</li>
+</ul>
+<p>In the case of a domain lookup failure, the cache should also remain untouched,
+so let's test that:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">it(<span class="pl-s"><span class="pl-pds">'</span>should not create a cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    <span class="pl-smi">$resolve</span> <span class="pl-k">=</span> <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">    };</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    expect(<span class="pl-smi">$resolve</span>)<span class="pl-k">-&gt;</span>toThrow();</span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">set</span><span class="pl-k">-&gt;</span>never()<span class="pl-k">-&gt;</span>called();</span>
+<span class="pl-s1">});</span></pre></div>
+<p>This spec is similar to the one above, but we care less about the type of
+exception thrown, and more about the interaction with the cache.</p>
+<h2>
+<a id="testing-cache-write-failures" class="anchor" href="#testing-cache-write-failures" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Testing cache write failures</h2>
+<p>According to <a href="http://php-fig.org/psr/psr-16/" rel="nofollow">PSR-16</a>, writing to the cache using <code>set()</code> can fail, which is
+indicated by a return value of <code>false</code>. That's an important case that we should
+cover with a spec.</p>
+<h3>
+<a id="cache-write-failure-setup" class="anchor" href="#cache-write-failure-setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cache write failure setup</h3>
+<p>We're only going to write one spec for this case, but we'll still do the setup
+inside a <code>beforeEach()</code> block, in case we think of something else that needs the
+same kind of setup in the future.</p>
+<p>We need to get our resolver into a state where it will write to the cache, so we
+need to simulate a cache miss, then a successful domain lookup. Then finally, we
+need to simulate a failed cache write. The cache miss requires no setup, as
+explained earlier; and the other two are handled like so:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">context(<span class="pl-s"><span class="pl-pds">'</span>when cache entry creation fails<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    beforeEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span><span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>1.1.1.1<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">set</span><span class="pl-k">-&gt;</span>returns(<span class="pl-c1">false</span>);</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c"><span class="pl-c">//</span> ...</span></span>
+<span class="pl-s1">});</span></pre></div>
+<h3>
+<a id="cache-write-failure-specs" class="anchor" href="#cache-write-failure-specs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cache write failure specs</h3>
+<p>Now we can test that the correct exception is thrown, similar to previous specs:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">it(<span class="pl-s"><span class="pl-pds">'</span>should throw an exception<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    <span class="pl-smi">$resolve</span> <span class="pl-k">=</span> <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">    };</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    expect(<span class="pl-smi">$resolve</span>)<span class="pl-k">-&gt;</span>toThrow(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>Unable to cache.<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s1">});</span></pre></div>
+<p>This is all that's needed to test this particular failure case, and concludes
+the specs we'll be writing for our domain resolver.</p>
+<h2>
+<a id="running-the-test-suite" class="anchor" href="#running-the-test-suite" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running the test suite</h2>
+<p>Our test suite should now look something like this:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> <span class="pl-c"><span class="pl-c">//</span> spec/DomainResolver.spec.php</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Example\Dns</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Psr\SimpleCache\CacheInterface</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">RuntimeException</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\mock</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\restoreGlobalFunctions</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\stubGlobal</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">describe(<span class="pl-s"><span class="pl-pds">'</span>DomainResolver<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">    beforeEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span> <span class="pl-k">=</span> mock(<span class="pl-c1">CacheInterface</span><span class="pl-k">::</span><span class="pl-c1">class</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">DomainResolver</span>(<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span>get());</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span> <span class="pl-k">=</span> stubGlobal(<span class="pl-s"><span class="pl-pds">'</span>gethostbyname<span class="pl-pds">'</span></span>, <span class="pl-c1">__NAMESPACE__</span>);</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    afterEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        restoreGlobalFunctions();</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    describe(<span class="pl-s"><span class="pl-pds">'</span>resolve()<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">        context(<span class="pl-s"><span class="pl-pds">'</span>when there is a matching cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">            beforeEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">get</span><span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>1.1.1.1<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">            });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should return the cached entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                <span class="pl-smi">$address</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">                expect(<span class="pl-smi">$address</span>)<span class="pl-k">-&gt;</span>toBe(<span class="pl-s"><span class="pl-pds">'</span>1.1.1.1<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">get</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">            });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should not attempt to resolve the name again<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span><span class="pl-k">-&gt;</span>never()<span class="pl-k">-&gt;</span>called();</span>
+<span class="pl-s1">            });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should not overwrite the cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">set</span><span class="pl-k">-&gt;</span>never()<span class="pl-k">-&gt;</span>called();</span>
+<span class="pl-s1">            });</span>
+<span class="pl-s1">        });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        context(<span class="pl-s"><span class="pl-pds">'</span>when there is no matching cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">            beforeEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span><span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>1.1.1.1<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">set</span><span class="pl-k">-&gt;</span>returns(<span class="pl-c1">true</span>);</span>
+<span class="pl-s1">            });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should return the lookup result<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                <span class="pl-smi">$address</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">                expect(<span class="pl-smi">$address</span>)<span class="pl-k">-&gt;</span>toBe(<span class="pl-s"><span class="pl-pds">'</span>1.1.1.1<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">            });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should create a cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">set</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>1.1.1.1<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">            });</span>
+<span class="pl-s1">        });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        context(<span class="pl-s"><span class="pl-pds">'</span>when domain lookup fails<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">            beforeEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span><span class="pl-k">-&gt;</span>returnsArgument();</span>
+<span class="pl-s1">            });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should throw an exception<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                <span class="pl-smi">$resolve</span> <span class="pl-k">=</span> <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">                };</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">                expect(<span class="pl-smi">$resolve</span>)<span class="pl-k">-&gt;</span>toThrow(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>Unable to resolve.<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s1">            });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should not create a cache entry<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                <span class="pl-smi">$resolve</span> <span class="pl-k">=</span> <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">                };</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">                expect(<span class="pl-smi">$resolve</span>)<span class="pl-k">-&gt;</span>toThrow();</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">set</span><span class="pl-k">-&gt;</span>never()<span class="pl-k">-&gt;</span>called();</span>
+<span class="pl-s1">            });</span>
+<span class="pl-s1">        });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        context(<span class="pl-s"><span class="pl-pds">'</span>when cache entry creation fails<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">            beforeEach(<span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span><span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>1.1.1.1<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span><span class="pl-k">-&gt;</span><span class="pl-smi">set</span><span class="pl-k">-&gt;</span>returns(<span class="pl-c1">false</span>);</span>
+<span class="pl-s1">            });</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            it(<span class="pl-s"><span class="pl-pds">'</span>should throw an exception<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                <span class="pl-smi">$resolve</span> <span class="pl-k">=</span> <span class="pl-k">function</span> () {</span>
+<span class="pl-s1">                    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span><span class="pl-k">-&gt;</span>resolve(<span class="pl-s"><span class="pl-pds">'</span>example.org.<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">                };</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">                expect(<span class="pl-smi">$resolve</span>)<span class="pl-k">-&gt;</span>toThrow(<span class="pl-k">new</span> <span class="pl-c1">RuntimeException</span>(<span class="pl-s"><span class="pl-pds">'</span>Unable to cache.<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s1">            });</span>
+<span class="pl-s1">        });</span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1">});</span></pre></div>
+<p>Let's use Kahlan to run the suite, and see how we did in terms of test coverage:</p>
+<pre><code>$ phpdbg -qrr vendor/bin/kahlan --coverage=3
+            _     _
+  /\ /\__ _| |__ | | __ _ _ __
+ / //_/ _` | '_ \| |/ _` | '_ \
+/ __ \ (_| | | | | | (_| | | | |
+\/  \/\__,_|_| |_|_|\__,_|_| |_|
+
+The PHP Test Framework for Freedom, Truth and Justice.
+
+src directory  : ./src
+spec directory : ./spec
+
+........                                                            8 / 8 (100%)
+
+
+
+Expectations   : 11 Executed
+Specifications : 0 Pending, 0 Excluded, 0 Skipped
+
+Passed 8 of 8 PASS in 0.027 seconds (using 7MB)
+
+Coverage Summary
+----------------
+                             Lines           %
+
+ \                           7 / 7     100.00%
+└── Example\                 7 / 7     100.00%
+   └── Dns\                  7 / 7     100.00%
+      └── DomainResolver     7 / 7     100.00%
+
+Total: 100.00% (7/7)
+
+Coverage collected in 0.002 seconds (using an additional 0B)
+</code></pre>
+<p>Our coverage is at 100%, and that's definitely good enough for the purposes of
+this guide.</p>
+<h2>
+<a id="auto-wired-test-dependencies" class="anchor" href="#auto-wired-test-dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Auto-wired test dependencies</h2>
+<p>With a little bit of configuration, we can take advantage of a simpler way to
+obtain mock objects for our test suite. All that's required is to install
+<a href="https://github.com/eloquent/phony-kahlan">Phony for Kahlan</a> inside a <a href="https://kahlan.github.io/docs/config-file" rel="nofollow">Kahlan configuration file</a>:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> <span class="pl-c"><span class="pl-c">//</span> kahlan-config.php</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">Eloquent\Phony\Kahlan\</span>install();</span></pre></div>
+<p>Now we can simply type hint the mocks we require, rather than creating them
+explicitly with <a href=".#facade.mock"><code>mock()</code></a>:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">beforeEach(<span class="pl-k">function</span> (<span class="pl-c1">CacheInterface</span> <span class="pl-smi">$cache</span>) {</span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">resolver</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">DomainResolver</span>(<span class="pl-smi">$cache</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">cache</span> <span class="pl-k">=</span> on(<span class="pl-smi">$cache</span>);</span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">gethostbyname</span> <span class="pl-k">=</span> stubGlobal(<span class="pl-s"><span class="pl-pds">'</span>gethostbyname<span class="pl-pds">'</span></span>, <span class="pl-c1">__NAMESPACE__</span>);</span>
+<span class="pl-s1">});</span></pre></div>
+<p>Note that in order to retrieve the <a href=".#mock-handles">mock handle</a> for the injected mock, we need
+to use the <a href=".#facade.on"><code>on()</code></a> function provided by Phony:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Psr\SimpleCache\CacheInterface</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">RuntimeException</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\on</span>; <span class="pl-c"><span class="pl-c">//</span> &lt;--------------- add this</span></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\restoreGlobalFunctions</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Kahlan\stubGlobal</span>;</span></pre></div>
+<p>Other than that, the rest of our test suite remains unchanged.</p>
+<h2>
+<a id="conclusion" class="anchor" href="#conclusion" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Conclusion</h2>
+<p>This guide has attempted to demonstrate some useful techniques for testing with
+<a href=".">Phony</a> and <a href="https://kahlan.github.io/docs/" rel="nofollow">Kahlan</a> in combination. That doesn't mean that this was an attempt
+at demonstrating good testing practices.</p>
+<p>For one thing, we wrote our code first, and then attempted to write
+comprehensive tests afterward. In an ideal world, we should probably follow
+<a href="https://en.wikipedia.org/wiki/Test-driven_development" rel="nofollow">test-driven development</a> principles. We should also attempt to be more
+comprehensive in our coverage of error cases.</p>
+<p>Nevertheless, hopefully the examples presented here inspire you to continue
+learning, and improving your testing skills.</p>
+<h2>
+<a id="following-on-from-this-guide" class="anchor" href="#following-on-from-this-guide" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Following on from this guide</h2>
+<p>So now that you've dipped your toes into Phony's API, what's next? Well, I would
+suggest checking out these sections of the <a href=".">Phony documentation</a>:</p>
+<ul>
+<li>
+<a href=".#stubs">Stubs</a> and <a href=".#the-stub-api">The stub API</a>
+</li>
+<li>
+<a href=".#spies">Spies</a> and <a href=".#the-spy-api">The spy API</a>
+</li>
+<li>
+<a href=".#mocks">Mocks</a> and <a href=".#the-top-level-api">The top-level API</a>
+</li>
+<li><a href=".#understanding-verification-output">Understanding verification output</a></li>
+</ul>
+<p>Thanks for reading!</p>
+
+<!-- END content -->
+
+</div>
+
+</div>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/gumshoe/3.1.2/js/gumshoe.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/svg-injector/1.1.3/svg-injector.min.js"></script>
+<script src="../js/phony.js"></script>
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-41826908-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+</body>
+</html>
