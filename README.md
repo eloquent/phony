@@ -3,18 +3,9 @@
 *Mocks, stubs, and spies for PHP.*
 
 [![Current version image][version-image]][current version]
-[![Current build status image][build-image]][current build status]
-[![Current Windows build status image][windows-build-image]][current windows build status]
-[![Current coverage status image][coverage-image]][current coverage status]
 
-[build-image]: https://img.shields.io/travis/eloquent/phony/master.svg?style=flat-square "Current build status for the master branch"
-[coverage-image]: https://img.shields.io/codecov/c/github/eloquent/phony/master.svg?style=flat-square "Current test coverage for the master branch"
-[current build status]: https://travis-ci.org/eloquent/phony
-[current coverage status]: https://codecov.io/github/eloquent/phony
 [current version]: https://packagist.org/packages/eloquent/phony
-[current windows build status]: https://ci.appveyor.com/project/eloquent/phony
 [version-image]: https://img.shields.io/packagist/v/eloquent/phony.svg?style=flat-square "This project uses semantic versioning"
-[windows-build-image]: https://img.shields.io/appveyor/ci/eloquent/phony/master.svg?label=windows&style=flat-square "Current Windows build status for the master branch"
 
 [![Example verification output][verification-video-thumbnail]][verification output video]
 
