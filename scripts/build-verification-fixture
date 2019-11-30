@@ -1,0 +1,60 @@
+#!/usr/bin/env php
+<?php
+
+use Eloquent\Phony\Assertion\Exception\AssertionException;
+use Eloquent\Phony\Test\Phony;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$inputPath = $argv[1];
+$outputPath = $argv[2];
+
+if (!($inputPath && $outputPath)) {
+    error_log('Usage: build-verification-fixture input-path output-path');
+    exit(1);
+}
+
+Phony::setUseColor(true);
+
+try {
+    require $inputPath;
+
+    throw new RuntimeException(
+        'Verification did not throw an exception.'
+    );
+} catch (AssertionException $e) {
+}
+
+file_put_contents($outputPath, visualizeAnsi($e->getMessage()) . "\n");
+
+function visualizeAnsi($data)
+{
+    return preg_replace_callback(
+        '/(\x9B|\x1B\[)([0-?]*[ -\/]*[@-~])/',
+        function ($matches) {
+            if ("\033[" !== $matches[1]) {
+                throw new RuntimeException('Unexpected ANSI sequence.');
+            }
+
+            switch ($matches[2]) {
+                case '0m': return '%RESET%';
+                case '1m': return '%BOLD%';
+                case '2m': return '%FAINT%';
+                case '4m': return '%UNDERLINE%';
+
+                case '31m': return '%RED%';
+                case '32m': return '%GREEN%';
+                case '33m': return '%YELLOW%';
+                case '36m': return '%CYAN%';
+            }
+
+            throw new RuntimeException(
+                sprintf(
+                    'Unexpected ANSI code %s.',
+                    var_export($matches[2], true)
+                )
+            );
+        },
+        $data
+    );
+}

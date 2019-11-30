@@ -1,0 +1,236 @@
+#!/usr/bin/env php
+<?php
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$docPath = $argv[1];
+$workPath = $argv[2];
+
+if (!($docPath && $workPath)) {
+    error_log('Usage: update-gh-pages doc-path work-path');
+    exit(1);
+}
+
+echo "Detecting versions...\n";
+
+const VERSION_PATTERN_SHORT = '/^(\d+)\.(\d+)$/';
+const VERSION_PATTERN_LONG = '/^(\d+)\.(\d+)\.(\d+)$/';
+
+$currentVersion = currentVersion();
+$versions = ['master', $currentVersion];
+
+foreach (scandir($workPath) as $entry) {
+    if (!preg_match(VERSION_PATTERN_SHORT, $entry)) {
+        continue;
+    }
+
+    $entryPath = $workPath . '/' . $entry;
+
+    if (is_dir($entryPath)) {
+        $versions[] = $entry;
+    }
+}
+
+$versions = array_unique($versions);
+usort($versions, 'compareVersions');
+
+$latestVersion = $versions[0];
+
+foreach ($versions as $version) {
+    echo "  - $version";
+
+    if ($version === $latestVersion) {
+        echo ' (latest)';
+    }
+    if ($version === $currentVersion) {
+        echo ' (current)';
+    }
+
+    echo "\n";
+}
+
+echo "Updating latest symlink...\n";
+
+$latestPath = $workPath . '/latest';
+
+if (is_link($latestPath)) {
+    unlink($latestPath);
+}
+
+symlink($latestVersion, $latestPath);
+
+echo "Updating version data...\n";
+
+passthru('mkdir -p ' . escapeshellarg($workPath . '/data'));
+file_put_contents(
+    $workPath . '/data/versions.json',
+    json_encode($versions, JSON_PRETTY_PRINT) . "\n"
+);
+
+echo "Updating assets...\n";
+
+passthru('rm -rf ' . escapeshellarg($workPath . '/css'));
+passthru(
+    'cp -r ' . escapeshellarg($docPath . '/css') . ' ' .
+    escapeshellarg($workPath . '/css')
+);
+passthru('rm -rf ' . escapeshellarg($workPath . '/js'));
+passthru(
+    'cp -r ' . escapeshellarg($docPath . '/js') . ' ' .
+    escapeshellarg($workPath . '/js')
+);
+
+echo "Updating documentation for $currentVersion...\n";
+
+$currentVersionPath = $workPath . '/' . $currentVersion;
+passthru('rm -rf ' . escapeshellarg($currentVersionPath));
+passthru('mkdir -p ' . escapeshellarg($currentVersionPath));
+passthru(
+    'cp -r ' . escapeshellarg($docPath . '/img') . ' ' .
+    escapeshellarg($currentVersionPath . '/img')
+);
+
+$pages = array_map(
+    function ($path) {
+        return basename($path, '.html');
+    },
+    glob($docPath . '/*.html')
+);
+
+foreach ($pages as $page) {
+    if (!is_file("$docPath/$page.html")) {
+        continue;
+    }
+
+    $html = file_get_contents("$docPath/$page.html");
+    $html = strtr(
+        $html,
+        [
+            'data-version="master"' => sprintf(
+                'data-version="%s"',
+                htmlspecialchars($currentVersion)
+            ),
+        ]
+    );
+
+    file_put_contents("$currentVersionPath/$page.html", $html);
+}
+
+echo "Updating headers and footers...\n";
+
+$templatePath = dirname(__DIR__) . '/assets/web';
+$header = file_get_contents($templatePath . '/header.tpl.html') . "\n";
+$footer = "\n\n" . file_get_contents($templatePath . '/footer.tpl.html');
+
+foreach ($versions as $version) {
+    if ($version === $currentVersion) {
+        continue;
+    }
+
+    echo "  - $version\n";
+
+    $versionPath = $workPath . '/' . $version;
+
+    foreach ($pages as $page) {
+        if (!is_file("$versionPath/$page.html")) {
+            continue;
+        }
+
+        echo "    - $page\n";
+
+        $html = file_get_contents("$versionPath/$page.html");
+        $html = preg_replace('/^(.*)(?=<!-- START content -->)/s', $header, $html);
+        $html = preg_replace('/(?<=<!-- END content -->)(.*)$/s', $footer, $html);
+        $html = strtr(
+            $html,
+            [
+                'data-version="master"' => sprintf(
+                    'data-version="%s"',
+                    htmlspecialchars($version)
+                ),
+            ]
+        );
+
+        file_put_contents("$versionPath/$page.html", $html);
+    }
+}
+
+chdir($workPath);
+
+echo "Checking for differences...\n";
+
+exec('git status --porcelain', $output);
+$output = implode("\n", $output) . "\n";
+echo $output;
+
+if ('' === trim($output)) {
+    echo "No website changes detected.\n";
+
+    exit(0);
+}
+
+echo "Committing...\n";
+
+$commitMessage = sprintf(
+    'Automated documentation update for %s.',
+    var_export($currentVersion, true)
+);
+
+passthru('git add -A');
+passthru('git config user.email ' . escapeshellarg('e@lqnt.co'));
+passthru('git config user.name ' . escapeshellarg('Eloquent Software'));
+passthru('git commit -m ' . escapeshellarg($commitMessage));
+
+echo "Done.\n";
+
+function currentVersion() {
+    exec('git describe --exact-match 2>/dev/null', $tagOutput, $tagExitCode);
+
+    if (0 === $tagExitCode) {
+        $tag = $tagOutput[0];
+
+        if (preg_match(VERSION_PATTERN_LONG, $tag, $match)) {
+            return $match[1] . '.' . $match[2];
+        }
+
+        return $tag;
+    }
+
+    exec('git rev-parse --abbrev-ref HEAD 2>/dev/null', $branchOutput, $branchExitCode);
+
+    if (0 !== $branchExitCode) {
+        throw new RuntimeException('No tag or branch information.');
+    }
+
+    return $branchOutput[0];
+}
+
+function compareVersions($left, $right) {
+    preg_match(VERSION_PATTERN_SHORT, $left, $leftMatch);
+    preg_match(VERSION_PATTERN_SHORT, $right, $rightMatch);
+
+    if ($leftMatch) {
+        if (!$rightMatch) {
+            return -1;
+        }
+    } elseif ($rightMatch) {
+        return 1;
+    } elseif ('master' === $left) {
+        return -1;
+    } elseif ('master' === $right) {
+        return 1;
+    } else {
+        return strcmp($left, $right);
+    }
+
+    list(, $leftMajor, $leftMinor) = $leftMatch;
+    list(, $rightMajor, $rightMinor) = $rightMatch;
+
+    $major = intval($rightMajor) - intval($leftMajor);
+
+    if (0 !== $major) {
+        return $major;
+    }
+
+    return intval($rightMinor) - intval($leftMinor);
+}

@@ -1,5 +1,6 @@
 <phpunit
     bootstrap="vendor/autoload.php"
+    cacheResultFile="artifacts/test/phpunit.result.cache"
     colors="true"
     beStrictAboutChangesToGlobalState="true"
     beStrictAboutOutputDuringTests="true"
@@ -13,9 +14,7 @@
     </testsuites>
 
     <logging>
-        <log type="coverage-html" target="coverage" />
-        <log type="coverage-clover" target="coverage/coverage.xml" />
-        <log type="coverage-text" target="coverage/coverage.txt" />
+        <log type="coverage-text" target="php://stdout" showOnlySummary="true" />
     </logging>
 
     <filter>

@@ -1,0 +1,58 @@
+#!/usr/bin/env php
+<?php
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$inputPath = $argv[1];
+$outputPath = $argv[2];
+
+if (!($inputPath && $outputPath)) {
+    error_log('Usage: gfm-to-html input-path output-path');
+    exit(1);
+}
+
+$httpHeaders = "Content-type: text/plain\r\n";
+
+if ($token = getenv('GITHUB_TOKEN')) {
+    $httpHeaders .= "Authorization: token $token\r\n";
+}
+
+$templatePath = dirname(__DIR__) . '/assets/web';
+$header = file_get_contents($templatePath . '/header.tpl.html');
+$footer = file_get_contents($templatePath . '/footer.tpl.html');
+
+$markdownContent = file_get_contents($inputPath);
+$content = strtr(
+    file_get_contents(
+        'https://api.github.com/markdown/raw',
+        false,
+        stream_context_create(
+            [
+                'http' => [
+                    'user_agent' => 'PHP',
+                    'header' => $httpHeaders,
+                    'method' => 'POST',
+                    'content' => $markdownContent,
+                ],
+            ]
+        )
+    ),
+    [
+        'id="user-content-' => 'id="',
+        'name="user-content-' => 'name="',
+    ]
+);
+$content = rtrim($content, "\n");
+
+$output = <<<EOD
+$header
+<!-- START content -->
+
+$content
+
+<!-- END content -->
+
+$footer
+EOD;
+
+file_put_contents($outputPath, $output);

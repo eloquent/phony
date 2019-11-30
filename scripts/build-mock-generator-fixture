@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$inputPath = $argv[1];
+$outputPath = $argv[2];
+
+if (!($inputPath && $outputPath)) {
+    error_log('Usage: build-mock-generator-fixture input-path output-path');
+    exit(1);
+}
+
+$factory = MockBuilderFactory::instance();
+
+require $inputPath;
+
+file_put_contents($outputPath, "<?php\n\n" . $builder->source());

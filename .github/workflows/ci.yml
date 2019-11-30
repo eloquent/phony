@@ -1,0 +1,36 @@
+name: CI
+on:
+  push:
+  pull_request:
+  schedule:
+  - cron: 0 14 * * 0 # Sunday 2PM UTC = Monday 12AM AEST
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.2', '7.3', '7.4']
+    name: PHP ${{ matrix.php }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Set up PHP
+      uses: shivammathur/setup-php@master
+      with:
+        php-version: ${{ matrix.php }}
+        extension-csv: mbstring
+        coverage: none
+    - name: Check PHP version
+      run: php -v
+    - name: Install dependencies
+      run: make vendor
+    - name: Make
+      run: make ci
+    - name: Upload coverage reports
+      if: success()
+      run: |
+        test ! -z "$TOKEN"
+        bash <(curl -s https://codecov.io/bash) -t "$TOKEN" -B "${{ github.ref }}"
+      env:
+        TOKEN: "${{ secrets.CODECOV_TOKEN }}"

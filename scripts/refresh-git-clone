@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [[ -z "$1" ]]; then
+  >&2 echo "Usage: refresh-git-clone clone-path"
+  exit 1
+fi
+
+cd "$1"
+
+git reset --hard origin/gh-pages
+git checkout .
+git clean -fdx
+git pull --rebase
