@@ -7,7 +7,7 @@ if (false !== strpos($file, '.')) {
     return false;
 }
 
-$content = @file_get_contents(__DIR__ . '/../../web/' . $path . '.html');
+$content = @file_get_contents($_SERVER['DOCUMENT_ROOT'] . $path . '.html');
 
 if (false === $content) {
     return false;
