@@ -196,6 +196,12 @@ function currentVersion() {
         return $tag;
     }
 
+    if ($ref = getenv('GITHUB_REF')) {
+        $parts = explode('/', $ref);
+
+        return $parts[count($parts) - 1];
+    }
+
     exec('git rev-parse --abbrev-ref HEAD 2>/dev/null', $branchOutput, $branchExitCode);
 
     if (0 !== $branchExitCode) {
