@@ -78,7 +78,7 @@ artifacts/build/gh-pages: artifacts/build/doc artifacts/build/gh-pages-clone ven
 	scripts/update-gh-pages "$<" "$@"
 
 artifacts/build/gh-pages-clone:
-	$(eval GIT_URL := $(if $(GITHUB_TOKEN),https://$(GITHUB_TOKEN):x-oauth-basic@github.com/eloquent/phony.git,https://github.com/eloquent/phony.git))
+	$(eval GIT_URL := $(if $(DOC_GITHUB_TOKEN),https://$(DOC_GITHUB_TOKEN):x-oauth-basic@github.com/eloquent/phony.git,https://github.com/eloquent/phony.git))
 	git clone -b gh-pages --single-branch --depth 1 "$(GIT_URL)" "$@"
 
 artifacts/test/edge-cases.touch: $(PHP_PHPUNIT_REQ) $(_PHP_PHPUNIT_REQ)
