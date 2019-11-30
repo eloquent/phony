@@ -22,6 +22,9 @@ jobs:
       run: make vendor
     - name: Run tests
       run: make ci
+    - name: Build documentation
+      if: success()
+      run: make artifacts/build/gh-pages
     - name: Publish documentation
       if: success()
       uses: ad-m/github-push-action@master
