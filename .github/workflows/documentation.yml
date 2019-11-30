@@ -29,6 +29,6 @@ jobs:
       if: success()
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.DOC_GITHUB_TOKEN }}
         branch: gh-pages
         directory: artifacts/build/gh-pages
