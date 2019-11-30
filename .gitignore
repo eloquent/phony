@@ -1,9 +1,4 @@
-/build/
-/coverage/
-/doc/*.html
-/vendor/
-/web/
-/.php_cs.cache
-/.phpunit.result.cache
+/.makefiles/
+/artifacts/
 /composer.lock
-/README.html
+/vendor/

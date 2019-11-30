@@ -8540,7 +8540,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [github issue]: https://github.com/eloquent/phony/issues
 [global function fallback]: http://php.net/language.namespaces.fallback
 [hamcrest]: https://github.com/hamcrest/hamcrest-php
-[isolator]: https://github.com/IcecaveStudios/isolator
+[isolator]: https://github.com/icecave/isolator
 [kahlan argument matchers]: https://kahlan.github.io/docs/matchers.html#argument
 [kahlan]: https://kahlan.github.io/docs/
 [liberator]: https://github.com/eloquent/liberator

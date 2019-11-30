@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+
+use Eloquent\Phony\Hook\FunctionHookGenerator;
+use Eloquent\Phony\Invocation\InvocableInspector;
+use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$inputPath = $argv[1];
+$outputPath = $argv[2];
+
+if (!($inputPath && $outputPath)) {
+    error_log('Usage: build-hook-generator-fixture input-path output-path');
+    exit(1);
+}
+
+$invocableInspector = InvocableInspector::instance();
+$signatureInspector = FunctionSignatureInspector::instance();
+$hookGenerator = FunctionHookGenerator::instance();
+
+require $inputPath;
+
+$signature = $signatureInspector
+    ->signature($invocableInspector->callbackReflector($callback));
+$source = $hookGenerator->generateHook($functionName, $namespace, $signature);
+
+file_put_contents($outputPath, "<?php\n\n" . $source);

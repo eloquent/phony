@@ -4,12 +4,11 @@
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Test\Phony;
 
-$rootPath = dirname(__DIR__);
-require $rootPath . '/vendor/autoload.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
 
 Phony::setUseColor(true);
 
-$fixturePath = $rootPath . '/test/fixture/verification';
+$fixturePath = dirname(__DIR__) . '/test/fixture/verification';
 $verifications = [];
 
 foreach (scandir($fixturePath) as $verification) {

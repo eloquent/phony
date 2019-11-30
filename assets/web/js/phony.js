@@ -56,8 +56,6 @@ var run = function () {
                 versionItem.appendChild(version);
                 versionList.appendChild(versionItem);
             }
-
-            gumshoe.setDistances();
         };
 
         request.open('GET', '../data/versions.json', true);
@@ -122,33 +120,14 @@ var run = function () {
         tocListElementCopy.querySelector('li')
     );
 
-    var activateTocHeading = function (data) {
-        var activeElements = tocScrollElement.querySelectorAll('.active');
-
-        for (var i = 0; i < activeElements.length; ++i) {
-            activeElements[i].classList.remove('active');
-        }
-
-        if (!data) {
+    var activateTocHeading = function (event) {
+        if (!event) {
             tocScrollElement.scrollTop = 0;
 
             return;
         }
 
-        var end = data.parent;
-        var node = end;
-        node.classList.add('active');
-
-        while (
-            node.parentNode &&
-            node.parentNode.parentNode &&
-            'LI' == node.parentNode.parentNode.tagName
-        ) {
-            node = node.parentNode.parentNode;
-
-            node.classList.add('active');
-        }
-
+        var end = event.target;
         var tocHeight = tocScrollElement.clientHeight;
         var endOffset = end.offsetTop;
 
@@ -159,8 +138,6 @@ var run = function () {
 
     var redrawToc = function () {
         tocElement.style.marginLeft = (870 - document.body.scrollLeft) + 'px';
-
-        gumshoe.setDistances();
     };
 
     var tocShowElement = document.getElementById('toc-show');
@@ -170,16 +147,12 @@ var run = function () {
         tocShowElement.style.display = 'none';
         tocHideElement.style.display = 'inline';
         tocListElement.style.display = 'block';
-
-        gumshoe.setDistances();
     };
 
     var hideToc = function () {
         tocHideElement.style.display = 'none';
         tocShowElement.style.display = 'inline';
         tocListElement.style.display = 'none';
-
-        gumshoe.setDistances();
     };
 
     var documentTitle = mainHeading.innerText;
@@ -275,8 +248,6 @@ var run = function () {
                 hash = window.location.hash;
                 window.location.hash = '#';
                 window.location.hash = hash;
-
-                gumshoe.setDistances();
             }
         );
     };
@@ -290,13 +261,17 @@ var run = function () {
     });
     tocHideElement.addEventListener('click', hideToc);
 
-    gumshoe.init(
+    new Gumshoe(
+        '#toc-scroll > ul a',
         {
-            selector: '#toc-scroll > ul a',
+            nested: true,
             offset: 30,
-            callback: activateTocHeading
+            reflow: true,
         }
     );
+
+    document.addEventListener('gumshoeActivate', activateTocHeading)
+
     fetchVersions();
     dispatch();
     upgradeSvg();

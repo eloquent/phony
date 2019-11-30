@@ -610,19 +610,24 @@ class FunctionalTest extends TestCase
         $this->assertInstanceOf(Exception::class, $exception);
         $this->assertSame(__FILE__, $exception->getFile());
         $this->assertSame($line, $exception->getLine());
-        $this->assertSame(
-            [
-                [
-                    'file' => __FILE__,
-                    'line' => $line,
-                    'function' => 'called',
-                    'class' => SpyVerifier::class,
-                    'type' => '->',
-                    'args' => [],
-                ],
-            ],
-            $exception->getTrace()
-        );
+
+        $trace = $exception->getTrace();
+
+        $this->assertIsArray($trace);
+        $this->assertArrayHasKey(0, $trace);
+
+        $entry = $trace[0];
+
+        $this->assertIsArray($entry);
+        $this->assertSame(SpyVerifier::class, $entry['class']);
+        $this->assertSame('called', $entry['function']);
+        $this->assertSame(__FILE__, $entry['file']);
+        $this->assertSame($line, $entry['line']);
+        $this->assertSame('->', $entry['type']);
+
+        if (array_key_exists('args', $entry)) {
+            $this->assertSame([], $entry['args']);
+        }
     }
 
     public function testAssertionExceptionTrimmingWithEmptyTrace()
@@ -1211,28 +1216,28 @@ class FunctionalTest extends TestCase
             'float'          => [1.11,                          '1.110000e+0'],
             'float string'   => ['1.11',                        '"1.11"'],
             'string'         => ["a\nb",                        '"a\nb"'],
-            'resource'       => [STDIN,                         'resource#1'],
-            'sequence'       => [$sequence,                     '#0[1, 2]'],
-            'map'            => [['a' => 1, 'b' => 2],          '#0["a": 1, "b": 2]'],
-            'generic object' => [(object) ['a' => 1, 'b' => 2], '#0{a: 1, b: 2}'],
-            'object'         => [new ClassA(),                  'ClassA#0{}'],
+            'resource'       => [STDIN,                         'resource#%d'],
+            'sequence'       => [$sequence,                     '#%d[1, 2]'],
+            'map'            => [['a' => 1, 'b' => 2],          '#%d["a": 1, "b": 2]'],
+            'generic object' => [(object) ['a' => 1, 'b' => 2], '#%d{a: 1, b: 2}'],
+            'object'         => [new ClassA(),                  'ClassA#%d{}'],
 
             // Export identifiers and references
-            'repeated sequence'       => [$repeatedSequences, '#0[#1[1, 2], &1[]]'],
-            'repeated generic object' => [$repeatedObjects,   '#0{b: #1{a: 1}, c: &1{}}'],
+            'repeated sequence'       => [$repeatedSequences, '#%d[#%d[1, 2], &%d[]]'],
+            'repeated generic object' => [$repeatedObjects,   '#%d{b: #%d{a: 1}, c: &%d{}}'],
 
             // Export reference types
-            'identifier collision' => [$identifierCollision, '#0[#0{}, #1[#1{}]]'],
+            'identifier collision' => [$identifierCollision, '#%d[#%d{}, #%d[#%d{}]]'],
 
             // Export reference exclusions
-            'class name exclusion' => [$classNameExclusion, '#0{a: ClassA#1{c: "d"}, b: &1{}}'],
+            'class name exclusion' => [$classNameExclusion, '#%d{a: ClassA#%d{c: "d"}, b: &%d{}}'],
 
             // Exporting closures
-            'closure' => [function () {}, 'Closure#0{}[FunctionalTest.php:' . __LINE__ . ']'],
+            'closure' => [function () {}, 'Closure#%d{}[FunctionalTest.php:' . __LINE__ . ']'],
 
             // Exporting exceptions
-            'exception'           => [new Exception('a', 1, new Exception()), 'Exception#0{message: "a", code: 1, previous: Exception#1{}}'],
-            'exception defaulted' => [new RuntimeException(),                 'RuntimeException#0{}'],
+            'exception'           => [new Exception('a', 1, new Exception()), 'Exception#%d{message: "a", code: 1, previous: Exception#%d{}}'],
+            'exception defaulted' => [new RuntimeException(),                 'RuntimeException#%d{}'],
         ];
     }
 
@@ -1243,29 +1248,21 @@ class FunctionalTest extends TestCase
     {
         $this->exporter->reset();
 
-        $this->assertSame($expected, $this->exporter->export($value, -1));
+        $this->assertStringMatchesFormat($expected, $this->exporter->export($value, -1));
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesRepeatedWrappers()
     {
         $inner = mock(ClassA::class)->setLabel('mock-label');
         $value = [$inner, $inner];
         $this->exporter->reset();
 
-        $this->assertSame(
-            '#0[handle#0(PhonyMock_ClassA_0#1{}[mock-label]), &0()]',
+        $this->assertStringMatchesFormat(
+            '#%d[handle#%d(PhonyMock_ClassA_%d#%d{}[mock-label]), &%d()]',
             $this->exporter->export($value, -1)
         );
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesReferenceTypes()
     {
         $array = [];
@@ -1276,28 +1273,26 @@ class FunctionalTest extends TestCase
         $valueC = [$wrapper, $wrapper];
         $this->exporter->reset();
 
-        $this->assertSame('#0[#1[], &1[]]', $this->exporter->export($valueA, -1));
-        $this->assertSame('#0[#0{}, &0{}]', $this->exporter->export($valueB, -1));
-        $this->assertSame('#0[spy#1(implode)[spy-label], &1()]', $this->exporter->export($valueC, -1));
+        $this->assertStringMatchesFormat('#%d[#%d[], &%d[]]', $this->exporter->export($valueA, -1));
+        $this->assertStringMatchesFormat('#%d[#%d{}, &%d{}]', $this->exporter->export($valueB, -1));
+        $this->assertStringMatchesFormat(
+            '#%d[spy#%d(implode)[spy-label], &%d()]',
+            $this->exporter->export($valueC, -1)
+        );
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesExcludeWrapperValue()
     {
         $inner = mock();
         $value = [$inner, $inner];
         $this->exporter->reset();
 
-        $this->assertSame('#0[handle#0(PhonyMock_0#1{}[0]), &0()]', $this->exporter->export($value, -1));
+        $this->assertStringMatchesFormat(
+            '#%d[handle#%d(PhonyMock_%d#%d{}[%d]), &%d()]',
+            $this->exporter->export($value, -1)
+        );
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesIdentifierPersistenceObjects()
     {
         $a = (object) [];
@@ -1307,14 +1302,16 @@ class FunctionalTest extends TestCase
         $valueB = [$b, $a, $b, $c];
         $this->exporter->reset();
 
-        $this->assertSame('#0[#0{}, #1{}, handle#2(PhonyMock_0#3{}[0]), &0{}]', $this->exporter->export($valueA, -1));
-        $this->assertSame('#0[#1{}, #0{}, &1{}, handle#2(PhonyMock_0#3{}[0])]', $this->exporter->export($valueB, -1));
+        $this->assertStringMatchesFormat(
+            '#%d[#%d{}, #%d{}, handle#%d(PhonyMock_%d#%d{}[%d]), &%d{}]',
+            $this->exporter->export($valueA, -1)
+        );
+        $this->assertStringMatchesFormat(
+            '#%d[#%d{}, #%d{}, &%d{}, handle#%d(PhonyMock_%d#%d{}[%d])]',
+            $this->exporter->export($valueB, -1)
+        );
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesIdentifierPersistenceArrays()
     {
         $a = [];
@@ -1323,14 +1320,10 @@ class FunctionalTest extends TestCase
         $valueB = [&$b, &$a, &$b];
         $this->exporter->reset();
 
-        $this->assertSame('#0[#1[], #2[], &1[]]', $this->exporter->export($valueA, -1));
-        $this->assertSame('#0[#1[], #2[], &1[]]', $this->exporter->export($valueB, -1));
+        $this->assertStringMatchesFormat('#%d[#%d[], #%d[], &%d[]]', $this->exporter->export($valueA, -1));
+        $this->assertStringMatchesFormat('#%d[#%d[], #%d[], &%d[]]', $this->exporter->export($valueB, -1));
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesRecursiveValues()
     {
         $recursiveArray = [];
@@ -1339,65 +1332,51 @@ class FunctionalTest extends TestCase
         $recursiveObject->a = $recursiveObject;
         $this->exporter->reset();
 
-        $this->assertSame('#0[&0[]]', $this->exporter->export($recursiveArray, -1));
-        $this->assertSame('#0{a: &0{}}', $this->exporter->export($recursiveObject, -1));
+        $this->assertStringMatchesFormat('#%d[&%d[]]', $this->exporter->export($recursiveArray, -1));
+        $this->assertStringMatchesFormat('#%d{a: &%d{}}', $this->exporter->export($recursiveObject, -1));
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesMocks()
     {
         $handle = mock(ClassA::class)->setLabel('mock-label');
         $mock = $handle->get();
         $this->exporter->reset();
 
-        $this->assertSame('PhonyMock_ClassA_0#0{}[mock-label]', $this->exporter->export($mock, -1));
-        $this->assertSame('handle#1(PhonyMock_ClassA_0#0{}[mock-label])', $this->exporter->export($handle, -1));
+        $this->assertStringMatchesFormat('PhonyMock_ClassA_%d#%d{}[mock-label]', $this->exporter->export($mock, -1));
+        $this->assertStringMatchesFormat(
+            'handle#%d(PhonyMock_ClassA_%d#%d{}[mock-label])',
+            $this->exporter->export($handle, -1)
+        );
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesStaticHandle()
     {
         $handle = mock(ClassA::class)->setLabel('mock-label');
         $staticHandle = onStatic($handle);
         $this->exporter->reset();
 
-        $this->assertSame('static-handle#0(PhonyMock_ClassA_0)', $this->exporter->export($staticHandle, -1));
+        $this->assertStringMatchesFormat(
+            'static-handle#%d(PhonyMock_ClassA_%d)',
+            $this->exporter->export($staticHandle, -1)
+        );
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesStubs()
     {
         $stub = stub('implode')->setLabel('stub-label');
         $this->exporter->reset();
 
-        $this->assertSame('stub#0(implode)[stub-label]', $this->exporter->export($stub, -1));
+        $this->assertStringMatchesFormat('stub#%d(implode)[stub-label]', $this->exporter->export($stub, -1));
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesAnonymousStubs()
     {
         $stub = stub()->setLabel('stub-label');
         $this->exporter->reset();
 
-        $this->assertSame('stub#0[stub-label]', $this->exporter->export($stub, -1));
+        $this->assertStringMatchesFormat('stub#%d[stub-label]', $this->exporter->export($stub, -1));
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesMockStubs()
     {
         $handle = mock(ClassA::class)->setLabel('mock-label');
@@ -1406,38 +1385,32 @@ class FunctionalTest extends TestCase
         $stubB = $staticHandle->staticMethodA->setLabel('stub-label');
         $this->exporter->reset();
 
-        $this->assertSame('stub#0(ClassA[mock-label]->methodA)[stub-label]', $this->exporter->export($stubA, -1));
-        $this->assertSame('stub#1(ClassA::staticMethodA)[stub-label]', $this->exporter->export($stubB, -1));
+        $this->assertStringMatchesFormat(
+            'stub#%d(ClassA[mock-label]->methodA)[stub-label]',
+            $this->exporter->export($stubA, -1)
+        );
+        $this->assertStringMatchesFormat(
+            'stub#%d(ClassA::staticMethodA)[stub-label]',
+            $this->exporter->export($stubB, -1)
+        );
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesSpies()
     {
         $spy = spy('implode')->setLabel('spy-label');
         $this->exporter->reset();
 
-        $this->assertSame('spy#0(implode)[spy-label]', $this->exporter->export($spy, -1));
+        $this->assertStringMatchesFormat('spy#%d(implode)[spy-label]', $this->exporter->export($spy, -1));
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesAnonymousSpies()
     {
         $spy = spy()->setLabel('spy-label');
         $this->exporter->reset();
 
-        $this->assertSame('spy#0[spy-label]', $this->exporter->export($spy, -1));
+        $this->assertStringMatchesFormat('spy#%d[spy-label]', $this->exporter->export($spy, -1));
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testExporterExamplesMethodSpies()
     {
         $object = new ClassA();
@@ -1445,8 +1418,11 @@ class FunctionalTest extends TestCase
         $spyB = spy([ClassA::class, 'staticMethodA'])->setLabel('spy-label');
         $this->exporter->reset();
 
-        $this->assertSame('spy#0(ClassA->methodA)[spy-label]', $this->exporter->export($spyA, -1));
-        $this->assertSame('spy#1(ClassA::staticMethodA)[spy-label]', $this->exporter->export($spyB, -1));
+        $this->assertStringMatchesFormat('spy#%d(ClassA->methodA)[spy-label]', $this->exporter->export($spyA, -1));
+        $this->assertStringMatchesFormat(
+            'spy#%d(ClassA::staticMethodA)[spy-label]',
+            $this->exporter->export($spyB, -1)
+        );
     }
 
     public function testExporterExamplesExportDepth()
@@ -1455,8 +1431,8 @@ class FunctionalTest extends TestCase
         $valueB = [(object) [], (object) ['a', 'b', 'c']];
         $this->exporter->reset();
 
-        $this->assertSame('#0[#1[], #2[~3]]', $this->exporter->export($valueA));
-        $this->assertSame('#0[#0{}, #1{~3}]', $this->exporter->export($valueB));
+        $this->assertStringMatchesFormat('#%d[#%d[], #%d[~3]]', $this->exporter->export($valueA));
+        $this->assertStringMatchesFormat('#%d[#%d{}, #%d{~3}]', $this->exporter->export($valueB));
     }
 
     public function testReturnsVariadic()
@@ -1478,7 +1454,7 @@ class FunctionalTest extends TestCase
         var_dump($handle, $static, $mock);
         $output = ob_get_clean();
 
-        $this->assertLessThan(800, strlen($output));
+        $this->assertLessThan(800, strlen($output), 'Mock dumping produced excessive output: ' . $output);
     }
 
     public function testStubDumping()
@@ -1489,7 +1465,7 @@ class FunctionalTest extends TestCase
         var_dump($stub);
         $output = ob_get_clean();
 
-        $this->assertLessThan(200, strlen($output));
+        $this->assertLessThan(200, strlen($output), 'Stub dumping produced excessive output: ' . $output);
     }
 
     public function testSpyDumping()
@@ -1500,7 +1476,7 @@ class FunctionalTest extends TestCase
         var_dump($spy);
         $output = ob_get_clean();
 
-        $this->assertLessThan(200, strlen($output));
+        $this->assertLessThan(200, strlen($output), 'Spy dumping produced excessive output: ' . $output);
     }
 
     public function testFinalReturnValueWithStub()

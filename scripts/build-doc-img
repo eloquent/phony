@@ -4,19 +4,19 @@
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Test\Phony;
 
-$rootPath = dirname(__DIR__);
-require $rootPath . '/vendor/autoload.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$inputPath = $argv[1];
+$outputPath = $argv[2];
+
+if (!($inputPath && $outputPath)) {
+    error_log('Usage: build-doc-img input-path output-path');
+    exit(1);
+}
 
 Phony::setUseColor(true);
 
-echo 'Generating images for documentation... ';
-
-$fixturePath = $rootPath . '/test/fixture/verification';
-$docImgPath = $rootPath . '/doc/img/verification';
-$templatePath = $rootPath . '/assets/svg';
-
-exec('rm -rf ' . escapeshellarg($docImgPath));
-
+$templatePath = dirname(__DIR__) . '/assets/svg';
 $template = file_get_contents($templatePath . '/verification.tpl.svg');
 $lineTemplate = file_get_contents($templatePath . '/verification-line.tpl.svg');
 $spanTemplate = rtrim(
@@ -35,203 +35,168 @@ const ATOM_NEWLINE = 1;
 const ATOM_ANSI = 2;
 const ATOM_TEXT = 3;
 
-$verifications = [];
+try {
+    require $inputPath;
 
-foreach (scandir($fixturePath) as $verification) {
-    if ('.' === $verification[0]) {
+    throw new RuntimeException('Verification did not throw an exception.');
+} catch (AssertionException $e) {
+}
+
+$atoms = preg_split($splitPattern, $e->getMessage(), -1, $splitFlags);
+$tokens = [];
+
+foreach ($atoms as $atom) {
+    if ("\n" === $atom) {
+        $tokens[] = [ATOM_NEWLINE, ''];
+    } elseif (preg_match($ansiSequencePattern, $atom)) {
+        $tokens[] = [ATOM_ANSI, $atom];
+    } else {
+        $tokens[] = [ATOM_TEXT, $atom];
+    }
+}
+
+$tokens[] = [ATOM_NEWLINE, ''];
+
+$weight = '';
+$previousWeight = '';
+$color = '';
+$previousColor = '';
+$decoration = '';
+$previousDecoration = '';
+$text = '';
+$line = '';
+$lines = [];
+$y = 12;
+
+foreach ($tokens as $token) {
+    list($type, $content) = $token;
+
+    if (ATOM_ANSI === $type) {
+        preg_match_all($ansiPattern, $content, $matches, $ansiFlags);
+
+        foreach ($matches as $match) {
+            list($match, $prefix, $code) = $match;
+
+            switch ($code) {
+                case '0m':
+                    $weight = '';
+                    $color = '';
+                    $decoration = '';
+
+                    break;
+
+                case '1m':
+                    $weight = 'bold';
+
+                    break;
+
+                case '2m':
+                    $weight = 'faint';
+
+                    break;
+
+                case '4m':
+                    $decoration = 'underline';
+
+                    break;
+
+                case '31m':
+                    $color = 'red';
+
+                    break;
+
+                case '32m':
+                    $color = 'green';
+
+                    break;
+
+                case '33m':
+                    $color = 'yellow';
+
+                    break;
+
+                case '36m':
+                    $color = 'cyan';
+
+                    break;
+
+                default:
+                    throw new RuntimeException(
+                        sprintf(
+                            'Unexpected ANSI code %s.',
+                            var_export($code, true)
+                        )
+                    );
+            }
+        }
+
         continue;
     }
 
-    $verificationPath = $fixturePath . '/' . $verification;
+    if (
+        $weight !== $previousWeight ||
+        $color !== $previousColor ||
+        $decoration !== $previousDecoration
+    ) {
+        if ('' !== $text) {
+            $class = [];
 
-    foreach (scandir($verificationPath) as $testName) {
-        if ('.' === $testName[0]) {
-            continue;
-        }
-
-        $testPath = $verificationPath . '/' . $testName;
-
-        if (is_dir($testPath)) {
-            $verifications[] = $verification . '/' . $testName;
-        }
-    }
-}
-
-foreach ($verifications as $verification) {
-    $verificationPath =
-        $fixturePath . '/' . $verification . '/verification.php';
-    Phony::reset();
-
-    try {
-        require $verificationPath;
-
-        throw new RuntimeException('Verification did not throw an exception.');
-    } catch (AssertionException $e) {
-        $output = $e->getMessage();
-    }
-
-    $atoms = preg_split($splitPattern, $output, -1, $splitFlags);
-    $tokens = [];
-
-    foreach ($atoms as $atom) {
-        if ("\n" === $atom) {
-            $tokens[] = [ATOM_NEWLINE, ''];
-        } elseif (preg_match($ansiSequencePattern, $atom)) {
-            $tokens[] = [ATOM_ANSI, $atom];
-        } else {
-            $tokens[] = [ATOM_TEXT, $atom];
-        }
-    }
-
-    $tokens[] = [ATOM_NEWLINE, ''];
-
-    $weight = '';
-    $previousWeight = '';
-    $color = '';
-    $previousColor = '';
-    $decoration = '';
-    $previousDecoration = '';
-    $text = '';
-    $line = '';
-    $lines = [];
-    $y = 12;
-
-    foreach ($tokens as $token) {
-        list($type, $content) = $token;
-
-        if (ATOM_ANSI === $type) {
-            preg_match_all($ansiPattern, $content, $matches, $ansiFlags);
-
-            foreach ($matches as $match) {
-                list($match, $prefix, $code) = $match;
-
-                switch ($code) {
-                    case '0m':
-                        $weight = '';
-                        $color = '';
-                        $decoration = '';
-
-                        break;
-
-                    case '1m':
-                        $weight = 'bold';
-
-                        break;
-
-                    case '2m':
-                        $weight = 'faint';
-
-                        break;
-
-                    case '4m':
-                        $decoration = 'underline';
-
-                        break;
-
-                    case '31m':
-                        $color = 'red';
-
-                        break;
-
-                    case '32m':
-                        $color = 'green';
-
-                        break;
-
-                    case '33m':
-                        $color = 'yellow';
-
-                        break;
-
-                    case '36m':
-                        $color = 'cyan';
-
-                        break;
-
-                    default:
-                        throw new RuntimeException(
-                            sprintf(
-                                'Unexpected ANSI code %s.',
-                                var_export($code, true)
-                            )
-                        );
-                }
+            if ($previousWeight) {
+                $class[] = $previousWeight;
             }
 
-            continue;
-        }
-
-        if (
-            $weight !== $previousWeight ||
-            $color !== $previousColor ||
-            $decoration !== $previousDecoration
-        ) {
-            if ('' !== $text) {
-                $class = [];
-
-                if ($previousWeight) {
-                    $class[] = $previousWeight;
-                }
-
-                if ($previousColor) {
-                    $class[] = $previousColor;
-                }
-
-                if ($previousDecoration) {
-                    $class[] = $previousDecoration;
-                }
-
-                $class = implode(' ', $class);
-
-                if ($class) {
-                    $attributes = sprintf(
-                        ' class="%s"',
-                        htmlspecialchars($class)
-                    );
-
-                    $line .= strtr(
-                        $spanTemplate,
-                        [
-                            '{attributes}' => $attributes,
-                            '{content}' => htmlspecialchars($text),
-                        ]
-                    );
-                } else {
-                    $line .= htmlspecialchars($text);
-                }
-
-                $text = '';
+            if ($previousColor) {
+                $class[] = $previousColor;
             }
 
-            $previousWeight = $weight;
-            $previousColor = $color;
-            $previousDecoration = $decoration;
-        }
+            if ($previousDecoration) {
+                $class[] = $previousDecoration;
+            }
 
-        if (ATOM_NEWLINE === $type) {
-            $line .= htmlspecialchars($text);
+            $class = implode(' ', $class);
+
+            if ($class) {
+                $attributes = sprintf(
+                    ' class="%s"',
+                    htmlspecialchars($class)
+                );
+
+                $line .= strtr(
+                    $spanTemplate,
+                    [
+                        '{attributes}' => $attributes,
+                        '{content}' => htmlspecialchars($text),
+                    ]
+                );
+            } else {
+                $line .= htmlspecialchars($text);
+            }
+
             $text = '';
-            $y += 16;
-            $lines[] =
-                strtr($lineTemplate, ['{y}' => $y, '{content}' => $line]);
-            $line = '';
-        } else {
-            $text .= $content;
         }
+
+        $previousWeight = $weight;
+        $previousColor = $color;
+        $previousDecoration = $decoration;
     }
 
-    $y += 20;
-
-    $svgPath = $docImgPath . '/' . $verification . '.svg';
-
-    exec('mkdir -p ' . escapeshellarg(dirname($svgPath)));
-    file_put_contents(
-        $svgPath,
-        strtr(
-            $template,
-            ['{height}' => $y, '{content}' => implode($lines)]
-        )
-    );
+    if (ATOM_NEWLINE === $type) {
+        $line .= htmlspecialchars($text);
+        $text = '';
+        $y += 16;
+        $lines[] =
+            strtr($lineTemplate, ['{y}' => $y, '{content}' => $line]);
+        $line = '';
+    } else {
+        $text .= $content;
+    }
 }
 
-echo "done.\n";
+$y += 20;
+
+$output = strtr(
+    $template,
+    ['{height}' => $y, '{content}' => implode($lines)]
+);
+
+file_put_contents($outputPath, $output);
