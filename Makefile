@@ -37,10 +37,6 @@ doc: artifacts/build/gh-pages
 doc-open:
 	open http://localhost:8080/
 
-.PHONY: doc-publish
-doc-publish: artifacts/build/gh-pages
-	cd "$<" && git push origin gh-pages:gh-pages
-
 .PHONY: doc-serve
 doc-serve: artifacts/build/gh-pages
 	php -S 0.0.0.0:8080 -t "$<" assets/router.php
@@ -78,8 +74,7 @@ artifacts/build/gh-pages: artifacts/build/doc artifacts/build/gh-pages-clone ven
 	scripts/update-gh-pages "$<" "$@"
 
 artifacts/build/gh-pages-clone:
-	$(eval GIT_URL := $(if $(DOC_GITHUB_TOKEN),https://$(DOC_GITHUB_TOKEN):x-oauth-basic@github.com/eloquent/phony.git,https://github.com/eloquent/phony.git))
-	git clone -b gh-pages --single-branch --depth 1 "$(GIT_URL)" "$@"
+	git clone -b gh-pages --single-branch --depth 1 https://github.com/eloquent/phony.git "$@"
 
 artifacts/test/edge-cases.touch: $(PHP_PHPUNIT_REQ) $(_PHP_PHPUNIT_REQ)
 	php $(_PHP_PHPUNIT_RUNTIME_ARGS) vendor/bin/phpunit $(_PHP_PHPUNIT_ARGS) --no-coverage test/suite-edge-cases

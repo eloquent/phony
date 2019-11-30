@@ -24,6 +24,8 @@ jobs:
       run: make ci
     - name: Publish documentation
       if: success()
-      run: make doc-publish
-      env:
-        DOC_GITHUB_TOKEN: "${{ secrets.DOC_GITHUB_TOKEN }}"
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
+        directory: artifacts/build/gh-pages
