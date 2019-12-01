@@ -22,7 +22,7 @@ var run = function () {
             var versions = JSON.parse(request.responseText);
             var currentVersion = document.body.getAttribute('data-version');
             var versionList = document.getElementById('versions');
-            var isLatest = window.location.pathname.match(/\/latest\/$/);
+            var isLatest = window.location.pathname.match(/\/latest\//);
 
             var latestItem = document.createElement('li');
             var latest = document.createElement('a');
