@@ -37,6 +37,10 @@ doc: artifacts/build/gh-pages
 doc-open:
 	open http://localhost:8080/
 
+.PHONY: doc-publish
+doc-publish: artifacts/build/gh-pages
+	scripts/publish-doc "$<"
+
 .PHONY: doc-serve
 doc-serve: artifacts/build/gh-pages
 	php -S 0.0.0.0:8080 -t "$<" assets/router.php
