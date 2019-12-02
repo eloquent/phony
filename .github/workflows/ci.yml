@@ -20,7 +20,7 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         extension-csv: amqp, mbstring
-        coverage: none
+        coverage: pcov
     - name: Check PHP version
       run: php -v
     - name: Install dependencies
