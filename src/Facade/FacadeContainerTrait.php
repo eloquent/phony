@@ -69,17 +69,14 @@ trait FacadeContainerTrait
             $objectIdSequence,
             $invocableInspector
         );
-        $featureDetector = new FeatureDetector();
         $invoker = new Invoker();
         $matcherVerifier = new MatcherVerifier();
-        $functionSignatureInspector =
-            new FunctionSignatureInspector($featureDetector);
+        $functionSignatureInspector = new FunctionSignatureInspector();
         $mockClassLabelSequence = Sequencer::sequence('mock-class-label');
         $sequences[] = $mockClassLabelSequence;
         $mockGenerator = new MockGenerator(
             $mockClassLabelSequence,
-            $functionSignatureInspector,
-            $featureDetector
+            $functionSignatureInspector
         );
         $wildcardMatcher = new WildcardMatcher(
             $anyMatcher,
@@ -92,9 +89,7 @@ trait FacadeContainerTrait
             $exporter
         );
         $matcherFactory->addMatcherDriver(new HamcrestMatcherDriver());
-        $emptyValueFactory = new EmptyValueFactory(
-            $featureDetector
-        );
+        $emptyValueFactory = new EmptyValueFactory();
         $generatorAnswerBuilderFactory = new GeneratorAnswerBuilderFactory(
             $invocableInspector,
             $invoker
@@ -137,6 +132,7 @@ trait FacadeContainerTrait
             $generatorSpyFactory,
             $iterableSpyFactory
         );
+        $featureDetector = new FeatureDetector();
         $differenceEngine = new DifferenceEngine(
             $featureDetector
         );

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Reflection;
 
 use Eloquent\Phony\Reflection\Exception\UndefinedFeatureException;
-use ReflectionException;
-use ReflectionFunction;
 
 /**
  * Detects support for language features in the current runtime environment.
@@ -128,21 +126,6 @@ class FeatureDetector
                 // @codeCoverageIgnoreEnd
 
                 return function_exists('posix_isatty') && @posix_isatty(STDOUT);
-            },
-
-            'type.object' => function () {
-                try {
-                    $function =
-                        new ReflectionFunction(function (object $a) {});
-                    $parameters = $function->getParameters();
-                    $result = null === $parameters[0]->getClass();
-                    // @codeCoverageIgnoreStart
-                } catch (ReflectionException $e) {
-                    $result = false;
-                }
-                // @codeCoverageIgnoreEnd
-
-                return $result;
             },
         ];
     }

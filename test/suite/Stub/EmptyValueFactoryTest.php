@@ -130,13 +130,8 @@ class EmptyValueFactoryTest extends TestCase
     {
         $actual = $this->subject->fromType($this->createType('object'));
 
-        if ($this->featureDetector->isSupported('type.object')) {
-            $this->assertSame([], (array) $actual);
-            $this->assertSame('{}', json_encode($actual));
-        } else {
-            $this->assertInstanceOf('object', $actual);
-            $this->assertInstanceOf(Mock::class, $actual);
-        }
+        $this->assertSame([], (array) $actual);
+        $this->assertSame('{}', json_encode($actual));
     }
 
     public function testFromTypeWithCallable()

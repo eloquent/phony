@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use ReflectionFunctionAbstract;
 use ReflectionType;
 
@@ -22,21 +21,10 @@ class EmptyValueFactory
     public static function instance(): self
     {
         if (!self::$instance) {
-            self::$instance = new self(FeatureDetector::instance());
+            self::$instance = new self();
         }
 
         return self::$instance;
-    }
-
-    /**
-     * Construct a new empty value factory.
-     *
-     * @param FeatureDetector $featureDetector The feature detector to use.
-     */
-    public function __construct(FeatureDetector $featureDetector)
-    {
-        $this->isObjectTypeSupported =
-            $featureDetector->isSupported('type.object');
     }
 
     /**
@@ -94,14 +82,6 @@ class EmptyValueFactory
                 return [];
 
             case 'object':
-                // @codeCoverageIgnoreStart
-                if (!$this->isObjectTypeSupported) {
-                    break;
-                }
-                // @codeCoverageIgnoreEnd
-
-                // no break
-
             case 'stdclass':
                 return (object) [];
 
@@ -142,5 +122,4 @@ class EmptyValueFactory
     private static $instance;
     private $stubVerifierFactory;
     private $mockBuilderFactory;
-    private $isObjectTypeSupported;
 }

@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Mock;
 
 use Eloquent\Phony\Mock\Builder\Method\TraitMethodDefinition;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
 
@@ -25,8 +24,7 @@ class MockGenerator
         if (!self::$instance) {
             self::$instance = new self(
                 Sequencer::sequence('mock-class-label'),
-                FunctionSignatureInspector::instance(),
-                FeatureDetector::instance()
+                FunctionSignatureInspector::instance()
             );
         }
 
@@ -38,16 +36,13 @@ class MockGenerator
      *
      * @param Sequencer                  $labelSequencer     The label sequencer to use.
      * @param FunctionSignatureInspector $signatureInspector The function signature inspector to use.
-     * @param FeatureDetector            $featureDetector    The feature detector to use.
      */
     public function __construct(
         Sequencer $labelSequencer,
-        FunctionSignatureInspector $signatureInspector,
-        FeatureDetector $featureDetector
+        FunctionSignatureInspector $signatureInspector
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->signatureInspector = $signatureInspector;
-        $this->featureDetector = $featureDetector;
     }
 
     /**
@@ -959,5 +954,4 @@ EOD;
     private static $instance;
     private $labelSequencer;
     private $signatureInspector;
-    private $featureDetector;
 }

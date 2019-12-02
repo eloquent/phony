@@ -1,4 +1,3 @@
 {
-    "Can use ANSI escape codes with STDOUT": ["stdout.ansi", "0.x",   "999", []],
-    "Can use the object psuedo-type":        ["type.object", "7.2.x", "999", []]
+    "Can use ANSI escape codes with STDOUT": ["stdout.ansi", "0.x", "999", []]
 }
