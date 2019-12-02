@@ -19,24 +19,13 @@ class FunctionSignatureInspector
     public static function instance(): self
     {
         if (!self::$instance) {
-            self::$instance = new self(FeatureDetector::instance());
+            self::$instance = new self();
         }
 
         return self::$instance;
     }
 
     const PARAMETER_PATTERN = '/^\s*Parameter #\d+ \[ <(required|optional)> (\S+ )?(or NULL )?(&)?(?:\.\.\.)?\$(\S+)( = [^$]+)? ]$/m';
-
-    /**
-     * Construct a new function signature inspector.
-     *
-     * @param FeatureDetector $featureDetector The feature detector to use.
-     */
-    public function __construct(FeatureDetector $featureDetector)
-    {
-        $this->isObjectTypeHintSupported = $featureDetector
-            ->isSupported('type.object');
-    }
 
     /**
      * Get the function signature of the supplied function.
@@ -77,10 +66,7 @@ class FunctionSignatureInspector
                 'callable ' !== $typehint &&
                 'int ' !== $typehint &&
                 'iterable ' !== $typehint &&
-                (
-                    !$this->isObjectTypeHintSupported ||
-                    'object ' !== $typehint
-                )
+                'object ' !== $typehint
             ) {
                 if (
                     'integer ' === $typehint &&
@@ -128,5 +114,4 @@ class FunctionSignatureInspector
     }
 
     private static $instance;
-    private $isObjectTypeHintSupported;
 }
