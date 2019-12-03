@@ -23,8 +23,6 @@ use:
   `Eloquent\Phony\Phpunit`.
 - For [Peridot], use [eloquent/phony-peridot] and import `Eloquent\Phony`.
 - For [Pho], use [eloquent/phony-pho] and import `Eloquent\Phony\Pho`.
-- For [SimpleTest], use [eloquent/phony-simpletest] and import
-  `Eloquent\Phony\Simpletest`.
 - For other frameworks, or standalone usage, use [eloquent/phony] and import
   `Eloquent\Phony`.
 
@@ -80,12 +78,10 @@ integrations seamless and intuitive:
 - [No configuration or bootstrap code necessary]
 - [Most test frameworks need no special treatment]
 - Tight integration with [Kahlan][kahlan integration],
-  [PHPUnit][phpunit integration], [Pho][pho integration] and
-  [SimpleTest][simpletest integration]
+  [PHPUnit][phpunit integration], and [Pho][pho integration]
 - [Can be used standalone, too]
 - Supports matchers from [Hamcrest][hamcrest matchers],
-  [Kahlan][kahlan matchers], [PHPUnit][phpunit matchers], and
-  [SimpleTest][simpletest matchers].
+  [Kahlan][kahlan matchers], and [PHPUnit][phpunit matchers].
 
 Interested in better integration with other test frameworks? So are we! Just
 open a [GitHub issue] if there's something we can do.
@@ -101,8 +97,6 @@ open a [GitHub issue] if there's something we can do.
 [pho integration]: http://eloquent-software.com/phony/latest/#pho-usage
 [phpunit integration]: http://eloquent-software.com/phony/latest/#phpunit-usage
 [phpunit matchers]: http://eloquent-software.com/phony/latest/#phpunit-constraints
-[simpletest integration]: http://eloquent-software.com/phony/latest/#simpletest-usage
-[simpletest matchers]: http://eloquent-software.com/phony/latest/#simpletest-expectations
 
 ### Refined verification output
 
@@ -358,28 +352,6 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 }
 ```
 
-### [SimpleTest] usage
-
-Install the [eloquent/phony-simpletest] package, then:
-
-```php
-use Eloquent\Phony\Simpletest\Phony;
-
-class PhonyTest extends UnitTestCase
-{
-    public function testIntegration()
-    {
-        $handle = Phony::mock('ClassA');
-        $handle->methodA->with('argument')->returns('value');
-
-        $mock = $handle->get();
-
-        $this->assertSame($mock->methodA('argument'), 'value');
-        $handle->methodA->calledWith('argument');
-    }
-}
-```
-
 ## Inception
 
 Please forgive me if this section is opinionated, or if I recall some particular
@@ -525,7 +497,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [eloquent/phony-peridot]: https://packagist.org/packages/eloquent/phony-peridot
 [eloquent/phony-pho]: https://packagist.org/packages/eloquent/phony-pho
 [eloquent/phony-phpunit]: https://packagist.org/packages/eloquent/phony-phpunit
-[eloquent/phony-simpletest]: https://packagist.org/packages/eloquent/phony-simpletest
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
 [github issue]: https://github.com/eloquent/phony/issues
 [hhvm]: http://hhvm.com/

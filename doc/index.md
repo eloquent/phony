@@ -11,7 +11,6 @@
     - [Peridot usage]
     - [Pho usage]
     - [PHPUnit usage]
-    - [SimpleTest usage]
     - [Integration with test frameworks]
     - [Importing]
         - [Importing with use function]
@@ -148,7 +147,6 @@
     - [Matcher integrations]
         - [Hamcrest matchers]
         - [PHPUnit constraints]
-        - [SimpleTest expectations]
     - [Shorthand matchers]
     - [The "any" matcher]
     - [The "equal to" matcher]
@@ -207,8 +205,6 @@ use:
   `Eloquent\Phony\Phpunit`.
 - For [Peridot], use [eloquent/phony-peridot] and import `Eloquent\Phony`.
 - For [Pho], use [eloquent/phony-pho] and import `Eloquent\Phony\Pho`.
-- For [SimpleTest], use [eloquent/phony-simpletest] and import
-  `Eloquent\Phony\Simpletest`.
 - For other frameworks, or standalone usage, use [eloquent/phony] and import
   `Eloquent\Phony`.
 
@@ -376,28 +372,6 @@ class PhonyTest extends PHPUnit_Framework_TestCase
 }
 ```
 
-### [SimpleTest] usage
-
-Install the [eloquent/phony-simpletest] package, then:
-
-```php
-use Eloquent\Phony\Simpletest\Phony;
-
-class PhonyTest extends UnitTestCase
-{
-    public function testIntegration()
-    {
-        $handle = Phony::mock(ClassA::class);
-        $handle->methodA->with('argument')->returns('value');
-
-        $mock = $handle->get();
-
-        $this->assertSame($mock->methodA('argument'), 'value');
-        $handle->methodA->calledWith('argument');
-    }
-}
-```
-
 ### Integration with test frameworks
 
 In order to provide the easiest integration with test frameworks, *Phony*
@@ -411,8 +385,6 @@ the relevant namespace:
   `Eloquent\Phony\Phpunit`.
 - For [Peridot], use [eloquent/phony-peridot] and import `Eloquent\Phony`.
 - For [Pho], use [eloquent/phony-pho] and import `Eloquent\Phony\Pho`.
-- For [SimpleTest], use [eloquent/phony-simpletest] and import
-  `Eloquent\Phony\Simpletest`.
 - For other frameworks, or standalone usage, use [eloquent/phony] and import
   `Eloquent\Phony`.
 
@@ -3593,10 +3565,10 @@ treat *any* exception as a failure. In this case, and in the case that no
 [testing framework] is being used, *Phony* will simply throw its own
 [AssertionException] on failure.
 
-In rare cases, such as use with [SimpleTest], failures do not result in any
-exception being thrown. The failure is recorded with the [testing framework]
-via whatever method the framework uses instead. This may mean that execution
-continues past the failed verification call.
+In rare cases, failures do not result in any exception being thrown. The failure
+is recorded with the [testing framework] via whatever method the framework uses
+instead. This may mean that execution continues past the failed verification
+call.
 
 As with [check verification], verification successes will return a
 [verification result], which can be used for further verifications, including
@@ -4217,18 +4189,6 @@ $spy->calledWith($this->equalTo('a'));
 ```
 
 PHPUnit constraints are supported when using the [eloquent/phony-phpunit]
-package.
-
-#### [SimpleTest] expectations
-
-[SimpleTest] is a legacy unit testing framework. [SimpleTest matchers]
-\(referred to as "expectations") can be used in any *Phony* verification:
-
-```php
-$spy->calledWith(new EqualExpectation('a'));
-```
-
-SimpleTest expectations are supported when using the [eloquent/phony-simpletest]
 package.
 
 ### Shorthand matchers
@@ -8335,8 +8295,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [setting the export depth]: #setting-the-export-depth
 [shorthand matchers]: #shorthand-matchers
 [similar events in order verification]: #similar-events-in-order-verification
-[simpletest expectations]: #simpletest-expectations
-[simpletest usage]: #simpletest-usage
 [special cases for the "equal to" matcher]: #special-cases-for-the-equal-to-matcher
 [spies]: #spies
 [spying on an existing callable]: #spying-on-an-existing-callable
@@ -8530,7 +8488,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [eloquent/phony-peridot]: https://packagist.org/packages/eloquent/phony-peridot
 [eloquent/phony-pho]: https://packagist.org/packages/eloquent/phony-pho
 [eloquent/phony-phpunit]: https://packagist.org/packages/eloquent/phony-phpunit
-[eloquent/phony-simpletest]: https://packagist.org/packages/eloquent/phony-simpletest
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
 [error]: http://php.net/class.error
 [exception]: http://php.net/class.exception
@@ -8555,8 +8512,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [reflectionclass]: http://php.net/reflectionclass
 [reflectiontype]: http://php.net/reflectiontype
 [return type]: http://php.net/functions.returning-values#functions.returning-values.type-declaration
-[simpletest matchers]: http://www.simpletest.org/en/expectation_documentation.html
-[simpletest]: https://github.com/simpletest/simpletest
 [throwable]: http://php.net/class.throwable
 [traversable]: http://php.net/traversable
 [twitter]: https://twitter.com/ezzatron
