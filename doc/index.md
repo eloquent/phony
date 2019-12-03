@@ -9,7 +9,6 @@
     - [Standalone usage]
     - [Kahlan usage]
     - [Peridot usage]
-    - [Pho usage]
     - [PHPUnit usage]
     - [Integration with test frameworks]
     - [Importing]
@@ -204,7 +203,6 @@ use:
 - For [PHPUnit], use [eloquent/phony-phpunit] and import
   `Eloquent\Phony\Phpunit`.
 - For [Peridot], use [eloquent/phony-peridot] and import `Eloquent\Phony`.
-- For [Pho], use [eloquent/phony-pho] and import `Eloquent\Phony\Pho`.
 - For other frameworks, or standalone usage, use [eloquent/phony] and import
   `Eloquent\Phony`.
 
@@ -330,26 +328,6 @@ describe('Phony for Peridot', function () {
 });
 ```
 
-### [Pho] usage
-
-Install the [eloquent/phony-pho] package, then:
-
-```php
-use function Eloquent\Phony\Pho\mock;
-
-describe('Phony', function () {
-    it('integrates with Pho', function () {
-        $handle = mock(ClassA::class);
-        $handle->methodA->with('argument')->returns('value');
-
-        $mock = $handle->get();
-
-        expect($mock->methodA('argument'))->toBe('value');
-        $handle->methodA->calledWith('argument');
-    });
-});
-```
-
 ### [PHPUnit] usage
 
 Install the [eloquent/phony-phpunit] package, then:
@@ -384,7 +362,6 @@ the relevant namespace:
 - For [PHPUnit], use [eloquent/phony-phpunit] and import
   `Eloquent\Phony\Phpunit`.
 - For [Peridot], use [eloquent/phony-peridot] and import `Eloquent\Phony`.
-- For [Pho], use [eloquent/phony-pho] and import `Eloquent\Phony\Pho`.
 - For other frameworks, or standalone usage, use [eloquent/phony] and import
   `Eloquent\Phony`.
 
@@ -8276,7 +8253,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [pausing mock recording]: #pausing-mock-recording
 [pausing spy recording]: #pausing-spy-recording
 [peridot usage]: #peridot-usage
-[pho usage]: #pho-usage
 [phpunit constraints]: #phpunit-constraints
 [phpunit usage]: #phpunit-usage
 [proxy mocks]: #proxy-mocks
@@ -8486,7 +8462,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [countable]: http://php.net/countable
 [eloquent/phony-kahlan]: https://packagist.org/packages/eloquent/phony-kahlan
 [eloquent/phony-peridot]: https://packagist.org/packages/eloquent/phony-peridot
-[eloquent/phony-pho]: https://packagist.org/packages/eloquent/phony-pho
 [eloquent/phony-phpunit]: https://packagist.org/packages/eloquent/phony-phpunit
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
 [error]: http://php.net/class.error
@@ -8503,7 +8478,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [liberator]: https://github.com/eloquent/liberator
 [license file]: https://github.com/eloquent/phony/blob/HEAD/LICENSE
 [peridot]: http://peridot-php.github.io/
-[pho]: https://github.com/danielstjules/pho
 [phony and kahlan by example]: kahlan-by-example
 [phony-examples]: https://github.com/eloquent/phony-examples
 [phpunit matchers]: https://phpunit.de/manual/current/en/appendixes.assertions.html#appendixes.assertions.assertThat

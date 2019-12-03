@@ -22,7 +22,6 @@ use:
 - For [PHPUnit], use [eloquent/phony-phpunit] and import
   `Eloquent\Phony\Phpunit`.
 - For [Peridot], use [eloquent/phony-peridot] and import `Eloquent\Phony`.
-- For [Pho], use [eloquent/phony-pho] and import `Eloquent\Phony\Pho`.
 - For other frameworks, or standalone usage, use [eloquent/phony] and import
   `Eloquent\Phony`.
 
@@ -77,11 +76,11 @@ integrations seamless and intuitive:
 
 - [No configuration or bootstrap code necessary]
 - [Most test frameworks need no special treatment]
-- Tight integration with [Kahlan][kahlan integration],
-  [PHPUnit][phpunit integration], and [Pho][pho integration]
+- Tight integration with [Kahlan][kahlan integration] and
+  [PHPUnit][phpunit integration]
 - [Can be used standalone, too]
 - Supports matchers from [Hamcrest][hamcrest matchers],
-  [Kahlan][kahlan matchers], and [PHPUnit][phpunit matchers].
+  [Kahlan][kahlan matchers], and [PHPUnit][phpunit matchers]
 
 Interested in better integration with other test frameworks? So are we! Just
 open a [GitHub issue] if there's something we can do.
@@ -94,7 +93,6 @@ open a [GitHub issue] if there's something we can do.
 [kahlan matchers]: http://eloquent-software.com/phony/latest/#kahlan-argument-matchers
 [most test frameworks need no special treatment]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
 [no configuration or bootstrap code necessary]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
-[pho integration]: http://eloquent-software.com/phony/latest/#pho-usage
 [phpunit integration]: http://eloquent-software.com/phony/latest/#phpunit-usage
 [phpunit matchers]: http://eloquent-software.com/phony/latest/#phpunit-constraints
 
@@ -310,26 +308,6 @@ describe('Phony for Peridot', function () {
 });
 ```
 
-### [Pho] usage
-
-Install the [eloquent/phony-pho] package, then:
-
-```php
-use function Eloquent\Phony\Pho\mock;
-
-describe('Phony', function () {
-    it('integrates with Pho', function () {
-        $handle = mock('ClassA');
-        $handle->methodA->with('argument')->returns('value');
-
-        $mock = $handle->get();
-
-        expect($mock->methodA('argument'))->toBe('value');
-        $handle->methodA->calledWith('argument');
-    });
-});
-```
-
 ### [PHPUnit] usage
 
 Install the [eloquent/phony-phpunit] package, then:
@@ -495,7 +473,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [documentation]: http://eloquent-software.com/phony/latest/
 [eloquent/phony-kahlan]: https://packagist.org/packages/eloquent/phony-kahlan
 [eloquent/phony-peridot]: https://packagist.org/packages/eloquent/phony-peridot
-[eloquent/phony-pho]: https://packagist.org/packages/eloquent/phony-pho
 [eloquent/phony-phpunit]: https://packagist.org/packages/eloquent/phony-phpunit
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
 [github issue]: https://github.com/eloquent/phony/issues
@@ -504,7 +481,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [mockito]: http://mockito.org/
 [peridot]: http://peridot-php.github.io/
 [phake]: http://phake.readthedocs.org/
-[pho]: https://github.com/danielstjules/pho
 [phpspec]: http://phpspec.readthedocs.org/
 [phpunit]: https://phpunit.de/
 [prophecy]: https://github.com/phpspec/prophecy
