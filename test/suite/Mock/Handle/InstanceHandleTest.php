@@ -53,11 +53,18 @@ class InstanceHandleTest extends TestCase
             'label' => 'label',
         ];
         $this->stubFactory = StubFactory::instance();
+        $this->arraySequencer = new Sequencer();
         $this->objectSequencer = new Sequencer();
         $this->invocableInspector = new InvocableInspector();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
-        $this->matcherVerifier = new MatcherVerifier();
         $this->featureDetector = FeatureDetector::instance();
+        $this->exporter = new InlineExporter(
+            1,
+            $this->arraySequencer,
+            $this->objectSequencer,
+            $this->invocableInspector,
+            $this->featureDetector
+        );
+        $this->matcherVerifier = new MatcherVerifier();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);
         $this->assertionRenderer = new AssertionRenderer(

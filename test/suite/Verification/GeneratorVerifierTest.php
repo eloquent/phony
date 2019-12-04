@@ -41,9 +41,17 @@ class GeneratorVerifierTest extends TestCase
         $this->eventFactory = $this->callFactory->eventFactory();
         $this->anyMatcher = new AnyMatcher();
         $this->wildcardAnyMatcher = WildcardMatcher::instance();
+        $this->arraySequencer = new Sequencer();
         $this->objectSequencer = new Sequencer();
         $this->invocableInspector = InvocableInspector::instance();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
+        $this->featureDetector = new FeatureDetector();
+        $this->exporter = new InlineExporter(
+            1,
+            $this->arraySequencer,
+            $this->objectSequencer,
+            $this->invocableInspector,
+            $this->featureDetector
+        );
         $this->matcherFactory = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher, $this->exporter);
 
         $this->receivedExceptionA = new RuntimeException('Consequences will never be the same.');
@@ -148,8 +156,6 @@ class GeneratorVerifierTest extends TestCase
             $this->calls[0],
             $this->generatorThrowCall,
         ];
-
-        $this->featureDetector = new FeatureDetector();
     }
 
     private function setUpWith($calls)

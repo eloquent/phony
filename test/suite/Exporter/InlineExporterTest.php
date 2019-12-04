@@ -30,11 +30,18 @@ class InlineExporterTest extends TestCase
     protected function setUp(): void
     {
         $this->depth = -1;
+        $this->arraySequencer = new Sequencer();
         $this->objectSequencer = new Sequencer();
         $this->invocableInspector = InvocableInspector::instance();
-        $this->subject = new InlineExporter($this->depth, $this->objectSequencer, $this->invocableInspector);
-
         $this->featureDetector = FeatureDetector::instance();
+        $this->subject = new InlineExporter(
+            $this->depth,
+            $this->arraySequencer,
+            $this->objectSequencer,
+            $this->invocableInspector,
+            $this->featureDetector
+        );
+
         $this->mockBuilderFactory = MockBuilderFactory::instance();
         $this->spyFactory = SpyFactory::instance();
         $this->stubFactory = StubFactory::instance();

@@ -35,9 +35,17 @@ class IterableVerifierTest extends TestCase
         $this->eventFactory = $this->callFactory->eventFactory();
         $this->anyMatcher = new AnyMatcher();
         $this->wildcardAnyMatcher = WildcardMatcher::instance();
+        $this->arraySequencer = new Sequencer();
         $this->objectSequencer = new Sequencer();
         $this->invocableInspector = new InvocableInspector();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
+        $this->featureDetector = FeatureDetector::instance();
+        $this->exporter = new InlineExporter(
+            1,
+            $this->arraySequencer,
+            $this->objectSequencer,
+            $this->invocableInspector,
+            $this->featureDetector
+        );
         $this->matcherFactory = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher, $this->exporter);
 
         $this->iterableCalledEvent = $this->eventFactory->createCalled();
@@ -133,7 +141,6 @@ class IterableVerifierTest extends TestCase
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
         $this->matcherVerifier = new MatcherVerifier();
-        $this->featureDetector = FeatureDetector::instance();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);
         $this->assertionRenderer = new AssertionRenderer(

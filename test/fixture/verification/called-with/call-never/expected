@@ -3,4 +3,4 @@
     %RED%✗%RESET% #0["bonobo", "chameleon", "dugong"]
 %RED%✗%RESET% Call #1:
     %RED%✗%RESET% "aardvark"
-    %RED%✗%RESET% #0["bonobo", "chameleon", "dugong"]
+    %RED%✗%RESET% #1["bonobo", "chameleon", "dugong"]
