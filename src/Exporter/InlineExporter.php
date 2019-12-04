@@ -65,14 +65,6 @@ class InlineExporter implements Exporter
         $this->objectSequencer = $objectSequencer;
         $this->invocableInspector = $invocableInspector;
         $this->objectIds = [];
-        $this->jsonFlags = 0;
-
-        if (defined('JSON_UNESCAPED_SLASHES')) {
-            $this->jsonFlags |= JSON_UNESCAPED_SLASHES;
-        }
-        if (defined('JSON_UNESCAPED_UNICODE')) {
-            $this->jsonFlags |= JSON_UNESCAPED_UNICODE;
-        }
     }
 
     /**
@@ -156,7 +148,7 @@ class InlineExporter implements Exporter
                     break;
 
                 case 'string':
-                    $result->type = json_encode($value, $this->jsonFlags);
+                    $result->type = json_encode($value, self::JSON_FLAGS);
 
                     break;
 
@@ -757,11 +749,11 @@ class InlineExporter implements Exporter
     }
 
     const ARRAY_ID_KEY = "\0__phony__\0";
+    const JSON_FLAGS = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
 
     private static $instance;
     private $depth;
     private $objectSequencer;
     private $invocableInspector;
     private $objectIds;
-    private $jsonFlags;
 }
