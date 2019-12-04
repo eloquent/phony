@@ -61,9 +61,7 @@
 <li><a href="#standalone-usage">Standalone usage</a></li>
 <li><a href="#kahlan-usage">Kahlan usage</a></li>
 <li><a href="#peridot-usage">Peridot usage</a></li>
-<li><a href="#pho-usage">Pho usage</a></li>
 <li><a href="#phpunit-usage">PHPUnit usage</a></li>
-<li><a href="#simpletest-usage">SimpleTest usage</a></li>
 <li><a href="#integration-with-test-frameworks">Integration with test frameworks</a></li>
 <li>
 <a href="#importing">Importing</a>
@@ -350,7 +348,6 @@
 <ul>
 <li><a href="#hamcrest-matchers">Hamcrest matchers</a></li>
 <li><a href="#phpunit-constraints">PHPUnit constraints</a></li>
-<li><a href="#simpletest-expectations">SimpleTest expectations</a></li>
 </ul>
 </li>
 <li><a href="#shorthand-matchers">Shorthand matchers</a></li>
@@ -448,9 +445,6 @@ use:</p>
 <li>For <a href="https://phpunit.de/" rel="nofollow">PHPUnit</a>, use <a href="https://packagist.org/packages/eloquent/phony-phpunit" rel="nofollow">eloquent/phony-phpunit</a> and import
 <code>Eloquent\Phony\Phpunit</code>.</li>
 <li>For <a href="http://peridot-php.github.io/" rel="nofollow">Peridot</a>, use <a href="https://packagist.org/packages/eloquent/phony-peridot" rel="nofollow">eloquent/phony-peridot</a> and import <code>Eloquent\Phony</code>.</li>
-<li>For <a href="https://github.com/danielstjules/pho">Pho</a>, use <a href="https://packagist.org/packages/eloquent/phony-pho" rel="nofollow">eloquent/phony-pho</a> and import <code>Eloquent\Phony\Pho</code>.</li>
-<li>For <a href="https://github.com/simpletest/simpletest">SimpleTest</a>, use <a href="https://packagist.org/packages/eloquent/phony-simpletest" rel="nofollow">eloquent/phony-simpletest</a> and import
-<code>Eloquent\Phony\Simpletest</code>.</li>
 <li>For other frameworks, or standalone usage, use <a href="https://packagist.org/packages/eloquent/phony" rel="nofollow">eloquent/phony</a> and import
 <code>Eloquent\Phony</code>.</li>
 </ul>
@@ -559,22 +553,6 @@ menu.</li>
 <span class="pl-s1">    });</span>
 <span class="pl-s1">});</span></pre></div>
 <h3>
-<a id="pho-usage" class="anchor" href="#pho-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="https://github.com/danielstjules/pho">Pho</a> usage</h3>
-<p>Install the <a href="https://packagist.org/packages/eloquent/phony-pho" rel="nofollow">eloquent/phony-pho</a> package, then:</p>
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-c1">Eloquent\Phony\Pho\mock</span>;</span>
-<span class="pl-s1"></span>
-<span class="pl-s1">describe(<span class="pl-s"><span class="pl-pds">'</span>Phony<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
-<span class="pl-s1">    it(<span class="pl-s"><span class="pl-pds">'</span>integrates with Pho<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {</span>
-<span class="pl-s1">        <span class="pl-smi">$handle</span> <span class="pl-k">=</span> mock(<span class="pl-c1">ClassA</span><span class="pl-k">::</span><span class="pl-c1">class</span>);</span>
-<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"></span>
-<span class="pl-s1">        <span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
-<span class="pl-s1"></span>
-<span class="pl-s1">        expect(<span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>))<span class="pl-k">-&gt;</span>toBe(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1">    });</span>
-<span class="pl-s1">});</span></pre></div>
-<h3>
 <a id="phpunit-usage" class="anchor" href="#phpunit-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="https://phpunit.de/" rel="nofollow">PHPUnit</a> usage</h3>
 <p>Install the <a href="https://packagist.org/packages/eloquent/phony-phpunit" rel="nofollow">eloquent/phony-phpunit</a> package, then:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Eloquent\Phony\Phpunit\Phony</span>;</span>
@@ -593,24 +571,6 @@ menu.</li>
 <span class="pl-s1">    }</span>
 <span class="pl-s1">}</span></pre></div>
 <h3>
-<a id="simpletest-usage" class="anchor" href="#simpletest-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="https://github.com/simpletest/simpletest">SimpleTest</a> usage</h3>
-<p>Install the <a href="https://packagist.org/packages/eloquent/phony-simpletest" rel="nofollow">eloquent/phony-simpletest</a> package, then:</p>
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Eloquent\Phony\Simpletest\Phony</span>;</span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">PhonyTest</span> <span class="pl-k">extends</span> <span class="pl-e">UnitTestCase</span></span>
-<span class="pl-s1">{</span>
-<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">testIntegration</span>()</span>
-<span class="pl-s1">    {</span>
-<span class="pl-s1">        <span class="pl-smi">$handle</span> <span class="pl-k">=</span> <span class="pl-c1">Phony</span><span class="pl-k">::</span>mock(<span class="pl-c1">ClassA</span><span class="pl-k">::</span><span class="pl-c1">class</span>);</span>
-<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>with(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>returns(<span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1"></span>
-<span class="pl-s1">        <span class="pl-smi">$mock</span> <span class="pl-k">=</span> <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span>get();</span>
-<span class="pl-s1"></span>
-<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>assertSame(<span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>methodA(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>), <span class="pl-s"><span class="pl-pds">'</span>value<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1">        <span class="pl-smi">$handle</span><span class="pl-k">-&gt;</span><span class="pl-smi">methodA</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-s"><span class="pl-pds">'</span>argument<span class="pl-pds">'</span></span>);</span>
-<span class="pl-s1">    }</span>
-<span class="pl-s1">}</span></pre></div>
-<h3>
 <a id="integration-with-test-frameworks" class="anchor" href="#integration-with-test-frameworks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Integration with test frameworks</h3>
 <p>In order to provide the easiest integration with test frameworks, <em>Phony</em>
 exposes the same <a href="#api">API</a> through multiple namespaces. Integration is as simple as
@@ -622,9 +582,6 @@ the relevant namespace:</p>
 <li>For <a href="https://phpunit.de/" rel="nofollow">PHPUnit</a>, use <a href="https://packagist.org/packages/eloquent/phony-phpunit" rel="nofollow">eloquent/phony-phpunit</a> and import
 <code>Eloquent\Phony\Phpunit</code>.</li>
 <li>For <a href="http://peridot-php.github.io/" rel="nofollow">Peridot</a>, use <a href="https://packagist.org/packages/eloquent/phony-peridot" rel="nofollow">eloquent/phony-peridot</a> and import <code>Eloquent\Phony</code>.</li>
-<li>For <a href="https://github.com/danielstjules/pho">Pho</a>, use <a href="https://packagist.org/packages/eloquent/phony-pho" rel="nofollow">eloquent/phony-pho</a> and import <code>Eloquent\Phony\Pho</code>.</li>
-<li>For <a href="https://github.com/simpletest/simpletest">SimpleTest</a>, use <a href="https://packagist.org/packages/eloquent/phony-simpletest" rel="nofollow">eloquent/phony-simpletest</a> and import
-<code>Eloquent\Phony\Simpletest</code>.</li>
 <li>For other frameworks, or standalone usage, use <a href="https://packagist.org/packages/eloquent/phony" rel="nofollow">eloquent/phony</a> and import
 <code>Eloquent\Phony</code>.</li>
 </ul>
@@ -2963,10 +2920,10 @@ a specific type of exception used by the framework.</p>
 treat <em>any</em> exception as a failure. In this case, and in the case that no
 <a href="#integration-with-test-frameworks">testing framework</a> is being used, <em>Phony</em> will simply throw its own
 <a href="#assertionexception">AssertionException</a> on failure.</p>
-<p>In rare cases, such as use with <a href="https://github.com/simpletest/simpletest">SimpleTest</a>, failures do not result in any
-exception being thrown. The failure is recorded with the <a href="#integration-with-test-frameworks">testing framework</a>
-via whatever method the framework uses instead. This may mean that execution
-continues past the failed verification call.</p>
+<p>In rare cases, failures do not result in any exception being thrown. The failure
+is recorded with the <a href="#integration-with-test-frameworks">testing framework</a> via whatever method the framework uses
+instead. This may mean that execution continues past the failed verification
+call.</p>
 <p>As with <a href="#check-verification">check verification</a>, verification successes will return a
 <a href="#the-verification-result-api">verification result</a>, which can be used for further verifications, including
 <a href="#order-verification">order verification</a>.</p>
@@ -3432,13 +3389,6 @@ as "constraints") can be used in any <em>Phony</em> verification:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> where $this is a PHPUnit test case</span></span>
 <span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>equalTo(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>));</span></pre></div>
 <p>PHPUnit constraints are supported when using the <a href="https://packagist.org/packages/eloquent/phony-phpunit" rel="nofollow">eloquent/phony-phpunit</a>
-package.</p>
-<h4>
-<a id="simpletest-expectations" class="anchor" href="#simpletest-expectations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="https://github.com/simpletest/simpletest">SimpleTest</a> expectations</h4>
-<p><a href="https://github.com/simpletest/simpletest">SimpleTest</a> is a legacy unit testing framework. <a href="http://www.simpletest.org/en/expectation_documentation.html" rel="nofollow">SimpleTest matchers</a>
-(referred to as "expectations") can be used in any <em>Phony</em> verification:</p>
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$spy</span><span class="pl-k">-&gt;</span>calledWith(<span class="pl-k">new</span> <span class="pl-c1">EqualExpectation</span>(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>));</span></pre></div>
-<p>SimpleTest expectations are supported when using the <a href="https://packagist.org/packages/eloquent/phony-simpletest" rel="nofollow">eloquent/phony-simpletest</a>
 package.</p>
 <h3>
 <a id="shorthand-matchers" class="anchor" href="#shorthand-matchers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Shorthand matchers</h3>
