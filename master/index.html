@@ -3699,19 +3699,28 @@ exporter, and share a single sequence of numbers:</p>
 <span class="pl-s1"><span class="pl-smi">$b</span> <span class="pl-k">=</span> (<span class="pl-k">object</span>) [];</span>
 <span class="pl-s1"><span class="pl-smi">$c</span> <span class="pl-k">=</span> mock();</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>, <span class="pl-smi">$c</span>, <span class="pl-smi">$a</span>];</span>
-<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> $value is exported as '#0[#0{}, #1{}, handle#2(PhonyMock_0#3{}[0]), &amp;0{}]'</span></span>
+<span class="pl-s1"><span class="pl-smi">$valueA</span> <span class="pl-k">=</span> [<span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>, <span class="pl-smi">$c</span>, <span class="pl-smi">$a</span>];</span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> $valueA is exported as '#0[#0{}, #1{}, handle#2(PhonyMock_0#3{}[0]), &amp;0{}]'</span></span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$b</span>, <span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>, <span class="pl-smi">$c</span>];</span>
-<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> $value is exported as '#0[#1{}, #0{}, &amp;1{}, handle#2(PhonyMock_0#3{}[0])]'</span></span></pre></div>
-<p>But due to PHP's limitations, array identifiers are only persistent within a
-single exporter invocation:</p>
+<span class="pl-s1"><span class="pl-smi">$valueB</span> <span class="pl-k">=</span> [<span class="pl-smi">$b</span>, <span class="pl-smi">$a</span>, <span class="pl-smi">$b</span>, <span class="pl-smi">$c</span>];</span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> $valueB is exported as '#0[#1{}, #0{}, &amp;1{}, handle#2(PhonyMock_0#3{}[0])]'</span></span></pre></div>
+<p>As of PHP 7.4, this is also true for arrays:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$a</span> <span class="pl-k">=</span> [];</span>
+<span class="pl-s1"><span class="pl-smi">$b</span> <span class="pl-k">=</span> [];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$valueA</span> <span class="pl-k">=</span> [<span class="pl-k">&amp;</span><span class="pl-smi">$a</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$b</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$a</span>];</span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> $valueA is exported as '#0[#1[], #2[], &amp;1[]]' under PHP 7.4</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$valueB</span> <span class="pl-k">=</span> [<span class="pl-k">&amp;</span><span class="pl-smi">$b</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$a</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$b</span>];</span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> $valueB is exported as '#3[#2[], #1[], &amp;2[]]' under PHP 7.4</span></span></pre></div>
+<p>But due to limitations in earlier versions of PHP, array identifiers are only
+persistent within a single exporter invocation:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$a</span> <span class="pl-k">=</span> [];</span>
 <span class="pl-s1"><span class="pl-smi">$b</span> <span class="pl-k">=</span> [];</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$valueA</span> <span class="pl-k">=</span> [<span class="pl-k">&amp;</span><span class="pl-smi">$a</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$b</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$a</span>];</span>
 <span class="pl-s1"><span class="pl-smi">$valueB</span> <span class="pl-k">=</span> [<span class="pl-k">&amp;</span><span class="pl-smi">$b</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$a</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$b</span>];</span>
-<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> both $valueA and $valueB are exported as '#0[#1[], #2[], &amp;1[]]'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> both $valueA and $valueB are exported as '#0[#1[], #2[], &amp;1[]]' under PHP 7.3</span></span></pre></div>
 <h4>
 <a id="exporting-recursive-values" class="anchor" href="#exporting-recursive-values" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exporting recursive values</h4>
 <p>If a recursive value is exported, the points of recursion are exported as

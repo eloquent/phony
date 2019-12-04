@@ -84,5 +84,5 @@
     <text x="16" y="60" xml:space="preserve">    <tspan class="red">✗</tspan> #0[&quot;bonobo&quot;, &quot;chameleon&quot;, &quot;dugong&quot;]</text>
     <text x="16" y="76" xml:space="preserve"><tspan class="red">✗</tspan> Call #1:</text>
     <text x="16" y="92" xml:space="preserve">    <tspan class="red">✗</tspan> &quot;aardvark&quot;</text>
-    <text x="16" y="108" xml:space="preserve">    <tspan class="red">✗</tspan> #0[&quot;bonobo&quot;, &quot;chameleon&quot;, &quot;dugong&quot;]</text>
+    <text x="16" y="108" xml:space="preserve">    <tspan class="red">✗</tspan> #1[&quot;bonobo&quot;, &quot;chameleon&quot;, &quot;dugong&quot;]</text>
 </svg>

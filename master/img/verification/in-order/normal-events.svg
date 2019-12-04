@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 544" class="verification">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 608" class="verification">
     <defs>
         <style>
             @import url(//fonts.googleapis.com/css?family=Inconsolata:400,700);
@@ -93,22 +93,26 @@
     <text x="16" y="204" xml:space="preserve">    - Called stub#0[label](&quot;a&quot;, &quot;b&quot;)</text>
     <text x="16" y="220" xml:space="preserve">    - Returned &quot;a&quot; from stub#0[label](&quot;a&quot;, &quot;b&quot;)</text>
     <text x="16" y="236" xml:space="preserve">    - Threw Exception#1{message: &quot;C&quot;} from stub#0[label](&quot;c&quot;, &quot;d&quot;)</text>
-    <text x="16" y="252" xml:space="preserve">    - Called stub#0[label](#0[&quot;e&quot;, &quot;f&quot;])</text>
-    <text x="16" y="268" xml:space="preserve">    - Returned #0[&quot;e&quot;, &quot;f&quot;] from stub#0[label](#0[&quot;e&quot;, &quot;f&quot;])</text>
-    <text x="16" y="284" xml:space="preserve">    - stub#0[label](#0[&quot;e&quot;, &quot;f&quot;]) started iterating</text>
-    <text x="16" y="300" xml:space="preserve">    - Produced 0 =&gt; &quot;e&quot; from stub#0[label](#0[&quot;e&quot;, &quot;f&quot;])</text>
-    <text x="16" y="316" xml:space="preserve">    - Produced 1 =&gt; &quot;f&quot; from stub#0[label](#0[&quot;e&quot;, &quot;f&quot;])</text>
-    <text x="16" y="332" xml:space="preserve">    - stub#0[label](#0[&quot;e&quot;, &quot;f&quot;]) finished iterating</text>
+    <text x="16" y="252" xml:space="preserve">    - Called stub#0[label](#1[&quot;e&quot;, &quot;f&quot;])</text>
+    <text x="16" y="268" xml:space="preserve">    - Returned #0[&quot;e&quot;, &quot;f&quot;] from stub#0[label](#1[&quot;e&quot;, &quot;f&quot;])</text>
+    <text x="16" y="284" xml:space="preserve">    - stub#0[label](#1[&quot;e&quot;, &quot;f&quot;]) started iterating</text>
+    <text x="16" y="300" xml:space="preserve">    - Produced 0 =&gt; &quot;e&quot; from stub#0[label](#1[&quot;e&quot;, &quot;f&quot;])</text>
+    <text x="16" y="316" xml:space="preserve">    - Produced 1 =&gt; &quot;f&quot; from stub#0[label](#1[&quot;e&quot;, &quot;f&quot;])</text>
+    <text x="16" y="332" xml:space="preserve">    - stub#0[label](#1[&quot;e&quot;, &quot;f&quot;]) finished iterating</text>
     <text x="16" y="348" xml:space="preserve">Difference:</text>
     <text x="16" y="364" xml:space="preserve">    - <tspan class="faint yellow">{+</tspan><tspan class="yellow">Called spy#2[first]()</tspan><tspan class="faint yellow">+}</tspan></text>
     <text x="16" y="380" xml:space="preserve">    <tspan class="green">✓</tspan>   Called stub#0[label](&quot;a&quot;, &quot;b&quot;)</text>
     <text x="16" y="396" xml:space="preserve">    <tspan class="green">✓</tspan>   Returned &quot;a&quot; from stub#0[label](&quot;a&quot;, &quot;b&quot;)</text>
     <text x="16" y="412" xml:space="preserve">    <tspan class="green">✓</tspan>   Threw Exception#1{message: &quot;C&quot;} from stub#0[label](&quot;c&quot;, &quot;d&quot;)</text>
-    <text x="16" y="428" xml:space="preserve">    <tspan class="green">✓</tspan>   Called stub#0[label](#0[&quot;e&quot;, &quot;f&quot;])</text>
-    <text x="16" y="444" xml:space="preserve">    - <tspan class="faint yellow">{+</tspan><tspan class="yellow">Returned #0[&quot;e&quot;, &quot;f&quot;] from stub#0[label](#0[&quot;e&quot;, &quot;f&quot;])</tspan><tspan class="faint yellow">+}</tspan></text>
-    <text x="16" y="460" xml:space="preserve">    <tspan class="green">✓</tspan>   stub#0[label](#0[&quot;e&quot;, &quot;f&quot;]) started iterating</text>
-    <text x="16" y="476" xml:space="preserve">    <tspan class="green">✓</tspan>   Produced 0 =&gt; &quot;e&quot; from stub#0[label](#0[&quot;e&quot;, &quot;f&quot;])</text>
-    <text x="16" y="492" xml:space="preserve">    - <tspan class="faint yellow">{+</tspan><tspan class="yellow">Produced 1 =&gt; &quot;f&quot; from stub#0[label](#0[&quot;e&quot;, &quot;f&quot;])</tspan><tspan class="faint yellow">+}</tspan></text>
-    <text x="16" y="508" xml:space="preserve">    <tspan class="green">✓</tspan>   stub#0[label](#0[&quot;e&quot;, &quot;f&quot;]) finished iterating</text>
-    <text x="16" y="524" xml:space="preserve">    <tspan class="red">✗</tspan> <tspan class="faint cyan">[-</tspan><tspan class="cyan">Called spy#2[first]()</tspan><tspan class="faint cyan">-]</tspan></text>
+    <text x="16" y="428" xml:space="preserve">    <tspan class="red">✗</tspan> <tspan class="faint cyan">[-</tspan><tspan class="cyan">Called stub#0[label](#0[&quot;e&quot;, &quot;f&quot;])</tspan><tspan class="faint cyan">-]</tspan></text>
+    <text x="16" y="444" xml:space="preserve">    <tspan class="red">✗</tspan> <tspan class="faint cyan">[-</tspan><tspan class="cyan">stub#0[label](#0[&quot;e&quot;, &quot;f&quot;]) started iterating</tspan><tspan class="faint cyan">-]</tspan></text>
+    <text x="16" y="460" xml:space="preserve">    <tspan class="red">✗</tspan> <tspan class="faint cyan">[-</tspan><tspan class="cyan">Produced 0 =&gt; &quot;e&quot; from stub#0[label](#0[&quot;e&quot;, &quot;f&quot;])</tspan><tspan class="faint cyan">-]</tspan></text>
+    <text x="16" y="476" xml:space="preserve">    <tspan class="red">✗</tspan> <tspan class="faint cyan">[-</tspan><tspan class="cyan">stub#0[label](#0[&quot;e&quot;, &quot;f&quot;]) finished iterating</tspan><tspan class="faint cyan">-]</tspan></text>
+    <text x="16" y="492" xml:space="preserve">    <tspan class="red">✗</tspan> <tspan class="faint cyan">[-</tspan><tspan class="cyan">Called spy#2[first]()</tspan><tspan class="faint cyan">-]</tspan></text>
+    <text x="16" y="508" xml:space="preserve">    - <tspan class="faint yellow">{+</tspan><tspan class="yellow">Called stub#0[label](#1[&quot;e&quot;, &quot;f&quot;])</tspan><tspan class="faint yellow">+}</tspan></text>
+    <text x="16" y="524" xml:space="preserve">    - <tspan class="faint yellow">{+</tspan><tspan class="yellow">Returned #0[&quot;e&quot;, &quot;f&quot;] from stub#0[label](#1[&quot;e&quot;, &quot;f&quot;])</tspan><tspan class="faint yellow">+}</tspan></text>
+    <text x="16" y="540" xml:space="preserve">    - <tspan class="faint yellow">{+</tspan><tspan class="yellow">stub#0[label](#1[&quot;e&quot;, &quot;f&quot;]) started iterating</tspan><tspan class="faint yellow">+}</tspan></text>
+    <text x="16" y="556" xml:space="preserve">    - <tspan class="faint yellow">{+</tspan><tspan class="yellow">Produced 0 =&gt; &quot;e&quot; from stub#0[label](#1[&quot;e&quot;, &quot;f&quot;])</tspan><tspan class="faint yellow">+}</tspan></text>
+    <text x="16" y="572" xml:space="preserve">    - <tspan class="faint yellow">{+</tspan><tspan class="yellow">Produced 1 =&gt; &quot;f&quot; from stub#0[label](#1[&quot;e&quot;, &quot;f&quot;])</tspan><tspan class="faint yellow">+}</tspan></text>
+    <text x="16" y="588" xml:space="preserve">    - <tspan class="faint yellow">{+</tspan><tspan class="yellow">stub#0[label](#1[&quot;e&quot;, &quot;f&quot;]) finished iterating</tspan><tspan class="faint yellow">+}</tspan></text>
 </svg>
