@@ -43,7 +43,7 @@ class CallFactoryWithGeneratorsTest extends TestCase
 
     public function testCreateGeneratedEvent()
     {
-        $generatorFactory = eval('return function () { return; yield null; };');
+        $generatorFactory = function () { return; yield null; };
         $generator = call_user_func($generatorFactory);
         $expected = new ReturnedEvent(0, 0.0, $generator);
         $actual = $this->eventFactory->createReturned($generator);

@@ -531,8 +531,8 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesGeneratorSpySubstitution()
     {
-        $functionA = eval('return function() { yield "a"; yield "b"; };');
-        $functionB = eval('return function() { yield "b"; yield "c"; };');
+        $functionA = function () { yield 'a'; yield 'b'; };
+        $functionB = function () { yield 'b'; yield 'c'; };
 
         $generatorA = $functionA();
         $generatorB = $functionA();

@@ -7,7 +7,3 @@ try {
 } catch (ReflectionException $e) {
     $isObjectTypeHintSupported = false;
 }
-
-if (!$isObjectTypeHintSupported && !class_exists('object')) {
-    eval('class object {}');
-}

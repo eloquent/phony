@@ -350,7 +350,7 @@ class EmptyValueFactoryTest extends TestCase
 
     public function testFromTypeWithNullableType()
     {
-        $reflector = new ReflectionFunction(eval('return function (int $i = null) {};'));
+        $reflector = new ReflectionFunction(function (int $i = null) {});
         $parameters = $reflector->getParameters();
         $type = $parameters[0]->getType();
 
