@@ -23,6 +23,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 use TestClass;
+use WeakReference;
 
 class InlineExporterTest extends TestCase
 {
@@ -50,32 +51,32 @@ class InlineExporterTest extends TestCase
     public function exportData()
     {
         return [
-            'null'             => [null,                                            'null'],
-            'true'             => [true,                                            'true'],
-            'false'            => [false,                                           'false'],
-            '0'                => [0,                                               '0'],
-            '-0'               => [-0,                                              '0'],
-            '1'                => [1,                                               '1'],
-            '-1'               => [-1,                                              '-1'],
-            '0.0'              => [0.0,                                             '0.000000e+0'],
-            '-0.0'             => [-0.0,                                            '0.000000e+0'],
-            '1.0'              => [1.0,                                             '1.000000e+0'],
-            '-1.0'             => [-1.0,                                            '-1.000000e+0'],
-            'STDIN'            => [STDIN,                                           'resource#1'],
-            'STDOUT'           => [STDOUT,                                          'resource#2'],
-            'a\nb'             => ["a\nb",                                          '"a\nb"'],
-            '[]'               => [[],                                         '#0[]'],
-            '[1]'              => [[1],                                        '#0[1]'],
-            '[1, 1]'           => [[1, 1],                                     '#0[1, 1]'],
-            '[1: 1]'           => [[1 => 1],                                   '#0[1: 1]'],
-            '[1: 1, 2: 2]'     => [[1 => 1, 2 => 2],                           '#0[1: 1, 2: 2]'],
+            'null'             => [null,                                  'null'],
+            'true'             => [true,                                  'true'],
+            'false'            => [false,                                 'false'],
+            '0'                => [0,                                     '0'],
+            '-0'               => [-0,                                    '0'],
+            '1'                => [1,                                     '1'],
+            '-1'               => [-1,                                    '-1'],
+            '0.0'              => [0.0,                                   '0.000000e+0'],
+            '-0.0'             => [-0.0,                                  '0.000000e+0'],
+            '1.0'              => [1.0,                                   '1.000000e+0'],
+            '-1.0'             => [-1.0,                                  '-1.000000e+0'],
+            'STDIN'            => [STDIN,                                 'resource#1'],
+            'STDOUT'           => [STDOUT,                                'resource#2'],
+            'a\nb'             => ["a\nb",                                '"a\nb"'],
+            '[]'               => [[],                                    '#0[]'],
+            '[1]'              => [[1],                                   '#0[1]'],
+            '[1, 1]'           => [[1, 1],                                '#0[1, 1]'],
+            '[1: 1]'           => [[1 => 1],                              '#0[1: 1]'],
+            '[1: 1, 2: 2]'     => [[1 => 1, 2 => 2],                      '#0[1: 1, 2: 2]'],
             '[1, [1, 1]]'      => [[1, [1, 1]],                           '#0[1, #1[1, 1]]'],
-            '[[1, 1], [1, 1]]' => [[[1, 1], [1, 1]],                 '#0[#1[1, 1], #2[1, 1]]'],
-            '{a: 0}'           => [(object) ['a' => 0],                        '#0{a: 0}'],
-            '{a: 0, b: 1}'     => [(object) ['a' => 0, 'b' => 1],              '#0{a: 0, b: 1}'],
+            '[[1, 1], [1, 1]]' => [[[1, 1], [1, 1]],                      '#0[#1[1, 1], #2[1, 1]]'],
+            '{a: 0}'           => [(object) ['a' => 0],                   '#0{a: 0}'],
+            '{a: 0, b: 1}'     => [(object) ['a' => 0, 'b' => 1],         '#0{a: 0, b: 1}'],
             '{a: {a: 0}}'      => [(object) ['a' => (object) ['a' => 0]], '#0{a: #1{a: 0}}'],
             '{a: []}'          => [(object) ['a' => []],                  '#0{a: #0[]}'],
-            'object'           => [new TestClass(),                                 'TestClass#0{}'],
+            'object'           => [new TestClass(),                       'TestClass#0{}'],
         ];
     }
 
@@ -329,6 +330,19 @@ class InlineExporterTest extends TestCase
         $iterableSpy = $stub();
 
         $this->assertSame('iterable-spy#0(#0[])', $this->subject->export($iterableSpy));
+    }
+
+    /**
+     * @requires PHP >= 7.4
+     */
+    public function testExportWeakReference()
+    {
+        $object = (object) ['a' => 'b'];
+        $weakReference = WeakReference::create($object);
+        $repeated = [$weakReference, $weakReference];
+
+        $this->assertSame('weak#0(#1{a: "b"})', $this->subject->export($weakReference));
+        $this->assertSame('#0[weak#0(#1{a: "b"}), &0()]', $this->subject->export($repeated));
     }
 
     public function testExportCallable()

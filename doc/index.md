@@ -4478,6 +4478,7 @@ by parentheses (e.g. `&0()`):
 ```php
 $array = [];
 $object = (object) [];
+$weakRef = WeakReference::create($object);
 $wrapper = spy('implode')->setLabel('spy-label');
 
 $value = [&$array, &$array];
@@ -4485,6 +4486,9 @@ $value = [&$array, &$array];
 
 $value = [$object, $object];
 // $value is exported as '#0[#0{}, &0{}]'
+
+$value = [$weakRef, $weakRef];
+// $value is exported as '#0[weak#1(#0{}), &1()]'
 
 $value = [$wrapper, $wrapper];
 // $value is exported as '#0[spy#1(implode)[spy-label], &1()]'

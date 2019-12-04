@@ -3,6 +3,9 @@
 ## Next release
 
 - **[BC BREAK]** PHP 7.1 is no longer supported.
+- **[IMPROVED]** Improved exporter output for weak references ([#245]).
+
+[#245]: https://github.com/eloquent/phony/issues/245
 
 ## 3.2.0 (2019-10-30)
 

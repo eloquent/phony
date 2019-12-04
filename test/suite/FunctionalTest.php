@@ -1263,21 +1263,27 @@ class FunctionalTest extends TestCase
         );
     }
 
+    /**
+     * @requires PHP >= 7.4
+     */
     public function testExporterExamplesReferenceTypes()
     {
         $array = [];
         $object = (object) [];
+        $weakRef = WeakReference::create($object);
         $wrapper = spy('implode')->setLabel('spy-label');
         $valueA = [&$array, &$array];
         $valueB = [$object, $object];
-        $valueC = [$wrapper, $wrapper];
+        $valueC = [$weakRef, $weakRef];
+        $valueD = [$wrapper, $wrapper];
         $this->exporter->reset();
 
         $this->assertStringMatchesFormat('#%d[#%d[], &%d[]]', $this->exporter->export($valueA, -1));
         $this->assertStringMatchesFormat('#%d[#%d{}, &%d{}]', $this->exporter->export($valueB, -1));
+        $this->assertStringMatchesFormat('#%d[weak#%d(#%d{}), &%d()]', $this->exporter->export($valueC, -1));
         $this->assertStringMatchesFormat(
             '#%d[spy#%d(implode)[spy-label], &%d()]',
-            $this->exporter->export($valueC, -1)
+            $this->exporter->export($valueD, -1)
         );
     }
 
