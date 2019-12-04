@@ -54,9 +54,17 @@ class SpyVerifierTest extends TestCase
             $this->iterableSpyFactory
         );
 
+        $this->arraySequencer = new Sequencer();
         $this->objectSequencer = new Sequencer();
         $this->invocableInspector = new InvocableInspector();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
+        $this->featureDetector = FeatureDetector::instance();
+        $this->exporter = new InlineExporter(
+            1,
+            $this->arraySequencer,
+            $this->objectSequencer,
+            $this->invocableInspector,
+            $this->featureDetector
+        );
         $this->matcherFactory =
             new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);
         $this->matcherVerifier = new MatcherVerifier();
@@ -65,7 +73,6 @@ class SpyVerifierTest extends TestCase
         $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
         $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
-        $this->featureDetector = FeatureDetector::instance();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);
         $this->assertionRenderer = new AssertionRenderer(

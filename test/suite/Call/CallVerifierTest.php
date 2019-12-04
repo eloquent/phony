@@ -48,12 +48,19 @@ class CallVerifierTest extends TestCase
         $this->invocableInspector = new InvocableInspector();
         $this->matcherFactory = MatcherFactory::instance();
         $this->matcherVerifier = new MatcherVerifier();
+        $this->arraySequencer = new Sequencer();
         $this->objectSequencer = new Sequencer();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
+        $this->featureDetector = FeatureDetector::instance();
+        $this->exporter = new InlineExporter(
+            1,
+            $this->arraySequencer,
+            $this->objectSequencer,
+            $this->invocableInspector,
+            $this->featureDetector
+        );
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
         $this->iterableVerifierFactory = IterableVerifierFactory::instance();
         $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->featureDetector = FeatureDetector::instance();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);
         $this->differenceEngine->setUseColor(false);
         $this->assertionRenderer = new AssertionRenderer(

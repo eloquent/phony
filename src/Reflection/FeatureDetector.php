@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Reflection;
 
 use Eloquent\Phony\Reflection\Exception\UndefinedFeatureException;
+use ReflectionClass;
 
 /**
  * Detects support for language features in the current runtime environment.
@@ -108,6 +109,16 @@ class FeatureDetector
     public function standardFeatures(): array
     {
         return [
+            'reflection.reference' => function () {
+                if (class_exists('ReflectionReference', false)) {
+                    $class = new ReflectionClass('ReflectionReference');
+
+                    return $class->isInternal();
+                }
+
+                return false;
+            },
+
             'stdout.ansi' => function () {
                 // @codeCoverageIgnoreStart
                 if (DIRECTORY_SEPARATOR === '\\') {

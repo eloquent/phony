@@ -62,12 +62,16 @@ trait FacadeContainerTrait
     {
         $sequences = [];
         $anyMatcher = new AnyMatcher();
+        $arrayIdSequence = Sequencer::sequence('exporter-array-id');
         $objectIdSequence = Sequencer::sequence('exporter-object-id');
         $invocableInspector = new InvocableInspector();
+        $featureDetector = new FeatureDetector();
         $exporter = new InlineExporter(
             1,
+            $arrayIdSequence,
             $objectIdSequence,
-            $invocableInspector
+            $invocableInspector,
+            $featureDetector
         );
         $invoker = new Invoker();
         $matcherVerifier = new MatcherVerifier();
@@ -132,7 +136,6 @@ trait FacadeContainerTrait
             $generatorSpyFactory,
             $iterableSpyFactory
         );
-        $featureDetector = new FeatureDetector();
         $differenceEngine = new DifferenceEngine(
             $featureDetector
         );

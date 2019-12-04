@@ -4533,15 +4533,28 @@ $a = (object) [];
 $b = (object) [];
 $c = mock();
 
-$value = [$a, $b, $c, $a];
-// $value is exported as '#0[#0{}, #1{}, handle#2(PhonyMock_0#3{}[0]), &0{}]'
+$valueA = [$a, $b, $c, $a];
+// $valueA is exported as '#0[#0{}, #1{}, handle#2(PhonyMock_0#3{}[0]), &0{}]'
 
-$value = [$b, $a, $b, $c];
-// $value is exported as '#0[#1{}, #0{}, &1{}, handle#2(PhonyMock_0#3{}[0])]'
+$valueB = [$b, $a, $b, $c];
+// $valueB is exported as '#0[#1{}, #0{}, &1{}, handle#2(PhonyMock_0#3{}[0])]'
 ```
 
-But due to PHP's limitations, array identifiers are only persistent within a
-single exporter invocation:
+As of PHP 7.4, this is also true for arrays:
+
+```php
+$a = [];
+$b = [];
+
+$valueA = [&$a, &$b, &$a];
+// $valueA is exported as '#0[#1[], #2[], &1[]]' under PHP 7.4
+
+$valueB = [&$b, &$a, &$b];
+// $valueB is exported as '#3[#2[], #1[], &2[]]' under PHP 7.4
+```
+
+But due to limitations in earlier versions of PHP, array identifiers are only
+persistent within a single exporter invocation:
 
 ```php
 $a = [];
@@ -4549,7 +4562,7 @@ $b = [];
 
 $valueA = [&$a, &$b, &$a];
 $valueB = [&$b, &$a, &$b];
-// both $valueA and $valueB are exported as '#0[#1[], #2[], &1[]]'
+// both $valueA and $valueB are exported as '#0[#1[], #2[], &1[]]' under PHP 7.3
 ```
 
 #### Exporting recursive values

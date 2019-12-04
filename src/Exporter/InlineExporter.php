@@ -12,6 +12,7 @@ use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Handle\StaticHandle;
 use Eloquent\Phony\Mock\Method\WrappedMethod;
 use Eloquent\Phony\Mock\Mock;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\IterableSpy;
 use Eloquent\Phony\Spy\Spy;
@@ -22,6 +23,7 @@ use Generator;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
+use ReflectionReference;
 use SplObjectStorage;
 use Throwable;
 use WeakReference;
@@ -41,8 +43,10 @@ class InlineExporter implements Exporter
         if (!self::$instance) {
             self::$instance = new self(
                 1,
+                Sequencer::sequence('exporter-array-id'),
                 Sequencer::sequence('exporter-object-id'),
-                InvocableInspector::instance()
+                InvocableInspector::instance(),
+                FeatureDetector::instance()
             );
         }
 
@@ -53,26 +57,29 @@ class InlineExporter implements Exporter
      * Construct a new inline exporter.
      *
      * @param int                $depth              The depth.
+     * @param Sequencer          $arraySequencer     The array sequencer to use.
      * @param Sequencer          $objectSequencer    The object sequencer to use.
      * @param InvocableInspector $invocableInspector The invocable inspector to use.
+     * @param FeatureDetector    $featureDetector    The feature detector to use.
      */
     public function __construct(
         int $depth,
+        Sequencer $arraySequencer,
         Sequencer $objectSequencer,
-        InvocableInspector $invocableInspector
+        InvocableInspector $invocableInspector,
+        FeatureDetector $featureDetector
     ) {
         $this->depth = $depth;
+        $this->arraySequencer = $arraySequencer;
         $this->objectSequencer = $objectSequencer;
         $this->invocableInspector = $invocableInspector;
+        $this->featureDetector = $featureDetector;
+        $this->arrayIds = [];
         $this->objectIds = [];
-        $this->jsonFlags = 0;
 
-        if (defined('JSON_UNESCAPED_SLASHES')) {
-            $this->jsonFlags |= JSON_UNESCAPED_SLASHES;
-        }
-        if (defined('JSON_UNESCAPED_UNICODE')) {
-            $this->jsonFlags |= JSON_UNESCAPED_UNICODE;
-        }
+        $this->isReferenceReflectionSupported =
+            $featureDetector->isSupported('reflection.reference');
+        $this->arrayCountOffset = $this->isReferenceReflectionSupported ? 0 : 1;
     }
 
     /**
@@ -156,18 +163,31 @@ class InlineExporter implements Exporter
                     break;
 
                 case 'string':
-                    $result->type = json_encode($value, $this->jsonFlags);
+                    $result->type = json_encode($value, self::JSON_FLAGS);
 
                     break;
 
                 case 'array':
-                    if (isset($value[self::ARRAY_ID_KEY])) {
+                    if ($this->isReferenceReflectionSupported) {
+                        $reference =
+                            ReflectionReference::fromArrayElement([&$value], 0);
+                        $referenceId = $reference->getId();
+
+                        if (isset($this->arrayIds[$referenceId])) {
+                            $id = $this->arrayIds[$referenceId];
+                        } else {
+                            $id = $this->arrayIds[$referenceId] =
+                                $this->arraySequencer->next();
+                        }
+                    } elseif (isset($value[self::ARRAY_ID_KEY])) {
                         $id = $value[self::ARRAY_ID_KEY];
                     } else {
                         $id = $value[self::ARRAY_ID_KEY] = $arrayId++;
                     }
 
-                    $seenArrays[$id] = &$value;
+                    if (!$this->isReferenceReflectionSupported) {
+                        $seenArrays[$id] = &$value;
+                    }
 
                     if (isset($arrayResults[$id])) {
                         $result->type = '&' . $id . '[]';
@@ -178,7 +198,7 @@ class InlineExporter implements Exporter
                     $result->type = '#' . $id;
 
                     if ($depth > -1 && $currentDepth >= $depth) {
-                        $count = count($value) - 1;
+                        $count = count($value) - $this->arrayCountOffset;
 
                         if ($count) {
                             $result->type .= '[~' . $count . ']';
@@ -196,7 +216,10 @@ class InlineExporter implements Exporter
                     $sequenceKey = 0;
 
                     foreach ($value as $key => &$childValue) {
-                        if (self::ARRAY_ID_KEY === $key) {
+                        if (
+                            !$this->isReferenceReflectionSupported &&
+                            self::ARRAY_ID_KEY === $key
+                        ) {
                             continue;
                         }
 
@@ -654,8 +677,10 @@ class InlineExporter implements Exporter
             }
         }
 
-        foreach ($seenArrays as &$value) {
-            unset($value[self::ARRAY_ID_KEY]);
+        if (!$this->isReferenceReflectionSupported) {
+            foreach ($seenArrays as &$value) {
+                unset($value[self::ARRAY_ID_KEY]);
+            }
         }
 
         return $final->final;
@@ -752,16 +777,23 @@ class InlineExporter implements Exporter
      */
     public function reset(): void
     {
+        $this->arrayIds = [];
+        $this->arraySequencer->reset();
+
         $this->objectIds = [];
         $this->objectSequencer->reset();
     }
 
     const ARRAY_ID_KEY = "\0__phony__\0";
+    const JSON_FLAGS = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
 
     private static $instance;
     private $depth;
+    private $arraySequencer;
     private $objectSequencer;
     private $invocableInspector;
+    private $arrayIds;
     private $objectIds;
-    private $jsonFlags;
+    private $isReferenceReflectionSupported;
+    private $arrayCountOffset;
 }

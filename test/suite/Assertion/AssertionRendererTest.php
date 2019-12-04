@@ -28,11 +28,18 @@ class AssertionRendererTest extends TestCase
     {
         $this->invocableInspector = new InvocableInspector();
         $this->matcherVerifier = MatcherVerifier::instance();
+        $this->arraySequencer = new Sequencer();
         $this->objectSequencer = new Sequencer();
-        $this->exporter = new InlineExporter(1, $this->objectSequencer, $this->invocableInspector);
+        $this->featureDetector = FeatureDetector::instance();
+        $this->exporter = new InlineExporter(
+            1,
+            $this->arraySequencer,
+            $this->objectSequencer,
+            $this->invocableInspector,
+            $this->featureDetector
+        );
         $this->differenceEngine = DifferenceEngine::instance();
         $this->differenceEngine->setUseColor(false);
-        $this->featureDetector = FeatureDetector::instance();
         $this->subject = new AssertionRenderer(
             $this->matcherVerifier,
             $this->exporter,
