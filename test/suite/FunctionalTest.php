@@ -296,6 +296,16 @@ class FunctionalTest extends TestCase
         $this->assertSame(123, $spy());
     }
 
+    /**
+     * @requires PHP >= 7.4
+     */
+    public function testSpyArrowFunction()
+    {
+        $spy = spy(eval('return fn($x) => $x;'));
+
+        $this->assertSame(111, $spy(111));
+    }
+
     public function testSpyGlobal()
     {
         $stubA = spyGlobal('vsprintf', Test::class);
@@ -383,6 +393,16 @@ class FunctionalTest extends TestCase
         $stub = stub(eval('return function () : int { return 123; };'))->forwards();
 
         $this->assertSame(123, $stub());
+    }
+
+    /**
+     * @requires PHP >= 7.4
+     */
+    public function testStubArrowFunction()
+    {
+        $stub = stub(eval('return fn($x) => $x;'))->forwards();
+
+        $this->assertSame(111, $stub(111));
     }
 
     public function testStubGlobal()
