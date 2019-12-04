@@ -3656,6 +3656,7 @@ appear followed by braces (e.g. <code>&amp;0{}</code>), and wrapper references a
 by parentheses (e.g. <code>&amp;0()</code>):</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$array</span> <span class="pl-k">=</span> [];</span>
 <span class="pl-s1"><span class="pl-smi">$object</span> <span class="pl-k">=</span> (<span class="pl-k">object</span>) [];</span>
+<span class="pl-s1"><span class="pl-smi">$weakRef</span> <span class="pl-k">=</span> <span class="pl-c1">WeakReference</span><span class="pl-k">::</span>create(<span class="pl-smi">$object</span>);</span>
 <span class="pl-s1"><span class="pl-smi">$wrapper</span> <span class="pl-k">=</span> spy(<span class="pl-s"><span class="pl-pds">'</span>implode<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>setLabel(<span class="pl-s"><span class="pl-pds">'</span>spy-label<span class="pl-pds">'</span></span>);</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-k">&amp;</span><span class="pl-smi">$array</span>, <span class="pl-k">&amp;</span><span class="pl-smi">$array</span>];</span>
@@ -3663,6 +3664,9 @@ by parentheses (e.g. <code>&amp;0()</code>):</p>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$object</span>, <span class="pl-smi">$object</span>];</span>
 <span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> $value is exported as '#0[#0{}, &amp;0{}]'</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$weakRef</span>, <span class="pl-smi">$weakRef</span>];</span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> $value is exported as '#0[weak#1(#0{}), &amp;1()]'</span></span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-smi">$value</span> <span class="pl-k">=</span> [<span class="pl-smi">$wrapper</span>, <span class="pl-smi">$wrapper</span>];</span>
 <span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> $value is exported as '#0[spy#1(implode)[spy-label], &amp;1()]'</span></span></pre></div>
