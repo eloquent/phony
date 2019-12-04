@@ -24,6 +24,7 @@ use ReflectionFunction;
 use ReflectionMethod;
 use SplObjectStorage;
 use Throwable;
+use WeakReference;
 
 /**
  * Exports values to inline strings.
@@ -257,6 +258,7 @@ class InlineExporter implements Exporter
                         $isStub = false;
                         $isGeneratorSpy = false;
                         $isIterableSpy = false;
+                        $isWeakReference = false;
                     } elseif ($value instanceof Throwable) {
                         $isWrapper = false;
                         $isClosure = false;
@@ -266,6 +268,7 @@ class InlineExporter implements Exporter
                         $isStub = false;
                         $isGeneratorSpy = false;
                         $isIterableSpy = false;
+                        $isWeakReference = false;
                     } elseif ($value instanceof Generator) {
                         $isWrapper = isset($value->_phonySubject);
                         $isClosure = false;
@@ -275,6 +278,7 @@ class InlineExporter implements Exporter
                         $isStub = false;
                         $isGeneratorSpy = $isWrapper;
                         $isIterableSpy = false;
+                        $isWeakReference = false;
                     } elseif ($value instanceof Handle) {
                         $isWrapper = true;
                         $isClosure = false;
@@ -284,6 +288,7 @@ class InlineExporter implements Exporter
                         $isStub = false;
                         $isGeneratorSpy = false;
                         $isIterableSpy = false;
+                        $isWeakReference = false;
 
                         $isStaticHandle = $value instanceof StaticHandle;
                     } elseif ($value instanceof Stub) {
@@ -295,6 +300,7 @@ class InlineExporter implements Exporter
                         $isStub = true;
                         $isGeneratorSpy = false;
                         $isIterableSpy = false;
+                        $isWeakReference = false;
 
                         $isStubVerifier = $value instanceof StubVerifier;
                     } elseif ($value instanceof Spy) {
@@ -306,6 +312,7 @@ class InlineExporter implements Exporter
                         $isStub = false;
                         $isGeneratorSpy = false;
                         $isIterableSpy = false;
+                        $isWeakReference = false;
 
                         $isSpyVerifier = $value instanceof SpyVerifier;
                     } elseif ($value instanceof IterableSpy) {
@@ -317,6 +324,17 @@ class InlineExporter implements Exporter
                         $isStub = false;
                         $isGeneratorSpy = false;
                         $isIterableSpy = true;
+                        $isWeakReference = false;
+                    } elseif ($value instanceof WeakReference) {
+                        $isWrapper = true;
+                        $isClosure = false;
+                        $isException = false;
+                        $isHandle = false;
+                        $isSpy = false;
+                        $isStub = false;
+                        $isGeneratorSpy = false;
+                        $isIterableSpy = false;
+                        $isWeakReference = true;
                     } else {
                         $isWrapper = false;
                         $isClosure = false;
@@ -326,6 +344,7 @@ class InlineExporter implements Exporter
                         $isStub = false;
                         $isGeneratorSpy = false;
                         $isIterableSpy = false;
+                        $isWeakReference = false;
                     }
 
                     $isMock = $value instanceof Mock;
@@ -346,6 +365,8 @@ class InlineExporter implements Exporter
                         $result->type = 'generator-spy';
                     } elseif ($isIterableSpy) {
                         $result->type = 'iterable-spy';
+                    } elseif ($isWeakReference) {
+                        $result->type = 'weak';
                     } else {
                         $result->type = get_class($value);
                     }
@@ -418,6 +439,14 @@ class InlineExporter implements Exporter
                             $result->child,
                             $currentDepth,
                             gettype($iterable),
+                        ];
+                    } elseif ($isWeakReference) {
+                        $result->child = (object) [];
+                        $stack[] = [
+                            $value->get(),
+                            $result->child,
+                            $currentDepth,
+                            'object',
                         ];
                     }
 

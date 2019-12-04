@@ -23,6 +23,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 use TestClass;
+use WeakReference;
 
 class InlineExporterTest extends TestCase
 {
@@ -329,6 +330,19 @@ class InlineExporterTest extends TestCase
         $iterableSpy = $stub();
 
         $this->assertSame('iterable-spy#0(#0[])', $this->subject->export($iterableSpy));
+    }
+
+    /**
+     * @requires PHP >= 7.4
+     */
+    public function testExportWeakReference()
+    {
+        $object = (object) ['a' => 'b'];
+        $weakReference = WeakReference::create($object);
+        $repeated = [$weakReference, $weakReference];
+
+        $this->assertSame('weak#0(#1{a: "b"})', $this->subject->export($weakReference));
+        $this->assertSame('#0[weak#0(#1{a: "b"}), &0()]', $this->subject->export($repeated));
     }
 
     public function testExportCallable()
