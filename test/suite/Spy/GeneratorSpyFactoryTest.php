@@ -209,20 +209,14 @@ class GeneratorSpyFactoryTest extends TestCase
 
     public function testGeneratorReturn()
     {
-        $generator = eval(
-            'return call_user_func(function () { return 123; yield; });'
-        );
-
+        $generator = call_user_func(function () { return 123; yield; });
         $spy = $this->subject->create($this->call, $generator, true);
 
         while ($spy->valid()) {
             $spy->next();
         }
 
-        $this->assertSame(
-            123,
-            $spy->getReturn()
-        );
+        $this->assertSame(123, $spy->getReturn());
     }
 
     public function testInstance()

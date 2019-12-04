@@ -228,7 +228,7 @@ class FunctionalTest extends TestCase
 
     public function testGeneratorReturnTypeSpying()
     {
-        $stub = stub(eval('return function (): Generator {};'))->returns();
+        $stub = stub(function (): Generator {})->returns();
         iterator_to_array($stub());
 
         $this->assertTrue((bool) $stub->generated());
@@ -291,7 +291,7 @@ class FunctionalTest extends TestCase
 
     public function testSpyReturnType()
     {
-        $spy = spy(eval('return function () : int { return 123; };'));
+        $spy = spy(function (): int { return 123; });
 
         $this->assertSame(123, $spy());
     }
@@ -390,7 +390,7 @@ class FunctionalTest extends TestCase
 
     public function testStubReturnType()
     {
-        $stub = stub(eval('return function () : int { return 123; };'))->forwards();
+        $stub = stub(function (): int { return 123; })->forwards();
 
         $this->assertSame(123, $stub());
     }
@@ -951,7 +951,7 @@ class FunctionalTest extends TestCase
 
     public function testCannotMockAnonymousClasses()
     {
-        $instance = eval('return new class {};');
+        $instance = new class() {};
 
         $this->expectException(AnonymousClassException::class);
         mock(get_class($instance));

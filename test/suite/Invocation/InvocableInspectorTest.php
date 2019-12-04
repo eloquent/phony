@@ -13,6 +13,7 @@ use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionType;
+use stdClass;
 
 class InvocableInspectorTest extends TestCase
 {
@@ -60,12 +61,12 @@ class InvocableInspectorTest extends TestCase
     {
         $this->assertNull($this->subject->callbackReturnType(function () {}));
 
-        $type = $this->subject->callbackReturnType(eval('return function () : int {};'));
+        $type = $this->subject->callbackReturnType(function (): int {});
 
         $this->assertInstanceOf(ReflectionType::class, $type);
         $this->assertSame('int', $type->getName());
 
-        $type = $this->subject->callbackReturnType(eval('return function () : stdClass {};'));
+        $type = $this->subject->callbackReturnType(function (): stdClass {});
 
         $this->assertInstanceOf(ReflectionType::class, $type);
         $this->assertSame('stdClass', $type->getName());

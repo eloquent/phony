@@ -98,9 +98,7 @@ class FunctionSignatureInspectorTest extends TestCase
 
     public function testSignatureWithCallableTypeHint()
     {
-        $function = new ReflectionFunction(
-            eval('return function (callable $a = null, callable $b, callable $c = null) {};')
-        );
+        $function = new ReflectionFunction(function (callable $a = null, callable $b, callable $c = null) {});
         $actual = $this->subject->signature($function);
         $expected = [
             'a' => ['callable ', '', '', ' = null'],
@@ -140,7 +138,7 @@ class FunctionSignatureInspectorTest extends TestCase
 
     public function testSignatureWithVariadicParameter()
     {
-        $function = new ReflectionFunction(eval('return function(...$a){};'));
+        $function = new ReflectionFunction(function (...$a) {});
         $actual = $this->subject->signature($function);
         $expected = ['a' => ['', '', '...', '']];
 
