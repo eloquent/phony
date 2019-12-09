@@ -10,13 +10,15 @@ use Iterator;
 
 /**
  * The interface implemented by iterable spies.
+ *
+ * @extends Iterator<mixed>
  */
 interface IterableSpy extends ArrayAccess, Countable, Iterator
 {
     /**
      * Get the original iterable value.
      *
-     * @return iterable The original value.
+     * @return iterable<mixed> The original value.
      */
     public function iterable(): iterable;
 }

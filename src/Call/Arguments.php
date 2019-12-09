@@ -12,6 +12,8 @@ use IteratorAggregate;
 
 /**
  * Represents a set of call arguments.
+ *
+ * @implements IteratorAggregate<int,mixed>
  */
 class Arguments implements Countable, IteratorAggregate
 {
@@ -153,7 +155,7 @@ class Arguments implements Countable, IteratorAggregate
     /**
      * Get an iterator for these arguments.
      *
-     * @return Iterator The iterator.
+     * @return Iterator<int,mixed> The iterator.
      */
     public function getIterator(): Iterator
     {

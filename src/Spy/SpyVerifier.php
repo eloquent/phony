@@ -358,7 +358,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Get an iterator for this collection.
      *
-     * @return Iterator The iterator.
+     * @return Iterator<int,Call> The iterator.
      */
     public function getIterator(): Iterator
     {

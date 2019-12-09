@@ -12,6 +12,8 @@ use IteratorAggregate;
 
 /**
  * The interface implemented by event collections.
+ *
+ * @extends IteratorAggregate<int,Event>
  */
 interface EventCollection extends IteratorAggregate, Countable
 {
