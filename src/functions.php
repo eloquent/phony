@@ -68,8 +68,8 @@ function mock($types = []): InstanceHandle
  * with an empty argument list. However, if a `null` value is supplied for
  * `$arguments`, the original constructor will not be called at all.
  *
- * @param mixed                $types     The types to mock.
- * @param Arguments|array|null $arguments The constructor arguments, or null to bypass the constructor.
+ * @param mixed                           $types     The types to mock.
+ * @param Arguments|array<int,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
  *
  * @return InstanceHandle A handle around the new mock.
  */
@@ -97,7 +97,7 @@ function on($mock): InstanceHandle
 /**
  * Create a new static handle.
  *
- * @param Mock|Handle|ReflectionClass|string $class The class.
+ * @param Mock|Handle|ReflectionClass<object>|string $class The class.
  *
  * @return StaticHandle  The newly created handle.
  * @throws MockException If the supplied class name is not a mock class.

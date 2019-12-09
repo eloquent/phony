@@ -141,7 +141,11 @@ class FeatureDetector
         ];
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $features;
     private $supported;
 }

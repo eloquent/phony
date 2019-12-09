@@ -75,7 +75,11 @@ class SpyFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $labelSequencer;
     private $callFactory;
     private $invoker;

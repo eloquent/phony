@@ -119,7 +119,11 @@ class EmptyValueFactory
         return null;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $stubVerifierFactory;
     private $mockBuilderFactory;
 }

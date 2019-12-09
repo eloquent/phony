@@ -113,5 +113,8 @@ class FunctionSignatureInspector
         return $signature;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
 }

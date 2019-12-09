@@ -74,5 +74,8 @@ class InvocableInspector
         return $this->callbackReflector($callback)->getReturnType();
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
 }

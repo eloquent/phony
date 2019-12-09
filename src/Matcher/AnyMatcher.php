@@ -59,5 +59,8 @@ class AnyMatcher implements Matcher
         return '<any>';
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
 }

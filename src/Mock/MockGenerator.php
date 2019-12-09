@@ -951,7 +951,11 @@ EOD;
     const NS_SEPARATOR = "\u{a6}";
     const METHOD_SEPARATOR = "\u{bb}";
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $labelSequencer;
     private $signatureInspector;
 }

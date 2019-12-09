@@ -155,5 +155,8 @@ trait CardinalityVerifierTrait
         return $this->cardinality;
     }
 
+    /**
+     * @var Cardinality
+     */
     protected $cardinality;
 }

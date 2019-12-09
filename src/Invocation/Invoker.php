@@ -46,5 +46,8 @@ class Invoker
         return $callback(...$arguments);
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
 }

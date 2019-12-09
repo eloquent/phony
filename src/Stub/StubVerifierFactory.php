@@ -205,7 +205,11 @@ class StubVerifierFactory
         return $verifier;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $stubFactory;
     private $spyFactory;
     private $matcherFactory;

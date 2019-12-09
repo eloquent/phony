@@ -139,5 +139,8 @@ class FunctionHookGenerator
         return $source;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
 }

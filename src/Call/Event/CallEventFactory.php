@@ -170,7 +170,11 @@ class CallEventFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $sequencer;
     private $clock;
 }

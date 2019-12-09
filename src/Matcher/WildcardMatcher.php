@@ -127,7 +127,11 @@ class WildcardMatcher implements Matchable
         return $this->describe();
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $matcher;
     private $minimumArguments;
     private $maximumArguments;

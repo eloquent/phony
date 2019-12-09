@@ -104,7 +104,11 @@ class StubFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $labelSequencer;
     private $matcherFactory;
     private $matcherVerifier;

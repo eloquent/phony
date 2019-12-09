@@ -60,7 +60,11 @@ class GeneratorAnswerBuilderFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $invocableInspector;
     private $invoker;
 }

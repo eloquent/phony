@@ -78,6 +78,10 @@ class ExceptionAssertionRecorder implements AssertionRecorder
         throw new AssertionException($description);
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $callVerifierFactory;
 }

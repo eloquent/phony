@@ -31,7 +31,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
      * Construct a new iterable verifier.
      *
      * @param Spy|Call            $subject             The subject.
-     * @param array<Call>         $calls               The iterable calls.
+     * @param array<int,Call>     $calls               The iterable calls.
      * @param MatcherFactory      $matcherFactory      The matcher factory to use.
      * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
      * @param AssertionRecorder   $assertionRecorder   The assertion recorder to use.
@@ -110,7 +110,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
     /**
      * Get all events as an array.
      *
-     * @return array<Event> The events.
+     * @return array<int,Event> The events.
      */
     public function allEvents(): array
     {
@@ -120,7 +120,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
     /**
      * Get all calls as an array.
      *
-     * @return array<Call> The calls.
+     * @return array<int,Call> The calls.
      */
     public function allCalls(): array
     {
@@ -317,18 +317,15 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
         $cardinality = $this->resetCardinality();
         $argumentCount = func_num_args();
 
-        if (0 === $argumentCount) {
-            $checkKey = false;
-            $checkValue = false;
-        } elseif (1 === $argumentCount) {
-            $checkKey = false;
-            $checkValue = true;
+        if (1 === $argumentCount) {
+            $key = null;
             $value = $this->matcherFactory->adapt($keyOrValue);
-        } else {
-            $checkKey = true;
-            $checkValue = true;
+        } elseif ($argumentCount > 0)  {
             $key = $this->matcherFactory->adapt($keyOrValue);
             $value = $this->matcherFactory->adapt($value);
+        } else {
+            $key = null;
+            $value = null;
         }
 
         $isCall = $this->subject instanceof Call;
@@ -343,11 +340,11 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
                 if ($event instanceof ProducedEvent) {
                     ++$eventCount;
 
-                    if ($checkKey && !$key->matches($event->key())) {
+                    if ($key && !$key->matches($event->key())) {
                         continue;
                     }
 
-                    if ($checkValue && !$value->matches($event->value())) {
+                    if ($value && !$value->matches($event->value())) {
                         continue;
                     }
 
@@ -489,7 +486,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
         );
     }
 
-    private function normalizeIndex($size, $index, &$normalized = null)
+    private function normalizeIndex(int $size, int $index, ?int &$normalized): bool
     {
         $normalized = null;
 
@@ -512,14 +509,53 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
         return true;
     }
 
+    /**
+     * @var Spy|Call
+     */
     protected $subject;
+
+    /**
+     * @var MatcherFactory
+     */
     protected $matcherFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     protected $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     protected $assertionRenderer;
+
+    /**
+     * @var bool
+     */
     protected $isGenerator;
+
+    /**
+     * @var array<int,Call>
+     */
     protected $events;
+
+    /**
+     * @var array<int,Call>
+     */
     protected $calls;
+
+    /**
+     * @var int
+     */
     protected $eventCount;
+
+    /**
+     * @var int
+     */
     protected $callCount;
+
+    /**
+     * @var CallVerifierFactory
+     */
     protected $callVerifierFactory;
 }

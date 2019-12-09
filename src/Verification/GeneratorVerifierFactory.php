@@ -83,9 +83,28 @@ class GeneratorVerifierFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
+
+    /**
+     * @var CallVerifierFactory
+     */
     private $callVerifierFactory;
 }

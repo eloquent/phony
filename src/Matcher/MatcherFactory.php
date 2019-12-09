@@ -248,7 +248,11 @@ class MatcherFactory
             new WildcardMatcher($value, $minimumArguments, $maximumArguments);
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $drivers;
     private $driverIndex;
     private $anyMatcher;

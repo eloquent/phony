@@ -1,0 +1,16 @@
+parameters:
+  checkMissingIterableValueType: false
+  level: max
+  paths: [src]
+  inferPrivatePropertyTypeFromConstructor: true
+  ignoreErrors:
+    # allow @throws with interfaces
+    - '/@throws with type .* is not subtype of Throwable/'
+
+  #   # (tests only) ignore undefined properties
+  #   - message: '/^Access to an undefined property /'
+  #     path: test
+
+  #   # (tests only) Eloquent\Phony\Phpunit\Facade is a namespace alias, and not expected to exist
+  #   - message: '/^(Class|Function) Eloquent\\Phony\\Phpunit\\Facade(\\\w+)? not found.$/'
+  #     path: test/suite/PhonyTest.php

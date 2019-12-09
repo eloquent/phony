@@ -168,7 +168,11 @@ class SpyVerifierFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $spyFactory;
     private $matcherFactory;
     private $matcherVerifier;

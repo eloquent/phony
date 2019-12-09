@@ -59,5 +59,8 @@ class HamcrestMatcherDriver implements MatcherDriver
         return new HamcrestMatcher($matcher);
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
 }

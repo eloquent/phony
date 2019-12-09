@@ -72,6 +72,10 @@ class IterableSpyFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $callEventFactory;
 }

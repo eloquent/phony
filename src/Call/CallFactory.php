@@ -87,7 +87,11 @@ class CallFactory
         return $call;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $eventFactory;
     private $invoker;
 }

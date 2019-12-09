@@ -184,7 +184,11 @@ class HandleFactory
         return $handle;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $stubFactory;
     private $stubVerifierFactory;
     private $emptyValueFactory;

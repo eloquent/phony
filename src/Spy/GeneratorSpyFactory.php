@@ -117,6 +117,10 @@ class GeneratorSpyFactory
         }
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $callEventFactory;
 }

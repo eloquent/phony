@@ -45,6 +45,10 @@ class SystemClock implements Clock
         return $microtime(true);
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $microtime;
 }

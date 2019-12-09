@@ -175,7 +175,11 @@ class MockFactory
         return $mock;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $labelSequencer;
     private $generator;
     private $handleFactory;

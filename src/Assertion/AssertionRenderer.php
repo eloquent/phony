@@ -3790,7 +3790,11 @@ class AssertionRenderer
     const PASS = "\u{2713}";
     const FAIL = "\u{2717}";
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $matcherVerifier;
     private $exporter;
     private $differenceEngine;

@@ -110,7 +110,11 @@ class CallVerifierFactory
         return $verifiers;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $matcherFactory;
     private $matcherVerifier;
     private $generatorVerifierFactory;

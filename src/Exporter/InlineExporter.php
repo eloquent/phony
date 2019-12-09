@@ -787,7 +787,11 @@ class InlineExporter implements Exporter
     const ARRAY_ID_KEY = "\0__phony__\0";
     const JSON_FLAGS = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $depth;
     private $arraySequencer;
     private $objectSequencer;

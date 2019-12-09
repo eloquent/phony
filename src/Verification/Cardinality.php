@@ -146,7 +146,18 @@ class Cardinality
         return $this;
     }
 
+    /**
+     * @var int
+     */
     private $minimum;
+
+    /**
+     * @var int
+     */
     private $maximum;
+
+    /**
+     * @var bool
+     */
     private $isAlways;
 }

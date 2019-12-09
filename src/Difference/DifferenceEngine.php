@@ -107,7 +107,11 @@ class DifferenceEngine
         return $diff;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $featureDetector;
     private $addStart;
     private $addEnd;

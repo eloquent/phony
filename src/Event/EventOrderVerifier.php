@@ -231,7 +231,11 @@ class EventOrderVerifier
         return array_values($merged);
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $assertionRecorder;
     private $assertionRenderer;
 }

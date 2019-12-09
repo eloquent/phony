@@ -166,5 +166,8 @@ class MatcherVerifier
         return new MatcherResult($isMatch, $matcherMatches, $argumentMatches);
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
 }

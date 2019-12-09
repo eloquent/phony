@@ -69,7 +69,11 @@ class MockBuilderFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
     private $mockFactory;
     private $handleFactory;
     private $invocableInspector;
