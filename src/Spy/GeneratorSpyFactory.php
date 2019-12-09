@@ -41,10 +41,10 @@ class GeneratorSpyFactory
     /**
      * Create a new generator spy.
      *
-     * @param Call      $call      The call from which the generator originated.
-     * @param Generator $generator The generator.
+     * @param Call             $call      The call from which the generator originated.
+     * @param Generator<mixed> $generator The generator.
      *
-     * @return Generator The newly created generator spy.
+     * @return Generator<mixed> The newly created generator spy.
      */
     public function create(Call $call, Generator $generator): Generator
     {

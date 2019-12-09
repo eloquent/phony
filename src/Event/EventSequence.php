@@ -215,7 +215,7 @@ class EventSequence implements EventCollection
     /**
      * Get an iterator for this collection.
      *
-     * @return Iterator The iterator.
+     * @return Iterator<int,Event> The iterator.
      */
     public function getIterator(): Iterator
     {
