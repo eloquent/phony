@@ -160,8 +160,8 @@ class StubVerifierFactory
      * Create a new stub verifier for a global function and declare it in the
      * specified namespace.
      *
-     * @param string $function  The function name.
-     * @param string $namespace The namespace.
+     * @param callable&string $function  The function name.
+     * @param string          $namespace The namespace.
      *
      * @return StubVerifier             The newly created stub verifier.
      * @throws InvalidArgumentException If an invalid function name or namespace is specified.
@@ -210,15 +210,58 @@ class StubVerifierFactory
      */
     private static $instance;
 
+    /**
+     * @var StubFactory
+     */
     private $stubFactory;
+
+    /**
+     * @var SpyFactory
+     */
     private $spyFactory;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var MatcherVerifier
+     */
     private $matcherVerifier;
+
+    /**
+     * @var GeneratorVerifierFactory
+     */
     private $generatorVerifierFactory;
+
+    /**
+     * @var IterableVerifierFactory
+     */
     private $iterableVerifierFactory;
+
+    /**
+     * @var CallVerifierFactory
+     */
     private $callVerifierFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
+
+    /**
+     * @var GeneratorAnswerBuilderFactory
+     */
     private $generatorAnswerBuilderFactory;
+
+    /**
+     * @var FunctionHookManager
+     */
     private $functionHookManager;
 }

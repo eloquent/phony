@@ -16,8 +16,8 @@ class StubRule
     /**
      * Construct a new stub rule.
      *
-     * @param array<Matchable> $criteria The criteria.
-     * @param array<Answer>    $answers  The answers.
+     * @param array<int,Matchable> $criteria The criteria.
+     * @param array<int,Answer>    $answers  The answers.
      */
     public function __construct(array $criteria, array $answers)
     {
@@ -31,7 +31,7 @@ class StubRule
     /**
      * Get the criteria.
      *
-     * @return array<Matchable> The criteria.
+     * @return array<int,Matchable> The criteria.
      */
     public function criteria(): array
     {
@@ -41,7 +41,7 @@ class StubRule
     /**
      * Get the answers.
      *
-     * @return array<Answer> The answers.
+     * @return array<int,Answer> The answers.
      */
     public function answers(): array
     {
@@ -64,18 +64,30 @@ class StubRule
 
         ++$this->calledCount;
 
-        if (
-            !isset($this->answers[$index]) ||
-            !$this->answers[$index]->primaryRequest()
-        ) {
+        if (!isset($this->answers[$index])) {
             throw new UndefinedAnswerException();
         }
 
         return $this->answers[$index];
     }
 
+    /**
+     * @var array<int,Matchable>
+     */
     private $criteria;
+
+    /**
+     * @var array<int,Answer>
+     */
     private $answers;
+
+    /**
+     * @var int
+     */
     private $lastIndex;
+
+    /**
+     * @var int
+     */
     private $calledCount;
 }

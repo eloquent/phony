@@ -14,11 +14,11 @@ class GeneratorYieldIteration
     /**
      * Construct a new generator yield iteration.
      *
-     * @param array<CallRequest> $requests The requests.
-     * @param bool               $hasKey   True if the key should be yielded.
-     * @param mixed              $key      The key.
-     * @param bool               $hasValue True if the value should be yielded.
-     * @param mixed              $value    The value.
+     * @param array<int,CallRequest> $requests The requests.
+     * @param bool                   $hasKey   True if the key should be yielded.
+     * @param mixed                  $key      The key.
+     * @param bool                   $hasValue True if the value should be yielded.
+     * @param mixed                  $value    The value.
      */
     public function __construct(
         array $requests,
@@ -34,9 +34,28 @@ class GeneratorYieldIteration
         $this->value = $value;
     }
 
+    /**
+     * @var array<int,CallRequest>
+     */
     public $requests;
+
+    /**
+     * @var bool
+     */
     public $hasKey;
+
+    /**
+     * @var mixed
+     */
     public $key;
+
+    /**
+     * @var bool
+     */
     public $hasValue;
+
+    /**
+     * @var mixed
+     */
     public $value;
 }

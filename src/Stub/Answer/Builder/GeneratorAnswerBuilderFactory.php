@@ -65,6 +65,13 @@ class GeneratorAnswerBuilderFactory
      */
     private static $instance;
 
+    /**
+     * @var InvocableInspector
+     */
     private $invocableInspector;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
 }

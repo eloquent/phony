@@ -9,6 +9,7 @@ use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\WrappedInvocableTrait;
+use Eloquent\Phony\Matcher\Matchable;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Mock\Exception\FinalClassException;
@@ -21,6 +22,7 @@ use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Exception\FinalReturnTypeException;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Exception;
+use ReflectionNamedType;
 use Throwable;
 
 /**
@@ -35,7 +37,7 @@ class StubData implements Stub
      *
      * @param Stub $stub The stub.
      */
-    public static function forwardsAnswerCallback(Stub $stub)
+    public static function forwardsAnswerCallback(Stub $stub): void
     {
         $stub->forwards();
     }
@@ -45,7 +47,7 @@ class StubData implements Stub
      *
      * @param Stub $stub The stub.
      */
-    public static function returnsEmptyAnswerCallback(Stub $stub)
+    public static function returnsEmptyAnswerCallback(Stub $stub): void
     {
         $stub->returns();
     }
@@ -53,7 +55,7 @@ class StubData implements Stub
     /**
      * Construct a new stub data instance.
      *
-     * @param callable|null                 $callback                      The callback, or null to create an anonymous stub.
+     * @param ?callable                     $callback                      The callback, or null to create an anonymous stub.
      * @param string                        $label                         The label.
      * @param callable                      $defaultAnswerCallback         The callback to use when creating a default answer.
      * @param MatcherFactory                $matcherFactory                The matcher factory to use.
@@ -65,7 +67,7 @@ class StubData implements Stub
      * @param Exporter                      $exporter                      The exporter to use.
      */
     public function __construct(
-        $callback,
+        ?callable $callback,
         string $label,
         callable $defaultAnswerCallback,
         MatcherFactory $matcherFactory,
@@ -197,8 +199,8 @@ class StubData implements Stub
      * Note that all supplied callbacks will be called in the same invocation.
      *
      * @param callable        $callback              The callback.
-     * @param Arguments|array $arguments             The arguments.
-     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
+     * @param Arguments|array<int,mixed> $arguments             The arguments.
+     * @param ?bool           $prefixSelf            True if the self value should be prefixed.
      * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool            $suffixArguments       True if the arguments should be appended individually.
      *
@@ -271,7 +273,7 @@ class StubData implements Stub
      * Note that all supplied callbacks will be called in the same invocation.
      *
      * @param int             $index                 The argument index.
-     * @param Arguments|array $arguments             The arguments.
+     * @param Arguments|array<int,mixed> $arguments             The arguments.
      * @param bool            $prefixSelf            True if the self value should be prefixed.
      * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool            $suffixArguments       True if the arguments should be appended individually.
@@ -362,7 +364,7 @@ class StubData implements Stub
     /**
      * Add a callback as an answer.
      *
-     * @param callable $callbacks The callbacks.
+     * @param callable ...$callbacks The callbacks.
      *
      * @return $this This stub.
      */
@@ -379,8 +381,8 @@ class StubData implements Stub
      * Add a callback as an answer.
      *
      * @param callable        $callback              The callback.
-     * @param Arguments|array $arguments             The arguments.
-     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
+     * @param Arguments|array<int,mixed> $arguments             The arguments.
+     * @param ?bool           $prefixSelf            True if the self value should be prefixed.
      * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool            $suffixArguments       True if the arguments should be appended individually.
      *
@@ -423,8 +425,8 @@ class StubData implements Stub
     /**
      * Add an answer that calls the wrapped callback.
      *
-     * @param Arguments|array $arguments             The arguments.
-     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
+     * @param Arguments|array<int,mixed> $arguments             The arguments.
+     * @param ?bool           $prefixSelf            True if the self value should be prefixed.
      * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool            $suffixArguments       True if the arguments should be appended individually.
      *
@@ -519,7 +521,9 @@ class StubData implements Stub
                         ) {
                             try {
                                 $value = $emptyValueFactory->fromType($type);
-                            } catch (FinalClassException $e){
+                            } catch (FinalClassException $e) {
+                                assert($type instanceof ReflectionNamedType);
+
                                 throw new FinalReturnTypeException(
                                     $this->exporter->exportCallable($callback),
                                     $type->getName(),
@@ -633,6 +637,8 @@ class StubData implements Stub
                 $exception = $exception->get();
             }
 
+            assert($exception instanceof Throwable);
+
             $this->doesWith(
                 function () use ($exception) {
                     throw $exception;
@@ -718,7 +724,7 @@ class StubData implements Stub
      *
      * This method supports reference parameters.
      *
-     * @param Arguments|array $arguments The arguments.
+     * @param Arguments|array<int,mixed> $arguments The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
@@ -740,6 +746,8 @@ class StubData implements Stub
             $arguments = new Arguments($arguments);
         }
 
+        $rule = null;
+
         foreach ($this->rules as $rule) {
             if (
                 $this->matcherVerifier
@@ -749,6 +757,7 @@ class StubData implements Stub
             }
         }
 
+        assert($rule instanceof StubRule);
         $answer = $rule->next();
 
         foreach ($answer->secondaryRequests() as $request) {
@@ -774,17 +783,68 @@ class StubData implements Stub
         return ['label' => $this->label];
     }
 
+    /**
+     * @var mixed
+     */
     private $self;
+
+    /**
+     * @var callable
+     */
     private $defaultAnswerCallback;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var MatcherVerifier
+     */
     private $matcherVerifier;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
+
+    /**
+     * @var InvocableInspector
+     */
     private $invocableInspector;
+
+    /**
+     * @var EmptyValueFactory
+     */
     private $emptyValueFactory;
+
+    /**
+     * @var GeneratorAnswerBuilderFactory
+     */
     private $generatorAnswerBuilderFactory;
+
+    /**
+     * @var Exporter
+     */
     private $exporter;
+
+    /**
+     * @var ?array<int,Matchable>
+     */
     private $criteria;
+
+    /**
+     * @var array<int,CallRequest>
+     */
     private $secondaryRequests;
+
+    /**
+     * @var array<int,Answer>
+     */
     private $answers;
+
+    /**
+     * @var array<int,StubRule>
+     */
     private $rules;
 }

@@ -76,13 +76,13 @@ class StubFactory
     /**
      * Create a new stub.
      *
-     * @param callable|null $callback              The callback, or null to create an anonymous stub.
-     * @param callable|null $defaultAnswerCallback The callback to use when creating a default answer.
+     * @param ?callable $callback              The callback, or null to create an anonymous stub.
+     * @param ?callable $defaultAnswerCallback The callback to use when creating a default answer.
      *
      * @return Stub The newly created stub.
      */
     public function create(
-        $callback = null,
+        callable $callback = null,
         callable $defaultAnswerCallback = null
     ): Stub {
         if (null === $defaultAnswerCallback) {
@@ -109,12 +109,43 @@ class StubFactory
      */
     private static $instance;
 
+    /**
+     * @var Sequencer
+     */
     private $labelSequencer;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var MatcherVerifier
+     */
     private $matcherVerifier;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
+
+    /**
+     * @var InvocableInspector
+     */
     private $invocableInspector;
+
+    /**
+     * @var EmptyValueFactory
+     */
     private $emptyValueFactory;
+
+    /**
+     * @var GeneratorAnswerBuilderFactory
+     */
     private $generatorAnswerBuilderFactory;
+
+    /**
+     * @var Exporter
+     */
     private $exporter;
 }

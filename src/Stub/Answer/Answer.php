@@ -12,8 +12,8 @@ class Answer
     /**
      * Construct a new answer.
      *
-     * @param CallRequest        $primaryRequest    The primary request.
-     * @param array<CallRequest> $secondaryRequests The secondary requests.
+     * @param CallRequest            $primaryRequest    The primary request.
+     * @param array<int,CallRequest> $secondaryRequests The secondary requests.
      */
     public function __construct(
         CallRequest $primaryRequest,
@@ -36,13 +36,20 @@ class Answer
     /**
      * Get the secondary requests.
      *
-     * @return array<CallRequest> The secondary requests.
+     * @return array<int,CallRequest> The secondary requests.
      */
     public function secondaryRequests(): array
     {
         return $this->secondaryRequests;
     }
 
+    /**
+     * @var CallRequest
+     */
     private $primaryRequest;
+
+    /**
+     * @var array<int,CallRequest>
+     */
     private $secondaryRequests;
 }

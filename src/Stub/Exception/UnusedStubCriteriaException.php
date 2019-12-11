@@ -16,7 +16,7 @@ final class UnusedStubCriteriaException extends Exception
     /**
      * Construct a new unused stub criteria exception.
      *
-     * @param array<Matchable> $criteria The criteria.
+     * @param array<int,Matchable> $criteria The criteria.
      */
     public function __construct(array $criteria)
     {
@@ -37,12 +37,15 @@ final class UnusedStubCriteriaException extends Exception
     /**
      * Get the criteria.
      *
-     * @return array<Matchable> The criteria.
+     * @return array<int,Matchable> The criteria.
      */
     public function criteria(): array
     {
         return $this->criteria;
     }
 
+    /**
+     * @var array<int,Matchable>
+     */
     private $criteria;
 }

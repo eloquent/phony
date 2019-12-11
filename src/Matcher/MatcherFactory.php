@@ -137,7 +137,7 @@ class MatcherFactory
      *
      * @param array $values The values to create matchers for.
      *
-     * @return array<Matchable> The newly created matchers.
+     * @return array<int,Matchable> The newly created matchers.
      */
     public function adaptAll(array $values): array
     {
