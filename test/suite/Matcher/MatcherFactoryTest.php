@@ -88,7 +88,6 @@ class MatcherFactoryTest extends TestCase
 
     public function testAdaptSpecialCases()
     {
-        $this->assertSame($this->wildcardAnyMatcher, $this->subject->adapt('*'));
         $this->assertSame($this->anyMatcher, $this->subject->adapt('~'));
     }
 

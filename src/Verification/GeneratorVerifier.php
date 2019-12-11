@@ -228,6 +228,8 @@ class GeneratorVerifier extends IterableVerifier
                 $type = $this->matcherFactory->adapt($type);
             }
 
+            /** @var Matcher $type */
+
             if ($isTypeSupported) {
                 foreach ($this->calls as $call) {
                     $isMatchingCall = false;
@@ -299,6 +301,8 @@ class GeneratorVerifier extends IterableVerifier
         } elseif ($this->matcherFactory->isMatcher($type)) {
             $type = $this->matcherFactory->adapt($type);
         }
+
+        /** @var Matcher $type */
 
         if ($result = $this->checkReceivedException($type)) {
             return $result;
@@ -462,6 +466,8 @@ class GeneratorVerifier extends IterableVerifier
                 $type = $this->matcherFactory->adapt($type);
             }
 
+            /** @var Matcher $type */
+
             if ($isTypeSupported) {
                 foreach ($this->calls as $call) {
                     if (
@@ -520,6 +526,8 @@ class GeneratorVerifier extends IterableVerifier
         } elseif ($this->matcherFactory->isMatcher($type)) {
             $type = $this->matcherFactory->adapt($type);
         }
+
+        /** @var Matcher $type */
 
         if ($result = $this->checkThrew($type)) {
             return $result;

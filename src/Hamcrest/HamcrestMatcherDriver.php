@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Hamcrest;
 
-use Eloquent\Phony\Matcher\Matchable;
+use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherDriver;
-use Hamcrest\Matcher;
+use Hamcrest\Matcher as HamcrestMatcherInterface;
 
 /**
  * A matcher driver for Hamcrest matchers.
@@ -34,7 +34,7 @@ class HamcrestMatcherDriver implements MatcherDriver
      */
     public function isAvailable(): bool
     {
-        return interface_exists(Matcher::class);
+        return interface_exists(HamcrestMatcherInterface::class);
     }
 
     /**
@@ -44,7 +44,7 @@ class HamcrestMatcherDriver implements MatcherDriver
      */
     public function matcherClassNames(): array
     {
-        return [Matcher::class];
+        return [HamcrestMatcherInterface::class];
     }
 
     /**
@@ -52,9 +52,9 @@ class HamcrestMatcherDriver implements MatcherDriver
      *
      * @param object $matcher The matcher to wrap.
      *
-     * @return Matchable The wrapped matcher.
+     * @return Matcher The wrapped matcher.
      */
-    public function wrapMatcher($matcher): Matchable
+    public function wrapMatcher($matcher): Matcher
     {
         return new HamcrestMatcher($matcher);
     }

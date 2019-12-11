@@ -28,7 +28,7 @@ interface MatcherDriver
      *
      * @param object $matcher The matcher to wrap.
      *
-     * @return Matchable The wrapped matcher.
+     * @return Matcher The wrapped matcher.
      */
-    public function wrapMatcher($matcher): Matchable;
+    public function wrapMatcher($matcher): Matcher;
 }

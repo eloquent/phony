@@ -109,11 +109,11 @@ class MatcherFactory
      *
      * @param mixed $value The value to create a matcher for.
      *
-     * @return Matchable The newly created matcher.
+     * @return Matcher The newly created matcher.
      */
-    public function adapt($value): Matchable
+    public function adapt($value): Matcher
     {
-        if ($value instanceof Matchable) {
+        if ($value instanceof Matcher) {
             return $value;
         }
 
@@ -123,10 +123,6 @@ class MatcherFactory
                     return $driver->wrapMatcher($value);
                 }
             }
-        }
-
-        if ('*' === $value) {
-            return $this->wildcardAnyMatcher;
         }
 
         if ('~' === $value) {
@@ -148,10 +144,7 @@ class MatcherFactory
         $matchers = [];
 
         foreach ($values as $value) {
-            if (
-                $value instanceof Matcher ||
-                $value instanceof WildcardMatcher
-            ) {
+            if ($value instanceof Matchable) {
                 $matchers[] = $value;
 
                 continue;
