@@ -79,7 +79,7 @@ interface Stub extends WrappedInvocable
      *
      * @param callable                   $callback              The callback.
      * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param bool|null                  $prefixSelf            True if the self value should be prefixed.
+     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
      * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
@@ -165,7 +165,7 @@ interface Stub extends WrappedInvocable
      *
      * @param callable                   $callback              The callback.
      * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param bool|null                  $prefixSelf            True if the self value should be prefixed.
+     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
      * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
@@ -183,7 +183,7 @@ interface Stub extends WrappedInvocable
      * Add an answer that calls the wrapped callback.
      *
      * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param bool|null                  $prefixSelf            True if the self value should be prefixed.
+     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
      * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
@@ -243,7 +243,7 @@ interface Stub extends WrappedInvocable
      * Add an answer that returns a generator, and return a builder for
      * customizing the generator's behavior.
      *
-     * @param mixed<mixed,mixed> ...$values Sets of keys and values to yield.
+     * @param iterable<mixed> ...$values Sets of keys and values to yield.
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */

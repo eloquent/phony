@@ -241,7 +241,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
     /**
      * Checks if iteration of the subject commenced.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
     public function checkUsed(): ?EventCollection
     {
@@ -273,8 +273,8 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
     /**
      * Throws an exception unless iteration of the subject commenced.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function used(): ?EventCollection
     {
@@ -308,7 +308,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
     public function checkProduced(
         $keyOrValue = null,
@@ -390,8 +390,8 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
      * @param mixed $keyOrValue The key or value.
      * @param mixed $value      The value.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function produced(
         $keyOrValue = null,
@@ -431,7 +431,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
     /**
      * Checks if the subject was completely consumed.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
     public function checkConsumed(): ?EventCollection
     {
@@ -466,8 +466,8 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
     /**
      * Throws an exception unless the subject was completely consumed.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function consumed(): ?EventCollection
     {

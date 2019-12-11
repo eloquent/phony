@@ -188,11 +188,11 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable        $callback              The callback.
+     * @param callable                   $callback              The callback.
      * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param ?bool       $prefixSelf            True if the self value should be prefixed.
-     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
+     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      */
     public function callsWith(
         callable $callback,
@@ -242,11 +242,11 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param int             $index                 The argument index.
+     * @param int                        $index                 The argument index.
      * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param bool            $prefixSelf            True if the self value should be prefixed.
-     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     * @param bool                       $prefixSelf            True if the self value should be prefixed.
+     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -311,11 +311,11 @@ class StubVerifier extends SpyVerifier implements Stub
     /**
      * Add a callback as an answer.
      *
-     * @param callable        $callback              The callback.
+     * @param callable                   $callback              The callback.
      * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param ?bool       $prefixSelf            True if the self value should be prefixed.
-     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
+     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -341,9 +341,9 @@ class StubVerifier extends SpyVerifier implements Stub
      * Add an answer that calls the wrapped callback.
      *
      * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param ?bool       $prefixSelf            True if the self value should be prefixed.
-     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
+     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */

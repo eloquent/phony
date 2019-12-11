@@ -95,8 +95,8 @@ class StubVerifierFactory
      *
      * If the "self" value is omitted, it will be set to the verifier itself.
      *
-     * @param Stub|null $stub The stub, or null to create an anonymous stub.
-     * @param mixed     $self The "self" value.
+     * @param ?Stub $stub The stub, or null to create an anonymous stub.
+     * @param mixed $self The "self" value.
      *
      * @return StubVerifier The newly created stub verifier.
      */
@@ -131,11 +131,11 @@ class StubVerifierFactory
     /**
      * Create a new stub verifier for the supplied callback.
      *
-     * @param callable|null $callback The callback, or null to create an anonymous stub.
+     * @param ?callable $callback The callback, or null to create an anonymous stub.
      *
      * @return StubVerifier The newly created stub verifier.
      */
-    public function createFromCallback($callback): StubVerifier
+    public function createFromCallback(?callable $callback): StubVerifier
     {
         $stub = $this->stubFactory->create($callback);
 

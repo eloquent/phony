@@ -54,7 +54,7 @@ class CallRequest
     /**
      * Get the final arguments.
      *
-     * @param ?object    $self      The self value.
+     * @param ?object   $self      The self value.
      * @param Arguments $arguments The incoming arguments.
      *
      * @return Arguments The final arguments.

@@ -66,8 +66,8 @@ class GeneratorVerifierFactory
     /**
      * Create a new generator verifier.
      *
-     * @param Spy|Call    $subject The subject.
-     * @param array<Call> $calls   The calls.
+     * @param Spy|Call        $subject The subject.
+     * @param array<int,Call> $calls   The calls.
      *
      * @return GeneratorVerifier The newly created generator verifier.
      */

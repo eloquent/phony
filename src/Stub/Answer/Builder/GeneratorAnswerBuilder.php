@@ -62,7 +62,7 @@ class GeneratorAnswerBuilder
      *
      * @param callable                   $callback              The callback.
      * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param bool|null                  $prefixSelf            True if the self value should be prefixed.
+     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
      * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
