@@ -66,7 +66,7 @@ class InvocableInspector
      *
      * @param callable $callback The callback.
      *
-     * @return ReflectionType|null The return type, or null if no return type is defined.
+     * @return ?ReflectionType     The return type, or null if no return type is defined.
      * @throws ReflectionException If the callback cannot be reflected.
      */
     public function callbackReturnType($callback): ?ReflectionType

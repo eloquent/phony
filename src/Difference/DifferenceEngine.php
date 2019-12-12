@@ -42,7 +42,7 @@ class DifferenceEngine
      *
      * Pass `null` to detect automatically.
      *
-     * @param bool|null $useColor True to use color.
+     * @param ?bool $useColor True to use color.
      */
     public function setUseColor(?bool $useColor): void
     {

@@ -25,8 +25,8 @@ interface Exporter
      *
      * Negative depths are treated as infinite depth.
      *
-     * @param mixed    &$value The value.
-     * @param int|null $depth  The depth, or null to use the default.
+     * @param mixed &$value The value.
+     * @param ?int  $depth  The depth, or null to use the default.
      *
      * @return string The exported value.
      */

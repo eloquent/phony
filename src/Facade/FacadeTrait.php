@@ -126,7 +126,7 @@ trait FacadeTrait
     /**
      * Create a new spy.
      *
-     * @param callable|null $callback The callback, or null to create an anonymous spy.
+     * @param ?callable $callback The callback, or null to create an anonymous spy.
      *
      * @return SpyVerifier The new spy.
      */
@@ -159,7 +159,7 @@ trait FacadeTrait
     /**
      * Create a new stub.
      *
-     * @param callable|null $callback The callback, or null to create an anonymous stub.
+     * @param ?callable $callback The callback, or null to create an anonymous stub.
      *
      * @return StubVerifier The new stub.
      */
@@ -208,7 +208,7 @@ trait FacadeTrait
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
     public static function checkInOrder(...$events): ?EventCollection
     {
@@ -223,8 +223,8 @@ trait FacadeTrait
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public static function inOrder(...$events): ?EventCollection
     {
@@ -238,7 +238,7 @@ trait FacadeTrait
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection|null     The result.
+     * @return ?EventCollection         The result.
      * @throws InvalidArgumentException If invalid input is supplied.
      */
     public static function checkAnyOrder(...$events): ?EventCollection
@@ -253,7 +253,7 @@ trait FacadeTrait
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection         The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -361,7 +361,7 @@ trait FacadeTrait
      *
      * Pass `null` to detect automatically.
      *
-     * @param bool|null $useColor True to use color.
+     * @param ?bool $useColor True to use color.
      */
     public static function setUseColor(?bool $useColor): void
     {

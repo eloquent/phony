@@ -16,8 +16,8 @@ final class InvalidTypeException extends Exception implements
     /**
      * Construct a new invalid type exception.
      *
-     * @param mixed          $type  The type.
-     * @param Throwable|null $cause The cause, if available.
+     * @param mixed      $type  The type.
+     * @param ?Throwable $cause The cause, if available.
      */
     public function __construct($type, Throwable $cause = null)
     {

@@ -29,8 +29,8 @@ class FeatureDetector
     /**
      * Construct a new feature detector.
      *
-     * @param array<string,callable>|null $features  The features.
-     * @param array<string,bool>          $supported The known feature support.
+     * @param ?array<string,callable> $features  The features.
+     * @param array<string,bool>      $supported The known feature support.
      */
     public function __construct(
         array $features = null,

@@ -59,7 +59,7 @@ class SpyFactory
     /**
      * Create a new spy.
      *
-     * @param callable|null $callback The callback, or null to create an anonymous spy.
+     * @param ?callable $callback The callback, or null to create an anonymous spy.
      *
      * @return Spy The newly created spy.
      */

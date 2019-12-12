@@ -59,7 +59,7 @@ class FunctionHookManager
      * @param string   $namespace The namespace.
      * @param callable $callback  The callback.
      *
-     * @return callable|null         The replaced callback, or null if no callback was set.
+     * @return ?callable             The replaced callback, or null if no callback was set.
      * @throws FunctionHookException If the function hook generation fails.
      */
     public function defineFunction(

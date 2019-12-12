@@ -15,8 +15,8 @@ final class UndefinedEventException extends Exception
     /**
      * Construct a new undefined event exception.
      *
-     * @param int            $index The index.
-     * @param Throwable|null $cause The cause, if available.
+     * @param int        $index The index.
+     * @param ?Throwable $cause The cause, if available.
      */
     public function __construct(int $index, Throwable $cause = null)
     {

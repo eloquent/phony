@@ -234,8 +234,8 @@ class MockBuilder
     /**
      * Add a custom method.
      *
-     * @param string        $name     The name.
-     * @param callable|null $callback The callback.
+     * @param string    $name     The name.
+     * @param ?callable $callback The callback.
      *
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
@@ -280,8 +280,8 @@ class MockBuilder
     /**
      * Add a custom static method.
      *
-     * @param string        $name     The name.
-     * @param callable|null $callback The callback.
+     * @param string    $name     The name.
+     * @param ?callable $callback The callback.
      *
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
@@ -556,7 +556,7 @@ class MockBuilder
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param MockGenerator|null $generator The mock generator to use.
+     * @param ?MockGenerator $generator The mock generator to use.
      *
      * @return string        The source code.
      * @throws MockException If the mock generation fails.

@@ -162,7 +162,7 @@ trait HandleTrait
     /**
      * Checks if there was no interaction with the mock.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
     public function checkNoInteraction(): ?EventCollection
     {
@@ -178,8 +178,8 @@ trait HandleTrait
     /**
      * Record an assertion failure unless there was no interaction with the mock.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function noInteraction(): ?EventCollection
     {

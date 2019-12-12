@@ -95,7 +95,7 @@ class RealMethodDefinition implements MethodDefinition
     /**
      * Get the callback.
      *
-     * @return callable|null The callback, or null if this is a real method.
+     * @return ?callable The callback, or null if this is a real method.
      */
     public function callback()
     {

@@ -85,7 +85,7 @@ class AssertionRenderer
      *
      * Pass `null` to detect automatically.
      *
-     * @param bool|null $useColor True to use color.
+     * @param ?bool $useColor True to use color.
      */
     public function setUseColor(?bool $useColor): void
     {
@@ -767,9 +767,9 @@ class AssertionRenderer
     /**
      * Render a failed responded() verification.
      *
-     * @param Spy|Call     $subject     The subject.
-     * @param Cardinality  $cardinality The cardinality.
-     * @param Matcher|null $value       The value.
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     * @param ?Matcher    $value       The value.
      *
      * @return string The rendered failure message.
      */
@@ -1643,11 +1643,11 @@ class AssertionRenderer
     /**
      * Render a failed iterable produced() verification.
      *
-     * @param Spy|Call     $subject     The subject.
-     * @param Cardinality  $cardinality The cardinality.
-     * @param bool         $isGenerator True if this verification is for a generator.
-     * @param Matcher|null $key         The key.
-     * @param Matcher|null $value       The value.
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     * @param bool        $isGenerator True if this verification is for a generator.
+     * @param ?Matcher    $key         The key.
+     * @param ?Matcher    $value       The value.
      *
      * @return string The rendered failure message.
      */
@@ -2325,9 +2325,9 @@ class AssertionRenderer
     /**
      * Render a failed generator received() verification.
      *
-     * @param Spy|Call     $subject     The subject.
-     * @param Cardinality  $cardinality The cardinality.
-     * @param Matcher|null $value       The value.
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     * @param ?Matcher    $value       The value.
      *
      * @return string The rendered failure message.
      */
@@ -2916,9 +2916,9 @@ class AssertionRenderer
     /**
      * Render a failed generator returned() verification.
      *
-     * @param Spy|Call     $subject     The subject.
-     * @param Cardinality  $cardinality The cardinality.
-     * @param Matcher|null $value       The value.
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     * @param ?Matcher    $value       The value.
      *
      * @return string The rendered failure message.
      */

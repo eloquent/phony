@@ -14,7 +14,7 @@ interface Matchable
     /**
      * Describe this matcher.
      *
-     * @param Exporter|null $exporter The exporter to use.
+     * @param ?Exporter $exporter The exporter to use.
      *
      * @return string The description.
      */

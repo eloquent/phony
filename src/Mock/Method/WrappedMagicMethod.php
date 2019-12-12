@@ -98,7 +98,7 @@ class WrappedMagicMethod implements WrappedMethod
     /**
      * Get the mock.
      *
-     * @return Mock|null The mock.
+     * @return ?Mock The mock.
      */
     public function mock(): ?Mock
     {

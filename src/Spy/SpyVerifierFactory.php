@@ -82,7 +82,7 @@ class SpyVerifierFactory
     /**
      * Create a new spy verifier.
      *
-     * @param Spy|null $spy The spy, or null to create an anonymous spy.
+     * @param ?Spy $spy The spy, or null to create an anonymous spy.
      *
      * @return SpyVerifier The newly created spy verifier.
      */
@@ -107,7 +107,7 @@ class SpyVerifierFactory
     /**
      * Create a new spy verifier for the supplied callback.
      *
-     * @param callable|null $callback The callback, or null to create an anonymous spy.
+     * @param ?callable $callback The callback, or null to create an anonymous spy.
      *
      * @return SpyVerifier The newly created spy verifier.
      */

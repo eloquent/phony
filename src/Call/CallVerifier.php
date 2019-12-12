@@ -274,7 +274,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the response event.
      *
-     * @return ResponseEvent|null The response event, or null if the call has not yet responded.
+     * @return ?ResponseEvent The response event, or null if the call has not yet responded.
      */
     public function responseEvent(): ?ResponseEvent
     {
@@ -318,7 +318,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the end event.
      *
-     * @return EndEvent|null The end event, or null if the call has not yet completed.
+     * @return ?EndEvent The end event, or null if the call has not yet completed.
      */
     public function endEvent(): ?EndEvent
     {
@@ -478,8 +478,8 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the response.
      *
-     * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
-     * @throws UndefinedResponseException  If this call has not yet responded.
+     * @return tuple<?Throwable,mixed>    A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException If this call has not yet responded.
      */
     public function response(): array
     {
@@ -489,8 +489,8 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the response from the generator.
      *
-     * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
-     * @throws UndefinedResponseException  If this call has not yet responded via generator.
+     * @return tuple<?Throwable,mixed>    A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException If this call has not yet responded via generator.
      */
     public function generatorResponse(): array
     {
@@ -502,7 +502,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * A call that has responded has returned a value, or thrown an exception.
      *
-     * @return float|null The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
+     * @return ?float The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
      */
     public function responseTime(): ?float
     {
@@ -520,7 +520,7 @@ class CallVerifier implements Call, CardinalityVerifier
      * iterable will not be considered complete until the iterable has been
      * completely consumed via iteration.
      *
-     * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
+     * @return ?float The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */
     public function endTime(): ?float
     {
@@ -530,7 +530,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the call duration.
      *
-     * @return float|null The call duration in seconds, or null if the call has not yet completed.
+     * @return ?float The call duration in seconds, or null if the call has not yet completed.
      */
     public function duration(): ?float
     {
@@ -546,7 +546,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the call response duration.
      *
-     * @return float|null The call response duration in seconds, or null if the call has not yet responded.
+     * @return ?float The call response duration in seconds, or null if the call has not yet responded.
      */
     public function responseDuration(): ?float
     {
@@ -574,7 +574,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return EventCollection|null        The result.
+     * @return ?EventCollection            The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkCalledWith(...$arguments): ?EventCollection
@@ -600,7 +600,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param mixed ...$argument The arguments.
      *
-     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -622,7 +622,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Checks if this call responded.
      *
-     * @return EventCollection|null        The result.
+     * @return ?EventCollection            The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkResponded(): ?EventCollection
@@ -643,7 +643,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Throws an exception unless this call responded.
      *
-     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -663,7 +663,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Checks if this call completed.
      *
-     * @return EventCollection|null        The result.
+     * @return ?EventCollection            The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkCompleted(): ?EventCollection
@@ -684,7 +684,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Throws an exception unless this call completed.
      *
-     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -709,7 +709,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection|null        The result.
+     * @return ?EventCollection            The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkReturned($value = null): ?EventCollection
@@ -758,7 +758,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -789,7 +789,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection|null        The result.
+     * @return ?EventCollection            The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws InvalidArgumentException    If the type is invalid.
      */
@@ -867,7 +867,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws InvalidArgumentException    If the type is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
@@ -899,7 +899,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Checks if this call returned a generator.
      *
-     * @return GeneratorVerifier|null      The result.
+     * @return ?GeneratorVerifier          The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkGenerated(): ?GeneratorVerifier
@@ -950,7 +950,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Checks if this call returned an iterable.
      *
-     * @return IterableVerifier|null       The result.
+     * @return ?IterableVerifier           The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkIterated(): ?IterableVerifier
