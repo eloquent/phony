@@ -19,9 +19,9 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 class StubFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return StubFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

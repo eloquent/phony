@@ -10,9 +10,9 @@ namespace Eloquent\Phony\Matcher;
 class MatcherVerifier
 {
     /**
-     * Get the static instance of this verifier.
+     * Get the static instance of this class.
      *
-     * @return MatcherVerifier The static verifier.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

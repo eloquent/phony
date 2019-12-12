@@ -13,9 +13,9 @@ use ReflectionClass;
 class FeatureDetector
 {
     /**
-     * Get the static instance of this detector.
+     * Get the static instance of this class.
      *
-     * @return FeatureDetector The static detector.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

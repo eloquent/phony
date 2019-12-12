@@ -14,9 +14,9 @@ use Hamcrest\Matcher as HamcrestMatcherInterface;
 class HamcrestMatcherDriver implements MatcherDriver
 {
     /**
-     * Get the static instance of this driver.
+     * Get the static instance of this class.
      *
-     * @return MatcherDriver The static driver.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

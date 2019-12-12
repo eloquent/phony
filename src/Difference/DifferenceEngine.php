@@ -12,9 +12,9 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 class DifferenceEngine
 {
     /**
-     * Get the static instance of this engine.
+     * Get the static instance of this class.
      *
-     * @return DifferenceEngine The static engine.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

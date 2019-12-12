@@ -26,9 +26,9 @@ use ReflectionException;
 class HandleFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return HandleFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

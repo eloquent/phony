@@ -10,9 +10,9 @@ namespace Eloquent\Phony\Clock;
 class SystemClock implements Clock
 {
     /**
-     * Get the static instance of this clock.
+     * Get the static instance of this class.
      *
-     * @return Clock The static clock.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

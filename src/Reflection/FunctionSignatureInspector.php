@@ -12,9 +12,9 @@ use ReflectionFunctionAbstract;
 class FunctionSignatureInspector
 {
     /**
-     * Get the static instance of this inspector.
+     * Get the static instance of this class.
      *
-     * @return PhpFunctionSignatureInspector The static inspector.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

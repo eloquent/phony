@@ -12,9 +12,9 @@ use Eloquent\Phony\Exporter\Exporter;
 class AnyMatcher implements Matcher
 {
     /**
-     * Get the static instance of this matcher.
+     * Get the static instance of this class.
      *
-     * @return Matcher The static matcher.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

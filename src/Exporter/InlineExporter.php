@@ -34,9 +34,9 @@ use WeakReference;
 class InlineExporter implements Exporter
 {
     /**
-     * Get the static instance of this exporter.
+     * Get the static instance of this class.
      *
-     * @return Exporter The static exporter.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

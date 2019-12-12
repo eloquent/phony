@@ -15,9 +15,9 @@ use Throwable;
 class CallFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return CallFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

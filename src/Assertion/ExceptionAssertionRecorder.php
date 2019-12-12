@@ -17,9 +17,9 @@ use Throwable;
 class ExceptionAssertionRecorder implements AssertionRecorder
 {
     /**
-     * Get the static instance of this recorder.
+     * Get the static instance of this class.
      *
-     * @return AssertionRecorder The static recorder.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

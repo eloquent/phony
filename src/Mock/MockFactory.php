@@ -20,9 +20,9 @@ use ReflectionClass;
 class MockFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return MockFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

@@ -15,9 +15,9 @@ use Eloquent\Phony\Sequencer\Sequencer;
 class MockGenerator
 {
     /**
-     * Get the static instance of this generator.
+     * Get the static instance of this class.
      *
-     * @return MockGenerator The static generator.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

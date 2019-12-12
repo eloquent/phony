@@ -13,9 +13,9 @@ use Throwable;
 class Invoker
 {
     /**
-     * Get the static instance of this invoker.
+     * Get the static instance of this class.
      *
-     * @return Invoker The static invoker.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

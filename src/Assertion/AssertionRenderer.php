@@ -40,9 +40,9 @@ use Traversable;
 class AssertionRenderer
 {
     /**
-     * Get the static instance of this renderer.
+     * Get the static instance of this class.
      *
-     * @return AssertionRenderer The static renderer.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

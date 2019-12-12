@@ -10,9 +10,9 @@ namespace Eloquent\Phony\Hook;
 class FunctionHookGenerator
 {
     /**
-     * Get the static instance of this generator.
+     * Get the static instance of this class.
      *
-     * @return FunctionHookGenerator The static generator.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

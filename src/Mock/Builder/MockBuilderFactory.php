@@ -14,9 +14,9 @@ use Eloquent\Phony\Mock\MockFactory;
 class MockBuilderFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return MockBuilderFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

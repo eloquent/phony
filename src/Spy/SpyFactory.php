@@ -14,9 +14,9 @@ use Eloquent\Phony\Sequencer\Sequencer;
 class SpyFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return SpyFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

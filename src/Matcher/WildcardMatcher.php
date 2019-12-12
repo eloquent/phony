@@ -12,9 +12,9 @@ use Eloquent\Phony\Exporter\Exporter;
 class WildcardMatcher implements Matchable
 {
     /**
-     * Get the static instance of this matcher.
+     * Get the static instance of this class.
      *
-     * @return WildcardMatcher The static matcher.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

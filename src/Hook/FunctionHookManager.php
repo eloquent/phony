@@ -18,9 +18,9 @@ use ParseError;
 class FunctionHookManager
 {
     /**
-     * Get the static instance of this manager.
+     * Get the static instance of this class.
      *
-     * @return FunctionHookManager The static manager.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

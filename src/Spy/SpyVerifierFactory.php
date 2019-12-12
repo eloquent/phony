@@ -21,9 +21,9 @@ use InvalidArgumentException;
 class SpyVerifierFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return SpyVerifierFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {

@@ -17,9 +17,9 @@ use ReflectionType;
 class InvocableInspector
 {
     /**
-     * Get the static instance of this inspector.
+     * Get the static instance of this class.
      *
-     * @return InvocableInspector The static inspector.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
