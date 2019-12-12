@@ -44,8 +44,8 @@ class DifferenceSequenceMatcher
     /**
      * Construct a new sequence matcher.
      *
-     * @param array $a An array containing the sequence to compare against.
-     * @param array $b An array containing the sequence to compare.
+     * @param array<int,mixed> $a An array containing the sequence to compare against.
+     * @param array<int,mixed> $b An array containing the sequence to compare.
      */
     public function __construct(array $a, array $b)
     {
@@ -74,7 +74,7 @@ class DifferenceSequenceMatcher
      *           $i1 in $a.
      * equal  -  The two strings with the specified ranges are equal.
      *
-     * @return array Array of the opcodes describing the differences between the strings.
+     * @return array<int,array<int,mixed>> Array of the opcodes describing the differences between the strings.
      */
     public function getOpCodes(): array
     {
@@ -161,7 +161,7 @@ class DifferenceSequenceMatcher
      * @param int $blo The lower constraint for the second sequence.
      * @param int $bhi The upper constraint for the second sequence.
      *
-     * @return array Array containing the longest match that includes the starting position in $a, start in $b and the length/size.
+     * @return array<int,int> Array containing the longest match that includes the starting position in $a, start in $b and the length/size.
      */
     private function findLongestMatch($alo, $ahi, $blo, $bhi)
     {
@@ -253,7 +253,7 @@ class DifferenceSequenceMatcher
      * constraint of the block in $b and finally the number of lines that the
      * block continues for.
      *
-     * @return array Nested array of the matching blocks, as described by the function.
+     * @return array<int,array<int,int>> Nested array of the matching blocks, as described by the function.
      */
     private function getMatchingBlocks()
     {
@@ -318,8 +318,8 @@ class DifferenceSequenceMatcher
     /**
      * Sort an array by the nested arrays it contains. Helper function for getMatchingBlocks.
      *
-     * @param array $a First array to compare.
-     * @param array $b Second array to compare.
+     * @param array<int,mixed> $a First array to compare.
+     * @param array<int,mixed> $b Second array to compare.
      *
      * @return int -1, 0 or 1, as expected by the usort function.
      */

@@ -32,7 +32,7 @@ class Arguments implements Countable, IteratorAggregate
     /**
      * Construct a new set of call arguments.
      *
-     * @param array $arguments The arguments.
+     * @param array<int,mixed> $arguments The arguments.
      */
     public function __construct(array $arguments)
     {

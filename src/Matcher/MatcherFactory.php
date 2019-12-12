@@ -135,7 +135,7 @@ class MatcherFactory
     /**
      * Create new matchers for the all supplied values.
      *
-     * @param array $values The values to create matchers for.
+     * @param array<int,mixed> $values The values to create matchers for.
      *
      * @return array<int,Matchable> The newly created matchers.
      */

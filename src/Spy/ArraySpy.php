@@ -16,7 +16,7 @@ class ArraySpy implements IterableSpy
      * Construct a new array spy.
      *
      * @param Call             $call             The call from which the array originated.
-     * @param array            $array            The array.
+     * @param array<mixed>     $array            The array.
      * @param CallEventFactory $callEventFactory The call event factory to use.
      */
     public function __construct(
