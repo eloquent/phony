@@ -321,7 +321,7 @@ class CallData implements Call
     /**
      * Get the iterable events.
      *
-     * @return array<IterableEvent> The iterable events.
+     * @return array<int,IterableEvent> The iterable events.
      */
     public function iterableEvents(): array
     {
@@ -363,7 +363,7 @@ class CallData implements Call
     /**
      * Get all events as an array.
      *
-     * @return array<Event> The events.
+     * @return array<int,Event> The events.
      */
     public function allEvents(): array
     {
@@ -385,7 +385,7 @@ class CallData implements Call
     /**
      * Get all calls as an array.
      *
-     * @return array<Call> The calls.
+     * @return array<int,Call> The calls.
      */
     public function allCalls(): array
     {

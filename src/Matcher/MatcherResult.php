@@ -12,9 +12,9 @@ class MatcherResult
     /**
      * Construct a new matcher result.
      *
-     * @param bool        $isMatch         True if successful match.
-     * @param array<bool> $matcherMatches  The matcher results.
-     * @param array<bool> $argumentMatches The argument results.
+     * @param bool            $isMatch         True if successful match.
+     * @param array<int,bool> $matcherMatches  The matcher results.
+     * @param array<int,bool> $argumentMatches The argument results.
      */
     public function __construct(
         bool $isMatch,

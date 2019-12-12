@@ -62,7 +62,7 @@ interface Spy extends WrappedInvocable, EventCollection
     /**
      * Set the calls.
      *
-     * @param array<Call> $calls The calls.
+     * @param array<int,Call> $calls The calls.
      */
     public function setCalls(array $calls): void;
 

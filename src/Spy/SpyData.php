@@ -149,7 +149,7 @@ class SpyData implements Spy
     /**
      * Set the calls.
      *
-     * @param array<Call> $calls The calls.
+     * @param array<int,Call> $calls The calls.
      */
     public function setCalls(array $calls): void
     {
@@ -219,7 +219,7 @@ class SpyData implements Spy
     /**
      * Get all events as an array.
      *
-     * @return array<Event> The events.
+     * @return array<int,Event> The events.
      */
     public function allEvents(): array
     {
@@ -229,7 +229,7 @@ class SpyData implements Spy
     /**
      * Get all calls as an array.
      *
-     * @return array<Call> The calls.
+     * @return array<int,Call> The calls.
      */
     public function allCalls(): array
     {

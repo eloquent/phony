@@ -32,7 +32,7 @@ class FunctionSignatureInspector
      *
      * @param ReflectionFunctionAbstract $function The function.
      *
-     * @return array<string,array<string>> The function signature.
+     * @return array<string,array<int,string>> The function signature.
      */
     public function signature(ReflectionFunctionAbstract $function): array
     {

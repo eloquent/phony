@@ -202,7 +202,7 @@ interface Call extends Event, EventCollection
     /**
      * Get the iterable events.
      *
-     * @return array<IterableEvent> The iterable events.
+     * @return array<int,IterableEvent> The iterable events.
      */
     public function iterableEvents(): array;
 

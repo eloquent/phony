@@ -26,8 +26,8 @@ class MatcherVerifier
     /**
      * Verify that the supplied arguments match the supplied matchers.
      *
-     * @param array<Matchable> $matchers  The matchers.
-     * @param array            $arguments The arguments.
+     * @param array<int,Matchable> $matchers  The matchers.
+     * @param array<int,mixed>     $arguments The arguments.
      *
      * @return bool True if the arguments match.
      */
@@ -82,8 +82,8 @@ class MatcherVerifier
      * Explain which of the supplied arguments match which of the supplied
      * matchers.
      *
-     * @param array<Matchable> $matchers  The matchers.
-     * @param array            $arguments The arguments.
+     * @param array<int,Matchable> $matchers  The matchers.
+     * @param array<int,mixed>     $arguments The arguments.
      *
      * @return MatcherResult The result of matching.
      */

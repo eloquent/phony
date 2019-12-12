@@ -44,7 +44,7 @@ class ExceptionAssertionRecorder implements AssertionRecorder
     /**
      * Record that a successful assertion occurred.
      *
-     * @param array<Event> $events The events.
+     * @param array<int,Event> $events The events.
      *
      * @return EventCollection The result.
      */

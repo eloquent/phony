@@ -164,7 +164,7 @@ class MockDefinition
     /**
      * Get the type names.
      *
-     * @return array<string> The type names.
+     * @return array<int,string> The type names.
      */
     public function typeNames(): array
     {
@@ -188,7 +188,7 @@ class MockDefinition
     /**
      * Get the interface names.
      *
-     * @return array<string> The interface names.
+     * @return array<int,string> The interface names.
      */
     public function interfaceNames(): array
     {
@@ -200,7 +200,7 @@ class MockDefinition
     /**
      * Get the trait names.
      *
-     * @return array<string> The trait names.
+     * @return array<int,string> The trait names.
      */
     public function traitNames(): array
     {

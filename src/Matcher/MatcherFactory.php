@@ -73,7 +73,7 @@ class MatcherFactory
     /**
      * Get the matcher drivers.
      *
-     * @return array<MatcherDriver> The matcher drivers.
+     * @return array<int,MatcherDriver> The matcher drivers.
      */
     public function drivers(): array
     {

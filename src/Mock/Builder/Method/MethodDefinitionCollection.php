@@ -14,8 +14,8 @@ class MethodDefinitionCollection
     /**
      * Construct a new custom method definition.
      *
-     * @param array<string,MethodDefinition> $methods      The methods.
-     * @param array<TraitMethodDefinition>   $traitMethods The trait methods.
+     * @param array<string,MethodDefinition>   $methods      The methods.
+     * @param array<int,TraitMethodDefinition> $traitMethods The trait methods.
      */
     public function __construct(array $methods, array $traitMethods)
     {
@@ -143,7 +143,7 @@ class MethodDefinitionCollection
     /**
      * Get the trait methods.
      *
-     * @return array<ReflectionMethod> The trait methods.
+     * @return array<int,ReflectionMethod> The trait methods.
      */
     public function traitMethods(): array
     {

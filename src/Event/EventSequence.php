@@ -19,7 +19,7 @@ class EventSequence implements EventCollection
     /**
      * Construct a new event sequence.
      *
-     * @param array<Event>        $events              The events.
+     * @param array<int,Event>    $events              The events.
      * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
      */
     public function __construct(
@@ -94,7 +94,7 @@ class EventSequence implements EventCollection
     /**
      * Get all events as an array.
      *
-     * @return array<Event> The events.
+     * @return array<int,Event> The events.
      */
     public function allEvents(): array
     {
@@ -104,7 +104,7 @@ class EventSequence implements EventCollection
     /**
      * Get all calls as an array.
      *
-     * @return array<Call> The calls.
+     * @return array<int,Call> The calls.
      */
     public function allCalls(): array
     {

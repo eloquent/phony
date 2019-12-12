@@ -61,7 +61,7 @@ class Arguments implements Countable, IteratorAggregate
      *
      * This method supports reference parameters.
      *
-     * @return array<mixed> The arguments.
+     * @return array<int,mixed> The arguments.
      */
     public function all(): array
     {

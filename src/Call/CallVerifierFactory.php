@@ -87,9 +87,9 @@ class CallVerifierFactory
     /**
      * Wrap the supplied calls in verifiers.
      *
-     * @param array<Call> $calls The calls.
+     * @param array<int,Call> $calls The calls.
      *
-     * @return array<CallVerifier> The call verifiers.
+     * @return array<int,CallVerifier> The call verifiers.
      */
     public function fromCalls(array $calls): array
     {

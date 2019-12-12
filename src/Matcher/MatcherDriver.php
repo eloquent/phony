@@ -19,7 +19,7 @@ interface MatcherDriver
     /**
      * Get the supported matcher class names.
      *
-     * @return array<string> The matcher class names.
+     * @return array<int,string> The matcher class names.
      */
     public function matcherClassNames(): array;
 

@@ -214,9 +214,9 @@ class AssertionRenderer
     /**
      * Render a failed calledWith() verification.
      *
-     * @param Spy|Call         $subject     The subject.
-     * @param Cardinality      $cardinality The cardinality.
-     * @param array<Matchable> $matchers    The matchers.
+     * @param Spy|Call             $subject     The subject.
+     * @param Cardinality          $cardinality The cardinality.
+     * @param array<int,Matchable> $matchers    The matchers.
      *
      * @return string The rendered failure message.
      */
@@ -3520,8 +3520,8 @@ class AssertionRenderer
     /**
      * Render a failed noInteraction() verification.
      *
-     * @param Handle      $handle The handle.
-     * @param array<Call> $calls  The calls.
+     * @param Handle          $handle The handle.
+     * @param array<int,Call> $calls  The calls.
      *
      * @return string The rendered failure message.
      */
@@ -3570,8 +3570,8 @@ class AssertionRenderer
     /**
      * Render a failed inOrder() verification.
      *
-     * @param array<Event> $expected The expected events.
-     * @param array<Event> $actual   The actual events.
+     * @param array<int,Event> $expected The expected events.
+     * @param array<int,Event> $actual   The actual events.
      *
      * @return string The rendered failure message.
      */
@@ -3648,7 +3648,7 @@ class AssertionRenderer
     /**
      * Render a sequence of matchers.
      *
-     * @param array<Matchable> $matchers The matchers.
+     * @param array<int,Matchable> $matchers The matchers.
      *
      * @return string The rendered matchers.
      */
