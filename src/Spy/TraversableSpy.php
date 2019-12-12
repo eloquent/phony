@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Spy;
 
+use ArrayAccess;
+use Countable;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CallEventFactory;
+use Eloquent\Phony\Spy\Exception\NonArrayAccessTraversableException;
+use Eloquent\Phony\Spy\Exception\NonCountableTraversableException;
+use Iterator;
 use IteratorAggregate;
 use Traversable;
 
@@ -68,7 +73,9 @@ class TraversableSpy implements IterableSpy
      */
     public function next(): void
     {
-        $this->iterator->next();
+        if ($this->iterator) {
+            $this->iterator->next();
+        }
     }
 
     /**
@@ -88,16 +95,24 @@ class TraversableSpy implements IterableSpy
      */
     public function valid(): bool
     {
-        if (!$this->isUsed) {
+        if ($this->isUsed) {
+            assert($this->iterator instanceof Iterator);
+        } else {
             $this->call
                 ->addIterableEvent($this->callEventFactory->createUsed());
 
             if ($this->traversable instanceof IteratorAggregate) {
-                $this->iterator = $this->traversable->getIterator();
+                $iterator = $this->traversable->getIterator();
+
+                while (!$iterator instanceof Iterator) {
+                    $iterator = $iterator->getIterator();
+                }
             } else {
-                $this->iterator = $this->traversable;
+                $iterator = $this->traversable;
             }
 
+            assert($iterator instanceof Iterator);
+            $this->iterator = $iterator;
             $this->isUsed = true;
         }
 
@@ -135,6 +150,10 @@ class TraversableSpy implements IterableSpy
      */
     public function offsetExists($key): bool
     {
+        if (!$this->traversable instanceof ArrayAccess) {
+            throw new NonArrayAccessTraversableException($this->traversable);
+        }
+
         return isset($this->traversable[$key]);
     }
 
@@ -147,6 +166,10 @@ class TraversableSpy implements IterableSpy
      */
     public function offsetGet($key)
     {
+        if (!$this->traversable instanceof ArrayAccess) {
+            throw new NonArrayAccessTraversableException($this->traversable);
+        }
+
         return $this->traversable[$key];
     }
 
@@ -158,6 +181,10 @@ class TraversableSpy implements IterableSpy
      */
     public function offsetSet($key, $value): void
     {
+        if (!$this->traversable instanceof ArrayAccess) {
+            throw new NonArrayAccessTraversableException($this->traversable);
+        }
+
         $this->traversable[$key] = $value;
     }
 
@@ -168,25 +195,65 @@ class TraversableSpy implements IterableSpy
      */
     public function offsetUnset($key): void
     {
+        if (!$this->traversable instanceof ArrayAccess) {
+            throw new NonArrayAccessTraversableException($this->traversable);
+        }
+
         unset($this->traversable[$key]);
     }
 
     /**
      * Get the count.
      *
-     * @return int The count.
+     * @return int                              The count.
+     * @throws NonCountableTraversableException If the traversable does not implement Countable.
      */
     public function count(): int
     {
+        if (!$this->traversable instanceof Countable) {
+            throw new NonCountableTraversableException($this->traversable);
+        }
+
         return count($this->traversable);
     }
 
+    /**
+     * @var Call
+     */
     private $call;
+
+    /**
+     * @var Traversable
+     */
     private $traversable;
+
+    /**
+     * @var CallEventFactory
+     */
     private $callEventFactory;
+
+    /**
+     * @var bool
+     */
     private $isUsed;
+
+    /**
+     * @var bool
+     */
     private $isConsumed;
+
+    /**
+     * @var ?Iterator
+     */
     private $iterator;
+
+    /**
+     * @var mixed
+     */
     private $key;
+
+    /**
+     * @var mixed
+     */
     private $value;
 }

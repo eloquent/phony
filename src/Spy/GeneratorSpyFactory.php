@@ -54,7 +54,7 @@ class GeneratorSpyFactory
         return $spy;
     }
 
-    private function createSpy($call, $generator)
+    private function createSpy(Call $call, Generator $generator): Generator
     {
         $call->addIterableEvent($this->callEventFactory->createUsed());
 

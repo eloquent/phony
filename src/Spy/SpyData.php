@@ -8,8 +8,10 @@ use ArrayIterator;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallFactory;
+use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Collection\NormalizesIndices;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\Invoker;
@@ -24,6 +26,7 @@ use Traversable;
  */
 class SpyData implements Spy
 {
+    use NormalizesIndices;
     use WrappedInvocableTrait;
 
     /**
@@ -375,6 +378,7 @@ class SpyData implements Spy
             throw $responseEvent->exception();
         }
 
+        assert($responseEvent instanceof ReturnedEvent);
         $returnValue = $responseEvent->value();
 
         if ($this->useGeneratorSpies && $returnValue instanceof Generator) {
@@ -388,7 +392,7 @@ class SpyData implements Spy
             return $this->iterableSpyFactory->create($call, $returnValue);
         }
 
-        $call->setEndEvent($call->responseEvent());
+        $call->setEndEvent($responseEvent);
 
         return $returnValue;
     }
@@ -401,7 +405,7 @@ class SpyData implements Spy
         return ['label' => $this->label];
     }
 
-    private function normalizeIndex($size, $index, &$normalized = null)
+    private function normalizeIndex(int $size, int $index, ?int &$normalized): bool
     {
         $normalized = null;
 
@@ -424,12 +428,43 @@ class SpyData implements Spy
         return true;
     }
 
+    /**
+     * @var CallFactory
+     */
     private $callFactory;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
+
+    /**
+     * @var GeneratorSpyFactory
+     */
     private $generatorSpyFactory;
+
+    /**
+     * @var IterableSpyFactory
+     */
     private $iterableSpyFactory;
+
+    /**
+     * @var bool
+     */
     private $useGeneratorSpies;
+
+    /**
+     * @var bool
+     */
     private $useIterableSpies;
+
+    /**
+     * @var bool
+     */
     private $isRecording;
+
+    /**
+     * @var array<int,Call>
+     */
     private $calls;
 }

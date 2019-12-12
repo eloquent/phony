@@ -129,8 +129,8 @@ class SpyVerifierFactory
      * Create a new spy verifier for a global function and declare it in the
      * specified namespace.
      *
-     * @param string $function  The function name.
-     * @param string $namespace The namespace.
+     * @param callable&string $function  The function name.
+     * @param string          $namespace The namespace.
      *
      * @return SpyVerifier              The newly created spy verifier.
      * @throws InvalidArgumentException If an invalid function name or namespace is specified.

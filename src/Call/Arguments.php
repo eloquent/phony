@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Call;
 use ArrayIterator;
 use Countable;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
+use Eloquent\Phony\Collection\NormalizesIndices;
 use Iterator;
 use IteratorAggregate;
 
@@ -17,6 +18,8 @@ use IteratorAggregate;
  */
 class Arguments implements Countable, IteratorAggregate
 {
+    use NormalizesIndices;
+
     /**
      * Create a new set of call arguments from the supplied arguments.
      *
@@ -160,29 +163,6 @@ class Arguments implements Countable, IteratorAggregate
     public function getIterator(): Iterator
     {
         return new ArrayIterator($this->arguments);
-    }
-
-    private function normalizeIndex($size, $index, &$normalized = null)
-    {
-        $normalized = null;
-
-        if ($index < 0) {
-            $potential = $size + $index;
-
-            if ($potential < 0) {
-                return false;
-            }
-        } else {
-            $potential = $index;
-        }
-
-        if ($potential >= $size) {
-            return false;
-        }
-
-        $normalized = $potential;
-
-        return true;
     }
 
     private $arguments;

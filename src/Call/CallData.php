@@ -13,6 +13,7 @@ use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
+use Eloquent\Phony\Collection\NormalizesIndices;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Generator;
@@ -26,6 +27,8 @@ use Traversable;
  */
 class CallData implements Call
 {
+    use NormalizesIndices;
+
     /**
      * A comparator for ordering calls by sequence number.
      *
@@ -631,7 +634,7 @@ class CallData implements Call
         return null;
     }
 
-    private function normalizeIndex($size, $index, &$normalized = null)
+    private function normalizeIndex(int $size, int $index, ?int &$normalized): bool
     {
         $normalized = null;
 

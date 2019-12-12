@@ -7,6 +7,9 @@ parameters:
     # allow @throws with interfaces
     - '/@throws with type .* is not subtype of Throwable/'
 
+    # allow setting special property on generators
+    - '/Access to an undefined property Generator::\$_phonySubject./'
+
   #   # (tests only) ignore undefined properties
   #   - message: '/^Access to an undefined property /'
   #     path: test

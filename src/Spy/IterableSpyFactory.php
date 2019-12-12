@@ -41,8 +41,8 @@ class IterableSpyFactory
     /**
      * Create a new iterable spy.
      *
-     * @param Call     $call     The call from which the iterable originated.
-     * @param iterable $iterable The iterable.
+     * @param Call  $call     The call from which the iterable originated.
+     * @param mixed $iterable The iterable.
      *
      * @return IterableSpy              The newly created iterable spy.
      * @throws InvalidArgumentException If the supplied iterable is invalid.

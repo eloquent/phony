@@ -1165,6 +1165,7 @@ class FunctionalTest extends TestCase
         $iterableSpyA = $stub();
         $stub->returns($iterableSpyA);
         $iterableSpyB = $stub();
+        $iterableSpyAFirst = null;
         foreach ($iterableSpyA as $iterableSpyAFirst) {
             break;
         }

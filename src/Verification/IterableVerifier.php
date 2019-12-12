@@ -12,6 +12,7 @@ use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\ProducedEvent;
 use Eloquent\Phony\Call\Event\UsedEvent;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Collection\NormalizesIndices;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
@@ -26,6 +27,7 @@ use Throwable;
 class IterableVerifier implements EventCollection, CardinalityVerifier
 {
     use CardinalityVerifierTrait;
+    use NormalizesIndices;
 
     /**
      * Construct a new iterable verifier.

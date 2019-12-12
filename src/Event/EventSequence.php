@@ -8,6 +8,7 @@ use ArrayIterator;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Collection\NormalizesIndices;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Iterator;
 
@@ -16,6 +17,8 @@ use Iterator;
  */
 class EventSequence implements EventCollection
 {
+    use NormalizesIndices;
+
     /**
      * Construct a new event sequence.
      *
@@ -222,7 +225,7 @@ class EventSequence implements EventCollection
         return new ArrayIterator($this->events);
     }
 
-    private function normalizeIndex($size, $index, &$normalized = null)
+    private function normalizeIndex(int $size, int $index, ?int &$normalized): bool
     {
         $normalized = null;
 
