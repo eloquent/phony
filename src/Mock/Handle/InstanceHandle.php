@@ -119,7 +119,7 @@ class InstanceHandle implements Handle
     /**
      * Call the original constructor.
      *
-     * @param Arguments|array $arguments The arguments.
+     * @param Arguments|array<int,mixed> $arguments The arguments.
      *
      * @return $this This handle.
      */

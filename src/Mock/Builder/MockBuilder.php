@@ -538,7 +538,7 @@ class MockBuilder
      *
      * This method supports reference parameters.
      *
-     * @param Arguments|array|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param Arguments|array<int,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
      * @return Mock          The mock instance.
      * @throws MockException If the mock generation fails.

@@ -96,7 +96,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Get the callback.
      *
-     * @return callable|array The callback.
+     * @return callable|array<int,object|string> The callback.
      */
     public function callback()
     {
@@ -380,7 +380,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * This method supports reference parameters.
      *
-     * @param Arguments|array $arguments The arguments.
+     * @param Arguments|array<int,mixed> $arguments The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
