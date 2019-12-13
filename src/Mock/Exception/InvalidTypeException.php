@@ -45,5 +45,8 @@ final class InvalidTypeException extends Exception implements
         return $this->type;
     }
 
+    /**
+     * @var mixed
+     */
     private $type;
 }

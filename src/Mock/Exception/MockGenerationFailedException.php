@@ -44,6 +44,7 @@ final class MockGenerationFailedException extends Exception implements
             );
             $errorLineNumber = null;
         } else {
+            /** @var int */
             $errorLineNumber = $error['line'];
             $startLine = $errorLineNumber - 4;
             $contextLineCount = 7;
@@ -125,7 +126,18 @@ final class MockGenerationFailedException extends Exception implements
         return $this->error;
     }
 
+    /**
+     * @var MockDefinition
+     */
     private $definition;
+
+    /**
+     * @var string
+     */
     private $source;
+
+    /**
+     * @var ?array<string,mixed>
+     */
     private $error;
 }

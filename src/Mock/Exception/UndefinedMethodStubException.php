@@ -52,6 +52,13 @@ final class UndefinedMethodStubException extends Exception implements
         return $this->name;
     }
 
+    /**
+     * @var string
+     */
     private $className;
+
+    /**
+     * @var string
+     */
     private $name;
 }

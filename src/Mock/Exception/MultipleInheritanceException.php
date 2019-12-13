@@ -47,5 +47,8 @@ final class MultipleInheritanceException extends Exception implements
         return $this->classNames;
     }
 
+    /**
+     * @var array<int,string>
+     */
     private $classNames;
 }

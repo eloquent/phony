@@ -39,5 +39,8 @@ final class FinalClassException extends Exception implements
         return $this->className;
     }
 
+    /**
+     * @var string
+     */
     private $className;
 }

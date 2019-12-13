@@ -39,5 +39,8 @@ final class ClassExistsException extends Exception implements
         return $this->className;
     }
 
+    /**
+     * @var string
+     */
     private $className;
 }
