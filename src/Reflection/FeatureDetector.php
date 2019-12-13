@@ -110,8 +110,11 @@ class FeatureDetector
     {
         return [
             'reflection.reference' => function () {
-                if (class_exists('ReflectionReference', false)) {
-                    $class = new ReflectionClass('ReflectionReference');
+                /** @var class-string */
+                $className = 'ReflectionReference';
+
+                if (class_exists($className, false)) {
+                    $class = new ReflectionClass($className);
 
                     return $class->isInternal();
                 }
