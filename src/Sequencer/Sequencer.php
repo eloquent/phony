@@ -63,6 +63,13 @@ class Sequencer
         return ++$this->current;
     }
 
+    /**
+     * @var array<string,self>
+     */
     private static $instances = [];
+
+    /**
+     * @var int
+     */
     private $current = -1;
 }
