@@ -7,6 +7,8 @@ namespace Eloquent\Phony\Mock\Method;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\WrappedInvocableTrait;
 use Eloquent\Phony\Mock\Handle\Handle;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandle;
 use Eloquent\Phony\Mock\Mock;
 use ReflectionMethod;
 use Throwable;
@@ -43,13 +45,13 @@ class WrappedMagicMethod implements WrappedMethod
         $this->exception = $exception;
         $this->returnValue = $returnValue;
 
-        if ($callMagicMethod->isStatic()) {
+        if ($handle instanceof StaticHandle) {
             $this->mock = null;
             $this->callback = [
                 $callMagicMethod->getDeclaringClass()->getName(),
                 '__callStatic',
             ];
-        } else {
+        } elseif ($handle instanceof InstanceHandle) {
             $this->mock = $handle->get();
             $this->callback = [$this->mock, '__call'];
         }
@@ -133,11 +135,38 @@ class WrappedMagicMethod implements WrappedMethod
             ->invoke($this->mock, $this->name, $arguments);
     }
 
+    /**
+     * @var string
+     */
     private $name;
+
+    /**
+     * @var ReflectionMethod
+     */
     private $callMagicMethod;
+
+    /**
+     * @var bool
+     */
     private $isUncallable;
+
+    /**
+     * @var Handle
+     */
     private $handle;
+
+    /**
+     * @var ?Mock
+     */
     private $mock;
+
+    /**
+     * @var ?Throwable
+     */
     private $exception;
+
+    /**
+     * @var mixed
+     */
     private $returnValue;
 }

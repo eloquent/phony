@@ -63,5 +63,8 @@ class WrappedParentMethod implements WrappedMethod
             ->invoke($this->mock, $this->name, $arguments);
     }
 
+    /**
+     * @var ReflectionMethod
+     */
     private $callParentMethod;
 }

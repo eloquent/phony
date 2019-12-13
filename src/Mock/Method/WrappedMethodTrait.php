@@ -6,6 +6,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Invocation\WrappedInvocableTrait;
 use Eloquent\Phony\Mock\Handle\Handle;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Handle\StaticHandle;
 use Eloquent\Phony\Mock\Mock;
 use ReflectionMethod;
@@ -57,8 +58,10 @@ trait WrappedMethodTrait
         return $this->mock;
     }
 
-    private function constructWrappedMethod($method, $handle)
-    {
+    private function constructWrappedMethod(
+        ReflectionMethod $method,
+        Handle $handle
+    ): void {
         $this->method = $method;
         $this->handle = $handle;
         $this->name = $method->getName();
@@ -69,14 +72,29 @@ trait WrappedMethodTrait
                 $method->getDeclaringClass()->getName(),
                 $this->name,
             ];
-        } else {
+        } elseif ($handle instanceof InstanceHandle) {
             $this->mock = $handle->get();
             $this->callback = [$this->mock, $this->name];
         }
     }
 
+    /**
+     * @var ReflectionMethod
+     */
     private $method;
+
+    /**
+     * @var Handle
+     */
     private $handle;
+
+    /**
+     * @var ?Mock
+     */
     private $mock;
+
+    /**
+     * @var string
+     */
     private $name;
 }

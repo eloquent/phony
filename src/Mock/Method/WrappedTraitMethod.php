@@ -80,6 +80,13 @@ class WrappedTraitMethod implements WrappedMethod
         );
     }
 
+    /**
+     * @var ReflectionMethod
+     */
     private $callTraitMethod;
+
+    /**
+     * @var string
+     */
     private $traitName;
 }

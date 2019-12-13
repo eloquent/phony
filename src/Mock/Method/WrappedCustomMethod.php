@@ -66,6 +66,13 @@ class WrappedCustomMethod implements WrappedMethod
         return $this->invoker->callWith($this->customCallback, $arguments);
     }
 
+    /**
+     * @var callable
+     */
     private $customCallback;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
 }
