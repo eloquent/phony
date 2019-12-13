@@ -143,10 +143,13 @@ class HandleFactory
         } elseif ($class instanceof Mock) {
             $class = new ReflectionClass($class);
         } elseif (is_string($class)) {
+            /** @var class-string $classString */
+            $classString = $class;
+
             try {
-                $class = new ReflectionClass($class);
+                $class = new ReflectionClass($classString);
             } catch (ReflectionException $e) {
-                throw new NonMockClassException($class, $e);
+                throw new NonMockClassException($classString, $e);
             }
         } elseif (!$class instanceof ReflectionClass) {
             throw new InvalidMockClassException($class);
@@ -159,7 +162,7 @@ class HandleFactory
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
 
-        if ($handle = $handleProperty->getValue(null)) {
+        if ($handle = $handleProperty->getValue()) {
             return $handle;
         }
 
@@ -189,10 +192,33 @@ class HandleFactory
      */
     private static $instance;
 
+    /**
+     * @var StubFactory
+     */
     private $stubFactory;
+
+    /**
+     * @var StubVerifierFactory
+     */
     private $stubVerifierFactory;
+
+    /**
+     * @var EmptyValueFactory
+     */
     private $emptyValueFactory;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
 }

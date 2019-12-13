@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Handle;
 
+use Eloquent\Phony\Assertion\AssertionRecorder;
+use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Event\EventCollection;
+use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Exception\FinalMethodStubException;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
@@ -15,9 +18,13 @@ use Eloquent\Phony\Mock\Method\WrappedTraitMethod;
 use Eloquent\Phony\Mock\Method\WrappedUncallableMethod;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubData;
+use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifier;
+use Eloquent\Phony\Stub\StubVerifierFactory;
 use ReflectionClass;
+use ReflectionMethod;
 use stdClass;
 use Throwable;
 
@@ -240,7 +247,7 @@ trait HandleTrait
         return $this->state;
     }
 
-    private function createStub($name)
+    private function createStub(string $name): StubVerifier
     {
         $isMagic = !$this->class->hasMethod($name);
         $callMagicMethod = $this->callMagicMethod;
@@ -280,6 +287,8 @@ trait HandleTrait
                 $exception = null;
             }
 
+            assert($this->callMagicMethod instanceof ReflectionMethod);
+
             $stub = $this->stubFactory->create(
                 new WrappedMagicMethod(
                     $name,
@@ -312,6 +321,8 @@ trait HandleTrait
                 $this->state->defaultAnswerCallback
             );
         } elseif (isset($this->traitMethods[$key])) {
+            assert($this->callTraitMethod instanceof ReflectionMethod);
+
             $stub = $this->stubFactory->create(
                 new WrappedTraitMethod(
                     $this->callTraitMethod,
@@ -341,6 +352,8 @@ trait HandleTrait
                 );
             }
 
+            assert($this->callParentMethod instanceof ReflectionMethod);
+
             $stub = $this->stubFactory->create(
                 new WrappedParentMethod(
                     $this->callParentMethod,
@@ -361,19 +374,19 @@ trait HandleTrait
     }
 
     private function constructHandle(
-        $class,
-        $state,
-        $callParentMethod,
-        $callTraitMethod,
-        $callMagicMethod,
-        $mock,
-        $stubFactory,
-        $stubVerifierFactory,
-        $emptyValueFactory,
-        $assertionRenderer,
-        $assertionRecorder,
-        $invoker
-    ) {
+        ReflectionClass $class,
+        stdClass $state,
+        ?ReflectionMethod $callParentMethod,
+        ?ReflectionMethod $callTraitMethod,
+        ?ReflectionMethod $callMagicMethod,
+        ?Mock $mock,
+        StubFactory $stubFactory,
+        StubVerifierFactory $stubVerifierFactory,
+        EmptyValueFactory $emptyValueFactory,
+        AssertionRenderer $assertionRenderer,
+        AssertionRecorder $assertionRecorder,
+        Invoker $invoker
+    ): void {
         $this->mock = $mock;
         $this->class = $class;
         $this->state = $state;
@@ -389,30 +402,89 @@ trait HandleTrait
 
         $uncallableMethodsProperty = $class->getProperty('_uncallableMethods');
         $uncallableMethodsProperty->setAccessible(true);
-        $this->uncallableMethods = $uncallableMethodsProperty->getValue(null);
+        $this->uncallableMethods = $uncallableMethodsProperty->getValue();
 
         $traitMethodsProperty = $class->getProperty('_traitMethods');
         $traitMethodsProperty->setAccessible(true);
-        $this->traitMethods = $traitMethodsProperty->getValue(null);
+        $this->traitMethods = $traitMethodsProperty->getValue();
 
         $customMethodsProperty = $class->getProperty('_customMethods');
         $customMethodsProperty->setAccessible(true);
-        $this->customMethods = $customMethodsProperty->getValue(null);
+        $this->customMethods = $customMethodsProperty->getValue();
     }
 
+    /**
+     * @var stdClass
+     */
     private $state;
+
+    /**
+     * @var ReflectionClass<object>
+     */
     private $class;
+
+    /**
+     * @var ?Mock
+     */
     private $mock;
+
+    /**
+     * @var array<string,bool>
+     */
     private $uncallableMethods;
+
+    /**
+     * @var array<string,class-string>
+     */
     private $traitMethods;
+
+    /**
+     * @var ?ReflectionMethod
+     */
     private $callParentMethod;
+
+    /**
+     * @var ?ReflectionMethod
+     */
     private $callTraitMethod;
+
+    /**
+     * @var ?ReflectionMethod
+     */
     private $callMagicMethod;
+
+    /**
+     * @var StubFactory
+     */
     private $stubFactory;
+
+    /**
+     * @var StubVerifierFactory
+     */
     private $stubVerifierFactory;
+
+    /**
+     * @var EmptyValueFactory
+     */
     private $emptyValueFactory;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
+
+    /**
+     * @var array<string,callable>
+     */
     private $customMethods;
 }

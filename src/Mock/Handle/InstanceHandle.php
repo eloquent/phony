@@ -13,6 +13,7 @@ use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use ReflectionClass;
+use ReflectionMethod;
 use ReflectionObject;
 use stdClass;
 
@@ -101,7 +102,10 @@ class InstanceHandle implements Handle
      */
     public function get(): Mock
     {
-        return $this->mock;
+        /** @var Mock */
+        $mock = $this->mock;
+
+        return $mock;
     }
 
     /**
@@ -213,5 +217,8 @@ class InstanceHandle implements Handle
         return ['mock' => $this->mock, 'label' => $this->state->label];
     }
 
+    /**
+     * @var ?ReflectionMethod
+     */
     private $callParentConstructorMethod;
 }

@@ -170,7 +170,7 @@ class MockBuilder
 
         foreach ($final as $type) {
             if (is_string($type)) {
-                /** @var class-string */
+                /** @var class-string $classString */
                 $classString = $type;
 
                 try {
