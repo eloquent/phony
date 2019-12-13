@@ -10,6 +10,12 @@ parameters:
     # allow setting special property on generators
     - '/Access to an undefined property Generator::\$_phonySubject./'
 
+    # false positive
+    - '/Property Eloquent\\Phony\\Mock\\Handle\\(Instance|Static)Handle::\$\w+ has no typehint specified./'
+
+    # can't fix with @param
+    - '/Method Eloquent\\Phony\\Mock\\Handle\\(Instance|Static)Handle::constructHandle\(\) has parameter \$class with generic class ReflectionClass but does not specify its types: T/'
+
   #   # (tests only) ignore undefined properties
   #   - message: '/^Access to an undefined property /'
   #     path: test

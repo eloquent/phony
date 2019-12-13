@@ -143,6 +143,7 @@ class MockFactory
      */
     public function createFullMock(ReflectionClass $class): Mock
     {
+        /** @var Mock */
         $mock = $class->newInstanceWithoutConstructor();
         $this->handleFactory
             ->instanceHandle($mock, strval($this->labelSequencer->next()));
@@ -163,6 +164,7 @@ class MockFactory
         ReflectionClass $class,
         $arguments = []
     ): Mock {
+        /** @var Mock */
         $mock = $class->newInstanceWithoutConstructor();
         $handle = $this->handleFactory
             ->instanceHandle($mock, strval($this->labelSequencer->next()));
@@ -180,8 +182,23 @@ class MockFactory
      */
     private static $instance;
 
+    /**
+     * @var Sequencer
+     */
     private $labelSequencer;
+
+    /**
+     * @var MockGenerator
+     */
     private $generator;
+
+    /**
+     * @var HandleFactory
+     */
     private $handleFactory;
+
+    /**
+     * @var array<int,array<mixed>>
+     */
     private $definitions;
 }
