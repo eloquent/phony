@@ -478,7 +478,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the response.
      *
-     * @return tuple<?Throwable,mixed>    A 2-tuple of thrown exception or null, and return value.
+     * @return array<int,mixed>           A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException If this call has not yet responded.
      */
     public function response(): array
@@ -489,7 +489,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the response from the generator.
      *
-     * @return tuple<?Throwable,mixed>    A 2-tuple of thrown exception or null, and return value.
+     * @return array<int,mixed>           A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException If this call has not yet responded via generator.
      */
     public function generatorResponse(): array

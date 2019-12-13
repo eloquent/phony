@@ -19,13 +19,13 @@ class MockDefinition
     /**
      * Construct a new mock definition.
      *
-     * @param array<string,ReflectionClass<object>>                    $types                  The types.
-     * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customMethods          The custom methods.
-     * @param array<string,mixed>                                      $customProperties       The custom properties.
-     * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customStaticMethods    The custom static methods.
-     * @param array<string,mixed>                                      $customStaticProperties The custom static properties.
-     * @param array<string,mixed>                                      $customConstants        The custom constants.
-     * @param string                                                   $className              The class name.
+     * @param array<string,ReflectionClass<object>>                        $types                  The types.
+     * @param array<string,array<int,callable|ReflectionFunctionAbstract>> $customMethods          The custom methods.
+     * @param array<string,mixed>                                          $customProperties       The custom properties.
+     * @param array<string,array<int,callable|ReflectionFunctionAbstract>> $customStaticMethods    The custom static methods.
+     * @param array<string,mixed>                                          $customStaticProperties The custom static properties.
+     * @param array<string,mixed>                                          $customConstants        The custom constants.
+     * @param string                                                       $className              The class name.
      */
     public function __construct(
         array $types,
@@ -91,7 +91,7 @@ class MockDefinition
     /**
      * Get the custom methods.
      *
-     * @return array<string,tuple<callable,ReflectionFunctionAbstract>> The custom methods.
+     * @return array<string,array<int,callable|ReflectionFunctionAbstract>> The custom methods.
      */
     public function customMethods(): array
     {
@@ -111,7 +111,7 @@ class MockDefinition
     /**
      * Get the custom static methods.
      *
-     * @return array<string,tuple<callable,ReflectionFunctionAbstract>> The custom static methods.
+     * @return array<string,array<int,callable|ReflectionFunctionAbstract>> The custom static methods.
      */
     public function customStaticMethods(): array
     {
