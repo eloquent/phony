@@ -246,9 +246,28 @@ class MatcherFactory
      */
     private static $instance;
 
+    /**
+     * @var array<int,MatcherDriver>
+     */
     private $drivers;
+
+    /**
+     * @var array<string,MatcherDriver>
+     */
     private $driverIndex;
+
+    /**
+     * @var Matcher
+     */
     private $anyMatcher;
+
+    /**
+     * @var WildcardMatcher
+     */
     private $wildcardAnyMatcher;
+
+    /**
+     * @var Exporter
+     */
     private $exporter;
 }

@@ -132,7 +132,18 @@ class WildcardMatcher implements Matchable
      */
     private static $instance;
 
+    /**
+     * @var Matcher
+     */
     private $matcher;
+
+    /**
+     * @var int
+     */
     private $minimumArguments;
+
+    /**
+     * @var int
+     */
     private $maximumArguments;
 }

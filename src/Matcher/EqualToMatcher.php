@@ -363,7 +363,18 @@ class EqualToMatcher implements Matcher
 
     const ARRAY_ID_KEY = "\0__phony__\0";
 
+    /**
+     * @var mixed
+     */
     private $value;
+
+    /**
+     * @var bool
+     */
     private $useSubstitution;
+
+    /**
+     * @var Exporter
+     */
     private $exporter;
 }

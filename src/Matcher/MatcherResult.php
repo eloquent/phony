@@ -26,7 +26,18 @@ class MatcherResult
         $this->argumentMatches = $argumentMatches;
     }
 
+    /**
+     * @var bool
+     */
     public $isMatch;
+
+    /**
+     * @var array<int,bool>
+     */
     public $matcherMatches;
+
+    /**
+     * @var array<int,bool>
+     */
     public $argumentMatches;
 }

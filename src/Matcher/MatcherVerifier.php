@@ -65,6 +65,8 @@ class MatcherVerifier
                 continue;
             }
 
+            assert($matcher instanceof Matcher);
+
             if (
                 $index >= $argumentCount ||
                 !$matcher->matches($arguments[$index])
@@ -147,6 +149,8 @@ class MatcherVerifier
 
                 continue;
             }
+
+            assert($matcher instanceof Matcher);
 
             $matcherIsMatch =
                 $index < $argumentCount &&
