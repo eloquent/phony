@@ -85,7 +85,7 @@ class RealMethodDefinition implements MethodDefinition
     /**
      * Get the method.
      *
-     * @return ReflectionFunctionAbstract The method.
+     * @return ReflectionMethod The method.
      */
     public function method(): ReflectionFunctionAbstract
     {
@@ -97,14 +97,33 @@ class RealMethodDefinition implements MethodDefinition
      *
      * @return ?callable The callback, or null if this is a real method.
      */
-    public function callback()
+    public function callback(): ?callable
     {
         return null;
     }
 
+    /**
+     * @var ReflectionMethod
+     */
     private $method;
+
+    /**
+     * @var string
+     */
     private $name;
+
+    /**
+     * @var bool
+     */
     private $isCallable;
+
+    /**
+     * @var bool
+     */
     private $isStatic;
+
+    /**
+     * @var string
+     */
     private $accessLevel;
 }

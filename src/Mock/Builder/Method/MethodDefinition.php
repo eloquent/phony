@@ -58,5 +58,5 @@ interface MethodDefinition
      *
      * @return ?callable The callback, or null if this is a real method.
      */
-    public function callback();
+    public function callback(): ?callable;
 }

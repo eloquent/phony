@@ -22,7 +22,7 @@ class CustomMethodDefinition implements MethodDefinition
     public function __construct(
         bool $isStatic,
         string $name,
-        $callback,
+        callable $callback,
         ReflectionFunctionAbstract $method
     ) {
         $this->isStatic = $isStatic;
@@ -94,15 +94,30 @@ class CustomMethodDefinition implements MethodDefinition
     /**
      * Get the callback.
      *
-     * @return ?callable The callback, or null if this is a real method.
+     * @return callable The callback, or null if this is a real method.
      */
-    public function callback()
+    public function callback(): ?callable
     {
         return $this->callback;
     }
 
+    /**
+     * @var bool
+     */
     private $isStatic;
+
+    /**
+     * @var string
+     */
     private $name;
+
+    /**
+     * @var callable
+     */
     private $callback;
+
+    /**
+     * @var ReflectionFunctionAbstract
+     */
     private $method;
 }

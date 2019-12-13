@@ -56,6 +56,7 @@ class MockDefinition
         ];
 
         foreach ($customMethods as $name => $method) {
+            /** @var ReflectionFunctionAbstract $reflector */
             list(, $reflector) = $method;
 
             $this->signature['customMethods'][$name] = [
@@ -67,6 +68,7 @@ class MockDefinition
         }
 
         foreach ($customStaticMethods as $name => $method) {
+            /** @var ReflectionFunctionAbstract $reflector */
             list(, $reflector) = $method;
 
             $this->signature['customStaticMethods'][$name] = [
@@ -233,7 +235,7 @@ class MockDefinition
         return $definition->signature() === $this->signature;
     }
 
-    private function inspectTypes()
+    private function inspectTypes(): void
     {
         if (null !== $this->typeNames) {
             return;
@@ -256,7 +258,7 @@ class MockDefinition
         }
     }
 
-    private function buildMethods()
+    private function buildMethods(): void
     {
         if (null !== $this->methods) {
             return;
@@ -328,6 +330,10 @@ class MockDefinition
         unset($methods['class']);
 
         foreach ($this->customStaticMethods as $methodName => $method) {
+            /**
+             * @var callable                   $callback
+             * @var ReflectionFunctionAbstract $reflector
+             */
             list($callback, $reflector) = $method;
 
             $methods[$methodName] = new CustomMethodDefinition(
@@ -339,6 +345,10 @@ class MockDefinition
         }
 
         foreach ($this->customMethods as $methodName => $method) {
+            /**
+             * @var callable                   $callback
+             * @var ReflectionFunctionAbstract $reflector
+             */
             list($callback, $reflector) = $method;
 
             $methods[$methodName] = new CustomMethodDefinition(
@@ -353,17 +363,68 @@ class MockDefinition
             new MethodDefinitionCollection($methods, $traitMethods);
     }
 
+    /**
+     * @var array<string,ReflectionClass<object>>
+     */
     private $types;
+
+    /**
+     * @var array<string,array<int,callable|ReflectionFunctionAbstract>>
+     */
     private $customMethods;
+
+    /**
+     * @var array<string,mixed>
+     */
     private $customProperties;
+
+    /**
+     * @var array<string,array<int,callable|ReflectionFunctionAbstract>>
+     */
     private $customStaticMethods;
+
+    /**
+     * @var array<string,mixed>
+     */
     private $customStaticProperties;
+
+    /**
+     * @var array<string,mixed>
+     */
     private $customConstants;
+
+    /**
+     * @var string
+     */
     private $className;
+
+    /**
+     * @var mixed
+     */
     private $signature;
+
+    /**
+     * @var array<int,string>
+     */
     private $typeNames;
+
+    /**
+     * @var string
+     */
     private $parentClassName;
+
+    /**
+     * @var array<int,string>
+     */
     private $interfaceNames;
+
+    /**
+     * @var array<int,string>
+     */
     private $traitNames;
+
+    /**
+     * @var MethodDefinitionCollection
+     */
     private $methods;
 }

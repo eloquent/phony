@@ -20,6 +20,7 @@ use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Mock\MockGenerator;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionFunctionAbstract;
 
 /**
  * Builds mock classes.
@@ -169,8 +170,11 @@ class MockBuilder
 
         foreach ($final as $type) {
             if (is_string($type)) {
+                /** @var class-string */
+                $classString = $type;
+
                 try {
-                    $type = new ReflectionClass($type);
+                    $type = new ReflectionClass($classString);
                 } catch (ReflectionException $e) {
                     throw new InvalidTypeException($type, $e);
                 }
@@ -416,6 +420,7 @@ class MockBuilder
     public function definition(): MockDefinition
     {
         $this->finalize();
+        assert($this->definition instanceof MockDefinition);
 
         return $this->definition;
     }
@@ -570,7 +575,7 @@ class MockBuilder
         return $generator->generate($this->definition());
     }
 
-    private function normalizeDefinition()
+    private function normalizeDefinition(): void
     {
         $this->resolveInternalInterface(
             'traversable',
@@ -585,11 +590,16 @@ class MockBuilder
         $this->resolveInternalInterface('throwable', 'exception', 'error');
     }
 
+    /**
+     * @param class-string $interface
+     * @param class-string $preferred
+     * @param class-string $alternate
+     */
     private function resolveInternalInterface(
-        $interface,
-        $preferred,
-        $alternate
-    ) {
+        string $interface,
+        string $preferred,
+        string $alternate
+    ): void {
         $isImplementor = false;
         $isConcrete = false;
 
@@ -626,10 +636,11 @@ class MockBuilder
         }
     }
 
-    private function define($definition)
+    private function define(array $definition): self
     {
         foreach ($definition as $name => $value) {
             $nameParts = explode(' ', $name);
+            /** @var string */
             $name = array_pop($nameParts);
             $isStatic = in_array('static', $nameParts);
             $isFunction = in_array('function', $nameParts);
@@ -662,20 +673,83 @@ class MockBuilder
         return $this;
     }
 
+    /**
+     * @var MockFactory
+     */
     private $factory;
+
+    /**
+     * @var HandleFactory
+     */
     private $handleFactory;
+
+    /**
+     * @var InvocableInspector
+     */
     private $invocableInspector;
+
+    /**
+     * @var array<string,ReflectionClass<object>>
+     */
     private $types;
+
+    /**
+     * @var string
+     */
     private $parentClassName;
+
+    /**
+     * @var array<string,array<int,callable|ReflectionFunctionAbstract>>
+     */
     private $customMethods;
+
+    /**
+     * @var array<string,mixed>
+     */
     private $customProperties;
+
+    /**
+     * @var array<string,array<int,callable|ReflectionFunctionAbstract>>
+     */
     private $customStaticMethods;
+
+    /**
+     * @var array<string,mixed>
+     */
     private $customStaticProperties;
+
+    /**
+     * @var array<string,mixed>
+     */
     private $customConstants;
+
+    /**
+     * @var string
+     */
     private $className;
+
+    /**
+     * @var bool
+     */
     private $isFinalized;
+
+    /**
+     * @var callable
+     */
     private $emptyCallback;
+
+    /**
+     * @var ?MockDefinition
+     */
     private $definition;
+
+    /**
+     * @var ?ReflectionClass<object>
+     */
     private $class;
+
+    /**
+     * @var ?Mock
+     */
     private $mock;
 }
