@@ -91,7 +91,18 @@ trait WrappedInvocableTrait
      */
     abstract public function invokeWith($arguments = []);
 
+    /**
+     * @var callable
+     */
     protected $callback;
+
+    /**
+     * @var bool
+     */
     protected $isAnonymous = false;
+
+    /**
+     * @var string
+     */
     protected $label = '';
 }
