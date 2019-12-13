@@ -19,7 +19,7 @@ class MockDefinition
     /**
      * Construct a new mock definition.
      *
-     * @param array<string,ReflectionClass>                            $types                  The types.
+     * @param array<string,ReflectionClass<object>>                    $types                  The types.
      * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customMethods          The custom methods.
      * @param array<string,mixed>                                      $customProperties       The custom properties.
      * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customStaticMethods    The custom static methods.
@@ -81,7 +81,7 @@ class MockDefinition
     /**
      * Get the types.
      *
-     * @return array<string,ReflectionClass> The types.
+     * @return array<string,ReflectionClass<object>> The types.
      */
     public function types(): array
     {

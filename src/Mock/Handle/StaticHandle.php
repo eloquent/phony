@@ -24,14 +24,14 @@ class StaticHandle implements Handle
     /**
      * Construct a new static handle.
      *
-     * @param ReflectionClass     $class               The class.
-     * @param stdClass            $state               The state.
-     * @param StubFactory         $stubFactory         The stub factory to use.
-     * @param StubVerifierFactory $stubVerifierFactory The stub verifier factory to use.
-     * @param EmptyValueFactory   $emptyValueFactory   The empty value factory to use.
-     * @param AssertionRenderer   $assertionRenderer   The assertion renderer to use.
-     * @param AssertionRecorder   $assertionRecorder   The assertion recorder to use.
-     * @param Invoker             $invoker             The invoker to use.
+     * @param ReflectionClass<object> $class               The class.
+     * @param stdClass                $state               The state.
+     * @param StubFactory             $stubFactory         The stub factory to use.
+     * @param StubVerifierFactory     $stubVerifierFactory The stub verifier factory to use.
+     * @param EmptyValueFactory       $emptyValueFactory   The empty value factory to use.
+     * @param AssertionRenderer       $assertionRenderer   The assertion renderer to use.
+     * @param AssertionRecorder       $assertionRecorder   The assertion recorder to use.
+     * @param Invoker                 $invoker             The invoker to use.
      */
     public function __construct(
         ReflectionClass $class,

@@ -115,7 +115,7 @@ class MockBuilder
     /**
      * Get the types.
      *
-     * @return array<string,ReflectionClass> The types.
+     * @return array<string,ReflectionClass<object>> The types.
      */
     public function types(): array
     {
@@ -437,8 +437,8 @@ class MockBuilder
      *
      * @param bool $createNew True if a new class should be created even when a compatible one exists.
      *
-     * @return ReflectionClass The class.
-     * @throws MockException   If the mock generation fails.
+     * @return ReflectionClass<object> The class.
+     * @throws MockException           If the mock generation fails.
      */
     public function build(bool $createNew = false): ReflectionClass
     {

@@ -29,7 +29,7 @@ trait HandleTrait
     /**
      * Get the class.
      *
-     * @return ReflectionClass The class.
+     * @return ReflectionClass<object> The class.
      */
     public function class(): ReflectionClass
     {

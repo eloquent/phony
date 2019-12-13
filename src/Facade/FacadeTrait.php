@@ -111,7 +111,7 @@ trait FacadeTrait
     /**
      * Create a new static handle.
      *
-     * @param Mock|Handle|ReflectionClass|string $class The class.
+     * @param Mock|Handle|ReflectionClass<object>|string $class The class.
      *
      * @return StaticHandle  The newly created handle.
      * @throws MockException If the supplied class name is not a mock class.
