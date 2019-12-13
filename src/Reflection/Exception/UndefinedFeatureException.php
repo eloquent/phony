@@ -35,5 +35,8 @@ final class UndefinedFeatureException extends Exception
         return $this->feature;
     }
 
+    /**
+     * @var string
+     */
     private $feature;
 }

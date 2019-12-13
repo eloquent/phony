@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Reflection;
 
+use ReflectionClass;
 use ReflectionFunctionAbstract;
 
 /**
@@ -56,31 +57,37 @@ class FunctionSignatureInspector
 
             $typehint = $match[2];
 
-            if ('self ' === $typehint) {
-                $typehint = '\\' . $parameter->getDeclaringClass()->getName()
-                    . ' ';
-            } elseif (
-                '' !== $typehint &&
-                'array ' !== $typehint &&
-                'bool ' !== $typehint &&
-                'callable ' !== $typehint &&
-                'int ' !== $typehint &&
-                'iterable ' !== $typehint &&
-                'object ' !== $typehint
-            ) {
-                if (
-                    'integer ' === $typehint &&
-                    $parameter->getType()->isBuiltin()
-                ) {
-                    $typehint = 'int ';
-                } elseif (
-                    'boolean ' === $typehint &&
-                    $parameter->getType()->isBuiltin()
-                ) {
+            switch ($typehint) {
+                case '':
+                case 'array ':
+                case 'bool ':
+                case 'callable ':
+                case 'float ':
+                case 'int ':
+                case 'iterable ':
+                case 'object ':
+                case 'string ':
+                    break;
+
+                case 'boolean ':
                     $typehint = 'bool ';
-                } elseif ('float ' !== $typehint && 'string ' !== $typehint) {
+
+                    break;
+
+                case 'integer ':
+                    $typehint = 'int ';
+
+                    break;
+
+                case 'self ':
+                    /** @var ReflectionClass<object> */
+                    $declaringClass = $parameter->getDeclaringClass();
+                    $typehint = '\\' . $declaringClass->getName() . ' ';
+
+                    break;
+
+                default:
                     $typehint = '\\' . $typehint;
-                }
             }
 
             $byReference = $match[4];
@@ -106,7 +113,11 @@ class FunctionSignatureInspector
                 $defaultValue = '';
             }
 
-            $signature[$match[5]] =
+            /**
+             * @var string
+             */
+            $name = $match[5];
+            $signature[$name] =
                 [$typehint, $byReference, $variadic, $defaultValue];
         }
 

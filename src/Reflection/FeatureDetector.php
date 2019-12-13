@@ -125,9 +125,9 @@ class FeatureDetector
                     return
                         0 >= version_compare(
                             '10.0.10586',
-                            PHP_WINDOWS_VERSION_MAJOR .
-                            '.' . PHP_WINDOWS_VERSION_MINOR .
-                            '.' . PHP_WINDOWS_VERSION_BUILD
+                            constant('PHP_WINDOWS_VERSION_MAJOR') .
+                            '.' . constant('PHP_WINDOWS_VERSION_MINOR') .
+                            '.' . constant('PHP_WINDOWS_VERSION_BUILD')
                         ) ||
                         false !== getenv('ANSICON') ||
                         'ON' === getenv('ConEmuANSI') ||
@@ -146,6 +146,13 @@ class FeatureDetector
      */
     private static $instance;
 
+    /**
+     * @var array<string,callable>
+     */
     private $features;
+
+    /**
+     * @var array<string,bool>
+     */
     private $supported;
 }
