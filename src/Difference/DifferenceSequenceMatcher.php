@@ -116,7 +116,7 @@ class DifferenceSequenceMatcher
      * Generate the internal arrays containing the list of junk and non-junk
      * characters for the second ($b) sequence.
      */
-    private function chainB()
+    private function chainB(): void
     {
         $length = count($this->b);
         $this->b2j = [];
@@ -347,7 +347,18 @@ class DifferenceSequenceMatcher
         return $aLength <=> $bLength;
     }
 
+    /**
+     * @var array<int,mixed>
+     */
     private $a;
+
+    /**
+     * @var array<int,mixed>
+     */
     private $b;
+
+    /**
+     * @var array<string,array<int,int>>
+     */
     private $b2j;
 }

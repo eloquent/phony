@@ -76,7 +76,9 @@ class DifferenceEngine
     public function difference(string $from, string $to): string
     {
         $flags = PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY;
+        /** @var array<int,string> */
         $from = preg_split('/(\W+)/u', $from, -1, $flags);
+        /** @var array<int,string> */
         $to = preg_split('/(\W+)/u', $to, -1, $flags);
 
         $matcher = new DifferenceSequenceMatcher($from, $to);
@@ -112,9 +114,28 @@ class DifferenceEngine
      */
     private static $instance;
 
+    /**
+     * @var FeatureDetector
+     */
     private $featureDetector;
+
+    /**
+     * @var string
+     */
     private $addStart;
+
+    /**
+     * @var string
+     */
     private $addEnd;
+
+    /**
+     * @var string
+     */
     private $removeStart;
+
+    /**
+     * @var string
+     */
     private $removeEnd;
 }
