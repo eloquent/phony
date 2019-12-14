@@ -14,5 +14,8 @@ class Phony
 {
     use FacadeTrait;
 
+    /**
+     * @var class-string
+     */
     private static $globals = Globals::class;
 }
