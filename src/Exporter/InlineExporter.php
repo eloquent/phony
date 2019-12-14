@@ -768,7 +768,7 @@ class InlineExporter implements Exporter
     private $featureDetector;
 
     /**
-     * @var array<string,int>
+     * @var array<int|string,int>
      */
     private $arrayIds;
 

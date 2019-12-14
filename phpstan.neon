@@ -2,6 +2,8 @@ parameters:
   checkMissingIterableValueType: false
   level: max
   paths: [src]
+  autoload_directories:
+  - test/src/Phpstan
   inferPrivatePropertyTypeFromConstructor: true
   ignoreErrors:
     # allow @throws with interfaces
