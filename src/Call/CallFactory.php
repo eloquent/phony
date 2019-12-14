@@ -92,6 +92,13 @@ class CallFactory
      */
     private static $instance;
 
+    /**
+     * @var CallEventFactory
+     */
     private $eventFactory;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
 }

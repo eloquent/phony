@@ -6,6 +6,7 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\EndEvent;
 use Eloquent\Phony\Call\Event\IterableEvent;
@@ -246,7 +247,10 @@ class CallVerifier implements Call, CardinalityVerifier
      */
     public function getIterator(): Iterator
     {
-        return $this->call->getIterator();
+        /** @var Iterator<int,Call> */
+        $iterator = $this->call->getIterator();
+
+        return $iterator;
     }
 
     /**
@@ -582,6 +586,10 @@ class CallVerifier implements Call, CardinalityVerifier
         $cardinality = $this->resetCardinality()->assertSingular();
         $matchers = $this->matcherFactory->adaptAll($arguments);
 
+        /**
+         * @var int $matchCount
+         * @var array<int,Event> $matchingEvents
+         */
         list($matchCount, $matchingEvents) = $this->matchIf(
             $this->call,
             $this->matcherVerifier
@@ -598,7 +606,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Throws an exception unless called with the supplied arguments.
      *
-     * @param mixed ...$argument The arguments.
+     * @param mixed ...$arguments The arguments.
      *
      * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
@@ -630,6 +638,10 @@ class CallVerifier implements Call, CardinalityVerifier
         $cardinality = $this->resetCardinality()->assertSingular();
         $responseEvent = $this->call->responseEvent();
 
+        /**
+         * @var int $matchCount
+         * @var array<int,Event> $matchingEvents
+         */
         list($matchCount, $matchingEvents) =
             $this->matchIf($responseEvent, $responseEvent);
 
@@ -671,6 +683,10 @@ class CallVerifier implements Call, CardinalityVerifier
         $cardinality = $this->resetCardinality()->assertSingular();
         $endEvent = $this->call->endEvent();
 
+        /**
+         * @var int $matchCount
+         * @var array<int,Event> $matchingEvents
+         */
         list($matchCount, $matchingEvents) =
             $this->matchIf($endEvent, $endEvent);
 
@@ -726,6 +742,10 @@ class CallVerifier implements Call, CardinalityVerifier
         }
 
         if (0 === func_num_args()) {
+            /**
+             * @var int $matchCount
+             * @var array<int,Event> $matchingEvents
+             */
             list($matchCount, $matchingEvents) =
                 $this->matchIf($responseEvent, $hasReturned);
 
@@ -738,6 +758,10 @@ class CallVerifier implements Call, CardinalityVerifier
 
         $value = $this->matcherFactory->adapt($value);
 
+        /**
+         * @var int $matchCount
+         * @var array<int,Event> $matchingEvents
+         */
         list($matchCount, $matchingEvents) = $this->matchIf(
             $responseEvent,
             $hasReturned && $value->matches($returnValue)
@@ -808,6 +832,10 @@ class CallVerifier implements Call, CardinalityVerifier
         if (!$type) {
             $isTypeSupported = true;
 
+            /**
+             * @var int $matchCount
+             * @var array<int,Event> $matchingEvents
+             */
             list($matchCount, $matchingEvents) =
                 $this->matchIf($responseEvent, $exception);
 
@@ -817,6 +845,10 @@ class CallVerifier implements Call, CardinalityVerifier
         } elseif (is_string($type)) {
             $isTypeSupported = true;
 
+            /**
+             * @var int $matchCount
+             * @var array<int,Event> $matchingEvents
+             */
             list($matchCount, $matchingEvents) =
                 $this->matchIf($responseEvent, is_a($exception, $type));
 
@@ -837,6 +869,12 @@ class CallVerifier implements Call, CardinalityVerifier
             }
 
             if ($isTypeSupported) {
+                assert($type instanceof Matcher);
+
+                /**
+                 * @var int $matchCount
+                 * @var array<int,Event> $matchingEvents
+                 */
                 list($matchCount, $matchingEvents) = $this->matchIf(
                     $responseEvent,
                     $exception && $type->matches($exception)
@@ -878,6 +916,7 @@ class CallVerifier implements Call, CardinalityVerifier
 
         if ($type instanceof InstanceHandle) {
             $type = $type->get();
+            assert($type instanceof Throwable);
         }
 
         if ($type instanceof Throwable) {
@@ -914,14 +953,21 @@ class CallVerifier implements Call, CardinalityVerifier
             $isMatch = false;
         }
 
+        /**
+         * @var int $matchCount
+         * @var array<int,Call> $matchingEvents
+         */
         list($matchCount, $matchingEvents) =
             $this->matchIf($this->call, $isMatch);
 
         if ($cardinality->matches($matchCount, 1)) {
-            return $this->assertionRecorder->createSuccessFromEventCollection(
+            /** @var GeneratorVerifier */
+            $verifier = $this->assertionRecorder->createSuccessFromEventCollection(
                 $this->generatorVerifierFactory
                     ->create($this->call, $matchingEvents)
             );
+
+            return $verifier;
         }
 
         return null;
@@ -966,14 +1012,21 @@ class CallVerifier implements Call, CardinalityVerifier
             $isMatch = false;
         }
 
+        /**
+         * @var int $matchCount
+         * @var array<int,Call> $matchingEvents
+         */
         list($matchCount, $matchingEvents) =
             $this->matchIf($this->call, $isMatch);
 
         if ($cardinality->matches($matchCount, 1)) {
-            return $this->assertionRecorder->createSuccessFromEventCollection(
+            /** @var IterableVerifier */
+            $verifier = $this->assertionRecorder->createSuccessFromEventCollection(
                 $this->iterableVerifierFactory
                     ->create($this->call, $matchingEvents)
             );
+
+            return $verifier;
         }
 
         return null;
@@ -999,9 +1052,15 @@ class CallVerifier implements Call, CardinalityVerifier
         );
     }
 
-    private function matchIf($event, $checkResult)
+    /**
+     * @param ?Event $event
+     * @param mixed $checkResult
+     *
+     * @return array<int,int|array<int,Event>>
+     */
+    private function matchIf(?Event $event, $checkResult): array
     {
-        if ($checkResult && $event) {
+        if ($event && $checkResult) {
             $matchCount = 1;
             $matchingEvents = [$event];
         } else {
@@ -1012,12 +1071,43 @@ class CallVerifier implements Call, CardinalityVerifier
         return [$matchCount, $matchingEvents];
     }
 
+    /**
+     * @var Call
+     */
     private $call;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var MatcherVerifier
+     */
     private $matcherVerifier;
+
+    /**
+     * @var GeneratorVerifierFactory
+     */
     private $generatorVerifierFactory;
+
+    /**
+     * @var IterableVerifierFactory
+     */
     private $iterableVerifierFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
+
+    /**
+     * @var int
+     */
     private $argumentCount;
 }

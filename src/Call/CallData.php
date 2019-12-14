@@ -347,6 +347,7 @@ class CallData implements Call
         $endEvent->setCall($this);
 
         if (!$this->responseEvent) {
+            assert($endEvent instanceof ResponseEvent);
             $this->responseEvent = $endEvent;
         }
 
@@ -657,9 +658,28 @@ class CallData implements Call
         return true;
     }
 
+    /**
+     * @var int
+     */
     private $index;
+
+    /**
+     * @var CalledEvent
+     */
     private $calledEvent;
+
+    /**
+     * @var ?ResponseEvent
+     */
     private $responseEvent;
+
+    /**
+     * @var array<int,IterableEvent>
+     */
     private $iterableEvents;
+
+    /**
+     * @var ?EndEvent
+     */
     private $endEvent;
 }

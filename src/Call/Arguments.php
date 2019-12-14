@@ -165,6 +165,13 @@ class Arguments implements Countable, IteratorAggregate
         return new ArrayIterator($this->arguments);
     }
 
+    /**
+     * @var array<int,mixed>
+     */
     private $arguments;
+
+    /**
+     * @var int
+     */
     private $count;
 }
