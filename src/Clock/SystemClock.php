@@ -50,5 +50,8 @@ class SystemClock implements Clock
      */
     private static $instance;
 
+    /**
+     * @var callable
+     */
     private $microtime;
 }
