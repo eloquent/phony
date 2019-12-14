@@ -20,7 +20,7 @@ final class AssertionException extends Exception
      *
      * @param Exception $exception The exception.
      */
-    public static function trim(Exception $exception)
+    public static function trim(Exception $exception): void
     {
         $reflector = new ReflectionClass(Exception::class);
 

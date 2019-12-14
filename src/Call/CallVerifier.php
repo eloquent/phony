@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CalledEvent;
 use Eloquent\Phony\Call\Event\EndEvent;
 use Eloquent\Phony\Call\Event\IterableEvent;
@@ -587,7 +586,7 @@ class CallVerifier implements Call, CardinalityVerifier
         $matchers = $this->matcherFactory->adaptAll($arguments);
 
         /**
-         * @var int $matchCount
+         * @var int              $matchCount
          * @var array<int,Event> $matchingEvents
          */
         list($matchCount, $matchingEvents) = $this->matchIf(
@@ -639,7 +638,7 @@ class CallVerifier implements Call, CardinalityVerifier
         $responseEvent = $this->call->responseEvent();
 
         /**
-         * @var int $matchCount
+         * @var int              $matchCount
          * @var array<int,Event> $matchingEvents
          */
         list($matchCount, $matchingEvents) =
@@ -684,7 +683,7 @@ class CallVerifier implements Call, CardinalityVerifier
         $endEvent = $this->call->endEvent();
 
         /**
-         * @var int $matchCount
+         * @var int              $matchCount
          * @var array<int,Event> $matchingEvents
          */
         list($matchCount, $matchingEvents) =
@@ -743,7 +742,7 @@ class CallVerifier implements Call, CardinalityVerifier
 
         if (0 === func_num_args()) {
             /**
-             * @var int $matchCount
+             * @var int              $matchCount
              * @var array<int,Event> $matchingEvents
              */
             list($matchCount, $matchingEvents) =
@@ -759,7 +758,7 @@ class CallVerifier implements Call, CardinalityVerifier
         $value = $this->matcherFactory->adapt($value);
 
         /**
-         * @var int $matchCount
+         * @var int              $matchCount
          * @var array<int,Event> $matchingEvents
          */
         list($matchCount, $matchingEvents) = $this->matchIf(
@@ -833,7 +832,7 @@ class CallVerifier implements Call, CardinalityVerifier
             $isTypeSupported = true;
 
             /**
-             * @var int $matchCount
+             * @var int              $matchCount
              * @var array<int,Event> $matchingEvents
              */
             list($matchCount, $matchingEvents) =
@@ -846,7 +845,7 @@ class CallVerifier implements Call, CardinalityVerifier
             $isTypeSupported = true;
 
             /**
-             * @var int $matchCount
+             * @var int              $matchCount
              * @var array<int,Event> $matchingEvents
              */
             list($matchCount, $matchingEvents) =
@@ -872,7 +871,7 @@ class CallVerifier implements Call, CardinalityVerifier
                 assert($type instanceof Matcher);
 
                 /**
-                 * @var int $matchCount
+                 * @var int              $matchCount
                  * @var array<int,Event> $matchingEvents
                  */
                 list($matchCount, $matchingEvents) = $this->matchIf(
@@ -954,7 +953,7 @@ class CallVerifier implements Call, CardinalityVerifier
         }
 
         /**
-         * @var int $matchCount
+         * @var int             $matchCount
          * @var array<int,Call> $matchingEvents
          */
         list($matchCount, $matchingEvents) =
@@ -1013,7 +1012,7 @@ class CallVerifier implements Call, CardinalityVerifier
         }
 
         /**
-         * @var int $matchCount
+         * @var int             $matchCount
          * @var array<int,Call> $matchingEvents
          */
         list($matchCount, $matchingEvents) =
@@ -1054,7 +1053,7 @@ class CallVerifier implements Call, CardinalityVerifier
 
     /**
      * @param ?Event $event
-     * @param mixed $checkResult
+     * @param mixed  $checkResult
      *
      * @return array<int,int|array<int,Event>>
      */

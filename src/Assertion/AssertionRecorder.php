@@ -48,6 +48,7 @@ interface AssertionRecorder
      *
      * @param string $description The failure description.
      *
+     * @return null      If this recorder does not throw exceptions.
      * @throws Throwable If this recorder throws exceptions.
      */
     public function createFailure(string $description);

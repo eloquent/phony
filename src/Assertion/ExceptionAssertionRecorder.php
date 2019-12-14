@@ -9,7 +9,6 @@ use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\EventSequence;
-use Throwable;
 
 /**
  * An assertion recorder that throws exceptions on failure.
@@ -71,7 +70,8 @@ class ExceptionAssertionRecorder implements AssertionRecorder
      *
      * @param string $description The failure description.
      *
-     * @throws Throwable If this recorder throws exceptions.
+     * @return null               This method never returns.
+     * @throws AssertionException The assertion failure exception.
      */
     public function createFailure(string $description)
     {
@@ -83,5 +83,8 @@ class ExceptionAssertionRecorder implements AssertionRecorder
      */
     private static $instance;
 
+    /**
+     * @var CallVerifierFactory
+     */
     private $callVerifierFactory;
 }
