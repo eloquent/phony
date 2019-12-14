@@ -175,6 +175,13 @@ class CallEventFactory
      */
     private static $instance;
 
+    /**
+     * @var Sequencer
+     */
     private $sequencer;
+
+    /**
+     * @var Clock
+     */
     private $clock;
 }

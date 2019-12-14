@@ -35,5 +35,8 @@ class ReceivedEvent implements IterableEvent
         return $this->value;
     }
 
+    /**
+     * @var mixed
+     */
     private $value;
 }

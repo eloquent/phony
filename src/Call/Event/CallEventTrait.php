@@ -59,7 +59,18 @@ trait CallEventTrait
         return $this->call;
     }
 
+    /**
+     * @var int
+     */
     private $sequenceNumber;
+
+    /**
+     * @var float
+     */
     private $time;
+
+    /**
+     * @var ?Call
+     */
     private $call;
 }

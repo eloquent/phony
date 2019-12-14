@@ -14,6 +14,7 @@ parameters:
     - '/Property Eloquent\\Phony\\(Spy\\Spy|Stub\\Stub)Data::\$callback has no typehint specified./'
     - '/Property Eloquent\\Phony\\(Spy\\Spy|Stub\\Stub)Data::\$isAnonymous has no typehint specified./'
     - '/Property Eloquent\\Phony\\(Spy\\Spy|Stub\\Stub)Data::\$label has no typehint specified./'
+    - '/Property Eloquent\\Phony\\Call\\Event\\\w+Event::\$call has no typehint specified./'
     - '/Property Eloquent\\Phony\\Facade\\FacadeContainer::\$assertionRenderer has no typehint specified./'
     - '/Property Eloquent\\Phony\\Facade\\FacadeContainer::\$differenceEngine has no typehint specified./'
     - '/Property Eloquent\\Phony\\Facade\\FacadeContainer::\$emptyValueFactory has no typehint specified./'

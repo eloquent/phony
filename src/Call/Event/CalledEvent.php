@@ -53,6 +53,13 @@ class CalledEvent implements CallEvent
         return $this->arguments;
     }
 
+    /**
+     * @var callable
+     */
     private $callback;
+
+    /**
+     * @var Arguments
+     */
     private $arguments;
 }
