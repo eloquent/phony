@@ -57,5 +57,8 @@ class HamcrestMatcher implements Matcher
         return '<' . strval($this->matcher) . '>';
     }
 
+    /**
+     * @var ExternalMatcher
+     */
     private $matcher;
 }
