@@ -45,21 +45,69 @@ use Eloquent\Phony\Verification\IterableVerifierFactory;
  */
 trait FacadeContainerTrait
 {
+    /**
+     * @var MockBuilderFactory
+     */
     public $mockBuilderFactory;
+
+    /**
+     * @var HandleFactory
+     */
     public $handleFactory;
+
+    /**
+     * @var SpyVerifierFactory
+     */
     public $spyVerifierFactory;
+
+    /**
+     * @var StubVerifierFactory
+     */
     public $stubVerifierFactory;
+
+    /**
+     * @var FunctionHookManager
+     */
     public $functionHookManager;
+
+    /**
+     * @var EventOrderVerifier
+     */
     public $eventOrderVerifier;
+
+    /**
+     * @var MatcherFactory
+     */
     public $matcherFactory;
+
+    /**
+     * @var Exporter
+     */
     public $exporter;
+
+    /**
+     * @var AssertionRenderer
+     */
     public $assertionRenderer;
+
+    /**
+     * @var DifferenceEngine
+     */
     public $differenceEngine;
+
+    /**
+     * @var EmptyValueFactory
+     */
     public $emptyValueFactory;
+
+    /**
+     * @var array<int,Sequencer>
+     */
     public $sequences;
 
-    private function initializeContainer(AssertionRecorder $assertionRecorder)
-    {
+    private function initializeContainer(
+        AssertionRecorder $assertionRecorder
+    ): void {
         $sequences = [];
         $anyMatcher = new AnyMatcher();
         $arrayIdSequence = Sequencer::sequence('exporter-array-id');
