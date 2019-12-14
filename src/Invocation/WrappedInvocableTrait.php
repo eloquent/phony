@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Invocation;
 
+use Eloquent\Phony\Call\Arguments;
+
 /**
  * Used for implementing wrapped invocables.
  */
@@ -22,7 +24,7 @@ trait WrappedInvocableTrait
     /**
      * Get the callback.
      *
-     * @return callable The callback.
+     * @return callable|array<int,string|object> The callback.
      */
     public function callback()
     {
@@ -92,7 +94,7 @@ trait WrappedInvocableTrait
     abstract public function invokeWith($arguments = []);
 
     /**
-     * @var callable
+     * @var callable|array<int,string|object>
      */
     protected $callback;
 

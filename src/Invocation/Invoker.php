@@ -29,8 +29,8 @@ class Invoker
     /**
      * Calls a callback, maintaining reference parameters.
      *
-     * @param callable  $callback  The callback.
-     * @param Arguments $arguments The arguments.
+     * @param callable|array<int,string|object> $callback  The callback.
+     * @param Arguments                         $arguments The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
@@ -43,7 +43,10 @@ class Invoker
 
         $arguments = $arguments->all();
 
-        return $callback(...$arguments);
+        /** @var callable $callableCallback */
+        $callableCallback = $callback;
+
+        return $callableCallback(...$arguments);
     }
 
     /**

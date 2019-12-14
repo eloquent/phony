@@ -48,9 +48,9 @@ class CallFactory
     /**
      * Record call details by invoking a callback.
      *
-     * @param callable  $callback  The callback.
-     * @param Arguments $arguments The arguments.
-     * @param SpyData   $spy       The spy to record the call to.
+     * @param callable|array<int,string|object> $callback  The callback.
+     * @param Arguments                         $arguments The arguments.
+     * @param SpyData                           $spy       The spy to record the call to.
      *
      * @return CallData The newly created call.
      */
