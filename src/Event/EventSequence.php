@@ -248,9 +248,28 @@ class EventSequence implements EventCollection
         return true;
     }
 
+    /**
+     * @var array<int,Event>
+     */
     private $events;
+
+    /**
+     * @var array<int,Call>
+     */
     private $calls;
+
+    /**
+     * @var int
+     */
     private $eventCount;
+
+    /**
+     * @var int
+     */
     private $callCount;
+
+    /**
+     * @var CallVerifierFactory
+     */
     private $callVerifierFactory;
 }

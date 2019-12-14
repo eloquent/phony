@@ -39,5 +39,8 @@ final class UndefinedEventException extends Exception
         return $this->index;
     }
 
+    /**
+     * @var int
+     */
     private $index;
 }

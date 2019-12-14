@@ -176,7 +176,12 @@ class EventOrderVerifier
             ->createFailure('Expected events. No events recorded.');
     }
 
-    private function expectedEvents($events)
+    /**
+     * @param array<int,Event|EventCollection> $events
+     *
+     * @return array<int,Event>
+     */
+    private function expectedEvents(array $events): array
     {
         $expected = [];
         $earliestEvent = null;
@@ -205,14 +210,21 @@ class EventOrderVerifier
                     }
                 }
 
-                $expected[] = $earliestEvent = $subEvent;
+                if ($subEvent) {
+                    $expected[] = $earliestEvent = $subEvent;
+                }
             }
         }
 
         return $expected;
     }
 
-    private function mergeEvents($events)
+    /**
+     * @param array<int,Event|EventCollection> $events
+     *
+     * @return array<int,Event>
+     */
+    private function mergeEvents(array $events): array
     {
         $merged = [];
 
@@ -236,6 +248,13 @@ class EventOrderVerifier
      */
     private static $instance;
 
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
 }

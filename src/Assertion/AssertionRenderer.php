@@ -17,6 +17,7 @@ use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Event\UsedEvent;
 use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Difference\DifferenceSequenceMatcher;
+use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Matcher\AnyMatcher;
