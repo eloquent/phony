@@ -65,8 +65,8 @@ class FunctionHookManager
     public function defineFunction(
         string $name,
         string $namespace,
-        $callback
-    ) {
+        callable $callback
+    ): ?callable {
         $signature = $this->signatureInspector->signature(
             $this->invocableInspector->callbackReflector($callback)
         );
@@ -133,9 +133,28 @@ class FunctionHookManager
         }
     }
 
+    /**
+     * @var array<string,array<string,mixed>>
+     */
     public static $hooks = [];
+
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var InvocableInspector
+     */
     private $invocableInspector;
+
+    /**
+     * @var FunctionSignatureInspector
+     */
     private $signatureInspector;
+
+    /**
+     * @var FunctionHookGenerator
+     */
     private $hookGenerator;
 }
