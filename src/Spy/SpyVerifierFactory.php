@@ -173,13 +173,48 @@ class SpyVerifierFactory
      */
     private static $instance;
 
+    /**
+     * @var SpyFactory
+     */
     private $spyFactory;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var MatcherVerifier
+     */
     private $matcherVerifier;
+
+    /**
+     * @var GeneratorVerifierFactory
+     */
     private $generatorVerifierFactory;
+
+    /**
+     * @var IterableVerifierFactory
+     */
     private $iterableVerifierFactory;
+
+    /**
+     * @var CallVerifierFactory
+     */
     private $callVerifierFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
+
+    /**
+     * @var FunctionHookManager
+     */
     private $functionHookManager;
 }

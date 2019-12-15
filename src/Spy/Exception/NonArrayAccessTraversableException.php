@@ -15,7 +15,7 @@ final class NonArrayAccessTraversableException extends Exception
     /**
      * Construct a non-array-access traversable exception.
      *
-     * @param Traversable $traversable The traversable.
+     * @param Traversable<mixed> $traversable The traversable.
      */
     public function __construct(Traversable $traversable)
     {
@@ -33,12 +33,15 @@ final class NonArrayAccessTraversableException extends Exception
     /**
      * Get the traversable.
      *
-     * @return Traversable The traversable.
+     * @return Traversable<mixed> The traversable.
      */
     public function traversable(): Traversable
     {
         return $this->traversable;
     }
 
+    /**
+     * @var Traversable<mixed>
+     */
     private $traversable;
 }

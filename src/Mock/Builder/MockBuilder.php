@@ -636,6 +636,9 @@ class MockBuilder
         }
     }
 
+    /**
+     * @param array<string,mixed> $definition
+     */
     private function define(array $definition): self
     {
         foreach ($definition as $name => $value) {

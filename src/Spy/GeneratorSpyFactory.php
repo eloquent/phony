@@ -122,5 +122,8 @@ class GeneratorSpyFactory
      */
     private static $instance;
 
+    /**
+     * @var CallEventFactory
+     */
     private $callEventFactory;
 }

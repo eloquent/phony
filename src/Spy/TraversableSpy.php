@@ -22,9 +22,9 @@ class TraversableSpy implements IterableSpy
     /**
      * Construct a new traversable spy.
      *
-     * @param Call             $call             The call from which the array originated.
-     * @param Traversable      $traversable      The traversable.
-     * @param CallEventFactory $callEventFactory The call event factory to use.
+     * @param Call               $call             The call from which the array originated.
+     * @param Traversable<mixed> $traversable      The traversable.
+     * @param CallEventFactory   $callEventFactory The call event factory to use.
      */
     public function __construct(
         Call $call,
@@ -41,7 +41,7 @@ class TraversableSpy implements IterableSpy
     /**
      * Get the original iterable value.
      *
-     * @return iterable The original value.
+     * @return iterable<mixed> The original value.
      */
     public function iterable(): iterable
     {
@@ -223,7 +223,7 @@ class TraversableSpy implements IterableSpy
     private $call;
 
     /**
-     * @var Traversable
+     * @var Traversable<mixed>
      */
     private $traversable;
 
@@ -243,7 +243,7 @@ class TraversableSpy implements IterableSpy
     private $isConsumed;
 
     /**
-     * @var ?Iterator
+     * @var ?Iterator<mixed>
      */
     private $iterator;
 

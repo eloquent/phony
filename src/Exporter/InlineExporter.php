@@ -125,7 +125,7 @@ class InlineExporter implements Exporter
         $arrayId = 0;
 
         while (!empty($stack)) {
-            /** @var array */
+            /** @var array<int,mixed> */
             $entry = array_shift($stack);
             $value = &$entry[0];
             /** @var ExporterResult */

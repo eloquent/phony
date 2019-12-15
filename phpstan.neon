@@ -1,5 +1,4 @@
 parameters:
-  checkMissingIterableValueType: false
   level: max
   paths: [src]
   autoload_directories:
@@ -25,16 +24,15 @@ parameters:
       - src/Verification/CardinalityVerifierTrait.php
 
     # allow setting special property on generators
-    - message: '/Access to an undefined property Generator::\$_phonySubject./'
+    - message: '/Access to an undefined property Generator::\$_phonySubject/'
       path: src/Spy/GeneratorSpyFactory.php
 
     # false positives for trait properties
-    - message: '/Property .* has no typehint specified./'
+    - message: '/Property .* has no typehint specified/'
       paths:
       - src/Call/Event/CallEventTrait.php
       - src/Facade/FacadeContainerTrait.php
       - src/Invocation/WrappedInvocableTrait.php
-      - src/Mock/Handle/HandleTrait.php
 
     # can't fix with @param
     - message: '/Method Eloquent\\Phony\\Mock\\Handle\\(Instance|Static)Handle::constructHandle\(\) has parameter \$class with generic class ReflectionClass but does not specify its types: T/'
@@ -44,8 +42,36 @@ parameters:
     - message: '/Parameter #1 \$name of class ReflectionFunction constructor expects Closure|string, callable\(\): mixed given/'
       path: src/Invocation/InvocableInspector.php
 
+    # @extends being ignored
+    - message: '/no value type specified in iterable type .*(Eloquent\\Phony\\Call\\Call|Eloquent\\Phony\\Spy\\Spy)/'
+      paths:
+      - src/Assertion/AssertionRenderer.php
+      - src/Call/CallData.php
+      - src/Call/CallVerifier.php
+      - src/Call/CallVerifierFactory.php
+      - src/Call/Event/CallEvent.php
+      - src/Call/Event/CallEventTrait.php
+      - src/Event/EventCollection.php
+      - src/Event/EventSequence.php
+      - src/Mock/Handle/Handle.php
+      - src/Mock/Handle/HandleTrait.php
+      - src/Spy/ArraySpy.php
+      - src/Spy/GeneratorSpyFactory.php
+      - src/Spy/IterableSpyFactory.php
+      - src/Spy/Spy.php
+      - src/Spy/SpyData.php
+      - src/Spy/SpyFactory.php
+      - src/Spy/SpyVerifier.php
+      - src/Spy/SpyVerifierFactory.php
+      - src/Spy/TraversableSpy.php
+      - src/Stub/StubVerifier.php
+      - src/Verification/GeneratorVerifier.php
+      - src/Verification/GeneratorVerifierFactory.php
+      - src/Verification/IterableVerifier.php
+      - src/Verification/IterableVerifierFactory.php
+
     # false positive for trait abstract method parameter type
-    - message: '/Parameter \$arguments of method Eloquent\\Phony\\Mock\\Method\\Wrapped\w+Method::invokeWith\(\) has invalid typehint type Eloquent\\Phony\\Invocation\\Arguments./'
+    - message: '/Parameter \$arguments of method Eloquent\\Phony\\Mock\\Method\\Wrapped\w+Method::invokeWith\(\) has invalid typehint type Eloquent\\Phony\\Invocation\\Arguments/'
       path: src/Invocation/WrappedInvocableTrait.php
 
   #   # (tests only) ignore undefined properties

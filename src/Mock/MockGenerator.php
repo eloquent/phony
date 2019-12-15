@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock;
 
+use Eloquent\Phony\Mock\Builder\Method\MethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\TraitMethodDefinition;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
@@ -367,6 +368,9 @@ EOD;
         return $source;
     }
 
+    /**
+     * @param array<string,MethodDefinition> $methods
+     */
     private function generateMethods(
         array $methods,
         bool $hasParentClass
@@ -430,6 +434,7 @@ EOD;
             }
 
             if ($methodReflector->hasReturnType()) {
+                /** @var ReflectionNamedType */
                 $type = $methodReflector->getReturnType();
                 $isBuiltin = $type->isBuiltin();
 
@@ -440,8 +445,10 @@ EOD;
                 }
 
                 if ('self' === $typeString) {
+                    /** @var ReflectionMethod */
+                    $methodReflectorMethod = $methodReflector;
                     $typeString =
-                        $methodReflector->getDeclaringClass()->getName();
+                        $methodReflectorMethod->getDeclaringClass()->getName();
                 }
 
                 if ($isBuiltin) {

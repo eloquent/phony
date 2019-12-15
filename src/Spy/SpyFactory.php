@@ -80,9 +80,28 @@ class SpyFactory
      */
     private static $instance;
 
+    /**
+     * @var Sequencer
+     */
     private $labelSequencer;
+
+    /**
+     * @var CallFactory
+     */
     private $callFactory;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
+
+    /**
+     * @var GeneratorSpyFactory
+     */
     private $generatorSpyFactory;
+
+    /**
+     * @var IterableSpyFactory
+     */
     private $iterableSpyFactory;
 }

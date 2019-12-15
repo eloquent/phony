@@ -937,18 +937,51 @@ class SpyVerifier implements Spy, CardinalityVerifier
 
     /**
      * Limits the output displayed when `var_dump` is used.
+     *
+     * @return array<string,mixed> The contents to export.
      */
     public function __debugInfo(): array
     {
         return ['spy' => $this->spy];
     }
 
+    /**
+     * @var Spy
+     */
     private $spy;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var MatcherVerifier
+     */
     private $matcherVerifier;
+
+    /**
+     * @var GeneratorVerifierFactory
+     */
     private $generatorVerifierFactory;
+
+    /**
+     * @var IterableVerifierFactory
+     */
     private $iterableVerifierFactory;
+
+    /**
+     * @var CallVerifierFactory
+     */
     private $callVerifierFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
 }

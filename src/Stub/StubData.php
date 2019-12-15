@@ -781,6 +781,8 @@ class StubData implements Stub
 
     /**
      * Limits the output displayed when `var_dump` is used.
+     *
+     * @return array<string,mixed> The contents to export.
      */
     public function __debugInfo(): array
     {
