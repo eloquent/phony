@@ -9,7 +9,7 @@ use Eloquent\Phony\Exporter\Exporter;
 /**
  * A matcher that tests any number of arguments against another matcher.
  */
-class WildcardMatcher implements Matchable
+class WildcardMatcher implements Matcher
 {
     /**
      * Get the static instance of this class.
@@ -125,6 +125,18 @@ class WildcardMatcher implements Matchable
     public function __toString(): string
     {
         return $this->describe();
+    }
+
+    /**
+     * Always returns false.
+     *
+     * @param mixed $value The value to check.
+     *
+     * @return false For all values.
+     */
+    public function matches($value): bool
+    {
+        return false;
     }
 
     /**

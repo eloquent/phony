@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Matcher\Matchable;
+use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Exception\UndefinedAnswerException;
 
@@ -16,8 +16,8 @@ class StubRule
     /**
      * Construct a new stub rule.
      *
-     * @param array<int,Matchable> $criteria The criteria.
-     * @param array<int,Answer>    $answers  The answers.
+     * @param array<int,Matcher> $criteria The criteria.
+     * @param array<int,Answer>  $answers  The answers.
      */
     public function __construct(array $criteria, array $answers)
     {
@@ -31,7 +31,7 @@ class StubRule
     /**
      * Get the criteria.
      *
-     * @return array<int,Matchable> The criteria.
+     * @return array<int,Matcher> The criteria.
      */
     public function criteria(): array
     {
@@ -72,7 +72,7 @@ class StubRule
     }
 
     /**
-     * @var array<int,Matchable>
+     * @var array<int,Matcher>
      */
     private $criteria;
 

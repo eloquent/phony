@@ -137,14 +137,14 @@ class MatcherFactory
      *
      * @param array<int,mixed> $values The values to create matchers for.
      *
-     * @return array<int,Matchable> The newly created matchers.
+     * @return array<int,Matcher> The newly created matchers.
      */
     public function adaptAll(array $values): array
     {
         $matchers = [];
 
         foreach ($values as $value) {
-            if ($value instanceof Matchable) {
+            if ($value instanceof Matcher) {
                 $matchers[] = $value;
 
                 continue;

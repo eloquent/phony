@@ -26,8 +26,8 @@ class MatcherVerifier
     /**
      * Verify that the supplied arguments match the supplied matchers.
      *
-     * @param array<int,Matchable> $matchers  The matchers.
-     * @param array<int,mixed>     $arguments The arguments.
+     * @param array<int,Matcher> $matchers  The matchers.
+     * @param array<int,mixed>   $arguments The arguments.
      *
      * @return bool True if the arguments match.
      */
@@ -65,8 +65,6 @@ class MatcherVerifier
                 continue;
             }
 
-            assert($matcher instanceof Matcher);
-
             if (
                 $index >= $argumentCount ||
                 !$matcher->matches($arguments[$index])
@@ -84,8 +82,8 @@ class MatcherVerifier
      * Explain which of the supplied arguments match which of the supplied
      * matchers.
      *
-     * @param array<int,Matchable> $matchers  The matchers.
-     * @param array<int,mixed>     $arguments The arguments.
+     * @param array<int,Matcher> $matchers  The matchers.
+     * @param array<int,mixed>   $arguments The arguments.
      *
      * @return MatcherResult The result of matching.
      */
@@ -149,8 +147,6 @@ class MatcherVerifier
 
                 continue;
             }
-
-            assert($matcher instanceof Matcher);
 
             $matcherIsMatch =
                 $index < $argumentCount &&

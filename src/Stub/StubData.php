@@ -9,7 +9,7 @@ use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\WrappedInvocableTrait;
-use Eloquent\Phony\Matcher\Matchable;
+use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Mock\Exception\FinalClassException;
@@ -835,7 +835,7 @@ class StubData implements Stub
     private $exporter;
 
     /**
-     * @var ?array<int,Matchable>
+     * @var ?array<int,Matcher>
      */
     private $criteria;
 

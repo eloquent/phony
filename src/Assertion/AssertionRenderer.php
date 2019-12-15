@@ -22,7 +22,6 @@ use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Matcher\Matchable;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
@@ -222,9 +221,9 @@ class AssertionRenderer
     /**
      * Render a failed calledWith() verification.
      *
-     * @param Spy|Call             $subject     The subject.
-     * @param Cardinality          $cardinality The cardinality.
-     * @param array<int,Matchable> $matchers    The matchers.
+     * @param Spy|Call           $subject     The subject.
+     * @param Cardinality        $cardinality The cardinality.
+     * @param array<int,Matcher> $matchers    The matchers.
      *
      * @return string The rendered failure message.
      */
@@ -3823,7 +3822,7 @@ class AssertionRenderer
     /**
      * Render a sequence of matchers.
      *
-     * @param array<int,Matchable> $matchers The matchers.
+     * @param array<int,Matcher> $matchers The matchers.
      *
      * @return string The rendered matchers.
      */
