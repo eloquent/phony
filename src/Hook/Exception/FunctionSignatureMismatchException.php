@@ -40,5 +40,8 @@ final class FunctionSignatureMismatchException extends Exception implements
         return $this->functionName;
     }
 
+    /**
+     * @var string
+     */
     private $functionName;
 }
