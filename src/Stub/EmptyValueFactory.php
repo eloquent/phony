@@ -88,7 +88,7 @@ class EmptyValueFactory
                 return (object) [];
 
             case 'callable':
-                return $this->stubVerifierFactory->create();
+                return $this->stubVerifierFactory->create(null);
 
             case 'closure':
                 return function () {};

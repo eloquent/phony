@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Invocation;
 
 use Closure;
+use Eloquent\Phony\Mock\Method\WrappedMethod;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
@@ -37,10 +38,21 @@ class InvocableInspector
      * @return ReflectionFunctionAbstract The reflector.
      * @throws ReflectionException        If the callback cannot be reflected.
      */
-    public function callbackReflector($callback): ReflectionFunctionAbstract
-    {
+    public function callbackReflector(
+        callable $callback
+    ): ReflectionFunctionAbstract {
         while ($callback instanceof WrappedInvocable) {
-            $callback = $callback->callback();
+            if ($callback instanceof WrappedMethod) {
+                return $callback->method();
+            }
+
+            $innerCallback = $callback->callback();
+
+            if (!$innerCallback) {
+                break;
+            }
+
+            $callback = $innerCallback;
         }
 
         if (is_array($callback)) {
@@ -57,10 +69,7 @@ class InvocableInspector
             return new ReflectionMethod($callback, '__invoke');
         }
 
-        /** @var string $callableCallback */
-        $callableCallback = $callback;
-
-        return new ReflectionFunction($callableCallback);
+        return new ReflectionFunction($callback);
     }
 
     /**

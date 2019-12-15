@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Mock\Method;
 
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Invocation\WrappedInvocableTrait;
 use Eloquent\Phony\Mock\Handle\Handle;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Handle\StaticHandle;
@@ -18,28 +17,31 @@ use Throwable;
  */
 class WrappedMagicMethod implements WrappedMethod
 {
-    use WrappedInvocableTrait;
+    use WrappedMethodTrait;
 
     /**
      * Construct a new wrapped magic method.
      *
-     * @param string           $name            The name.
      * @param ReflectionMethod $callMagicMethod The _callMagic() method.
+     * @param ReflectionMethod $method          The method.
+     * @param string           $name            The name.
      * @param bool             $isUncallable    True if the underlying magic method is uncallable.
      * @param Handle           $handle          The handle.
      * @param ?Throwable       $exception       An exception to throw.
      * @param mixed            $returnValue     The return value.
      */
     public function __construct(
-        string $name,
         ReflectionMethod $callMagicMethod,
+        ReflectionMethod $method,
+        string $name,
         bool $isUncallable,
         Handle $handle,
         ?Throwable $exception,
         $returnValue
     ) {
-        $this->name = $name;
         $this->callMagicMethod = $callMagicMethod;
+        $this->method = $method;
+        $this->name = $name;
         $this->isUncallable = $isUncallable;
         $this->handle = $handle;
         $this->exception = $exception;
@@ -47,13 +49,13 @@ class WrappedMagicMethod implements WrappedMethod
 
         if ($handle instanceof StaticHandle) {
             $this->mock = null;
-            $this->callback = [
-                $callMagicMethod->getDeclaringClass()->getName(),
-                '__callStatic',
-            ];
+            // $this->callback = [
+            //     $callMagicMethod->getDeclaringClass()->getName(),
+            //     '__callStatic',
+            // ];
         } elseif ($handle instanceof InstanceHandle) {
             $this->mock = $handle->get();
-            $this->callback = [$this->mock, '__call'];
+            // $this->callback = [$this->mock, '__call'];
         }
     }
 
@@ -75,36 +77,6 @@ class WrappedMagicMethod implements WrappedMethod
     public function isUncallable(): bool
     {
         return $this->isUncallable;
-    }
-
-    /**
-     * Get the name.
-     *
-     * @return string The name.
-     */
-    public function name(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * Get the handle.
-     *
-     * @return Handle The handle.
-     */
-    public function handle(): Handle
-    {
-        return $this->handle;
-    }
-
-    /**
-     * Get the mock.
-     *
-     * @return ?Mock The mock.
-     */
-    public function mock(): ?Mock
-    {
-        return $this->mock;
     }
 
     /**
@@ -149,16 +121,6 @@ class WrappedMagicMethod implements WrappedMethod
      * @var bool
      */
     private $isUncallable;
-
-    /**
-     * @var Handle
-     */
-    private $handle;
-
-    /**
-     * @var ?Mock
-     */
-    private $mock;
 
     /**
      * @var ?Throwable

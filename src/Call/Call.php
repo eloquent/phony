@@ -73,7 +73,7 @@ interface Call extends Event, EventCollection
      *
      * @return callable The callback.
      */
-    public function callback();
+    public function callback(): callable;
 
     /**
      * Get the arguments.

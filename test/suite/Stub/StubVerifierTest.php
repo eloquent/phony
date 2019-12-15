@@ -27,7 +27,7 @@ class StubVerifierTest extends TestCase
         $this->callback = 'implode';
         $this->label = 'label';
         $this->stubFactory = StubFactory::instance();
-        $this->stub = $this->stubFactory->create($this->callback)->setLabel($this->label);
+        $this->stub = $this->stubFactory->create($this->callback, null)->setLabel($this->label);
         $this->spyFactory = SpyFactory::instance();
         $this->spy = $this->spyFactory->create($this->stub);
         $this->matcherFactory = MatcherFactory::instance();
@@ -678,7 +678,7 @@ class StubVerifierTest extends TestCase
 
     public function testForwards()
     {
-        $this->stub = $this->stubFactory->create($this->callbackA);
+        $this->stub = $this->stubFactory->create($this->callbackA, null);
         $this->spy = $this->spyFactory->create($this->stub);
         $this->subject = new StubVerifier(
             $this->stub,
@@ -769,7 +769,7 @@ class StubVerifierTest extends TestCase
      */
     public function testForwardsSelfParameterAutoDetection($callback, $self, $arguments, $expected)
     {
-        $stub = $this->stubFactory->create($callback);
+        $stub = $this->stubFactory->create($callback, null);
         $stub->forwards();
         $spy = $this->spyFactory->create($stub);
         $subject = new StubVerifier(
@@ -791,7 +791,7 @@ class StubVerifierTest extends TestCase
 
     public function testForwardsWithReferenceParameters()
     {
-        $this->stub = $this->stubFactory->create($this->referenceCallback);
+        $this->stub = $this->stubFactory->create($this->referenceCallback, null);
         $this->spy = $this->spyFactory->create($this->stub);
         $this->subject = new StubVerifier(
             $this->stub,

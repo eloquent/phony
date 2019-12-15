@@ -24,9 +24,9 @@ trait WrappedInvocableTrait
     /**
      * Get the callback.
      *
-     * @return callable|array<int,string|object> The callback.
+     * @return ?callable The callback.
      */
-    public function callback()
+    public function callback(): ?callable
     {
         return $this->callback;
     }
@@ -94,7 +94,7 @@ trait WrappedInvocableTrait
     abstract public function invokeWith($arguments = []);
 
     /**
-     * @var callable|array<int,string|object>
+     * @var ?callable
      */
     protected $callback;
 

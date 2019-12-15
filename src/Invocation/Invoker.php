@@ -29,13 +29,13 @@ class Invoker
     /**
      * Calls a callback, maintaining reference parameters.
      *
-     * @param callable|array<int,string|object> $callback  The callback.
-     * @param Arguments                         $arguments The arguments.
+     * @param callable  $callback  The callback.
+     * @param Arguments $arguments The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
      */
-    public function callWith($callback, Arguments $arguments)
+    public function callWith(callable $callback, Arguments $arguments)
     {
         if ($callback instanceof Invocable) {
             return $callback->invokeWith($arguments);
@@ -43,10 +43,7 @@ class Invoker
 
         $arguments = $arguments->all();
 
-        /** @var callable $callableCallback */
-        $callableCallback = $callback;
-
-        return $callableCallback(...$arguments);
+        return $callback(...$arguments);
     }
 
     /**

@@ -40,11 +40,9 @@ parameters:
     - message: '/Method Eloquent\\Phony\\Mock\\Handle\\(Instance|Static)Handle::constructHandle\(\) has parameter \$class with generic class ReflectionClass but does not specify its types: T/'
       path: src/Mock/Handle
 
-    # can't fix with @return
-    - message: '/Method Eloquent\\Phony\\(Spy\\Spy|Stub\\Stub)Data::callback\(\) has no return typehint specified./'
-      path: src/Invocation/WrappedInvocableTrait.php
-    - message: '/Method Eloquent\\Phony\\Mock\\Method\\Wrapped\w+Method::callback\(\) has no return typehint specified./'
-      path: src/Invocation/WrappedInvocableTrait.php
+    # can't fix with @var
+    - message: '/Parameter #1 \$name of class ReflectionFunction constructor expects Closure|string, callable\(\): mixed given/'
+      path: src/Invocation/InvocableInspector.php
 
     # false positive for trait abstract method parameter type
     - message: '/Parameter \$arguments of method Eloquent\\Phony\\Mock\\Method\\Wrapped\w+Method::invokeWith\(\) has invalid typehint type Eloquent\\Phony\\Invocation\\Arguments./'

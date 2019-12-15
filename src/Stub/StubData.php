@@ -444,8 +444,10 @@ class StubData implements Stub
                     ->callbackReflector($this->callback->customCallback())
                     ->getParameters();
             } else {
+                /** @var callable */
+                $callback = $this->callback;
                 $parameters = $this->invocableInspector
-                    ->callbackReflector($this->callback)->getParameters();
+                    ->callbackReflector($callback)->getParameters();
             }
 
             $prefixSelf = !empty($parameters) &&
@@ -453,6 +455,7 @@ class StubData implements Stub
         }
 
         $invoker = $this->invoker;
+        /** @var callable */
         $callback = $this->callback;
 
         if (!$arguments instanceof Arguments) {
@@ -499,6 +502,7 @@ class StubData implements Stub
     public function returns(...$values): Stub
     {
         if (empty($values)) {
+            /** @var callable */
             $callback = $this->callback;
             $invocableInspector = $this->invocableInspector;
             $emptyValueFactory = $this->emptyValueFactory;

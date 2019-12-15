@@ -86,10 +86,10 @@ class SpyVerifierFactory
      *
      * @return SpyVerifier The newly created spy verifier.
      */
-    public function create(Spy $spy = null): SpyVerifier
+    public function create(?Spy $spy): SpyVerifier
     {
         if (!$spy) {
-            $spy = $this->spyFactory->create();
+            $spy = $this->spyFactory->create(null);
         }
 
         return new SpyVerifier(
@@ -111,7 +111,7 @@ class SpyVerifierFactory
      *
      * @return SpyVerifier The newly created spy verifier.
      */
-    public function createFromCallback($callback): SpyVerifier
+    public function createFromCallback(?callable $callback): SpyVerifier
     {
         return new SpyVerifier(
             $this->spyFactory->create($callback),

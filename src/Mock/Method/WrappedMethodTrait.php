@@ -68,13 +68,13 @@ trait WrappedMethodTrait
 
         if ($handle instanceof StaticHandle) {
             $this->mock = null;
-            $this->callback = [
-                $method->getDeclaringClass()->getName(),
-                $this->name,
-            ];
+            // $this->callback = [
+            //     $method->getDeclaringClass()->getName(),
+            //     $this->name,
+            // ];
         } elseif ($handle instanceof InstanceHandle) {
             $this->mock = $handle->get();
-            $this->callback = [$this->mock, $this->name];
+            // $this->callback = [$this->mock, $this->name];
         }
     }
 

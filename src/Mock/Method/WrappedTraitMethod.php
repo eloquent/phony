@@ -20,14 +20,14 @@ class WrappedTraitMethod implements WrappedMethod
      * Construct a new wrapped trait method.
      *
      * @param ReflectionMethod $callTraitMethod The _callTrait() method.
-     * @param string           $traitName       The trait name.
      * @param ReflectionMethod $method          The method.
+     * @param string           $traitName       The trait name.
      * @param Handle           $handle          The handle.
      */
     public function __construct(
         ReflectionMethod $callTraitMethod,
-        string $traitName,
         ReflectionMethod $method,
+        string $traitName,
         Handle $handle
     ) {
         $this->callTraitMethod = $callTraitMethod;

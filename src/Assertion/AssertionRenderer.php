@@ -140,9 +140,11 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
+            /** @var callable */
+            $callback = $subject->callback();
             $renderedSubject =
                 $this->bold .
-                $this->exporter->exportCallable($subject->callback()) .
+                $this->exporter->exportCallable($callback) .
                 $this->reset;
         } else {
             /** @var Spy $subject */
@@ -250,9 +252,11 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
+            /** @var callable */
+            $callback = $subject->callback();
             $renderedSubject =
                 $this->bold .
-                $this->exporter->exportCallable($subject->callback()) .
+                $this->exporter->exportCallable($callback) .
                 $this->reset;
         } else {
             /** @var Spy $subject */
@@ -488,8 +492,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 
@@ -613,8 +618,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 
@@ -818,8 +824,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 
@@ -982,8 +989,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 
@@ -1146,8 +1154,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 
@@ -1288,8 +1297,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 
@@ -1435,8 +1445,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 
@@ -1753,8 +1764,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 
@@ -2114,8 +2126,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 
@@ -2453,8 +2466,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 
@@ -2758,8 +2772,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 
@@ -3070,8 +3085,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 
@@ -3381,8 +3397,9 @@ class AssertionRenderer
 
             /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
 

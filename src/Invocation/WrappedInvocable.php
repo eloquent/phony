@@ -35,7 +35,7 @@ interface WrappedInvocable extends Invocable
     /**
      * Get the callback.
      *
-     * @return callable The callback.
+     * @return ?callable The callback.
      */
-    public function callback();
+    public function callback(): ?callable;
 }

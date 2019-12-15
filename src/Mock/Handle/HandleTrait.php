@@ -291,8 +291,9 @@ trait HandleTrait
 
             $stub = $this->stubFactory->create(
                 new WrappedMagicMethod(
-                    $name,
                     $this->callMagicMethod,
+                    $this->class->getMethod($magicKey),
+                    $name,
                     $isUncallable,
                     $this,
                     $exception,
@@ -326,8 +327,8 @@ trait HandleTrait
             $stub = $this->stubFactory->create(
                 new WrappedTraitMethod(
                     $this->callTraitMethod,
-                    $this->traitMethods[$key],
                     $this->class->getMethod($name),
+                    $this->traitMethods[$key],
                     $this
                 ),
                 $this->state->defaultAnswerCallback

@@ -403,7 +403,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @return callable The callback.
      */
-    public function callback()
+    public function callback(): callable
     {
         return $this->call->callback();
     }

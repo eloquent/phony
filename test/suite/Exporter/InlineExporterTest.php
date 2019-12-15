@@ -242,9 +242,9 @@ class InlineExporterTest extends TestCase
     {
         $spy = $this->spyFactory->create('implode')->setLabel('label');
         $closure = $this->spyFactory->create(function () {})->setLabel('label');
-        $anonymous = $this->spyFactory->create()->setLabel('anonymous');
+        $anonymous = $this->spyFactory->create(null)->setLabel('anonymous');
         $verifier = $this->spyVerifierFactory->createFromCallback('implode')->setLabel('verifier');
-        $anonymousVerifier = $this->spyVerifierFactory->create()->setLabel('anonymous-verifier');
+        $anonymousVerifier = $this->spyVerifierFactory->create(null)->setLabel('anonymous-verifier');
         $repeated = [$spy, $spy];
 
         $this->assertSame('spy#0(implode)[label]', $this->subject->export($spy));
@@ -260,10 +260,10 @@ class InlineExporterTest extends TestCase
 
     public function testExportStubs()
     {
-        $stub = $this->stubFactory->create('implode')->setLabel('label');
-        $anonymous = $this->stubFactory->create()->setLabel('anonymous');
+        $stub = $this->stubFactory->create('implode', null)->setLabel('label');
+        $anonymous = $this->stubFactory->create(null, null)->setLabel('anonymous');
         $verifier = $this->stubVerifierFactory->createFromCallback('implode')->setLabel('verifier');
-        $anonymousVerifier = $this->stubVerifierFactory->create()->setLabel('anonymous-verifier');
+        $anonymousVerifier = $this->stubVerifierFactory->create(null)->setLabel('anonymous-verifier');
         $builderA = $this->mockBuilderFactory->create(TestClassA::class)
             ->named('PhonyMockInlineExporterExportSpiesA');
         $mockA = $builderA->get();
@@ -333,7 +333,7 @@ class InlineExporterTest extends TestCase
 
     public function testExportIterableSpies()
     {
-        $stub = $this->stubVerifierFactory->create()->setUseIterableSpies(true)->returns([]);
+        $stub = $this->stubVerifierFactory->create(null)->setUseIterableSpies(true)->returns([]);
         $iterableSpy = $stub();
 
         $this->assertSame('iterable-spy#0(#0[])', $this->subject->export($iterableSpy));
@@ -357,13 +357,13 @@ class InlineExporterTest extends TestCase
         $closure = function () {};
         $closureLine = __LINE__ - 1;
         $spy = $this->spyFactory->create('implode')->setLabel('spy');
-        $anonymousSpy = $this->spyFactory->create()->setLabel('anonymous-spy');
+        $anonymousSpy = $this->spyFactory->create(null)->setLabel('anonymous-spy');
         $spyVerifier = $this->spyVerifierFactory->createFromCallback('implode')->setLabel('spy-verifier');
-        $anonymousSpyVerifier = $this->spyVerifierFactory->create()->setLabel('anonymous-spy-verifier');
-        $stub = $this->stubFactory->create('implode')->setLabel('stub');
-        $anonymousStub = $this->stubFactory->create()->setLabel('anonymous-stub');
+        $anonymousSpyVerifier = $this->spyVerifierFactory->create(null)->setLabel('anonymous-spy-verifier');
+        $stub = $this->stubFactory->create('implode', null)->setLabel('stub');
+        $anonymousStub = $this->stubFactory->create(null, null)->setLabel('anonymous-stub');
         $stubVerifier = $this->stubVerifierFactory->createFromCallback('implode')->setLabel('stub-verifier');
-        $anonymousStubVerifier = $this->stubVerifierFactory->create()->setLabel('anonymous-stub-verifier');
+        $anonymousStubVerifier = $this->stubVerifierFactory->create(null)->setLabel('anonymous-stub-verifier');
         $builderA = $this->mockBuilderFactory->create(TestClassA::class)
             ->named('PhonyMockInlineExporterExportCallableA')
             ->addMethod('method')

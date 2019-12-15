@@ -33,7 +33,7 @@ class GeneratorVerifierFactoryTest extends TestCase
 
     public function testCreate()
     {
-        $spy = $this->spyFactory->create();
+        $spy = $this->spyFactory->create(null);
         $calls = [
             $this->callFactory->create(),
             $this->callFactory->create(),

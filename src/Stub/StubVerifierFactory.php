@@ -100,10 +100,10 @@ class StubVerifierFactory
      *
      * @return StubVerifier The newly created stub verifier.
      */
-    public function create(Stub $stub = null, $self = null): StubVerifier
+    public function create(?Stub $stub, $self = null): StubVerifier
     {
         if (!$stub) {
-            $stub = $this->stubFactory->create();
+            $stub = $this->stubFactory->create(null, null);
         }
 
         $verifier = new StubVerifier(
@@ -137,7 +137,7 @@ class StubVerifierFactory
      */
     public function createFromCallback(?callable $callback): StubVerifier
     {
-        $stub = $this->stubFactory->create($callback);
+        $stub = $this->stubFactory->create($callback, null);
 
         $verifier = new StubVerifier(
             $stub,
@@ -184,7 +184,7 @@ class StubVerifierFactory
             );
         }
 
-        $stub = $this->stubFactory->create($function);
+        $stub = $this->stubFactory->create($function, null);
         $spy = $this->spyFactory->create($stub);
         $this->functionHookManager->defineFunction($function, $namespace, $spy);
 

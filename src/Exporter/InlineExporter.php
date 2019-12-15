@@ -643,13 +643,19 @@ class InlineExporter implements Exporter
      *
      * @return string The exported callable.
      */
-    public function exportCallable($callback): string
+    public function exportCallable(callable $callback): string
     {
         $wrappedCallback = null;
 
         while ($callback instanceof WrappedInvocable) {
             $wrappedCallback = $callback;
-            $callback = $callback->callback();
+            $innerCallback = $callback->callback();
+
+            if (!$innerCallback) {
+                break;
+            }
+
+            $callback = $innerCallback;
         }
 
         $label = '';

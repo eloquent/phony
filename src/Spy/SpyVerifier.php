@@ -96,9 +96,9 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Get the callback.
      *
-     * @return callable|array<int,object|string> The callback.
+     * @return callable
      */
-    public function callback()
+    public function callback(): ?callable
     {
         return $this->spy->callback();
     }

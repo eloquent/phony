@@ -33,7 +33,7 @@ class WrappedParentMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame([$this->mock, 'testClassAMethodE'], $this->subject->callback());
+        $this->assertNull($this->subject->callback());
         $this->assertSame('', $this->subject->label());
     }
 
@@ -49,10 +49,7 @@ class WrappedParentMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame(
-            [TestClassA::class, 'testClassAStaticMethodE'],
-            $this->subject->callback()
-        );
+        $this->assertNull($this->subject->callback());
         $this->assertSame('', $this->subject->label());
     }
 

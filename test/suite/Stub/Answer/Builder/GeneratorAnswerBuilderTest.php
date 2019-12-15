@@ -22,7 +22,7 @@ class GeneratorAnswerBuilderTest extends TestCase
     protected function setUp(): void
     {
         $this->self = (object) [];
-        $this->stub = StubFactory::instance()->create()->setSelf($this->self);
+        $this->stub = StubFactory::instance()->create(null, null)->setSelf($this->self);
         $this->featureDetector = FeatureDetector::instance();
         $this->invocableInspector = new InvocableInspector();
         $this->invoker = new Invoker();

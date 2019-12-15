@@ -82,8 +82,8 @@ class StubFactory
      * @return Stub The newly created stub.
      */
     public function create(
-        callable $callback = null,
-        callable $defaultAnswerCallback = null
+        ?callable $callback,
+        ?callable $defaultAnswerCallback
     ): Stub {
         if (null === $defaultAnswerCallback) {
             $defaultAnswerCallback =

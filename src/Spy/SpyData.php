@@ -40,7 +40,7 @@ class SpyData implements Spy
      * @param IterableSpyFactory  $iterableSpyFactory  The iterable spy factory to use.
      */
     public function __construct(
-        $callback,
+        ?callable $callback,
         string $label,
         CallFactory $callFactory,
         Invoker $invoker,
@@ -365,11 +365,14 @@ class SpyData implements Spy
             $arguments = new Arguments($arguments);
         }
 
+        /** @var callable */
+        $callback = $this->callback;
+
         if (!$this->isRecording) {
-            return $this->invoker->callWith($this->callback, $arguments);
+            return $this->invoker->callWith($callback, $arguments);
         }
 
-        $call = $this->callFactory->record($this->callback, $arguments, $this);
+        $call = $this->callFactory->record($callback, $arguments, $this);
         $responseEvent = $call->responseEvent();
 
         if ($responseEvent instanceof ThrewEvent) {

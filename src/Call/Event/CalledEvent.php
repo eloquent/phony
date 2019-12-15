@@ -38,7 +38,7 @@ class CalledEvent implements CallEvent
      *
      * @return callable The callback.
      */
-    public function callback()
+    public function callback(): callable
     {
         return $this->callback;
     }
