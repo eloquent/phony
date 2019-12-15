@@ -38,7 +38,7 @@ parameters:
 
     # can't fix with @param
     - message: '/Method Eloquent\\Phony\\Mock\\Handle\\(Instance|Static)Handle::constructHandle\(\) has parameter \$class with generic class ReflectionClass but does not specify its types: T/'
-      path: src/Mock/Handle
+      path: src/Mock/Handle/HandleTrait.php
 
     # can't fix with @var
     - message: '/Parameter #1 \$name of class ReflectionFunction constructor expects Closure|string, callable\(\): mixed given/'
