@@ -517,7 +517,7 @@ class StubData implements Stub
                     if (!$valueIsSet) {
                         if (
                             $type = $invocableInspector
-                                ->callbackReturnType($callback)
+                                ->callbackReflector($callback)->getReturnType()
                         ) {
                             try {
                                 $value = $emptyValueFactory->fromType($type);
