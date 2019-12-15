@@ -69,6 +69,8 @@ class InvocableInspector
             return new ReflectionMethod($callback, '__invoke');
         }
 
+        /** @var string $callback */
+
         return new ReflectionFunction($callback);
     }
 

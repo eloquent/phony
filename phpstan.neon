@@ -30,10 +30,6 @@ parameters:
     - message: '/Method Eloquent\\Phony\\Mock\\Handle\\(Instance|Static)Handle::constructHandle\(\) has parameter \$class with generic class ReflectionClass but does not specify its types: T/'
       path: src/Mock/Handle/HandleTrait.php
 
-    # can't fix with @var
-    - message: '/Parameter #1 \$name of class ReflectionFunction constructor expects Closure|string, callable\(\): mixed given/'
-      path: src/Invocation/InvocableInspector.php
-
     # @extends being ignored
     - message: '/no value type specified in iterable type .*(Eloquent\\Phony\\Call\\Call|Eloquent\\Phony\\Spy\\Spy)/'
       paths:
