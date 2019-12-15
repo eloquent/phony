@@ -282,17 +282,6 @@ class CallDataTest extends TestCase
         $this->subject->setResponseEvent($this->returnedEvent);
     }
 
-    public function testSetEndEventWithReturnedEvent()
-    {
-        $this->subject = new CallData($this->index, $this->calledEvent);
-        $this->subject->setEndEvent($this->returnedEvent);
-
-        $this->assertSame($this->returnedEvent, $this->subject->endEvent());
-        $this->assertSame($this->subject, $this->subject->endEvent()->call());
-        $this->assertSame($this->returnedEvent, $this->subject->responseEvent());
-        $this->assertSame($this->subject, $this->subject->responseEvent()->call());
-    }
-
     public function testSetEndEventFailureAlreadySet()
     {
         $this->subject->setEndEvent($this->returnedEvent);

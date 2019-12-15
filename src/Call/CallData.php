@@ -345,12 +345,6 @@ class CallData implements Call
         }
 
         $endEvent->setCall($this);
-
-        if (!$this->responseEvent) {
-            assert($endEvent instanceof ResponseEvent);
-            $this->responseEvent = $endEvent;
-        }
-
         $this->endEvent = $endEvent;
     }
 
