@@ -124,8 +124,8 @@ function spy(callable $callback = null): SpyVerifier
  * Create a spy of a function in the global namespace, and declare it as a
  * function in another namespace.
  *
- * @param string $function  The name of the function in the global namespace.
- * @param string $namespace The namespace in which to create the new function.
+ * @param callable&string $function  The name of the function in the global namespace.
+ * @param string          $namespace The namespace in which to create the new function.
  *
  * @return SpyVerifier The new spy.
  */
@@ -155,8 +155,8 @@ function stub(callable $callback = null): StubVerifier
  * Stubs created via this function do not forward to the original function by
  * default. This differs from stubs created by other methods.
  *
- * @param string $function  The name of the function in the global namespace.
- * @param string $namespace The namespace in which to create the new function.
+ * @param callable&string $function  The name of the function in the global namespace.
+ * @param string          $namespace The namespace in which to create the new function.
  *
  * @return StubVerifier The new stub.
  */
@@ -198,7 +198,10 @@ function checkInOrder(...$events): ?EventCollection
  */
 function inOrder(...$events): EventCollection
 {
-    return Globals::$container->eventOrderVerifier->inOrder(...$events);
+    /** @var EventCollection */
+    $result = Globals::$container->eventOrderVerifier->inOrder(...$events);
+
+    return $result;
 }
 
 /**
@@ -225,7 +228,10 @@ function checkAnyOrder(...$events): ?EventCollection
  */
 function anyOrder(...$events): EventCollection
 {
-    return Globals::$container->eventOrderVerifier->anyOrder(...$events);
+    /** @var EventCollection */
+    $result = Globals::$container->eventOrderVerifier->anyOrder(...$events);
+
+    return $result;
 }
 
 /**
