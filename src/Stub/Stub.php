@@ -247,7 +247,7 @@ interface Stub extends WrappedInvocable
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */
-    public function generates(...$values): GeneratorAnswerBuilder;
+    public function generates(iterable ...$values): GeneratorAnswerBuilder;
 
     /**
      * Close any existing rule.

@@ -182,7 +182,7 @@ function restoreGlobalFunctions(): void
  *
  * @return ?EventCollection The result.
  */
-function checkInOrder(...$events): ?EventCollection
+function checkInOrder(object ...$events): ?EventCollection
 {
     return Globals::$container->eventOrderVerifier->checkInOrder(...$events);
 }
@@ -196,7 +196,7 @@ function checkInOrder(...$events): ?EventCollection
  * @return EventCollection The result.
  * @throws Throwable       If the assertion fails.
  */
-function inOrder(...$events): EventCollection
+function inOrder(object ...$events): EventCollection
 {
     /** @var EventCollection */
     $result = Globals::$container->eventOrderVerifier->inOrder(...$events);
@@ -212,7 +212,7 @@ function inOrder(...$events): EventCollection
  * @return ?EventCollection         The result.
  * @throws InvalidArgumentException If invalid input is supplied.
  */
-function checkAnyOrder(...$events): ?EventCollection
+function checkAnyOrder(object ...$events): ?EventCollection
 {
     return Globals::$container->eventOrderVerifier->checkAnyOrder(...$events);
 }
@@ -226,7 +226,7 @@ function checkAnyOrder(...$events): ?EventCollection
  * @throws InvalidArgumentException If invalid input is supplied.
  * @throws Throwable                If the assertion fails.
  */
-function anyOrder(...$events): EventCollection
+function anyOrder(object ...$events): EventCollection
 {
     /** @var EventCollection */
     $result = Globals::$container->eventOrderVerifier->anyOrder(...$events);

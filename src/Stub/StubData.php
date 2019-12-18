@@ -665,7 +665,7 @@ class StubData implements Stub
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */
-    public function generates(...$values): GeneratorAnswerBuilder
+    public function generates(iterable ...$values): GeneratorAnswerBuilder
     {
         $builder = $this->generatorAnswerBuilderFactory->create($this);
         $this->doesWith($builder->answer(), [], true, true, false);

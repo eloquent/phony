@@ -210,7 +210,7 @@ trait FacadeTrait
      *
      * @return ?EventCollection The result.
      */
-    public static function checkInOrder(...$events): ?EventCollection
+    public static function checkInOrder(object ...$events): ?EventCollection
     {
         $container = self::$globals::$container;
 
@@ -226,7 +226,7 @@ trait FacadeTrait
      * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
      * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public static function inOrder(...$events): ?EventCollection
+    public static function inOrder(object ...$events): ?EventCollection
     {
         $container = self::$globals::$container;
 
@@ -241,7 +241,7 @@ trait FacadeTrait
      * @return ?EventCollection         The result.
      * @throws InvalidArgumentException If invalid input is supplied.
      */
-    public static function checkAnyOrder(...$events): ?EventCollection
+    public static function checkAnyOrder(object ...$events): ?EventCollection
     {
         $container = self::$globals::$container;
 
@@ -257,7 +257,7 @@ trait FacadeTrait
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public static function anyOrder(...$events): ?EventCollection
+    public static function anyOrder(object ...$events): ?EventCollection
     {
         $container = self::$globals::$container;
 
