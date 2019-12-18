@@ -3,6 +3,7 @@ parameters:
   paths: [src]
   autoload_directories:
   - test/src/Phpstan
+  reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # allow @throws with interfaces
     - message: '/@throws with type .* is not subtype of Throwable/'
@@ -25,6 +26,13 @@ parameters:
     # allow setting special property on generators
     - message: '/Access to an undefined property Generator::\$_phonySubject/'
       path: src/Spy/GeneratorSpyFactory.php
+
+    # false positives for trait properties
+    - message: '/Property .* has no typehint specified/'
+      paths:
+      - src/Call/Event/CallEventTrait.php
+      - src/Facade/FacadeContainerTrait.php
+      - src/Invocation/WrappedInvocableTrait.php
 
     # can't fix with @param
     - message: '/Method Eloquent\\Phony\\Mock\\Handle\\(Instance|Static)Handle::constructHandle\(\) has parameter \$class with generic class ReflectionClass but does not specify its types: T/'
@@ -57,6 +65,10 @@ parameters:
       - src/Verification/GeneratorVerifierFactory.php
       - src/Verification/IterableVerifier.php
       - src/Verification/IterableVerifierFactory.php
+
+    # false positive for trait abstract method parameter type
+    - message: '/Parameter \$arguments of method Eloquent\\Phony\\Mock\\Method\\Wrapped\w+Method::invokeWith\(\) has invalid typehint type Eloquent\\Phony\\Invocation\\Arguments/'
+      path: src/Invocation/WrappedInvocableTrait.php
 
   #   # (tests only) ignore undefined properties
   #   - message: '/^Access to an undefined property /'
