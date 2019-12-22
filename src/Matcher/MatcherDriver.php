@@ -30,5 +30,5 @@ interface MatcherDriver
      *
      * @return Matcher The wrapped matcher.
      */
-    public function wrapMatcher($matcher): Matcher;
+    public function wrapMatcher(object $matcher): Matcher;
 }
