@@ -702,7 +702,7 @@ class MockBuilder
     private $parentClassName;
 
     /**
-     * @var array<string,array<int,callable|ReflectionFunctionAbstract>>
+     * @var array<string,array{0:callable,1:ReflectionFunctionAbstract}>
      */
     private $customMethods;
 
@@ -712,7 +712,7 @@ class MockBuilder
     private $customProperties;
 
     /**
-     * @var array<string,array<int,callable|ReflectionFunctionAbstract>>
+     * @var array<string,array{0:callable,1:ReflectionFunctionAbstract}>
      */
     private $customStaticMethods;
 

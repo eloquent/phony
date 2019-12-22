@@ -8,7 +8,6 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Mock\Handle\Handle;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Handle\StaticHandle;
-use Eloquent\Phony\Mock\Mock;
 use ReflectionMethod;
 use Throwable;
 

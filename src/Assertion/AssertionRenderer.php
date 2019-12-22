@@ -1063,6 +1063,8 @@ class AssertionRenderer
                 }
 
                 if ($responseEvent instanceof ThrewEvent) {
+                    /** @var Throwable $exception */
+
                     if ($type instanceof Matcher) {
                         $isMatch = $type->matches($exception);
                     } elseif (is_string($type)) {
