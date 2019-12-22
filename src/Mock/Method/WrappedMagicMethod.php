@@ -49,13 +49,8 @@ class WrappedMagicMethod implements WrappedMethod
 
         if ($handle instanceof StaticHandle) {
             $this->mock = null;
-            // $this->callback = [
-            //     $callMagicMethod->getDeclaringClass()->getName(),
-            //     '__callStatic',
-            // ];
         } elseif ($handle instanceof InstanceHandle) {
             $this->mock = $handle->get();
-            // $this->callback = [$this->mock, '__call'];
         }
     }
 
