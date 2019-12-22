@@ -374,6 +374,9 @@ trait HandleTrait
         return $stubVerifier;
     }
 
+    /**
+     * @param ReflectionClass<object> $class
+     */
     private function constructHandle(
         ReflectionClass $class,
         stdClass $state,

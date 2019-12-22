@@ -26,10 +26,6 @@ parameters:
     - message: '/Access to an undefined property Generator::\$_phonySubject/'
       path: src/Spy/GeneratorSpyFactory.php
 
-    # can't fix with @param
-    - message: '/Method Eloquent\\Phony\\Mock\\Handle\\(Instance|Static)Handle::constructHandle\(\) has parameter \$class with generic class ReflectionClass but does not specify its types: T/'
-      path: src/Mock/Handle/HandleTrait.php
-
     # @extends being ignored
     - message: '/no value type specified in iterable type .*(Eloquent\\Phony\\Call\\Call|Eloquent\\Phony\\Spy\\Spy)/'
       paths:
