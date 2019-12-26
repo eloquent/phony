@@ -526,11 +526,12 @@ class StubData implements Stub
                             try {
                                 $value = $emptyValueFactory->fromType($type);
                             } catch (FinalClassException $e) {
-                                assert($type instanceof ReflectionNamedType);
+                                /** @var ReflectionNamedType */
+                                $namedType = $type;
 
                                 throw new FinalReturnTypeException(
                                     $this->exporter->exportCallable($callback),
-                                    $type->getName(),
+                                    $namedType->getName(),
                                     $e
                                 );
                             }
@@ -635,13 +636,14 @@ class StubData implements Stub
         }
 
         foreach ($exceptions as $exception) {
-            if (is_string($exception)) {
+            if (null === $exception) {
+                $exception = new Exception();
+            } elseif (is_string($exception)) {
                 $exception = new Exception($exception);
             } elseif ($exception instanceof InstanceHandle) {
+                /** @var Throwable */
                 $exception = $exception->get();
             }
-
-            assert($exception instanceof Throwable);
 
             $this->doesWith(
                 function () use ($exception) {

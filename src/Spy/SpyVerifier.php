@@ -750,7 +750,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
             }
 
             if ($isTypeSupported) {
-                assert($type instanceof Matcher);
+                /** @var Matcher */
+                $typeMatcher = $type;
 
                 foreach ($calls as $call) {
                     if (!$responseEvent = $call->responseEvent()) {
@@ -759,7 +760,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
 
                     list($exception) = $call->response();
 
-                    if ($exception && $type->matches($exception)) {
+                    if ($exception && $typeMatcher->matches($exception)) {
                         $matchingEvents[] = $responseEvent;
                         ++$matchCount;
                     }
@@ -797,8 +798,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
         $cardinality = $this->cardinality;
 
         if ($type instanceof InstanceHandle) {
+            /** @var Throwable */
             $type = $type->get();
-            assert($type instanceof Throwable);
         }
 
         if ($type instanceof Throwable) {

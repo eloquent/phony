@@ -420,8 +420,8 @@ class MockBuilder
     public function definition(): MockDefinition
     {
         $this->finalize();
-        assert($this->definition instanceof MockDefinition);
 
+        /** @var MockDefinition */
         return $this->definition;
     }
 

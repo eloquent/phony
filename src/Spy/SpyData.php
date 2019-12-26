@@ -381,8 +381,9 @@ class SpyData implements Spy
             throw $responseEvent->exception();
         }
 
-        assert($responseEvent instanceof ReturnedEvent);
-        $returnValue = $responseEvent->value();
+        /** @var ReturnedEvent */
+        $returnedEvent = $responseEvent;
+        $returnValue = $returnedEvent->value();
 
         if ($this->useGeneratorSpies && $returnValue instanceof Generator) {
             return $this->generatorSpyFactory->create($call, $returnValue);
@@ -395,7 +396,7 @@ class SpyData implements Spy
             return $this->iterableSpyFactory->create($call, $returnValue);
         }
 
-        $call->setEndEvent($responseEvent);
+        $call->setEndEvent($returnedEvent);
 
         return $returnValue;
     }

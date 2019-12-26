@@ -95,9 +95,7 @@ class TraversableSpy implements IterableSpy
      */
     public function valid(): bool
     {
-        if ($this->isUsed) {
-            assert($this->iterator instanceof Iterator);
-        } else {
+        if (!$this->isUsed) {
             $this->call
                 ->addIterableEvent($this->callEventFactory->createUsed());
 
@@ -111,14 +109,16 @@ class TraversableSpy implements IterableSpy
                 $iterator = $this->traversable;
             }
 
-            assert($iterator instanceof Iterator);
             $this->iterator = $iterator;
             $this->isUsed = true;
         }
 
-        if ($isValid = $this->iterator->valid()) {
-            $this->key = $this->iterator->key();
-            $this->value = $this->iterator->current();
+        /** @var Iterator<mixed> */
+        $iterator = $this->iterator;
+
+        if ($isValid = $iterator->valid()) {
+            $this->key = $iterator->key();
+            $this->value = $iterator->current();
         } else {
             $this->key = null;
             $this->value = null;

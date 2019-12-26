@@ -63,8 +63,9 @@ class EmptyValueFactory
             return null;
         }
 
-        assert($type instanceof ReflectionNamedType);
-        $typeName = $type->getName();
+        /** @var ReflectionNamedType */
+        $namedType = $type;
+        $typeName = $namedType->getName();
 
         switch (strtolower($typeName)) {
             case 'bool':

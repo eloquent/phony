@@ -385,13 +385,15 @@ class GeneratorAnswerBuilder
             $copies[$i] = clone $this;
         }
 
-        if (is_string($exception)) {
+        if (null === $exception) {
+            $exception = new Exception();
+        } elseif (is_string($exception)) {
             $exception = new Exception($exception);
         } elseif ($exception instanceof InstanceHandle) {
+            /** @var Throwable */
             $exception = $exception->get();
         }
 
-        assert($exception instanceof Throwable);
         $this->exception = $exception;
 
         for ($i = 1; $i < $argumentCount; ++$i) {

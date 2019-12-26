@@ -229,7 +229,8 @@ class GeneratorVerifier extends IterableVerifier
             }
 
             if ($isTypeSupported) {
-                assert($type instanceof Matcher);
+                /** @var Matcher */
+                $typeMatcher = $type;
 
                 foreach ($this->calls as $call) {
                     $isMatchingCall = false;
@@ -238,7 +239,7 @@ class GeneratorVerifier extends IterableVerifier
                         if ($event instanceof ReceivedExceptionEvent) {
                             ++$eventCount;
 
-                            if ($type->matches($event->exception())) {
+                            if ($typeMatcher->matches($event->exception())) {
                                 $matchingEvents[] = $event;
                                 $isMatchingCall = true;
 
@@ -293,8 +294,8 @@ class GeneratorVerifier extends IterableVerifier
         $cardinality = $this->cardinality;
 
         if ($type instanceof InstanceHandle) {
+            /** @var Throwable */
             $type = $type->get();
-            assert($type instanceof Throwable);
         }
 
         if ($type instanceof Throwable) {
@@ -466,7 +467,8 @@ class GeneratorVerifier extends IterableVerifier
             }
 
             if ($isTypeSupported) {
-                assert($type instanceof Matcher);
+                /** @var Matcher */
+                $typeMatcher = $type;
 
                 foreach ($this->calls as $call) {
                     if (
@@ -478,7 +480,7 @@ class GeneratorVerifier extends IterableVerifier
 
                     list($exception) = $call->generatorResponse();
 
-                    if ($exception && $type->matches($exception)) {
+                    if ($exception && $typeMatcher->matches($exception)) {
                         $matchingEvents[] = $endEvent;
                         ++$matchCount;
                     }
@@ -517,8 +519,8 @@ class GeneratorVerifier extends IterableVerifier
         $cardinality = $this->cardinality;
 
         if ($type instanceof InstanceHandle) {
+            /** @var Throwable */
             $type = $type->get();
-            assert($type instanceof Throwable);
         }
 
         if ($type instanceof Throwable) {

@@ -833,6 +833,7 @@ class CallVerifier implements Call, CardinalityVerifier
             }
         } elseif (is_object($type)) {
             if ($type instanceof InstanceHandle) {
+                /** @var Matcher */
                 $type = $type->get();
             }
 
@@ -845,8 +846,6 @@ class CallVerifier implements Call, CardinalityVerifier
             }
 
             if ($isTypeSupported) {
-                assert($type instanceof Matcher);
-
                 list($matchCount, $matchingEvents) = $this->matchIf(
                     $responseEvent,
                     $exception && $type->matches($exception)
@@ -887,8 +886,8 @@ class CallVerifier implements Call, CardinalityVerifier
         $cardinality = $this->cardinality;
 
         if ($type instanceof InstanceHandle) {
+            /** @var Throwable  */
             $type = $type->get();
-            assert($type instanceof Throwable);
         }
 
         if ($type instanceof Throwable) {
