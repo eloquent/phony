@@ -23,8 +23,8 @@ final class NonArrayAccessTraversableException extends Exception
 
         parent::__construct(
             sprintf(
-                'Unable to use array acces on a traversable object of type %s,' .
-                    ' since it does not implement ArrayAccess.',
+                'Unable to use array access on a traversable object of type ' .
+                    '%s, since it does not implement ArrayAccess.',
                 var_export(get_class($traversable), true)
             )
         );

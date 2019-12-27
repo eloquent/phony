@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Spy;
 
 use ArrayObject;
+use Eloquent\Phony\Spy\Exception\NonArrayAccessTraversableException;
+use Eloquent\Phony\Spy\Exception\NonCountableTraversableException;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\TestIteratorAggregate;
+use EmptyIterator;
 use PHPUnit\Framework\TestCase;
 
 class TraversableSpyTest extends TestCase
@@ -50,6 +54,42 @@ class TraversableSpyTest extends TestCase
         $this->assertArrayNotHasKey('e', $this->subject);
     }
 
+    public function testArrayAccessOffsetExistsWithNonArrayAccess()
+    {
+        $traversable = new EmptyIterator();
+        $subject = new TraversableSpy($this->call, $traversable, $this->callEventFactory);
+
+        $this->expectException(NonArrayAccessTraversableException::class);
+        isset($subject[0]);
+    }
+
+    public function testArrayAccessOffsetGetWithNonArrayAccess()
+    {
+        $traversable = new EmptyIterator();
+        $subject = new TraversableSpy($this->call, $traversable, $this->callEventFactory);
+
+        $this->expectException(NonArrayAccessTraversableException::class);
+        $subject[0];
+    }
+
+    public function testArrayAccessOffsetSetWithNonArrayAccess()
+    {
+        $traversable = new EmptyIterator();
+        $subject = new TraversableSpy($this->call, $traversable, $this->callEventFactory);
+
+        $this->expectException(NonArrayAccessTraversableException::class);
+        $subject[0] = 0;
+    }
+
+    public function testArrayAccessOffsetUnsetWithNonArrayAccess()
+    {
+        $traversable = new EmptyIterator();
+        $subject = new TraversableSpy($this->call, $traversable, $this->callEventFactory);
+
+        $this->expectException(NonArrayAccessTraversableException::class);
+        unset($subject[0]);
+    }
+
     public function testCountable()
     {
         $this->assertCount(2, $this->subject);
@@ -57,5 +97,22 @@ class TraversableSpyTest extends TestCase
         $this->subject['e'] = 'f';
 
         $this->assertCount(3, $this->subject);
+    }
+
+    public function testCountableWithNonCountable()
+    {
+        $traversable = new EmptyIterator();
+        $subject = new TraversableSpy($this->call, $traversable, $this->callEventFactory);
+
+        $this->expectException(NonCountableTraversableException::class);
+        count($subject);
+    }
+
+    public function testNestedIteratorAggregateUnwrapping()
+    {
+        $traversable = new TestIteratorAggregate(new TestIteratorAggregate(new ArrayObject($this->array)));
+        $subject = new TraversableSpy($this->call, $traversable, $this->callEventFactory);
+
+        $this->assertSame($this->array, iterator_to_array($subject));
     }
 }

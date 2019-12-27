@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Invocation;
 
+use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestInvocable;
@@ -52,6 +53,16 @@ class InvocableInspectorTest extends TestCase
         $this->assertEquals(
             new ReflectionFunction($this->callback),
             $this->subject->callbackReflector($this->wrappedInvocable)
+        );
+    }
+
+    public function testCallbackReflectorWithWrappedMethod()
+    {
+        $handle = Phony::mock(TestClassA::class);
+
+        $this->assertEquals(
+            new ReflectionMethod($handle->className() . '::testClassAMethodA'),
+            $this->subject->callbackReflector($handle->testClassAMethodA)
         );
     }
 

@@ -1064,6 +1064,22 @@ class StubDataTest extends TestCase
         $this->assertEquals([new Exception('a'), new Exception('b'), new Exception('b')], $thrownExceptions);
     }
 
+    public function testThrowsWithNull()
+    {
+        $this->assertSame($this->subject, $this->subject->throws('a', null));
+
+        $thrownExceptions = [];
+        for ($i = 0; $i < 3; ++$i) {
+            try {
+                call_user_func($this->subject);
+            } catch (Exception $thrownException) {
+                $thrownExceptions[] = $thrownException;
+            }
+        }
+
+        $this->assertEquals([new Exception('a'), new Exception(), new Exception()], $thrownExceptions);
+    }
+
     public function testMultipleRules()
     {
         $this->assertSame(

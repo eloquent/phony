@@ -46,13 +46,7 @@ class InvocableInspector
                 return $callback->method();
             }
 
-            $innerCallback = $callback->callback();
-
-            if (!$innerCallback) {
-                break;
-            }
-
-            $callback = $innerCallback;
+            $callback = $callback->callback();
         }
 
         if (is_array($callback)) {

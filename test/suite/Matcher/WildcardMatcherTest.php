@@ -53,6 +53,11 @@ class WildcardMatcherTest extends TestCase
         $this->assertSame($expected, strval($this->subject));
     }
 
+    public function testMatches()
+    {
+        $this->assertFalse($this->subject->matches(''));
+    }
+
     public function testInstance()
     {
         $class = get_class($this->subject);

@@ -88,7 +88,7 @@ class IterableSpyFactoryTest extends TestCase
     public function testCreateWithIteratorAggregateReturn()
     {
         $values = ['a' => 'b', 'c' => 'd'];
-        $iterable = new TestIteratorAggregate($values);
+        $iterable = new TestIteratorAggregate(new ArrayIterator($values));
         $this->call = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
             $this->callEventFactory->createReturned($iterable)
