@@ -225,29 +225,6 @@ class EventSequence implements EventCollection
         return new ArrayIterator($this->events);
     }
 
-    private function normalizeIndex(int $size, int $index, ?int &$normalized): bool
-    {
-        $normalized = null;
-
-        if ($index < 0) {
-            $potential = $size + $index;
-
-            if ($potential < 0) {
-                return false;
-            }
-        } else {
-            $potential = $index;
-        }
-
-        if ($potential >= $size) {
-            return false;
-        }
-
-        $normalized = $potential;
-
-        return true;
-    }
-
     /**
      * @var array<int,Event>
      */
