@@ -18,9 +18,9 @@ use Eloquent\Phony\Spy\Spy;
 class GeneratorVerifierFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return GeneratorVerifierFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -66,8 +66,8 @@ class GeneratorVerifierFactory
     /**
      * Create a new generator verifier.
      *
-     * @param Spy|Call    $subject The subject.
-     * @param array<Call> $calls   The calls.
+     * @param Spy|Call        $subject The subject.
+     * @param array<int,Call> $calls   The calls.
      *
      * @return GeneratorVerifier The newly created generator verifier.
      */
@@ -83,9 +83,28 @@ class GeneratorVerifierFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
+
+    /**
+     * @var CallVerifierFactory
+     */
     private $callVerifierFactory;
 }

@@ -4,20 +4,19 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Test;
 
-use ArrayIterator;
 use IteratorAggregate;
 
 class TestIteratorAggregate implements IteratorAggregate
 {
-    public function __construct(array $values)
+    public function __construct($iterator)
     {
-        $this->values = $values;
+        $this->iterator = $iterator;
     }
 
     public function getIterator()
     {
-        return new ArrayIterator($this->values);
+        return $this->iterator;
     }
 
-    private $values;
+    private $iterator;
 }

@@ -16,9 +16,9 @@ use Throwable;
 class EventOrderVerifier
 {
     /**
-     * Get the static instance of this verifier.
+     * Get the static instance of this class.
      *
-     * @return EventOrderVerifier The static verifier.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -51,10 +51,10 @@ class EventOrderVerifier
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection|null     The result.
+     * @return ?EventCollection         The result.
      * @throws InvalidArgumentException If invalid input is supplied.
      */
-    public function checkInOrder(...$events): ?EventCollection
+    public function checkInOrder(object ...$events): ?EventCollection
     {
         if (!count($events)) {
             return null;
@@ -121,11 +121,11 @@ class EventOrderVerifier
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection         The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function inOrder(...$events): ?EventCollection
+    public function inOrder(object ...$events): ?EventCollection
     {
         if ($result = $this->checkInOrder(...$events)) {
             return $result;
@@ -144,10 +144,10 @@ class EventOrderVerifier
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection|null     The result.
+     * @return ?EventCollection         The result.
      * @throws InvalidArgumentException If invalid input is supplied.
      */
-    public function checkAnyOrder(...$events): ?EventCollection
+    public function checkAnyOrder(object ...$events): ?EventCollection
     {
         if (!count($events)) {
             return null;
@@ -162,11 +162,11 @@ class EventOrderVerifier
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection         The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public function anyOrder(...$events): ?EventCollection
+    public function anyOrder(object ...$events): ?EventCollection
     {
         if ($result = $this->checkAnyOrder(...$events)) {
             return $result;
@@ -176,7 +176,12 @@ class EventOrderVerifier
             ->createFailure('Expected events. No events recorded.');
     }
 
-    private function expectedEvents($events)
+    /**
+     * @param array<int,Event|EventCollection> $events
+     *
+     * @return array<int,Event>
+     */
+    private function expectedEvents(array $events): array
     {
         $expected = [];
         $earliestEvent = null;
@@ -205,14 +210,21 @@ class EventOrderVerifier
                     }
                 }
 
-                $expected[] = $earliestEvent = $subEvent;
+                if ($subEvent) {
+                    $expected[] = $earliestEvent = $subEvent;
+                }
             }
         }
 
         return $expected;
     }
 
-    private function mergeEvents($events)
+    /**
+     * @param array<int,Event|EventCollection> $events
+     *
+     * @return array<int,Event>
+     */
+    private function mergeEvents(array $events): array
     {
         $merged = [];
 
@@ -231,7 +243,18 @@ class EventOrderVerifier
         return array_values($merged);
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
 }

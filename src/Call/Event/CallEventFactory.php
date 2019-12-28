@@ -16,9 +16,9 @@ use Throwable;
 class CallEventFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return CallEventFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -53,7 +53,7 @@ class CallEventFactory
      * @return CalledEvent The newly created event.
      */
     public function createCalled(
-        $callback,
+        callable $callback,
         Arguments $arguments
     ): CalledEvent {
         return new CalledEvent(
@@ -170,7 +170,18 @@ class CallEventFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var Sequencer
+     */
     private $sequencer;
+
+    /**
+     * @var Clock
+     */
     private $clock;
 }

@@ -19,13 +19,13 @@ class MockDefinition
     /**
      * Construct a new mock definition.
      *
-     * @param array<string,ReflectionClass>                            $types                  The types.
-     * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customMethods          The custom methods.
-     * @param array<string,mixed>                                      $customProperties       The custom properties.
-     * @param array<string,tuple<callable,ReflectionFunctionAbstract>> $customStaticMethods    The custom static methods.
-     * @param array<string,mixed>                                      $customStaticProperties The custom static properties.
-     * @param array<string,mixed>                                      $customConstants        The custom constants.
-     * @param string                                                   $className              The class name.
+     * @param array<string,ReflectionClass<object>>                        $types                  The types.
+     * @param array<string,array{0:callable,1:ReflectionFunctionAbstract}> $customMethods          The custom methods.
+     * @param array<string,mixed>                                          $customProperties       The custom properties.
+     * @param array<string,array{0:callable,1:ReflectionFunctionAbstract}> $customStaticMethods    The custom static methods.
+     * @param array<string,mixed>                                          $customStaticProperties The custom static properties.
+     * @param array<string,mixed>                                          $customConstants        The custom constants.
+     * @param string                                                       $className              The class name.
      */
     public function __construct(
         array $types,
@@ -81,7 +81,7 @@ class MockDefinition
     /**
      * Get the types.
      *
-     * @return array<string,ReflectionClass> The types.
+     * @return array<string,ReflectionClass<object>> The types.
      */
     public function types(): array
     {
@@ -91,7 +91,7 @@ class MockDefinition
     /**
      * Get the custom methods.
      *
-     * @return array<string,tuple<callable,ReflectionFunctionAbstract>> The custom methods.
+     * @return array<string,array{0:callable,1:ReflectionFunctionAbstract}> The custom methods.
      */
     public function customMethods(): array
     {
@@ -111,7 +111,7 @@ class MockDefinition
     /**
      * Get the custom static methods.
      *
-     * @return array<string,tuple<callable,ReflectionFunctionAbstract>> The custom static methods.
+     * @return array<string,array{0:callable,1:ReflectionFunctionAbstract}> The custom static methods.
      */
     public function customStaticMethods(): array
     {
@@ -164,7 +164,7 @@ class MockDefinition
     /**
      * Get the type names.
      *
-     * @return array<string> The type names.
+     * @return array<int,string> The type names.
      */
     public function typeNames(): array
     {
@@ -188,7 +188,7 @@ class MockDefinition
     /**
      * Get the interface names.
      *
-     * @return array<string> The interface names.
+     * @return array<int,string> The interface names.
      */
     public function interfaceNames(): array
     {
@@ -200,7 +200,7 @@ class MockDefinition
     /**
      * Get the trait names.
      *
-     * @return array<string> The trait names.
+     * @return array<int,string> The trait names.
      */
     public function traitNames(): array
     {
@@ -233,7 +233,7 @@ class MockDefinition
         return $definition->signature() === $this->signature;
     }
 
-    private function inspectTypes()
+    private function inspectTypes(): void
     {
         if (null !== $this->typeNames) {
             return;
@@ -256,7 +256,7 @@ class MockDefinition
         }
     }
 
-    private function buildMethods()
+    private function buildMethods(): void
     {
         if (null !== $this->methods) {
             return;
@@ -353,17 +353,68 @@ class MockDefinition
             new MethodDefinitionCollection($methods, $traitMethods);
     }
 
+    /**
+     * @var array<string,ReflectionClass<object>>
+     */
     private $types;
+
+    /**
+     * @var array<string,array{0:callable,1:ReflectionFunctionAbstract}>
+     */
     private $customMethods;
+
+    /**
+     * @var array<string,mixed>
+     */
     private $customProperties;
+
+    /**
+     * @var array<string,array{0:callable,1:ReflectionFunctionAbstract}>
+     */
     private $customStaticMethods;
+
+    /**
+     * @var array<string,mixed>
+     */
     private $customStaticProperties;
+
+    /**
+     * @var array<string,mixed>
+     */
     private $customConstants;
+
+    /**
+     * @var string
+     */
     private $className;
+
+    /**
+     * @var mixed
+     */
     private $signature;
+
+    /**
+     * @var array<int,string>
+     */
     private $typeNames;
+
+    /**
+     * @var string
+     */
     private $parentClassName;
+
+    /**
+     * @var array<int,string>
+     */
     private $interfaceNames;
+
+    /**
+     * @var array<int,string>
+     */
     private $traitNames;
+
+    /**
+     * @var MethodDefinitionCollection
+     */
     private $methods;
 }

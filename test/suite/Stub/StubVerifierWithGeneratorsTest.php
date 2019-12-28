@@ -24,7 +24,7 @@ class StubVerifierWithGeneratorsTest extends TestCase
         $this->callback = 'implode';
         $this->label = 'label';
         $this->stubFactory = StubFactory::instance();
-        $this->stub = $this->stubFactory->create($this->callback)->setLabel($this->label);
+        $this->stub = $this->stubFactory->create($this->callback, null)->setLabel($this->label);
         $this->spyFactory = SpyFactory::instance();
         $this->spy = $this->spyFactory->create($this->stub);
         $this->matcherFactory = MatcherFactory::instance();

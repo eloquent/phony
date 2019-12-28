@@ -6,6 +6,7 @@ namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use ReflectionFunctionAbstract;
+use ReflectionNamedType;
 use ReflectionType;
 
 /**
@@ -14,9 +15,9 @@ use ReflectionType;
 class EmptyValueFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return EmptyValueFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -62,7 +63,9 @@ class EmptyValueFactory
             return null;
         }
 
-        $typeName = $type->getName();
+        /** @var ReflectionNamedType */
+        $namedType = $type;
+        $typeName = $namedType->getName();
 
         switch (strtolower($typeName)) {
             case 'bool':
@@ -86,13 +89,13 @@ class EmptyValueFactory
                 return (object) [];
 
             case 'callable':
-                return $this->stubVerifierFactory->create();
+                return $this->stubVerifierFactory->create(null);
 
             case 'closure':
                 return function () {};
 
             case 'generator':
-                $fn = function () { return; yield; };
+                $fn = function () { yield from []; };
 
                 return $fn();
 
@@ -119,7 +122,18 @@ class EmptyValueFactory
         return null;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var StubVerifierFactory
+     */
     private $stubVerifierFactory;
+
+    /**
+     * @var MockBuilderFactory
+     */
     private $mockBuilderFactory;
 }

@@ -20,9 +20,9 @@ use ReflectionClass;
 class MockFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return MockFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -61,8 +61,8 @@ class MockFactory
      * @param MockDefinition $definition The definition.
      * @param bool           $createNew  True if a new class should be created even when a compatible one exists.
      *
-     * @return ReflectionClass The class.
-     * @throws MockException   If the mock generation fails.
+     * @return ReflectionClass<object> The class.
+     * @throws MockException           If the mock generation fails.
      */
     public function createMockClass(
         MockDefinition $definition,
@@ -136,13 +136,14 @@ class MockFactory
     /**
      * Create a new full mock instance for the supplied class.
      *
-     * @param ReflectionClass $class The class.
+     * @param ReflectionClass<object> $class The class.
      *
      * @return Mock          The newly created mock.
      * @throws MockException If the mock generation fails.
      */
     public function createFullMock(ReflectionClass $class): Mock
     {
+        /** @var Mock */
         $mock = $class->newInstanceWithoutConstructor();
         $this->handleFactory
             ->instanceHandle($mock, strval($this->labelSequencer->next()));
@@ -153,8 +154,8 @@ class MockFactory
     /**
      * Create a new partial mock instance for the supplied definition.
      *
-     * @param ReflectionClass      $class     The class.
-     * @param Arguments|array|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param ReflectionClass<object>         $class     The class.
+     * @param Arguments|array<int,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
      * @return Mock          The newly created mock.
      * @throws MockException If the mock generation fails.
@@ -163,6 +164,7 @@ class MockFactory
         ReflectionClass $class,
         $arguments = []
     ): Mock {
+        /** @var Mock */
         $mock = $class->newInstanceWithoutConstructor();
         $handle = $this->handleFactory
             ->instanceHandle($mock, strval($this->labelSequencer->next()));
@@ -175,9 +177,28 @@ class MockFactory
         return $mock;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var Sequencer
+     */
     private $labelSequencer;
+
+    /**
+     * @var MockGenerator
+     */
     private $generator;
+
+    /**
+     * @var HandleFactory
+     */
     private $handleFactory;
+
+    /**
+     * @var array<int,array<mixed>>
+     */
     private $definitions;
 }

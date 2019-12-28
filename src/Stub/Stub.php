@@ -77,11 +77,11 @@ interface Stub extends WrappedInvocable
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable        $callback              The callback.
-     * @param Arguments|array $arguments             The arguments.
-     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
-     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     * @param callable                   $callback              The callback.
+     * @param Arguments|array<int,mixed> $arguments             The arguments.
+     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
+     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -118,11 +118,11 @@ interface Stub extends WrappedInvocable
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param int             $index                 The argument index.
-     * @param Arguments|array $arguments             The arguments.
-     * @param bool            $prefixSelf            True if the self value should be prefixed.
-     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     * @param int                        $index                 The argument index.
+     * @param Arguments|array<int,mixed> $arguments             The arguments.
+     * @param bool                       $prefixSelf            True if the self value should be prefixed.
+     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -163,11 +163,11 @@ interface Stub extends WrappedInvocable
     /**
      * Add a callback as an answer.
      *
-     * @param callable        $callback              The callback.
-     * @param Arguments|array $arguments             The arguments.
-     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
-     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     * @param callable                   $callback              The callback.
+     * @param Arguments|array<int,mixed> $arguments             The arguments.
+     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
+     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -182,10 +182,10 @@ interface Stub extends WrappedInvocable
     /**
      * Add an answer that calls the wrapped callback.
      *
-     * @param Arguments|array $arguments             The arguments.
-     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
-     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     * @param Arguments|array<int,mixed> $arguments             The arguments.
+     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
+     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -243,11 +243,11 @@ interface Stub extends WrappedInvocable
      * Add an answer that returns a generator, and return a builder for
      * customizing the generator's behavior.
      *
-     * @param mixed<mixed,mixed> ...$values Sets of keys and values to yield.
+     * @param iterable<mixed> ...$values Sets of keys and values to yield.
      *
      * @return GeneratorAnswerBuilder The answer builder.
      */
-    public function generates(...$values): GeneratorAnswerBuilder;
+    public function generates(iterable ...$values): GeneratorAnswerBuilder;
 
     /**
      * Close any existing rule.

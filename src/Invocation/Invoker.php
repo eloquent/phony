@@ -13,9 +13,9 @@ use Throwable;
 class Invoker
 {
     /**
-     * Get the static instance of this invoker.
+     * Get the static instance of this class.
      *
-     * @return Invoker The static invoker.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -35,7 +35,7 @@ class Invoker
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
      */
-    public function callWith($callback, Arguments $arguments)
+    public function callWith(callable $callback, Arguments $arguments)
     {
         if ($callback instanceof Invocable) {
             return $callback->invokeWith($arguments);
@@ -46,5 +46,8 @@ class Invoker
         return $callback(...$arguments);
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
 }

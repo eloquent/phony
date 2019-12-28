@@ -15,9 +15,9 @@ use Throwable;
 class CallFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return CallFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -55,7 +55,7 @@ class CallFactory
      * @return CallData The newly created call.
      */
     public function record(
-        $callback,
+        callable $callback,
         Arguments $arguments,
         SpyData $spy
     ): CallData {
@@ -87,7 +87,18 @@ class CallFactory
         return $call;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var CallEventFactory
+     */
     private $eventFactory;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
 }

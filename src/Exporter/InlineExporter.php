@@ -34,9 +34,9 @@ use WeakReference;
 class InlineExporter implements Exporter
 {
     /**
-     * Get the static instance of this exporter.
+     * Get the static instance of this class.
      *
-     * @return Exporter The static exporter.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -104,8 +104,8 @@ class InlineExporter implements Exporter
      *
      * Negative depths are treated as infinite depth.
      *
-     * @param mixed    &$value The value.
-     * @param int|null $depth  The depth, or null to use the default.
+     * @param mixed $value The value.
+     * @param ?int  $depth The depth, or null to use the default.
      *
      * @return string The exported value.
      */
@@ -115,7 +115,7 @@ class InlineExporter implements Exporter
             $depth = $this->depth;
         }
 
-        $final = (object) [];
+        $final = new ExporterResult();
         $stack = [[&$value, $final, 0, gettype($value)]];
         $results = [];
         $seenWrappers = new SplObjectStorage();
@@ -125,8 +125,10 @@ class InlineExporter implements Exporter
         $arrayId = 0;
 
         while (!empty($stack)) {
+            /** @var array<int,mixed> */
             $entry = array_shift($stack);
             $value = &$entry[0];
+            /** @var ExporterResult */
             $result = $entry[1];
             $currentDepth = $entry[2];
             $type = $entry[3];
@@ -163,12 +165,15 @@ class InlineExporter implements Exporter
                     break;
 
                 case 'string':
-                    $result->type = json_encode($value, self::JSON_FLAGS);
+                    /** @var string */
+                    $encoded = json_encode($value, self::JSON_FLAGS);
+                    $result->type = $encoded;
 
                     break;
 
                 case 'array':
                     if ($this->isReferenceReflectionSupported) {
+                        /** @var ReflectionReference */
                         $reference =
                             ReflectionReference::fromArrayElement([&$value], 0);
                         $referenceId = $reference->getId();
@@ -211,7 +216,6 @@ class InlineExporter implements Exporter
 
                     $arrayResults[$id] = $result;
 
-                    $result->children = [];
                     $result->sequence = true;
                     $sequenceKey = 0;
 
@@ -230,8 +234,8 @@ class InlineExporter implements Exporter
                             }
                         }
 
-                        $keyResult = (object) [];
-                        $valueResult = (object) [];
+                        $keyResult = new ExporterResult();
+                        $valueResult = new ExporterResult();
                         $result->children[] = [$keyResult, $valueResult];
 
                         $stack[] = [
@@ -272,102 +276,44 @@ class InlineExporter implements Exporter
                         break;
                     }
 
+                    $isClosure = false;
+                    $isException = false;
+                    $isGeneratorSpy = false;
+                    $isHandle = false;
+                    $isIterableSpy = false;
+                    $isSpy = false;
+                    $isSpyVerifier = false;
+                    $isStaticHandle = false;
+                    $isStub = false;
+                    $isStubVerifier = false;
+                    $isWeakReference = false;
+                    $isWrapper = false;
+
                     if ($value instanceof Closure) {
-                        $isWrapper = false;
                         $isClosure = true;
-                        $isException = false;
-                        $isHandle = false;
-                        $isSpy = false;
-                        $isStub = false;
-                        $isGeneratorSpy = false;
-                        $isIterableSpy = false;
-                        $isWeakReference = false;
                     } elseif ($value instanceof Throwable) {
-                        $isWrapper = false;
-                        $isClosure = false;
                         $isException = true;
-                        $isHandle = false;
-                        $isSpy = false;
-                        $isStub = false;
-                        $isGeneratorSpy = false;
-                        $isIterableSpy = false;
-                        $isWeakReference = false;
                     } elseif ($value instanceof Generator) {
                         $isWrapper = isset($value->_phonySubject);
-                        $isClosure = false;
-                        $isException = false;
-                        $isHandle = false;
-                        $isSpy = false;
-                        $isStub = false;
                         $isGeneratorSpy = $isWrapper;
-                        $isIterableSpy = false;
-                        $isWeakReference = false;
                     } elseif ($value instanceof Handle) {
                         $isWrapper = true;
-                        $isClosure = false;
-                        $isException = false;
                         $isHandle = true;
-                        $isSpy = false;
-                        $isStub = false;
-                        $isGeneratorSpy = false;
-                        $isIterableSpy = false;
-                        $isWeakReference = false;
-
                         $isStaticHandle = $value instanceof StaticHandle;
                     } elseif ($value instanceof Stub) {
                         $isWrapper = true;
-                        $isClosure = false;
-                        $isException = false;
-                        $isHandle = false;
-                        $isSpy = false;
                         $isStub = true;
-                        $isGeneratorSpy = false;
-                        $isIterableSpy = false;
-                        $isWeakReference = false;
-
                         $isStubVerifier = $value instanceof StubVerifier;
                     } elseif ($value instanceof Spy) {
                         $isWrapper = true;
-                        $isClosure = false;
-                        $isException = false;
-                        $isHandle = false;
                         $isSpy = true;
-                        $isStub = false;
-                        $isGeneratorSpy = false;
-                        $isIterableSpy = false;
-                        $isWeakReference = false;
-
                         $isSpyVerifier = $value instanceof SpyVerifier;
                     } elseif ($value instanceof IterableSpy) {
                         $isWrapper = true;
-                        $isClosure = false;
-                        $isException = false;
-                        $isHandle = false;
-                        $isSpy = false;
-                        $isStub = false;
-                        $isGeneratorSpy = false;
                         $isIterableSpy = true;
-                        $isWeakReference = false;
                     } elseif ($value instanceof WeakReference) {
                         $isWrapper = true;
-                        $isClosure = false;
-                        $isException = false;
-                        $isHandle = false;
-                        $isSpy = false;
-                        $isStub = false;
-                        $isGeneratorSpy = false;
-                        $isIterableSpy = false;
                         $isWeakReference = true;
-                    } else {
-                        $isWrapper = false;
-                        $isClosure = false;
-                        $isException = false;
-                        $isHandle = false;
-                        $isSpy = false;
-                        $isStub = false;
-                        $isGeneratorSpy = false;
-                        $isIterableSpy = false;
-                        $isWeakReference = false;
                     }
 
                     $isMock = $value instanceof Mock;
@@ -398,17 +344,17 @@ class InlineExporter implements Exporter
 
                     if ($isHandle) {
                         if ($isStaticHandle) {
-                            $result->child = (object) [
-                                'final' => $phpValues[
-                                    "\0" . StaticHandle::class . "\0class"
-                                ]->getName(),
-                            ];
+                            $propertyName =
+                                "\0" . StaticHandle::class . "\0class";
+                            $result->child = new ExporterResult();
+                            $result->child->final =
+                                $phpValues[$propertyName]->getName();
                         } else {
-                            $result->child = (object) [];
+                            $propertyName =
+                                "\0" . InstanceHandle::class . "\0mock";
+                            $result->child = new ExporterResult();
                             $stack[] = [
-                                $phpValues[
-                                    "\0" . InstanceHandle::class . "\0mock"
-                                ],
+                                $phpValues[$propertyName],
                                 $result->child,
                                 $currentDepth,
                                 'object',
@@ -416,17 +362,17 @@ class InlineExporter implements Exporter
                         }
                     } elseif ($isSpy) {
                         if ($isSpyVerifier) {
-                            $phpValues = (array) $phpValues[
-                                "\0" . SpyVerifier::class . "\0spy"
-                            ];
+                            $propertyName =
+                                "\0" . SpyVerifier::class . "\0spy";
+                            $phpValues = (array) $phpValues[$propertyName];
                         }
 
                         if (!$phpValues["\0*\0isAnonymous"]) {
-                            $result->child = (object) [
-                                'final' => $this->exportCallable(
-                                    $phpValues["\0*\0callback"]
-                                ),
-                            ];
+                            $propertyName = "\0*\0callback";
+                            $result->child = new ExporterResult();
+                            $result->child->final = $this->exportCallable(
+                                $phpValues[$propertyName]
+                            );
                         }
 
                         $result->label = $phpValues["\0*\0label"];
@@ -438,16 +384,16 @@ class InlineExporter implements Exporter
                         }
 
                         if (!$phpValues["\0*\0isAnonymous"]) {
-                            $result->child = (object) [
-                                'final' => $this->exportCallable(
-                                    $phpValues["\0*\0callback"]
-                                ),
-                            ];
+                            $propertyName = "\0*\0callback";
+                            $result->child = new ExporterResult();
+                            $result->child->final = $this->exportCallable(
+                                $phpValues[$propertyName]
+                            );
                         }
 
                         $result->label = $phpValues["\0*\0label"];
                     } elseif ($isGeneratorSpy) {
-                        $result->child = (object) [];
+                        $result->child = new ExporterResult();
                         $stack[] = [
                             $value->_phonySubject,
                             $result->child,
@@ -456,7 +402,7 @@ class InlineExporter implements Exporter
                         ];
                     } elseif ($isIterableSpy) {
                         $iterable = $value->iterable();
-                        $result->child = (object) [];
+                        $result->child = new ExporterResult();
                         $stack[] = [
                             $iterable,
                             $result->child,
@@ -464,7 +410,7 @@ class InlineExporter implements Exporter
                             gettype($iterable),
                         ];
                     } elseif ($isWeakReference) {
-                        $result->child = (object) [];
+                        $result->child = new ExporterResult();
                         $stack[] = [
                             $value->get(),
                             $result->child,
@@ -502,8 +448,10 @@ class InlineExporter implements Exporter
                             );
                         } elseif ($isClosure) {
                             $reflector = new ReflectionFunction($value);
+                            /** @var string */
+                            $filename = $reflector->getFilename();
                             $result->label =
-                                basename($reflector->getFilename()) . ':' .
+                                basename($filename) . ':' .
                                 $reflector->getStartLine();
                             $phpValues = [];
                         }
@@ -595,12 +543,14 @@ class InlineExporter implements Exporter
 
                         $seenObjects->offsetSet($value, true);
 
-                        $result->children = [];
                         $result->object = true;
 
+                        /** @var string $key */
                         foreach ($values as $key => &$childValue) {
-                            $valueResult = (object) [];
-                            $result->children[] = [$key, $valueResult];
+                            $keyResult = new ExporterResult();
+                            $keyResult->final = $key;
+                            $valueResult = new ExporterResult();
+                            $result->children[] = [$keyResult, $valueResult];
 
                             $stack[] = [
                                 &$childValue,
@@ -623,11 +573,11 @@ class InlineExporter implements Exporter
         foreach (array_reverse($results) as $result) {
             $result->final = $result->type;
 
-            if (isset($result->wrapper)) {
-                if (isset($result->child)) {
+            if ($result->wrapper) {
+                if ($result->child) {
                     $result->final .= '(' . $result->child->final . ')';
                 }
-            } elseif (isset($result->object)) {
+            } elseif ($result->object) {
                 $result->final .= '{';
                 $isFirst = true;
 
@@ -636,12 +586,12 @@ class InlineExporter implements Exporter
                         $result->final .= ', ';
                     }
 
-                    $result->final .= $pair[0] . ': ' . $pair[1]->final;
+                    $result->final .= $pair[0]->final . ': ' . $pair[1]->final;
                     $isFirst = false;
                 }
 
                 $result->final .= '}';
-            } elseif (isset($result->map)) {
+            } elseif ($result->map) {
                 $result->final .= '[';
                 $isFirst = true;
 
@@ -656,7 +606,7 @@ class InlineExporter implements Exporter
                 }
 
                 $result->final .= ']';
-            } elseif (isset($result->sequence)) {
+            } elseif ($result->sequence) {
                 $result->final .= '[';
                 $isFirst = true;
 
@@ -672,7 +622,7 @@ class InlineExporter implements Exporter
                 $result->final .= ']';
             }
 
-            if (isset($result->label)) {
+            if ($result->label) {
                 $result->final .= '[' . $result->label . ']';
             }
         }
@@ -693,13 +643,19 @@ class InlineExporter implements Exporter
      *
      * @return string The exported callable.
      */
-    public function exportCallable($callback): string
+    public function exportCallable(callable $callback): string
     {
         $wrappedCallback = null;
 
         while ($callback instanceof WrappedInvocable) {
             $wrappedCallback = $callback;
-            $callback = $callback->callback();
+            $innerCallback = $callback->callback();
+
+            if (!$innerCallback) {
+                break;
+            }
+
+            $callback = $innerCallback;
         }
 
         $label = '';
@@ -787,13 +743,53 @@ class InlineExporter implements Exporter
     const ARRAY_ID_KEY = "\0__phony__\0";
     const JSON_FLAGS = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var int
+     */
     private $depth;
+
+    /**
+     * @var Sequencer
+     */
     private $arraySequencer;
+
+    /**
+     * @var Sequencer
+     */
     private $objectSequencer;
+
+    /**
+     * @var InvocableInspector
+     */
     private $invocableInspector;
+
+    /**
+     * @var FeatureDetector
+     */
+    private $featureDetector;
+
+    /**
+     * @var array<int|string,int>
+     */
     private $arrayIds;
+
+    /**
+     * @var array<string,int>
+     */
     private $objectIds;
+
+    /**
+     * @var bool
+     */
     private $isReferenceReflectionSupported;
+
+    /**
+     * @var int
+     */
     private $arrayCountOffset;
 }

@@ -9,12 +9,12 @@ use Eloquent\Phony\Exporter\Exporter;
 /**
  * A matcher that tests any number of arguments against another matcher.
  */
-class WildcardMatcher implements Matchable
+class WildcardMatcher implements Matcher
 {
     /**
-     * Get the static instance of this matcher.
+     * Get the static instance of this class.
      *
-     * @return WildcardMatcher The static matcher.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -77,7 +77,7 @@ class WildcardMatcher implements Matchable
     /**
      * Describe this matcher.
      *
-     * @param Exporter|null $exporter The exporter to use.
+     * @param ?Exporter $exporter The exporter to use.
      *
      * @return string The description.
      */
@@ -127,8 +127,35 @@ class WildcardMatcher implements Matchable
         return $this->describe();
     }
 
+    /**
+     * Always returns false.
+     *
+     * @param mixed $value The value to check.
+     *
+     * @return false For all values.
+     */
+    public function matches($value): bool
+    {
+        return false;
+    }
+
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var Matcher
+     */
     private $matcher;
+
+    /**
+     * @var int
+     */
     private $minimumArguments;
+
+    /**
+     * @var int
+     */
     private $maximumArguments;
 }

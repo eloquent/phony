@@ -36,5 +36,8 @@ final class InvalidClassNameException extends Exception implements
         return $this->className;
     }
 
+    /**
+     * @var mixed
+     */
     private $className;
 }

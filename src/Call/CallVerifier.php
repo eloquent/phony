@@ -246,7 +246,10 @@ class CallVerifier implements Call, CardinalityVerifier
      */
     public function getIterator(): Iterator
     {
-        return $this->call->getIterator();
+        /** @var Iterator<int,Call> */
+        $iterator = $this->call->getIterator();
+
+        return $iterator;
     }
 
     /**
@@ -274,7 +277,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the response event.
      *
-     * @return ResponseEvent|null The response event, or null if the call has not yet responded.
+     * @return ?ResponseEvent The response event, or null if the call has not yet responded.
      */
     public function responseEvent(): ?ResponseEvent
     {
@@ -296,7 +299,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the iterable events.
      *
-     * @return array<IterableEvent> The iterable events.
+     * @return array<int,IterableEvent> The iterable events.
      */
     public function iterableEvents(): array
     {
@@ -318,7 +321,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the end event.
      *
-     * @return EndEvent|null The end event, or null if the call has not yet completed.
+     * @return ?EndEvent The end event, or null if the call has not yet completed.
      */
     public function endEvent(): ?EndEvent
     {
@@ -328,7 +331,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get all events as an array.
      *
-     * @return array<Event> The events.
+     * @return array<int,Event> The events.
      */
     public function allEvents(): array
     {
@@ -338,7 +341,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get all calls as an array.
      *
-     * @return array<Call> The calls.
+     * @return array<int,Call> The calls.
      */
     public function allCalls(): array
     {
@@ -400,7 +403,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @return callable The callback.
      */
-    public function callback()
+    public function callback(): callable
     {
         return $this->call->callback();
     }
@@ -478,7 +481,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the response.
      *
-     * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @return array{0:?Throwable,1:mixed} A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded.
      */
     public function response(): array
@@ -489,7 +492,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the response from the generator.
      *
-     * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @return array{0:?Throwable,1:mixed} A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded via generator.
      */
     public function generatorResponse(): array
@@ -502,7 +505,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * A call that has responded has returned a value, or thrown an exception.
      *
-     * @return float|null The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
+     * @return ?float The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
      */
     public function responseTime(): ?float
     {
@@ -520,7 +523,7 @@ class CallVerifier implements Call, CardinalityVerifier
      * iterable will not be considered complete until the iterable has been
      * completely consumed via iteration.
      *
-     * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
+     * @return ?float The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */
     public function endTime(): ?float
     {
@@ -530,7 +533,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the call duration.
      *
-     * @return float|null The call duration in seconds, or null if the call has not yet completed.
+     * @return ?float The call duration in seconds, or null if the call has not yet completed.
      */
     public function duration(): ?float
     {
@@ -546,7 +549,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the call response duration.
      *
-     * @return float|null The call response duration in seconds, or null if the call has not yet responded.
+     * @return ?float The call response duration in seconds, or null if the call has not yet responded.
      */
     public function responseDuration(): ?float
     {
@@ -574,7 +577,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return EventCollection|null        The result.
+     * @return ?EventCollection            The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkCalledWith(...$arguments): ?EventCollection
@@ -598,9 +601,9 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Throws an exception unless called with the supplied arguments.
      *
-     * @param mixed ...$argument The arguments.
+     * @param mixed ...$arguments The arguments.
      *
-     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -622,7 +625,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Checks if this call responded.
      *
-     * @return EventCollection|null        The result.
+     * @return ?EventCollection            The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkResponded(): ?EventCollection
@@ -643,7 +646,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Throws an exception unless this call responded.
      *
-     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -663,7 +666,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Checks if this call completed.
      *
-     * @return EventCollection|null        The result.
+     * @return ?EventCollection            The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkCompleted(): ?EventCollection
@@ -684,7 +687,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Throws an exception unless this call completed.
      *
-     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -709,7 +712,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection|null        The result.
+     * @return ?EventCollection            The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkReturned($value = null): ?EventCollection
@@ -758,7 +761,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -789,7 +792,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection|null        The result.
+     * @return ?EventCollection            The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws InvalidArgumentException    If the type is invalid.
      */
@@ -817,14 +820,20 @@ class CallVerifier implements Call, CardinalityVerifier
         } elseif (is_string($type)) {
             $isTypeSupported = true;
 
-            list($matchCount, $matchingEvents) =
-                $this->matchIf($responseEvent, is_a($exception, $type));
+            /** @var Throwable */
+            $throwableException = $exception;
+
+            list($matchCount, $matchingEvents) = $this->matchIf(
+                $responseEvent,
+                is_a($throwableException, $type)
+            );
 
             if ($cardinality->matches($matchCount, 1)) {
                 return $this->assertionRecorder->createSuccess($matchingEvents);
             }
         } elseif (is_object($type)) {
             if ($type instanceof InstanceHandle) {
+                /** @var Matcher */
                 $type = $type->get();
             }
 
@@ -867,7 +876,7 @@ class CallVerifier implements Call, CardinalityVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection|null        The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      * @throws InvalidArgumentException    If the type is invalid.
      * @throws Throwable                   If the assertion fails, and the assertion recorder throws exceptions.
@@ -877,6 +886,7 @@ class CallVerifier implements Call, CardinalityVerifier
         $cardinality = $this->cardinality;
 
         if ($type instanceof InstanceHandle) {
+            /** @var Throwable  */
             $type = $type->get();
         }
 
@@ -899,7 +909,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Checks if this call returned a generator.
      *
-     * @return GeneratorVerifier|null      The result.
+     * @return ?GeneratorVerifier          The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkGenerated(): ?GeneratorVerifier
@@ -914,14 +924,18 @@ class CallVerifier implements Call, CardinalityVerifier
             $isMatch = false;
         }
 
+        /** @var array<int,Call> $matchingEvents */
         list($matchCount, $matchingEvents) =
             $this->matchIf($this->call, $isMatch);
 
         if ($cardinality->matches($matchCount, 1)) {
-            return $this->assertionRecorder->createSuccessFromEventCollection(
+            /** @var GeneratorVerifier */
+            $verifier = $this->assertionRecorder->createSuccessFromEventCollection(
                 $this->generatorVerifierFactory
                     ->create($this->call, $matchingEvents)
             );
+
+            return $verifier;
         }
 
         return null;
@@ -950,7 +964,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Checks if this call returned an iterable.
      *
-     * @return IterableVerifier|null       The result.
+     * @return ?IterableVerifier           The result.
      * @throws InvalidCardinalityException If the cardinality is invalid.
      */
     public function checkIterated(): ?IterableVerifier
@@ -966,14 +980,18 @@ class CallVerifier implements Call, CardinalityVerifier
             $isMatch = false;
         }
 
+        /** @var array<int,Call> $matchingEvents */
         list($matchCount, $matchingEvents) =
             $this->matchIf($this->call, $isMatch);
 
         if ($cardinality->matches($matchCount, 1)) {
-            return $this->assertionRecorder->createSuccessFromEventCollection(
+            /** @var IterableVerifier */
+            $verifier = $this->assertionRecorder->createSuccessFromEventCollection(
                 $this->iterableVerifierFactory
                     ->create($this->call, $matchingEvents)
             );
+
+            return $verifier;
         }
 
         return null;
@@ -999,9 +1017,15 @@ class CallVerifier implements Call, CardinalityVerifier
         );
     }
 
-    private function matchIf($event, $checkResult)
+    /**
+     * @param ?Event $event
+     * @param mixed  $checkResult
+     *
+     * @return array{0:int,1:array<int,Event>}
+     */
+    private function matchIf(?Event $event, $checkResult): array
     {
-        if ($checkResult && $event) {
+        if ($event && $checkResult) {
             $matchCount = 1;
             $matchingEvents = [$event];
         } else {
@@ -1012,12 +1036,43 @@ class CallVerifier implements Call, CardinalityVerifier
         return [$matchCount, $matchingEvents];
     }
 
+    /**
+     * @var Call
+     */
     private $call;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var MatcherVerifier
+     */
     private $matcherVerifier;
+
+    /**
+     * @var GeneratorVerifierFactory
+     */
     private $generatorVerifierFactory;
+
+    /**
+     * @var IterableVerifierFactory
+     */
     private $iterableVerifierFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
+
+    /**
+     * @var int
+     */
     private $argumentCount;
 }

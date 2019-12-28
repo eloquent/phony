@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Reflection;
 
+use ReflectionClass;
 use ReflectionFunctionAbstract;
 
 /**
@@ -12,9 +13,9 @@ use ReflectionFunctionAbstract;
 class FunctionSignatureInspector
 {
     /**
-     * Get the static instance of this inspector.
+     * Get the static instance of this class.
      *
-     * @return PhpFunctionSignatureInspector The static inspector.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -32,7 +33,7 @@ class FunctionSignatureInspector
      *
      * @param ReflectionFunctionAbstract $function The function.
      *
-     * @return array<string,array<string>> The function signature.
+     * @return array<string,array<int,string>> The function signature.
      */
     public function signature(ReflectionFunctionAbstract $function): array
     {
@@ -56,31 +57,37 @@ class FunctionSignatureInspector
 
             $typehint = $match[2];
 
-            if ('self ' === $typehint) {
-                $typehint = '\\' . $parameter->getDeclaringClass()->getName()
-                    . ' ';
-            } elseif (
-                '' !== $typehint &&
-                'array ' !== $typehint &&
-                'bool ' !== $typehint &&
-                'callable ' !== $typehint &&
-                'int ' !== $typehint &&
-                'iterable ' !== $typehint &&
-                'object ' !== $typehint
-            ) {
-                if (
-                    'integer ' === $typehint &&
-                    $parameter->getType()->isBuiltin()
-                ) {
-                    $typehint = 'int ';
-                } elseif (
-                    'boolean ' === $typehint &&
-                    $parameter->getType()->isBuiltin()
-                ) {
+            switch ($typehint) {
+                case '':
+                case 'array ':
+                case 'bool ':
+                case 'callable ':
+                case 'float ':
+                case 'int ':
+                case 'iterable ':
+                case 'object ':
+                case 'string ':
+                    break;
+
+                case 'boolean ':
                     $typehint = 'bool ';
-                } elseif ('float ' !== $typehint && 'string ' !== $typehint) {
+
+                    break;
+
+                case 'integer ':
+                    $typehint = 'int ';
+
+                    break;
+
+                case 'self ':
+                    /** @var ReflectionClass<object> */
+                    $declaringClass = $parameter->getDeclaringClass();
+                    $typehint = '\\' . $declaringClass->getName() . ' ';
+
+                    break;
+
+                default:
                     $typehint = '\\' . $typehint;
-                }
             }
 
             $byReference = $match[4];
@@ -106,12 +113,19 @@ class FunctionSignatureInspector
                 $defaultValue = '';
             }
 
-            $signature[$match[5]] =
+            /**
+             * @var string
+             */
+            $name = $match[5];
+            $signature[$name] =
                 [$typehint, $byReference, $variadic, $defaultValue];
         }
 
         return $signature;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
 }

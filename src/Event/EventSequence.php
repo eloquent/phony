@@ -8,6 +8,7 @@ use ArrayIterator;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Collection\NormalizesIndices;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Iterator;
 
@@ -16,10 +17,12 @@ use Iterator;
  */
 class EventSequence implements EventCollection
 {
+    use NormalizesIndices;
+
     /**
      * Construct a new event sequence.
      *
-     * @param array<Event>        $events              The events.
+     * @param array<int,Event>    $events              The events.
      * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
      */
     public function __construct(
@@ -94,7 +97,7 @@ class EventSequence implements EventCollection
     /**
      * Get all events as an array.
      *
-     * @return array<Event> The events.
+     * @return array<int,Event> The events.
      */
     public function allEvents(): array
     {
@@ -104,7 +107,7 @@ class EventSequence implements EventCollection
     /**
      * Get all calls as an array.
      *
-     * @return array<Call> The calls.
+     * @return array<int,Call> The calls.
      */
     public function allCalls(): array
     {
@@ -222,32 +225,28 @@ class EventSequence implements EventCollection
         return new ArrayIterator($this->events);
     }
 
-    private function normalizeIndex($size, $index, &$normalized = null)
-    {
-        $normalized = null;
-
-        if ($index < 0) {
-            $potential = $size + $index;
-
-            if ($potential < 0) {
-                return false;
-            }
-        } else {
-            $potential = $index;
-        }
-
-        if ($potential >= $size) {
-            return false;
-        }
-
-        $normalized = $potential;
-
-        return true;
-    }
-
+    /**
+     * @var array<int,Event>
+     */
     private $events;
+
+    /**
+     * @var array<int,Call>
+     */
     private $calls;
+
+    /**
+     * @var int
+     */
     private $eventCount;
+
+    /**
+     * @var int
+     */
     private $callCount;
+
+    /**
+     * @var CallVerifierFactory
+     */
     private $callVerifierFactory;
 }

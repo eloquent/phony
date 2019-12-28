@@ -21,7 +21,7 @@ class GeneratorAnswerBuilderFactoryTest extends TestCase
 
     public function testCreate()
     {
-        $stub = StubFactory::instance()->create();
+        $stub = StubFactory::instance()->create(null, null);
         $expected = new GeneratorAnswerBuilder(
             $stub,
             $this->invocableInspector,

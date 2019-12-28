@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Call;
 use ArrayIterator;
 use Countable;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
+use Eloquent\Phony\Collection\NormalizesIndices;
 use Iterator;
 use IteratorAggregate;
 
@@ -17,6 +18,8 @@ use IteratorAggregate;
  */
 class Arguments implements Countable, IteratorAggregate
 {
+    use NormalizesIndices;
+
     /**
      * Create a new set of call arguments from the supplied arguments.
      *
@@ -32,7 +35,7 @@ class Arguments implements Countable, IteratorAggregate
     /**
      * Construct a new set of call arguments.
      *
-     * @param array $arguments The arguments.
+     * @param array<int,mixed> $arguments The arguments.
      */
     public function __construct(array $arguments)
     {
@@ -61,7 +64,7 @@ class Arguments implements Countable, IteratorAggregate
      *
      * This method supports reference parameters.
      *
-     * @return array<mixed> The arguments.
+     * @return array<int,mixed> The arguments.
      */
     public function all(): array
     {
@@ -162,29 +165,13 @@ class Arguments implements Countable, IteratorAggregate
         return new ArrayIterator($this->arguments);
     }
 
-    private function normalizeIndex($size, $index, &$normalized = null)
-    {
-        $normalized = null;
-
-        if ($index < 0) {
-            $potential = $size + $index;
-
-            if ($potential < 0) {
-                return false;
-            }
-        } else {
-            $potential = $index;
-        }
-
-        if ($potential >= $size) {
-            return false;
-        }
-
-        $normalized = $potential;
-
-        return true;
-    }
-
+    /**
+     * @var array<int,mixed>
+     */
     private $arguments;
+
+    /**
+     * @var int
+     */
     private $count;
 }

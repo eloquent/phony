@@ -76,8 +76,8 @@ trait FacadeTrait
      * with an empty argument list. However, if a `null` value is supplied for
      * `$arguments`, the original constructor will not be called at all.
      *
-     * @param mixed                $types     The types to mock.
-     * @param Arguments|array|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param mixed                           $types     The types to mock.
+     * @param Arguments|array<int,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
      * @return InstanceHandle A handle around the new mock.
      */
@@ -111,7 +111,7 @@ trait FacadeTrait
     /**
      * Create a new static handle.
      *
-     * @param Mock|Handle|ReflectionClass|string $class The class.
+     * @param Mock|Handle|ReflectionClass<object>|string $class The class.
      *
      * @return StaticHandle  The newly created handle.
      * @throws MockException If the supplied class name is not a mock class.
@@ -126,7 +126,7 @@ trait FacadeTrait
     /**
      * Create a new spy.
      *
-     * @param callable|null $callback The callback, or null to create an anonymous spy.
+     * @param ?callable $callback The callback, or null to create an anonymous spy.
      *
      * @return SpyVerifier The new spy.
      */
@@ -141,8 +141,8 @@ trait FacadeTrait
      * Create a spy of a function in the global namespace, and declare it as a
      * function in another namespace.
      *
-     * @param string $function  The name of the function in the global namespace.
-     * @param string $namespace The namespace in which to create the new function.
+     * @param callable&string $function  The name of the function in the global namespace.
+     * @param string          $namespace The namespace in which to create the new function.
      *
      * @return SpyVerifier The new spy.
      */
@@ -159,7 +159,7 @@ trait FacadeTrait
     /**
      * Create a new stub.
      *
-     * @param callable|null $callback The callback, or null to create an anonymous stub.
+     * @param ?callable $callback The callback, or null to create an anonymous stub.
      *
      * @return StubVerifier The new stub.
      */
@@ -177,8 +177,8 @@ trait FacadeTrait
      * Stubs created via this function do not forward to the original function
      * by default. This differs from stubs created by other methods.
      *
-     * @param string $function  The name of the function in the global namespace.
-     * @param string $namespace The namespace in which to create the new function.
+     * @param callable&string $function  The name of the function in the global namespace.
+     * @param string          $namespace The namespace in which to create the new function.
      *
      * @return StubVerifier The new stub.
      */
@@ -208,9 +208,9 @@ trait FacadeTrait
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
-    public static function checkInOrder(...$events): ?EventCollection
+    public static function checkInOrder(object ...$events): ?EventCollection
     {
         $container = self::$globals::$container;
 
@@ -223,10 +223,10 @@ trait FacadeTrait
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public static function inOrder(...$events): ?EventCollection
+    public static function inOrder(object ...$events): ?EventCollection
     {
         $container = self::$globals::$container;
 
@@ -238,10 +238,10 @@ trait FacadeTrait
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection|null     The result.
+     * @return ?EventCollection         The result.
      * @throws InvalidArgumentException If invalid input is supplied.
      */
-    public static function checkAnyOrder(...$events): ?EventCollection
+    public static function checkAnyOrder(object ...$events): ?EventCollection
     {
         $container = self::$globals::$container;
 
@@ -253,11 +253,11 @@ trait FacadeTrait
      *
      * @param Event|EventCollection ...$events The events.
      *
-     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection         The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If invalid input is supplied.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
-    public static function anyOrder(...$events): ?EventCollection
+    public static function anyOrder(object ...$events): ?EventCollection
     {
         $container = self::$globals::$container;
 
@@ -361,7 +361,7 @@ trait FacadeTrait
      *
      * Pass `null` to detect automatically.
      *
-     * @param bool|null $useColor True to use color.
+     * @param ?bool $useColor True to use color.
      */
     public static function setUseColor(?bool $useColor): void
     {

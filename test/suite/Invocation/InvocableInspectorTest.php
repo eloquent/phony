@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Invocation;
 
+use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestInvocable;
@@ -12,8 +13,6 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
-use ReflectionType;
-use stdClass;
 
 class InvocableInspectorTest extends TestCase
 {
@@ -57,19 +56,14 @@ class InvocableInspectorTest extends TestCase
         );
     }
 
-    public function testCallbackReturnType()
+    public function testCallbackReflectorWithWrappedMethod()
     {
-        $this->assertNull($this->subject->callbackReturnType(function () {}));
+        $handle = Phony::mock(TestClassA::class);
 
-        $type = $this->subject->callbackReturnType(function (): int {});
-
-        $this->assertInstanceOf(ReflectionType::class, $type);
-        $this->assertSame('int', $type->getName());
-
-        $type = $this->subject->callbackReturnType(function (): stdClass {});
-
-        $this->assertInstanceOf(ReflectionType::class, $type);
-        $this->assertSame('stdClass', $type->getName());
+        $this->assertEquals(
+            new ReflectionMethod($handle->className() . '::testClassAMethodA'),
+            $this->subject->callbackReflector($handle->testClassAMethodA)
+        );
     }
 
     public function testInstance()

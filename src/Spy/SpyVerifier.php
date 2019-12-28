@@ -96,9 +96,9 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Get the callback.
      *
-     * @return callable|array The callback.
+     * @return callable
      */
-    public function callback()
+    public function callback(): ?callable
     {
         return $this->spy->callback();
     }
@@ -202,7 +202,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Set the calls.
      *
-     * @param array<Call> $calls The calls.
+     * @param array<int,Call> $calls The calls.
      */
     public function setCalls(array $calls): void
     {
@@ -262,7 +262,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Get all events as an array.
      *
-     * @return array<Event> The events.
+     * @return array<int,Event> The events.
      */
     public function allEvents(): array
     {
@@ -272,7 +272,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Get all calls as an array.
      *
-     * @return array<CallVerifier> The calls.
+     * @return array<int,CallVerifier> The calls.
      */
     public function allCalls(): array
     {
@@ -380,7 +380,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * This method supports reference parameters.
      *
-     * @param Arguments|array $arguments The arguments.
+     * @param Arguments|array<int,mixed> $arguments The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
@@ -419,7 +419,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Checks if called.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
     public function checkCalled(): ?EventCollection
     {
@@ -438,8 +438,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Throws an exception unless called.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function called(): ?EventCollection
     {
@@ -459,7 +459,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
     public function checkCalledWith(...$arguments): ?EventCollection
     {
@@ -493,8 +493,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @param mixed ...$arguments The arguments.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function calledWith(...$arguments): ?EventCollection
     {
@@ -514,7 +514,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Checks if this spy responded.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
     public function checkResponded(): ?EventCollection
     {
@@ -542,8 +542,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Throws an exception unless this spy responded.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function responded(): ?EventCollection
     {
@@ -561,7 +561,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Checks if this spy completed.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
     public function checkCompleted(): ?EventCollection
     {
@@ -589,8 +589,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Throws an exception unless this spy completed.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function completed(): ?EventCollection
     {
@@ -610,7 +610,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
     public function checkReturned($value = null): ?EventCollection
     {
@@ -663,8 +663,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function returned($value = null): ?EventCollection
     {
@@ -693,7 +693,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection|null     The result.
+     * @return ?EventCollection         The result.
      * @throws InvalidArgumentException If the type is invalid.
      */
     public function checkThrew($type = null): ?EventCollection
@@ -750,6 +750,9 @@ class SpyVerifier implements Spy, CardinalityVerifier
             }
 
             if ($isTypeSupported) {
+                /** @var Matcher */
+                $typeMatcher = $type;
+
                 foreach ($calls as $call) {
                     if (!$responseEvent = $call->responseEvent()) {
                         continue;
@@ -757,7 +760,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
 
                     list($exception) = $call->response();
 
-                    if ($exception && $type->matches($exception)) {
+                    if ($exception && $typeMatcher->matches($exception)) {
                         $matchingEvents[] = $responseEvent;
                         ++$matchCount;
                     }
@@ -786,7 +789,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection         The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -795,6 +798,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
         $cardinality = $this->cardinality;
 
         if ($type instanceof InstanceHandle) {
+            /** @var Throwable */
             $type = $type->get();
         }
 
@@ -817,7 +821,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Checks if this spy returned a generator.
      *
-     * @return GeneratorVerifier|null The result.
+     * @return ?GeneratorVerifier The result.
      */
     public function checkGenerated(): ?GeneratorVerifier
     {
@@ -842,10 +846,13 @@ class SpyVerifier implements Spy, CardinalityVerifier
         }
 
         if ($cardinality->matches($matchCount, $totalCount)) {
-            return $this->assertionRecorder->createSuccessFromEventCollection(
+            /** @var GeneratorVerifier */
+            $verifier = $this->assertionRecorder->createSuccessFromEventCollection(
                 $this->generatorVerifierFactory
                     ->create($this->spy, $matchingEvents)
             );
+
+            return $verifier;
         }
 
         return null;
@@ -873,7 +880,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Checks if this spy returned an iterable.
      *
-     * @return IterableVerifier|null The result.
+     * @return ?IterableVerifier The result.
      */
     public function checkIterated(): ?IterableVerifier
     {
@@ -898,10 +905,13 @@ class SpyVerifier implements Spy, CardinalityVerifier
         }
 
         if ($cardinality->matches($matchCount, $totalCount)) {
-            return $this->assertionRecorder->createSuccessFromEventCollection(
+            /** @var IterableVerifier */
+            $verifier = $this->assertionRecorder->createSuccessFromEventCollection(
                 $this->iterableVerifierFactory
                     ->create($this->spy, $matchingEvents)
             );
+
+            return $verifier;
         }
 
         return null;
@@ -928,18 +938,51 @@ class SpyVerifier implements Spy, CardinalityVerifier
 
     /**
      * Limits the output displayed when `var_dump` is used.
+     *
+     * @return array<string,mixed> The contents to export.
      */
     public function __debugInfo(): array
     {
         return ['spy' => $this->spy];
     }
 
+    /**
+     * @var Spy
+     */
     private $spy;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var MatcherVerifier
+     */
     private $matcherVerifier;
+
+    /**
+     * @var GeneratorVerifierFactory
+     */
     private $generatorVerifierFactory;
+
+    /**
+     * @var IterableVerifierFactory
+     */
     private $iterableVerifierFactory;
+
+    /**
+     * @var CallVerifierFactory
+     */
     private $callVerifierFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
 }

@@ -47,6 +47,13 @@ class ProducedEvent implements IterableEvent
         return $this->value;
     }
 
+    /**
+     * @var mixed
+     */
     private $key;
+
+    /**
+     * @var mixed
+     */
     private $value;
 }

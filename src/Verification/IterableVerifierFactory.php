@@ -18,9 +18,9 @@ use Eloquent\Phony\Spy\Spy;
 class IterableVerifierFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return IterableVerifierFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -66,8 +66,8 @@ class IterableVerifierFactory
     /**
      * Create a new iterable verifier.
      *
-     * @param Spy|Call    $subject The subject.
-     * @param array<Call> $calls   The calls.
+     * @param Spy|Call        $subject The subject.
+     * @param array<int,Call> $calls   The calls.
      *
      * @return IterableVerifier The newly created iterable verifier.
      */
@@ -83,9 +83,28 @@ class IterableVerifierFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
+
+    /**
+     * @var CallVerifierFactory
+     */
     private $callVerifierFactory;
 }

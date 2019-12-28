@@ -20,6 +20,7 @@ use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Mock\MockGenerator;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionFunctionAbstract;
 
 /**
  * Builds mock classes.
@@ -115,7 +116,7 @@ class MockBuilder
     /**
      * Get the types.
      *
-     * @return array<string,ReflectionClass> The types.
+     * @return array<string,ReflectionClass<object>> The types.
      */
     public function types(): array
     {
@@ -169,8 +170,11 @@ class MockBuilder
 
         foreach ($final as $type) {
             if (is_string($type)) {
+                /** @var class-string $classString */
+                $classString = $type;
+
                 try {
-                    $type = new ReflectionClass($type);
+                    $type = new ReflectionClass($classString);
                 } catch (ReflectionException $e) {
                     throw new InvalidTypeException($type, $e);
                 }
@@ -234,8 +238,8 @@ class MockBuilder
     /**
      * Add a custom method.
      *
-     * @param string        $name     The name.
-     * @param callable|null $callback The callback.
+     * @param string    $name     The name.
+     * @param ?callable $callback The callback.
      *
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
@@ -280,8 +284,8 @@ class MockBuilder
     /**
      * Add a custom static method.
      *
-     * @param string        $name     The name.
-     * @param callable|null $callback The callback.
+     * @param string    $name     The name.
+     * @param ?callable $callback The callback.
      *
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
@@ -417,6 +421,7 @@ class MockBuilder
     {
         $this->finalize();
 
+        /** @var MockDefinition */
         return $this->definition;
     }
 
@@ -437,8 +442,8 @@ class MockBuilder
      *
      * @param bool $createNew True if a new class should be created even when a compatible one exists.
      *
-     * @return ReflectionClass The class.
-     * @throws MockException   If the mock generation fails.
+     * @return ReflectionClass<object> The class.
+     * @throws MockException           If the mock generation fails.
      */
     public function build(bool $createNew = false): ReflectionClass
     {
@@ -538,7 +543,7 @@ class MockBuilder
      *
      * This method supports reference parameters.
      *
-     * @param Arguments|array|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param Arguments|array<int,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
      * @return Mock          The mock instance.
      * @throws MockException If the mock generation fails.
@@ -556,7 +561,7 @@ class MockBuilder
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param MockGenerator|null $generator The mock generator to use.
+     * @param ?MockGenerator $generator The mock generator to use.
      *
      * @return string        The source code.
      * @throws MockException If the mock generation fails.
@@ -570,7 +575,7 @@ class MockBuilder
         return $generator->generate($this->definition());
     }
 
-    private function normalizeDefinition()
+    private function normalizeDefinition(): void
     {
         $this->resolveInternalInterface(
             'traversable',
@@ -585,11 +590,16 @@ class MockBuilder
         $this->resolveInternalInterface('throwable', 'exception', 'error');
     }
 
+    /**
+     * @param class-string $interface
+     * @param class-string $preferred
+     * @param class-string $alternate
+     */
     private function resolveInternalInterface(
-        $interface,
-        $preferred,
-        $alternate
-    ) {
+        string $interface,
+        string $preferred,
+        string $alternate
+    ): void {
         $isImplementor = false;
         $isConcrete = false;
 
@@ -626,10 +636,14 @@ class MockBuilder
         }
     }
 
-    private function define($definition)
+    /**
+     * @param array<string,mixed> $definition
+     */
+    private function define(array $definition): self
     {
         foreach ($definition as $name => $value) {
             $nameParts = explode(' ', $name);
+            /** @var string */
             $name = array_pop($nameParts);
             $isStatic = in_array('static', $nameParts);
             $isFunction = in_array('function', $nameParts);
@@ -662,20 +676,83 @@ class MockBuilder
         return $this;
     }
 
+    /**
+     * @var MockFactory
+     */
     private $factory;
+
+    /**
+     * @var HandleFactory
+     */
     private $handleFactory;
+
+    /**
+     * @var InvocableInspector
+     */
     private $invocableInspector;
+
+    /**
+     * @var array<string,ReflectionClass<object>>
+     */
     private $types;
+
+    /**
+     * @var string
+     */
     private $parentClassName;
+
+    /**
+     * @var array<string,array{0:callable,1:ReflectionFunctionAbstract}>
+     */
     private $customMethods;
+
+    /**
+     * @var array<string,mixed>
+     */
     private $customProperties;
+
+    /**
+     * @var array<string,array{0:callable,1:ReflectionFunctionAbstract}>
+     */
     private $customStaticMethods;
+
+    /**
+     * @var array<string,mixed>
+     */
     private $customStaticProperties;
+
+    /**
+     * @var array<string,mixed>
+     */
     private $customConstants;
+
+    /**
+     * @var string
+     */
     private $className;
+
+    /**
+     * @var bool
+     */
     private $isFinalized;
+
+    /**
+     * @var callable
+     */
     private $emptyCallback;
+
+    /**
+     * @var ?MockDefinition
+     */
     private $definition;
+
+    /**
+     * @var ?ReflectionClass<object>
+     */
     private $class;
+
+    /**
+     * @var ?Mock
+     */
     private $mock;
 }

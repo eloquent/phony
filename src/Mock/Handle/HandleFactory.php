@@ -26,9 +26,9 @@ use ReflectionException;
 class HandleFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return HandleFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -127,7 +127,7 @@ class HandleFactory
     /**
      * Create a new static handle.
      *
-     * @param Mock|Handle|ReflectionClass|string $class The class.
+     * @param Mock|Handle|ReflectionClass<object>|string $class The class.
      *
      * @return StaticHandle  The newly created handle.
      * @throws MockException If the supplied class name is not a mock class.
@@ -143,10 +143,13 @@ class HandleFactory
         } elseif ($class instanceof Mock) {
             $class = new ReflectionClass($class);
         } elseif (is_string($class)) {
+            /** @var class-string $classString */
+            $classString = $class;
+
             try {
-                $class = new ReflectionClass($class);
+                $class = new ReflectionClass($classString);
             } catch (ReflectionException $e) {
-                throw new NonMockClassException($class, $e);
+                throw new NonMockClassException($classString, $e);
             }
         } elseif (!$class instanceof ReflectionClass) {
             throw new InvalidMockClassException($class);
@@ -159,7 +162,7 @@ class HandleFactory
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
 
-        if ($handle = $handleProperty->getValue(null)) {
+        if ($handle = $handleProperty->getValue()) {
             return $handle;
         }
 
@@ -184,11 +187,38 @@ class HandleFactory
         return $handle;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var StubFactory
+     */
     private $stubFactory;
+
+    /**
+     * @var StubVerifierFactory
+     */
     private $stubVerifierFactory;
+
+    /**
+     * @var EmptyValueFactory
+     */
     private $emptyValueFactory;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
 }

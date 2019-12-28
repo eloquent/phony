@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Spy;
 
+use ArrayAccess;
+use Countable;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\Event\CallEventFactory;
+use Eloquent\Phony\Spy\Exception\NonArrayAccessTraversableException;
+use Eloquent\Phony\Spy\Exception\NonCountableTraversableException;
+use Iterator;
 use IteratorAggregate;
 use Traversable;
 
@@ -17,9 +22,9 @@ class TraversableSpy implements IterableSpy
     /**
      * Construct a new traversable spy.
      *
-     * @param Call             $call             The call from which the array originated.
-     * @param Traversable      $traversable      The traversable.
-     * @param CallEventFactory $callEventFactory The call event factory to use.
+     * @param Call               $call             The call from which the array originated.
+     * @param Traversable<mixed> $traversable      The traversable.
+     * @param CallEventFactory   $callEventFactory The call event factory to use.
      */
     public function __construct(
         Call $call,
@@ -36,7 +41,7 @@ class TraversableSpy implements IterableSpy
     /**
      * Get the original iterable value.
      *
-     * @return iterable The original value.
+     * @return iterable<mixed> The original value.
      */
     public function iterable(): iterable
     {
@@ -68,7 +73,9 @@ class TraversableSpy implements IterableSpy
      */
     public function next(): void
     {
-        $this->iterator->next();
+        if ($this->iterator) {
+            $this->iterator->next();
+        }
     }
 
     /**
@@ -93,17 +100,25 @@ class TraversableSpy implements IterableSpy
                 ->addIterableEvent($this->callEventFactory->createUsed());
 
             if ($this->traversable instanceof IteratorAggregate) {
-                $this->iterator = $this->traversable->getIterator();
+                $iterator = $this->traversable->getIterator();
+
+                while (!$iterator instanceof Iterator) {
+                    $iterator = $iterator->getIterator();
+                }
             } else {
-                $this->iterator = $this->traversable;
+                $iterator = $this->traversable;
             }
 
+            $this->iterator = $iterator;
             $this->isUsed = true;
         }
 
-        if ($isValid = $this->iterator->valid()) {
-            $this->key = $this->iterator->key();
-            $this->value = $this->iterator->current();
+        /** @var Iterator<mixed> */
+        $iterator = $this->iterator;
+
+        if ($isValid = $iterator->valid()) {
+            $this->key = $iterator->key();
+            $this->value = $iterator->current();
         } else {
             $this->key = null;
             $this->value = null;
@@ -135,6 +150,10 @@ class TraversableSpy implements IterableSpy
      */
     public function offsetExists($key): bool
     {
+        if (!$this->traversable instanceof ArrayAccess) {
+            throw new NonArrayAccessTraversableException($this->traversable);
+        }
+
         return isset($this->traversable[$key]);
     }
 
@@ -147,6 +166,10 @@ class TraversableSpy implements IterableSpy
      */
     public function offsetGet($key)
     {
+        if (!$this->traversable instanceof ArrayAccess) {
+            throw new NonArrayAccessTraversableException($this->traversable);
+        }
+
         return $this->traversable[$key];
     }
 
@@ -158,6 +181,10 @@ class TraversableSpy implements IterableSpy
      */
     public function offsetSet($key, $value): void
     {
+        if (!$this->traversable instanceof ArrayAccess) {
+            throw new NonArrayAccessTraversableException($this->traversable);
+        }
+
         $this->traversable[$key] = $value;
     }
 
@@ -168,25 +195,65 @@ class TraversableSpy implements IterableSpy
      */
     public function offsetUnset($key): void
     {
+        if (!$this->traversable instanceof ArrayAccess) {
+            throw new NonArrayAccessTraversableException($this->traversable);
+        }
+
         unset($this->traversable[$key]);
     }
 
     /**
      * Get the count.
      *
-     * @return int The count.
+     * @return int                              The count.
+     * @throws NonCountableTraversableException If the traversable does not implement Countable.
      */
     public function count(): int
     {
+        if (!$this->traversable instanceof Countable) {
+            throw new NonCountableTraversableException($this->traversable);
+        }
+
         return count($this->traversable);
     }
 
+    /**
+     * @var Call
+     */
     private $call;
+
+    /**
+     * @var Traversable<mixed>
+     */
     private $traversable;
+
+    /**
+     * @var CallEventFactory
+     */
     private $callEventFactory;
+
+    /**
+     * @var bool
+     */
     private $isUsed;
+
+    /**
+     * @var bool
+     */
     private $isConsumed;
+
+    /**
+     * @var ?Iterator<mixed>
+     */
     private $iterator;
+
+    /**
+     * @var mixed
+     */
     private $key;
+
+    /**
+     * @var mixed
+     */
     private $value;
 }

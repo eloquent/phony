@@ -30,7 +30,7 @@ class CallFactoryTest extends TestCase
         $callback = 'implode';
         $arguments = Arguments::create(['a', 'b']);
         $returnValue = 'ab';
-        $spy = $this->spyFactory->create();
+        $spy = $this->spyFactory->create(null);
         $expected = new CallData(0, $this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createReturned($returnValue));
         $this->eventFactory->reset();
@@ -47,7 +47,7 @@ class CallFactoryTest extends TestCase
             throw $exception;
         };
         $arguments = Arguments::create(['a', 'b']);
-        $spy = $this->spyFactory->create();
+        $spy = $this->spyFactory->create(null);
         $expected = new CallData(0, $this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createThrew($exception));
         $this->eventFactory->reset();
@@ -64,7 +64,7 @@ class CallFactoryTest extends TestCase
             throw $exception;
         };
         $arguments = Arguments::create(['a', 'b']);
-        $spy = $this->spyFactory->create();
+        $spy = $this->spyFactory->create(null);
         $expected = new CallData(0, $this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createThrew($exception));
         $this->eventFactory->reset();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Assertion;
 
+use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use Throwable;
@@ -14,9 +15,18 @@ use Throwable;
 interface AssertionRecorder
 {
     /**
+     * Set the call verifier factory.
+     *
+     * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
+     */
+    public function setCallVerifierFactory(
+        CallVerifierFactory $callVerifierFactory
+    ): void;
+
+    /**
      * Record that a successful assertion occurred.
      *
-     * @param array<Event> $events The events.
+     * @param array<int,Event> $events The events.
      *
      * @return EventCollection The result.
      */
@@ -38,6 +48,7 @@ interface AssertionRecorder
      *
      * @param string $description The failure description.
      *
+     * @return null      If this recorder does not throw exceptions.
      * @throws Throwable If this recorder throws exceptions.
      */
     public function createFailure(string $description);

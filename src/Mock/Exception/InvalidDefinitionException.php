@@ -52,6 +52,13 @@ final class InvalidDefinitionException extends Exception implements
         return $this->value;
     }
 
+    /**
+     * @var mixed
+     */
     private $name;
+
+    /**
+     * @var mixed
+     */
     private $value;
 }

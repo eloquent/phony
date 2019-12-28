@@ -23,7 +23,12 @@ class WrappedTraitMethodTest extends TestCase
         $this->mock = $this->mockBuilder->partial();
         $this->handleFactory = HandleFactory::instance();
         $this->handle = $this->handleFactory->instanceHandle($this->mock);
-        $this->subject = new WrappedTraitMethod($this->callTraitMethod, $this->traitName, $this->method, $this->handle);
+        $this->subject = new WrappedTraitMethod(
+            $this->callTraitMethod,
+            $this->method,
+            $this->traitName,
+            $this->handle
+        );
     }
 
     public function testConstructor()
@@ -35,7 +40,7 @@ class WrappedTraitMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame([$this->mock, 'testClassAMethodB'], $this->subject->callback());
+        $this->assertNull($this->subject->callback());
         $this->assertSame('', $this->subject->label());
     }
 
@@ -43,7 +48,12 @@ class WrappedTraitMethodTest extends TestCase
     {
         $this->method = new ReflectionMethod(TestTraitA::class . '::testClassAStaticMethodA');
         $this->handle = $this->handleFactory->staticHandle($this->mockBuilder->build());
-        $this->subject = new WrappedTraitMethod($this->callTraitMethod, $this->traitName, $this->method, $this->handle);
+        $this->subject = new WrappedTraitMethod(
+            $this->callTraitMethod,
+            $this->method,
+            $this->traitName,
+            $this->handle
+        );
 
         $this->assertSame($this->callTraitMethod, $this->subject->callTraitMethod());
         $this->assertSame($this->method, $this->subject->method());
@@ -51,10 +61,7 @@ class WrappedTraitMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame(
-            [TestTraitA::class, 'testClassAStaticMethodA'],
-            $this->subject->callback()
-        );
+        $this->assertNull($this->subject->callback());
         $this->assertSame('', $this->subject->label());
     }
 
@@ -78,7 +85,12 @@ class WrappedTraitMethodTest extends TestCase
         $method = new ReflectionMethod(TestTraitA::class . '::testClassAMethodB');
         $mock = $mockBuilder->get();
         $handle = $this->handleFactory->instanceHandle($mock);
-        $subject = new WrappedTraitMethod($callTraitMethod, $traitName, $method, $handle);
+        $subject = new WrappedTraitMethod(
+            $callTraitMethod,
+            $method,
+            $traitName,
+            $handle
+        );
 
         $this->assertSame('ab', $subject('a', 'b'));
         $this->assertSame('ab', $subject->invoke('a', 'b'));
@@ -94,7 +106,12 @@ class WrappedTraitMethodTest extends TestCase
         $callTraitMethod->setAccessible(true);
         $method = new ReflectionMethod(TestTraitA::class . '::testClassAStaticMethodA');
         $handle = $this->handleFactory->staticHandle($mockBuilder->build());
-        $subject = new WrappedTraitMethod($callTraitMethod, $traitName, $method, $handle);
+        $subject = new WrappedTraitMethod(
+            $callTraitMethod,
+            $method,
+            $traitName,
+            $handle
+        );
         $a = 'a';
 
         $this->assertSame('ab', $subject->invokeWith([&$a, 'b']));

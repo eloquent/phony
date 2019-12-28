@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Method;
 
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Mock\Handle\Handle;
 use ReflectionMethod;
 use Throwable;
@@ -40,7 +41,7 @@ class WrappedUncallableMethod implements WrappedMethod
      *
      * This method supports reference parameters.
      *
-     * @param Arguments|array $arguments The arguments.
+     * @param Arguments|array<int,mixed> $arguments The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
@@ -54,6 +55,13 @@ class WrappedUncallableMethod implements WrappedMethod
         return $this->returnValue;
     }
 
+    /**
+     * @var ?Throwable
+     */
     private $exception;
+
+    /**
+     * @var mixed
+     */
     private $returnValue;
 }

@@ -27,7 +27,7 @@ class GeneratorVerifier extends IterableVerifier
      * Construct a new generator verifier.
      *
      * @param Spy|Call            $subject             The subject.
-     * @param array<Call>         $calls               The generator calls.
+     * @param array<int,Call>     $calls               The generator calls.
      * @param MatcherFactory      $matcherFactory      The matcher factory to use.
      * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
      * @param AssertionRecorder   $assertionRecorder   The assertion recorder to use.
@@ -61,7 +61,7 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
     public function checkReceived($value = null): ?EventCollection
     {
@@ -124,8 +124,8 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function received($value = null): ?EventCollection
     {
@@ -154,7 +154,7 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection|null     The result.
+     * @return ?EventCollection         The result.
      * @throws InvalidArgumentException If the type is invalid.
      */
     public function checkReceivedException($type = null): ?EventCollection
@@ -229,6 +229,9 @@ class GeneratorVerifier extends IterableVerifier
             }
 
             if ($isTypeSupported) {
+                /** @var Matcher */
+                $typeMatcher = $type;
+
                 foreach ($this->calls as $call) {
                     $isMatchingCall = false;
 
@@ -236,7 +239,7 @@ class GeneratorVerifier extends IterableVerifier
                         if ($event instanceof ReceivedExceptionEvent) {
                             ++$eventCount;
 
-                            if ($type->matches($event->exception())) {
+                            if ($typeMatcher->matches($event->exception())) {
                                 $matchingEvents[] = $event;
                                 $isMatchingCall = true;
 
@@ -282,7 +285,7 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection         The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -291,6 +294,7 @@ class GeneratorVerifier extends IterableVerifier
         $cardinality = $this->cardinality;
 
         if ($type instanceof InstanceHandle) {
+            /** @var Throwable */
             $type = $type->get();
         }
 
@@ -318,7 +322,7 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection|null The result.
+     * @return ?EventCollection The result.
      */
     public function checkReturned($value = null): ?EventCollection
     {
@@ -374,8 +378,8 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @param mixed $value The value.
      *
-     * @return EventCollection|null The result, or null if the assertion recorder does not throw exceptions.
-     * @throws Throwable            If the assertion fails, and the assertion recorder throws exceptions.
+     * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
+     * @throws Throwable        If the assertion fails, and the assertion recorder throws exceptions.
      */
     public function returned($value = null): ?EventCollection
     {
@@ -404,7 +408,7 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection|null     The result.
+     * @return ?EventCollection         The result.
      * @throws InvalidArgumentException If the type is invalid.
      */
     public function checkThrew($type = null): ?EventCollection
@@ -463,6 +467,9 @@ class GeneratorVerifier extends IterableVerifier
             }
 
             if ($isTypeSupported) {
+                /** @var Matcher */
+                $typeMatcher = $type;
+
                 foreach ($this->calls as $call) {
                     if (
                         !$call->isGenerator() ||
@@ -473,7 +480,7 @@ class GeneratorVerifier extends IterableVerifier
 
                     list($exception) = $call->generatorResponse();
 
-                    if ($exception && $type->matches($exception)) {
+                    if ($exception && $typeMatcher->matches($exception)) {
                         $matchingEvents[] = $endEvent;
                         ++$matchCount;
                     }
@@ -503,7 +510,7 @@ class GeneratorVerifier extends IterableVerifier
      *
      * @param Matcher|Throwable|string|null $type An exception to match, the type of exception, or null for any exception.
      *
-     * @return EventCollection|null     The result, or null if the assertion recorder does not throw exceptions.
+     * @return ?EventCollection         The result, or null if the assertion recorder does not throw exceptions.
      * @throws InvalidArgumentException If the type is invalid.
      * @throws Throwable                If the assertion fails, and the assertion recorder throws exceptions.
      */
@@ -512,6 +519,7 @@ class GeneratorVerifier extends IterableVerifier
         $cardinality = $this->cardinality;
 
         if ($type instanceof InstanceHandle) {
+            /** @var Throwable */
             $type = $type->get();
         }
 

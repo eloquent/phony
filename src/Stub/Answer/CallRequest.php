@@ -22,7 +22,7 @@ class CallRequest
      * @param bool      $suffixArguments       True if the arguments should be appended individually.
      */
     public function __construct(
-        $callback,
+        callable $callback,
         Arguments $arguments,
         bool $prefixSelf,
         bool $suffixArgumentsObject,
@@ -46,7 +46,7 @@ class CallRequest
      *
      * @return callable The callback.
      */
-    public function callback()
+    public function callback(): callable
     {
         return $this->callback;
     }
@@ -54,13 +54,15 @@ class CallRequest
     /**
      * Get the final arguments.
      *
-     * @param object    $self      The self value.
+     * @param ?object   $self      The self value.
      * @param Arguments $arguments The incoming arguments.
      *
      * @return Arguments The final arguments.
      */
-    public function finalArguments($self, Arguments $arguments): Arguments
-    {
+    public function finalArguments(
+        ?object $self,
+        Arguments $arguments
+    ): Arguments {
         $finalArguments = $this->arguments->all();
 
         if ($this->prefixSelf) {
@@ -69,8 +71,7 @@ class CallRequest
         if ($this->suffixArgumentsObject) {
             $finalArguments[] = $arguments;
         }
-
-        if ($this->suffixArguments && $arguments) {
+        if ($this->suffixArguments) {
             $finalArguments = array_merge($finalArguments, $arguments->all());
         }
 
@@ -119,9 +120,28 @@ class CallRequest
         return $this->suffixArguments;
     }
 
+    /**
+     * @var callable
+     */
     private $callback;
+
+    /**
+     * @var Arguments
+     */
     private $arguments;
+
+    /**
+     * @var bool
+     */
     private $prefixSelf;
+
+    /**
+     * @var bool
+     */
     private $suffixArgumentsObject;
+
+    /**
+     * @var bool
+     */
     private $suffixArguments;
 }

@@ -21,9 +21,9 @@ use InvalidArgumentException;
 class SpyVerifierFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return SpyVerifierFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -82,14 +82,14 @@ class SpyVerifierFactory
     /**
      * Create a new spy verifier.
      *
-     * @param Spy|null $spy The spy, or null to create an anonymous spy.
+     * @param ?Spy $spy The spy, or null to create an anonymous spy.
      *
      * @return SpyVerifier The newly created spy verifier.
      */
-    public function create(Spy $spy = null): SpyVerifier
+    public function create(?Spy $spy): SpyVerifier
     {
         if (!$spy) {
-            $spy = $this->spyFactory->create();
+            $spy = $this->spyFactory->create(null);
         }
 
         return new SpyVerifier(
@@ -107,11 +107,11 @@ class SpyVerifierFactory
     /**
      * Create a new spy verifier for the supplied callback.
      *
-     * @param callable|null $callback The callback, or null to create an anonymous spy.
+     * @param ?callable $callback The callback, or null to create an anonymous spy.
      *
      * @return SpyVerifier The newly created spy verifier.
      */
-    public function createFromCallback($callback): SpyVerifier
+    public function createFromCallback(?callable $callback): SpyVerifier
     {
         return new SpyVerifier(
             $this->spyFactory->create($callback),
@@ -129,8 +129,8 @@ class SpyVerifierFactory
      * Create a new spy verifier for a global function and declare it in the
      * specified namespace.
      *
-     * @param string $function  The function name.
-     * @param string $namespace The namespace.
+     * @param callable&string $function  The function name.
+     * @param string          $namespace The namespace.
      *
      * @return SpyVerifier              The newly created spy verifier.
      * @throws InvalidArgumentException If an invalid function name or namespace is specified.
@@ -168,14 +168,53 @@ class SpyVerifierFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var SpyFactory
+     */
     private $spyFactory;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var MatcherVerifier
+     */
     private $matcherVerifier;
+
+    /**
+     * @var GeneratorVerifierFactory
+     */
     private $generatorVerifierFactory;
+
+    /**
+     * @var IterableVerifierFactory
+     */
     private $iterableVerifierFactory;
+
+    /**
+     * @var CallVerifierFactory
+     */
     private $callVerifierFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
+
+    /**
+     * @var FunctionHookManager
+     */
     private $functionHookManager;
 }

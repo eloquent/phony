@@ -18,9 +18,9 @@ use ParseError;
 class FunctionHookManager
 {
     /**
-     * Get the static instance of this manager.
+     * Get the static instance of this class.
      *
-     * @return FunctionHookManager The static manager.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -59,14 +59,14 @@ class FunctionHookManager
      * @param string   $namespace The namespace.
      * @param callable $callback  The callback.
      *
-     * @return callable|null         The replaced callback, or null if no callback was set.
+     * @return ?callable             The replaced callback, or null if no callback was set.
      * @throws FunctionHookException If the function hook generation fails.
      */
     public function defineFunction(
         string $name,
         string $namespace,
-        $callback
-    ) {
+        callable $callback
+    ): ?callable {
         $signature = $this->signatureInspector->signature(
             $this->invocableInspector->callbackReflector($callback)
         );
@@ -133,9 +133,28 @@ class FunctionHookManager
         }
     }
 
+    /**
+     * @var array<string,array<string,mixed>>
+     */
     public static $hooks = [];
+
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var InvocableInspector
+     */
     private $invocableInspector;
+
+    /**
+     * @var FunctionSignatureInspector
+     */
     private $signatureInspector;
+
+    /**
+     * @var FunctionHookGenerator
+     */
     private $hookGenerator;
 }

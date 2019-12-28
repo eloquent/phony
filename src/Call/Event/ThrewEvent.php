@@ -40,5 +40,8 @@ class ThrewEvent implements ResponseEvent
         return $this->exception;
     }
 
+    /**
+     * @var Throwable
+     */
     private $exception;
 }

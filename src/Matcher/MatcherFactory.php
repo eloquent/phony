@@ -14,9 +14,9 @@ use Eloquent\Phony\Hamcrest\HamcrestMatcherDriver;
 class MatcherFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return MatcherFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -73,7 +73,7 @@ class MatcherFactory
     /**
      * Get the matcher drivers.
      *
-     * @return array<MatcherDriver> The matcher drivers.
+     * @return array<int,MatcherDriver> The matcher drivers.
      */
     public function drivers(): array
     {
@@ -109,11 +109,11 @@ class MatcherFactory
      *
      * @param mixed $value The value to create a matcher for.
      *
-     * @return Matchable The newly created matcher.
+     * @return Matcher The newly created matcher.
      */
-    public function adapt($value): Matchable
+    public function adapt($value): Matcher
     {
-        if ($value instanceof Matchable) {
+        if ($value instanceof Matcher) {
             return $value;
         }
 
@@ -123,10 +123,6 @@ class MatcherFactory
                     return $driver->wrapMatcher($value);
                 }
             }
-        }
-
-        if ('*' === $value) {
-            return $this->wildcardAnyMatcher;
         }
 
         if ('~' === $value) {
@@ -139,19 +135,16 @@ class MatcherFactory
     /**
      * Create new matchers for the all supplied values.
      *
-     * @param array $values The values to create matchers for.
+     * @param array<int,mixed> $values The values to create matchers for.
      *
-     * @return array<Matchable> The newly created matchers.
+     * @return array<int,Matcher> The newly created matchers.
      */
     public function adaptAll(array $values): array
     {
         $matchers = [];
 
         foreach ($values as $value) {
-            if (
-                $value instanceof Matcher ||
-                $value instanceof WildcardMatcher
-            ) {
+            if ($value instanceof Matcher) {
                 $matchers[] = $value;
 
                 continue;
@@ -248,10 +241,33 @@ class MatcherFactory
             new WildcardMatcher($value, $minimumArguments, $maximumArguments);
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var array<int,MatcherDriver>
+     */
     private $drivers;
+
+    /**
+     * @var array<string,MatcherDriver>
+     */
     private $driverIndex;
+
+    /**
+     * @var Matcher
+     */
     private $anyMatcher;
+
+    /**
+     * @var WildcardMatcher
+     */
     private $wildcardAnyMatcher;
+
+    /**
+     * @var Exporter
+     */
     private $exporter;
 }

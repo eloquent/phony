@@ -12,9 +12,9 @@ use Eloquent\Phony\Exporter\Exporter;
 class AnyMatcher implements Matcher
 {
     /**
-     * Get the static instance of this matcher.
+     * Get the static instance of this class.
      *
-     * @return Matcher The static matcher.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -40,7 +40,7 @@ class AnyMatcher implements Matcher
     /**
      * Describe this matcher.
      *
-     * @param Exporter|null $exporter The exporter to use.
+     * @param ?Exporter $exporter The exporter to use.
      *
      * @return string The description.
      */
@@ -59,5 +59,8 @@ class AnyMatcher implements Matcher
         return '<any>';
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
 }

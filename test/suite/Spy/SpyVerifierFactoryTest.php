@@ -55,7 +55,7 @@ class SpyVerifierFactoryTest extends TestCase
 
     public function testCreate()
     {
-        $spy = $this->spyFactory->create()->setLabel('0');
+        $spy = $this->spyFactory->create(null)->setLabel('0');
         $expected = new SpyVerifier(
             $spy,
             $this->matcherFactory,
@@ -70,24 +70,6 @@ class SpyVerifierFactoryTest extends TestCase
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($spy, $actual->spy());
-    }
-
-    public function testCreateDefaults()
-    {
-        $spy = $this->spyFactory->create()->setLabel('1');
-        $expected = new SpyVerifier(
-            $spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer
-        );
-        $actual = $this->subject->create();
-
-        $this->assertEquals($expected, $actual);
     }
 
     public function testCreateFromCallback()

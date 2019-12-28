@@ -18,9 +18,9 @@ use Eloquent\Phony\Verification\IterableVerifierFactory;
 class CallVerifierFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return CallVerifierFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -87,9 +87,9 @@ class CallVerifierFactory
     /**
      * Wrap the supplied calls in verifiers.
      *
-     * @param array<Call> $calls The calls.
+     * @param array<int,Call> $calls The calls.
      *
-     * @return array<CallVerifier> The call verifiers.
+     * @return array<int,CallVerifier> The call verifiers.
      */
     public function fromCalls(array $calls): array
     {
@@ -110,11 +110,38 @@ class CallVerifierFactory
         return $verifiers;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var MatcherVerifier
+     */
     private $matcherVerifier;
+
+    /**
+     * @var GeneratorVerifierFactory
+     */
     private $generatorVerifierFactory;
+
+    /**
+     * @var IterableVerifierFactory
+     */
     private $iterableVerifierFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
 }

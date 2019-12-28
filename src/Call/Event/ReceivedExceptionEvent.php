@@ -40,5 +40,8 @@ class ReceivedExceptionEvent implements IterableEvent
         return $this->exception;
     }
 
+    /**
+     * @var Throwable
+     */
     private $exception;
 }

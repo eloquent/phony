@@ -14,9 +14,9 @@ use Eloquent\Phony\Stub\Stub;
 class GeneratorAnswerBuilderFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return GeneratorAnswerBuilderFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -60,7 +60,18 @@ class GeneratorAnswerBuilderFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var InvocableInspector
+     */
     private $invocableInspector;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
 }

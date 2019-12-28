@@ -39,5 +39,8 @@ final class InvalidSingularCardinalityException extends Exception implements
         return $this->cardinality;
     }
 
+    /**
+     * @var Cardinality
+     */
     private $cardinality;
 }

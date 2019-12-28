@@ -16,7 +16,7 @@ class ArraySpy implements IterableSpy
      * Construct a new array spy.
      *
      * @param Call             $call             The call from which the array originated.
-     * @param array            $array            The array.
+     * @param array<mixed>     $array            The array.
      * @param CallEventFactory $callEventFactory The call event factory to use.
      */
     public function __construct(
@@ -34,7 +34,7 @@ class ArraySpy implements IterableSpy
     /**
      * Get the original iterable value.
      *
-     * @return iterable The original value.
+     * @return iterable<mixed> The original value.
      */
     public function iterable(): iterable
     {
@@ -165,9 +165,28 @@ class ArraySpy implements IterableSpy
         return count($this->array);
     }
 
+    /**
+     * @var Call
+     */
     private $call;
+
+    /**
+     * @var array<mixed>
+     */
     private $array;
+
+    /**
+     * @var CallEventFactory
+     */
     private $callEventFactory;
+
+    /**
+     * @var bool
+     */
     private $isUsed;
+
+    /**
+     * @var bool
+     */
     private $isConsumed;
 }

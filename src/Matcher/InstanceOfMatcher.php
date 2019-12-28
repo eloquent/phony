@@ -23,7 +23,10 @@ class InstanceOfMatcher implements Matcher
         $this->type = $type;
 
         $atoms = explode('\\', $type);
-        $this->shortType = array_pop($atoms);
+
+        /** @var string */
+        $shortType = array_pop($atoms);
+        $this->shortType = $shortType;
     }
 
     /**
@@ -55,7 +58,7 @@ class InstanceOfMatcher implements Matcher
     /**
      * Describe this matcher.
      *
-     * @param Exporter|null $exporter The exporter to use.
+     * @param ?Exporter $exporter The exporter to use.
      *
      * @return string The description.
      */
@@ -74,6 +77,13 @@ class InstanceOfMatcher implements Matcher
         return '<instanceof ' . $this->shortType . '>';
     }
 
+    /**
+     * @var string
+     */
     private $type;
+
+    /**
+     * @var string
+     */
     private $shortType;
 }

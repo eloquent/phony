@@ -1,0 +1,63 @@
+parameters:
+  level: max
+  paths: [src]
+  autoload_directories:
+  - test/src/Phpstan
+  ignoreErrors:
+    # allow @throws with interfaces
+    - message: '/@throws with type .* is not subtype of Throwable/'
+      paths:
+      - src/Call/CallData.php
+      - src/Call/CallVerifier.php
+      - src/Facade/FacadeTrait.php
+      - src/functions.php
+      - src/Hook/FunctionHookManager.php
+      - src/Invocation/WrappedInvocableTrait.php
+      - src/Mock/Builder/MockBuilder.php
+      - src/Mock/Handle/Handle.php
+      - src/Mock/Handle/HandleFactory.php
+      - src/Mock/Handle/HandleTrait.php
+      - src/Mock/MockFactory.php
+      - src/Verification/Cardinality.php
+      - src/Verification/CardinalityVerifier.php
+      - src/Verification/CardinalityVerifierTrait.php
+
+    # allow setting special property on generators
+    - message: '/Access to an undefined property Generator::\$_phonySubject/'
+      path: src/Spy/GeneratorSpyFactory.php
+
+    # @extends being ignored
+    - message: '/no value type specified in iterable type .*(Eloquent\\Phony\\Call\\Call|Eloquent\\Phony\\Spy\\Spy)/'
+      paths:
+      - src/Assertion/AssertionRenderer.php
+      - src/Call/CallData.php
+      - src/Call/CallVerifier.php
+      - src/Call/CallVerifierFactory.php
+      - src/Call/Event/CallEvent.php
+      - src/Call/Event/CallEventTrait.php
+      - src/Event/EventCollection.php
+      - src/Event/EventSequence.php
+      - src/Mock/Handle/Handle.php
+      - src/Mock/Handle/HandleTrait.php
+      - src/Spy/ArraySpy.php
+      - src/Spy/GeneratorSpyFactory.php
+      - src/Spy/IterableSpyFactory.php
+      - src/Spy/Spy.php
+      - src/Spy/SpyData.php
+      - src/Spy/SpyFactory.php
+      - src/Spy/SpyVerifier.php
+      - src/Spy/SpyVerifierFactory.php
+      - src/Spy/TraversableSpy.php
+      - src/Stub/StubVerifier.php
+      - src/Verification/GeneratorVerifier.php
+      - src/Verification/GeneratorVerifierFactory.php
+      - src/Verification/IterableVerifier.php
+      - src/Verification/IterableVerifierFactory.php
+
+  #   # (tests only) ignore undefined properties
+  #   - message: '/^Access to an undefined property /'
+  #     path: test
+
+  #   # (tests only) Eloquent\Phony\Phpunit\Facade is a namespace alias, and not expected to exist
+  #   - message: '/^(Class|Function) Eloquent\\Phony\\Phpunit\\Facade(\\\w+)? not found.$/'
+  #     path: test/suite/PhonyTest.php

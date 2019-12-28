@@ -22,7 +22,7 @@ class GeneratorAnswerBuilderTest extends TestCase
     protected function setUp(): void
     {
         $this->self = (object) [];
-        $this->stub = StubFactory::instance()->create()->setSelf($this->self);
+        $this->stub = StubFactory::instance()->create(null, null)->setSelf($this->self);
         $this->featureDetector = FeatureDetector::instance();
         $this->invocableInspector = new InvocableInspector();
         $this->invoker = new Invoker();
@@ -536,6 +536,21 @@ class GeneratorAnswerBuilderTest extends TestCase
         }
 
         $this->assertSame($exception, $actual);
+    }
+
+    public function testThrowsWithNull()
+    {
+        $this->subject->throws(null);
+        $generator = call_user_func($this->answer, $this->self, $this->arguments);
+
+        $actual = null;
+
+        try {
+            iterator_to_array($generator);
+        } catch (Exception $actual) {
+        }
+
+        $this->assertEquals(new Exception(), $actual);
     }
 
     public function testThrowsWithMultipleExceptions()

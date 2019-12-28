@@ -35,7 +35,7 @@ class WrappedCustomMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame([$this->mock, 'setUp'], $this->subject->callback());
+        $this->assertNull($this->subject->callback());
         $this->assertSame('', $this->subject->label());
     }
 
@@ -51,10 +51,7 @@ class WrappedCustomMethodTest extends TestCase
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertNull($this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());
-        $this->assertSame(
-            [TestClassB::class, 'testClassAStaticMethodB'],
-            $this->subject->callback()
-        );
+        $this->assertNull($this->subject->callback());
         $this->assertSame('', $this->subject->label());
     }
 

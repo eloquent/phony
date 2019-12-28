@@ -4972,7 +4972,7 @@ Type                        | Empty value
 `stdClass`                  | `(object) []`
 `callable`                  | `stub()`
 `Closure`                   | `function () {}`
-`Generator`                 | `(function () {return; yield;})()`
+`Generator`                 | `(function () { yield from []; })()`
 `ClassName`                 | `mock(ClassName::class)->get()`
 
 <a name="facade.inOrder" />

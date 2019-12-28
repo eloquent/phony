@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Builder\Method;
 
-use ReflectionMethod;
-
 /**
  * Represents a collection of methods.
  */
@@ -14,8 +12,8 @@ class MethodDefinitionCollection
     /**
      * Construct a new custom method definition.
      *
-     * @param array<string,MethodDefinition> $methods      The methods.
-     * @param array<TraitMethodDefinition>   $traitMethods The trait methods.
+     * @param array<string,MethodDefinition>   $methods      The methods.
+     * @param array<int,TraitMethodDefinition> $traitMethods The trait methods.
      */
     public function __construct(array $methods, array $traitMethods)
     {
@@ -143,20 +141,55 @@ class MethodDefinitionCollection
     /**
      * Get the trait methods.
      *
-     * @return array<ReflectionMethod> The trait methods.
+     * @return array<int,TraitMethodDefinition> The trait methods.
      */
     public function traitMethods(): array
     {
         return $this->traitMethods;
     }
 
+    /**
+     * @var array<string,string>
+     */
     private $methodNames;
+
+    /**
+     * @var array<string,MethodDefinition>
+     */
     private $allMethods;
+
+    /**
+     * @var array<int,TraitMethodDefinition>
+     */
     private $traitMethods;
+
+    /**
+     * @var array<string,MethodDefinition>
+     */
     private $staticMethods;
+
+    /**
+     * @var array<string,MethodDefinition>
+     */
     private $methods;
+
+    /**
+     * @var array<string,MethodDefinition>
+     */
     private $publicStaticMethods;
+
+    /**
+     * @var array<string,MethodDefinition>
+     */
     private $publicMethods;
+
+    /**
+     * @var array<string,MethodDefinition>
+     */
     private $protectedStaticMethods;
+
+    /**
+     * @var array<string,MethodDefinition>
+     */
     private $protectedMethods;
 }

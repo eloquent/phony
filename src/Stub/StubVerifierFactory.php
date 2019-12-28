@@ -24,9 +24,9 @@ use InvalidArgumentException;
 class StubVerifierFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return StubVerifierFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -95,15 +95,15 @@ class StubVerifierFactory
      *
      * If the "self" value is omitted, it will be set to the verifier itself.
      *
-     * @param Stub|null $stub The stub, or null to create an anonymous stub.
-     * @param mixed     $self The "self" value.
+     * @param ?Stub $stub The stub, or null to create an anonymous stub.
+     * @param mixed $self The "self" value.
      *
      * @return StubVerifier The newly created stub verifier.
      */
-    public function create(Stub $stub = null, $self = null): StubVerifier
+    public function create(?Stub $stub, $self = null): StubVerifier
     {
         if (!$stub) {
-            $stub = $this->stubFactory->create();
+            $stub = $this->stubFactory->create(null, null);
         }
 
         $verifier = new StubVerifier(
@@ -131,13 +131,13 @@ class StubVerifierFactory
     /**
      * Create a new stub verifier for the supplied callback.
      *
-     * @param callable|null $callback The callback, or null to create an anonymous stub.
+     * @param ?callable $callback The callback, or null to create an anonymous stub.
      *
      * @return StubVerifier The newly created stub verifier.
      */
-    public function createFromCallback($callback): StubVerifier
+    public function createFromCallback(?callable $callback): StubVerifier
     {
-        $stub = $this->stubFactory->create($callback);
+        $stub = $this->stubFactory->create($callback, null);
 
         $verifier = new StubVerifier(
             $stub,
@@ -160,8 +160,8 @@ class StubVerifierFactory
      * Create a new stub verifier for a global function and declare it in the
      * specified namespace.
      *
-     * @param string $function  The function name.
-     * @param string $namespace The namespace.
+     * @param callable&string $function  The function name.
+     * @param string          $namespace The namespace.
      *
      * @return StubVerifier             The newly created stub verifier.
      * @throws InvalidArgumentException If an invalid function name or namespace is specified.
@@ -184,7 +184,7 @@ class StubVerifierFactory
             );
         }
 
-        $stub = $this->stubFactory->create($function);
+        $stub = $this->stubFactory->create($function, null);
         $spy = $this->spyFactory->create($stub);
         $this->functionHookManager->defineFunction($function, $namespace, $spy);
 
@@ -205,16 +205,63 @@ class StubVerifierFactory
         return $verifier;
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var StubFactory
+     */
     private $stubFactory;
+
+    /**
+     * @var SpyFactory
+     */
     private $spyFactory;
+
+    /**
+     * @var MatcherFactory
+     */
     private $matcherFactory;
+
+    /**
+     * @var MatcherVerifier
+     */
     private $matcherVerifier;
+
+    /**
+     * @var GeneratorVerifierFactory
+     */
     private $generatorVerifierFactory;
+
+    /**
+     * @var IterableVerifierFactory
+     */
     private $iterableVerifierFactory;
+
+    /**
+     * @var CallVerifierFactory
+     */
     private $callVerifierFactory;
+
+    /**
+     * @var AssertionRecorder
+     */
     private $assertionRecorder;
+
+    /**
+     * @var AssertionRenderer
+     */
     private $assertionRenderer;
+
+    /**
+     * @var GeneratorAnswerBuilderFactory
+     */
     private $generatorAnswerBuilderFactory;
+
+    /**
+     * @var FunctionHookManager
+     */
     private $functionHookManager;
 }

@@ -14,8 +14,8 @@ class GeneratorYieldFromIteration
     /**
      * Construct a new generator yield from iteration.
      *
-     * @param array<CallRequest> $requests The requests.
-     * @param mixed<mixed,mixed> $values   The set of keys and values to yield.
+     * @param array<int,CallRequest> $requests The requests.
+     * @param iterable<mixed>        $values   The set of keys and values to yield.
      */
     public function __construct(array $requests, $values)
     {
@@ -23,6 +23,13 @@ class GeneratorYieldFromIteration
         $this->values = $values;
     }
 
+    /**
+     * @var array<int,CallRequest>
+     */
     public $requests;
+
+    /**
+     * @var iterable<mixed>
+     */
     public $values;
 }

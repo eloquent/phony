@@ -14,9 +14,9 @@ use Eloquent\Phony\Sequencer\Sequencer;
 class SpyFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return SpyFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -59,11 +59,11 @@ class SpyFactory
     /**
      * Create a new spy.
      *
-     * @param callable|null $callback The callback, or null to create an anonymous spy.
+     * @param ?callable $callback The callback, or null to create an anonymous spy.
      *
      * @return Spy The newly created spy.
      */
-    public function create($callback = null): Spy
+    public function create(?callable $callback): Spy
     {
         return new SpyData(
             $callback,
@@ -75,10 +75,33 @@ class SpyFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var Sequencer
+     */
     private $labelSequencer;
+
+    /**
+     * @var CallFactory
+     */
     private $callFactory;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
+
+    /**
+     * @var GeneratorSpyFactory
+     */
     private $generatorSpyFactory;
+
+    /**
+     * @var IterableSpyFactory
+     */
     private $iterableSpyFactory;
 }

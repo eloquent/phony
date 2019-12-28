@@ -16,15 +16,15 @@ final class FunctionHookGenerationFailedException extends Exception implements
     /**
      * Construct a mock generation failed exception.
      *
-     * @param string                   $functionName The function name.
-     * @param callable                 $callback     The callback.
-     * @param string                   $source       The generated source code.
-     * @param array<string,mixed>|null $error        The error details.
-     * @param Throwable|null           $cause        The cause, if available.
+     * @param string               $functionName The function name.
+     * @param callable             $callback     The callback.
+     * @param string               $source       The generated source code.
+     * @param ?array<string,mixed> $error        The error details.
+     * @param ?Throwable           $cause        The cause, if available.
      */
     public function __construct(
         string $functionName,
-        $callback,
+        callable $callback,
         string $source,
         ?array $error,
         Throwable $cause = null
@@ -44,6 +44,7 @@ final class FunctionHookGenerationFailedException extends Exception implements
             );
             $errorLineNumber = null;
         } else {
+            /** @var int */
             $errorLineNumber = $error['line'];
             $startLine = $errorLineNumber - 4;
             $contextLineCount = 7;
@@ -110,7 +111,7 @@ final class FunctionHookGenerationFailedException extends Exception implements
      *
      * @return callable The callback.
      */
-    public function callback()
+    public function callback(): callable
     {
         return $this->callback;
     }
@@ -128,15 +129,30 @@ final class FunctionHookGenerationFailedException extends Exception implements
     /**
      * Get the error details.
      *
-     * @return array<string,mixed>|null The error details.
+     * @return ?array<string,mixed> The error details.
      */
     public function error(): ?array
     {
         return $this->error;
     }
 
+    /**
+     * @var string
+     */
     private $functionName;
+
+    /**
+     * @var callable
+     */
     private $callback;
+
+    /**
+     * @var string
+     */
     private $source;
+
+    /**
+     * @var ?array<string,mixed>
+     */
     private $error;
 }

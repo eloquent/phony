@@ -38,5 +38,8 @@ final class UndefinedArgumentException extends Exception
         return $this->index;
     }
 
+    /**
+     * @var int
+     */
     private $index;
 }

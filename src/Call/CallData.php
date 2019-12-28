@@ -13,6 +13,7 @@ use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
+use Eloquent\Phony\Collection\NormalizesIndices;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Generator;
@@ -26,6 +27,8 @@ use Traversable;
  */
 class CallData implements Call
 {
+    use NormalizesIndices;
+
     /**
      * A comparator for ordering calls by sequence number.
      *
@@ -291,7 +294,7 @@ class CallData implements Call
     /**
      * Get the response event.
      *
-     * @return ResponseEvent|null The response event, or null if the call has not yet responded.
+     * @return ?ResponseEvent The response event, or null if the call has not yet responded.
      */
     public function responseEvent(): ?ResponseEvent
     {
@@ -321,7 +324,7 @@ class CallData implements Call
     /**
      * Get the iterable events.
      *
-     * @return array<IterableEvent> The iterable events.
+     * @return array<int,IterableEvent> The iterable events.
      */
     public function iterableEvents(): array
     {
@@ -342,18 +345,13 @@ class CallData implements Call
         }
 
         $endEvent->setCall($this);
-
-        if (!$this->responseEvent) {
-            $this->responseEvent = $endEvent;
-        }
-
         $this->endEvent = $endEvent;
     }
 
     /**
      * Get the end event.
      *
-     * @return EndEvent|null The end event, or null if the call has not yet completed.
+     * @return ?EndEvent The end event, or null if the call has not yet completed.
      */
     public function endEvent(): ?EndEvent
     {
@@ -363,7 +361,7 @@ class CallData implements Call
     /**
      * Get all events as an array.
      *
-     * @return array<Event> The events.
+     * @return array<int,Event> The events.
      */
     public function allEvents(): array
     {
@@ -385,7 +383,7 @@ class CallData implements Call
     /**
      * Get all calls as an array.
      *
-     * @return array<Call> The calls.
+     * @return array<int,Call> The calls.
      */
     public function allCalls(): array
     {
@@ -454,7 +452,7 @@ class CallData implements Call
      *
      * @return callable The callback.
      */
-    public function callback()
+    public function callback(): callable
     {
         return $this->calledEvent->callback();
     }
@@ -556,7 +554,7 @@ class CallData implements Call
     /**
      * Get the response.
      *
-     * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @return array{0:?Throwable,1:mixed} A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded.
      */
     public function response(): array
@@ -575,7 +573,7 @@ class CallData implements Call
     /**
      * Get the response from the generator.
      *
-     * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @return array{0:?Throwable,1:mixed} A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded via generator.
      */
     public function generatorResponse(): array
@@ -598,7 +596,7 @@ class CallData implements Call
      *
      * A call that has responded has returned a value, or thrown an exception.
      *
-     * @return float|null The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
+     * @return ?float The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
      */
     public function responseTime(): ?float
     {
@@ -620,7 +618,7 @@ class CallData implements Call
      * iterable will not be considered complete until the iterable has been
      * completely consumed via iteration.
      *
-     * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
+     * @return ?float The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */
     public function endTime(): ?float
     {
@@ -631,32 +629,28 @@ class CallData implements Call
         return null;
     }
 
-    private function normalizeIndex($size, $index, &$normalized = null)
-    {
-        $normalized = null;
-
-        if ($index < 0) {
-            $potential = $size + $index;
-
-            if ($potential < 0) {
-                return false;
-            }
-        } else {
-            $potential = $index;
-        }
-
-        if ($potential >= $size) {
-            return false;
-        }
-
-        $normalized = $potential;
-
-        return true;
-    }
-
+    /**
+     * @var int
+     */
     private $index;
+
+    /**
+     * @var CalledEvent
+     */
     private $calledEvent;
+
+    /**
+     * @var ?ResponseEvent
+     */
     private $responseEvent;
+
+    /**
+     * @var array<int,IterableEvent>
+     */
     private $iterableEvents;
+
+    /**
+     * @var ?EndEvent
+     */
     private $endEvent;
 }

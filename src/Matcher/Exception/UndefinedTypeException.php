@@ -35,5 +35,8 @@ final class UndefinedTypeException extends Exception
         return $this->type;
     }
 
+    /**
+     * @var string
+     */
     private $type;
 }

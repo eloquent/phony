@@ -19,7 +19,7 @@ interface MatcherDriver
     /**
      * Get the supported matcher class names.
      *
-     * @return array<string> The matcher class names.
+     * @return array<int,string> The matcher class names.
      */
     public function matcherClassNames(): array;
 
@@ -28,7 +28,7 @@ interface MatcherDriver
      *
      * @param object $matcher The matcher to wrap.
      *
-     * @return Matchable The wrapped matcher.
+     * @return Matcher The wrapped matcher.
      */
-    public function wrapMatcher($matcher): Matchable;
+    public function wrapMatcher(object $matcher): Matcher;
 }

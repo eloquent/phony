@@ -35,5 +35,8 @@ class ReturnedEvent implements ResponseEvent
         return $this->value;
     }
 
+    /**
+     * @var mixed
+     */
     private $value;
 }

@@ -17,11 +17,11 @@ use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Event\UsedEvent;
 use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Difference\DifferenceSequenceMatcher;
+use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
-use Eloquent\Phony\Matcher\Matchable;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
@@ -40,9 +40,9 @@ use Traversable;
 class AssertionRenderer
 {
     /**
-     * Get the static instance of this renderer.
+     * Get the static instance of this class.
      *
-     * @return AssertionRenderer The static renderer.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -85,7 +85,7 @@ class AssertionRenderer
      *
      * Pass `null` to detect automatically.
      *
-     * @param bool|null $useColor True to use color.
+     * @param ?bool $useColor True to use color.
      */
     public function setUseColor(?bool $useColor): void
     {
@@ -135,12 +135,19 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
+            /** @var callable */
+            $callback = $subject->callback();
             $renderedSubject =
                 $this->bold .
-                $this->exporter->exportCallable($subject->callback()) .
+                $this->exporter->exportCallable($callback) .
                 $this->reset;
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedSubject =
                 $this->bold .
@@ -214,9 +221,9 @@ class AssertionRenderer
     /**
      * Render a failed calledWith() verification.
      *
-     * @param Spy|Call         $subject     The subject.
-     * @param Cardinality      $cardinality The cardinality.
-     * @param array<Matchable> $matchers    The matchers.
+     * @param Spy|Call           $subject     The subject.
+     * @param Cardinality        $cardinality The cardinality.
+     * @param array<int,Matcher> $matchers    The matchers.
      *
      * @return string The rendered failure message.
      */
@@ -240,12 +247,19 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
+            /** @var callable */
+            $callback = $subject->callback();
             $renderedSubject =
                 $this->bold .
-                $this->exporter->exportCallable($subject->callback()) .
+                $this->exporter->exportCallable($callback) .
                 $this->reset;
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedSubject =
                 $this->bold .
@@ -335,6 +349,8 @@ class AssertionRenderer
         $isNever = 0 === $maximum;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -347,6 +363,8 @@ class AssertionRenderer
                     ' to have ' . $renderedCriteria;
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected no ' . $renderedSubject .
@@ -469,10 +487,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -484,6 +508,8 @@ class AssertionRenderer
         $isNever = 0 === $maximum;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -494,6 +520,8 @@ class AssertionRenderer
                     ' call #' . $subject->index() . ' to respond.';
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isNever) {
                 $expected = 'Expected ' . $renderedSubject . ' not to respond.';
             } elseif ($cardinality->isAlways()) {
@@ -585,10 +613,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -600,6 +634,8 @@ class AssertionRenderer
         $isNever = 0 === $maximum;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -610,6 +646,8 @@ class AssertionRenderer
                     ' call #' . $subject->index() . ' to complete.';
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject . ' not to complete.';
@@ -767,9 +805,9 @@ class AssertionRenderer
     /**
      * Render a failed responded() verification.
      *
-     * @param Spy|Call     $subject     The subject.
-     * @param Cardinality  $cardinality The cardinality.
-     * @param Matcher|null $value       The value.
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     * @param ?Matcher    $value       The value.
      *
      * @return string The rendered failure message.
      */
@@ -781,10 +819,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -806,6 +850,8 @@ class AssertionRenderer
         $isNever = 0 === $maximum;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -818,6 +864,8 @@ class AssertionRenderer
                     ' to ' . $renderedCriteria;
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -842,6 +890,8 @@ class AssertionRenderer
             foreach ($calls as $call) {
                 if ($responseEvent = $call->responseEvent()) {
                     list($exception, $returnValue) = $call->response();
+                } else {
+                    $returnValue = null;
                 }
 
                 if ($responseEvent instanceof ReturnedEvent) {
@@ -934,10 +984,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -961,6 +1017,8 @@ class AssertionRenderer
         $isNever = 0 === $maximum;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -973,6 +1031,8 @@ class AssertionRenderer
                     ' to ' . $renderedCriteria;
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -997,9 +1057,14 @@ class AssertionRenderer
             foreach ($calls as $call) {
                 if ($responseEvent = $call->responseEvent()) {
                     list($exception, $returnValue) = $call->response();
+                } else {
+                    $exception = null;
+                    $returnValue = null;
                 }
 
                 if ($responseEvent instanceof ThrewEvent) {
+                    /** @var Throwable $exception */
+
                     if ($type instanceof Matcher) {
                         $isMatch = $type->matches($exception);
                     } elseif (is_string($type)) {
@@ -1086,10 +1151,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -1104,6 +1175,8 @@ class AssertionRenderer
         $isNever = 0 === $maximum;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -1116,6 +1189,8 @@ class AssertionRenderer
                     ' to ' . $renderedCriteria;
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -1140,6 +1215,8 @@ class AssertionRenderer
             foreach ($calls as $call) {
                 if ($responseEvent = $call->responseEvent()) {
                     list($exception, $returnValue) = $call->response();
+                } else {
+                    $returnValue = null;
                 }
 
                 if ($responseEvent instanceof ReturnedEvent) {
@@ -1217,10 +1294,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -1235,6 +1318,8 @@ class AssertionRenderer
         $isNever = 0 === $maximum;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -1247,6 +1332,8 @@ class AssertionRenderer
                     ' to ' . $renderedCriteria;
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -1271,6 +1358,8 @@ class AssertionRenderer
             foreach ($calls as $call) {
                 if ($responseEvent = $call->responseEvent()) {
                     list($exception, $returnValue) = $call->response();
+                } else {
+                    $returnValue = null;
                 }
 
                 if ($responseEvent instanceof ReturnedEvent) {
@@ -1353,10 +1442,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -1369,6 +1464,7 @@ class AssertionRenderer
 
         if ($isCall) {
             $totalCount = 1;
+            $iterableCount = 0;
 
             if ($isNever) {
                 $iterableResult = $this->fail;
@@ -1428,6 +1524,8 @@ class AssertionRenderer
             '        ' . $this->fail . ' Started iterating';
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -1440,6 +1538,8 @@ class AssertionRenderer
                     ' to ' . $renderedCriteria;
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isGenerator) {
                 $renderedIterableType = 'generator calls';
             } else {
@@ -1643,11 +1743,11 @@ class AssertionRenderer
     /**
      * Render a failed iterable produced() verification.
      *
-     * @param Spy|Call     $subject     The subject.
-     * @param Cardinality  $cardinality The cardinality.
-     * @param bool         $isGenerator True if this verification is for a generator.
-     * @param Matcher|null $key         The key.
-     * @param Matcher|null $value       The value.
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     * @param bool        $isGenerator True if this verification is for a generator.
+     * @param ?Matcher    $key         The key.
+     * @param ?Matcher    $value       The value.
      *
      * @return string The rendered failure message.
      */
@@ -1661,10 +1761,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -1676,6 +1782,8 @@ class AssertionRenderer
         $isNever = 0 === $maximum;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             $totalCount = 0;
             $callCount = 1;
             $iterableCount = 1;
@@ -1688,6 +1796,8 @@ class AssertionRenderer
 
             $renderedIterableCount = '';
         } else {
+            /** @var Spy $subject */
+
             $callCount = 0;
             $iterableCount = 0;
 
@@ -1749,6 +1859,8 @@ class AssertionRenderer
             ' => ' . $renderedValue;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -1761,6 +1873,8 @@ class AssertionRenderer
                     ' to ' . $renderedCriteria;
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isGenerator) {
                 $renderedIterableType = 'generator calls';
             } else {
@@ -2009,10 +2123,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -2085,6 +2205,8 @@ class AssertionRenderer
             '        ' . $this->fail . ' Finished iterating';
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -2097,6 +2219,8 @@ class AssertionRenderer
                     ' to ' . $renderedCriteria;
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isGenerator) {
                 $renderedIterableType = 'generator calls';
             } else {
@@ -2325,9 +2449,9 @@ class AssertionRenderer
     /**
      * Render a failed generator received() verification.
      *
-     * @param Spy|Call     $subject     The subject.
-     * @param Cardinality  $cardinality The cardinality.
-     * @param Matcher|null $value       The value.
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     * @param ?Matcher    $value       The value.
      *
      * @return string The rendered failure message.
      */
@@ -2339,10 +2463,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -2354,6 +2484,8 @@ class AssertionRenderer
         $isNever = 0 === $maximum;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             $totalCount = 0;
             $callCount = 1;
             $iterableCount = 1;
@@ -2366,6 +2498,8 @@ class AssertionRenderer
 
             $renderedIterableCount = '';
         } else {
+            /** @var Spy $subject */
+
             $callCount = 0;
             $iterableCount = 0;
 
@@ -2405,6 +2539,8 @@ class AssertionRenderer
             '        ' . $this->fail . ' Received ' . $renderedValue;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -2417,6 +2553,8 @@ class AssertionRenderer
                     ' to ' . $renderedCriteria;
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -2631,10 +2769,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -2646,6 +2790,8 @@ class AssertionRenderer
         $isNever = 0 === $maximum;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             $totalCount = 0;
             $callCount = 1;
             $iterableCount = 1;
@@ -2658,6 +2804,8 @@ class AssertionRenderer
 
             $renderedIterableCount = '';
         } else {
+            /** @var Spy $subject */
+
             $callCount = 0;
             $iterableCount = 0;
 
@@ -2699,6 +2847,8 @@ class AssertionRenderer
             '        ' . $this->fail . ' Received exception ' . $renderedType;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -2711,6 +2861,8 @@ class AssertionRenderer
                     ' to ' . $renderedCriteria;
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -2916,9 +3068,9 @@ class AssertionRenderer
     /**
      * Render a failed generator returned() verification.
      *
-     * @param Spy|Call     $subject     The subject.
-     * @param Cardinality  $cardinality The cardinality.
-     * @param Matcher|null $value       The value.
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     * @param ?Matcher    $value       The value.
      *
      * @return string The rendered failure message.
      */
@@ -2930,10 +3082,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -2945,10 +3103,14 @@ class AssertionRenderer
         $isNever = 0 === $maximum;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             $totalCount = 1;
             $iterableCount = 1;
             $renderedIterableCount = '';
         } else {
+            /** @var Spy $subject */
+
             $iterableCount = 0;
 
             foreach ($calls as $call) {
@@ -2990,6 +3152,8 @@ class AssertionRenderer
             '        ' . $this->fail . ' Returned ' . $renderedValue;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -3002,6 +3166,8 @@ class AssertionRenderer
                     ' to ' . $renderedCriteria;
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -3228,10 +3394,16 @@ class AssertionRenderer
         $isCall = $subject instanceof Call;
 
         if ($isCall) {
+            /** @var Call $subject */
+
+            /** @var array<int,Call> */
             $calls = [$subject];
-            $renderedCallee =
-                $this->exporter->exportCallable($subject->callback());
+            /** @var callable */
+            $callback = $subject->callback();
+            $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
+            /** @var Spy $subject */
+
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -3290,6 +3462,8 @@ class AssertionRenderer
             '        ' . $this->fail . ' Threw ' . $renderedType;
 
         if ($isCall) {
+            /** @var Call $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -3302,6 +3476,8 @@ class AssertionRenderer
                     ' to ' . $renderedCriteria;
             }
         } else {
+            /** @var Spy $subject */
+
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -3520,8 +3696,8 @@ class AssertionRenderer
     /**
      * Render a failed noInteraction() verification.
      *
-     * @param Handle      $handle The handle.
-     * @param array<Call> $calls  The calls.
+     * @param Handle          $handle The handle.
+     * @param array<int,Call> $calls  The calls.
      *
      * @return string The rendered failure message.
      */
@@ -3570,8 +3746,8 @@ class AssertionRenderer
     /**
      * Render a failed inOrder() verification.
      *
-     * @param array<Event> $expected The expected events.
-     * @param array<Event> $actual   The actual events.
+     * @param array<int,Event> $expected The expected events.
+     * @param array<int,Event> $actual   The actual events.
      *
      * @return string The rendered failure message.
      */
@@ -3648,7 +3824,7 @@ class AssertionRenderer
     /**
      * Render a sequence of matchers.
      *
-     * @param array<Matchable> $matchers The matchers.
+     * @param array<int,Matcher> $matchers The matchers.
      *
      * @return string The rendered matchers.
      */
@@ -3667,12 +3843,18 @@ class AssertionRenderer
         return implode(', ', $rendered);
     }
 
-    private function renderEvents($events)
+    /**
+     * @param array<int,Event> $events
+     *
+     * @return array<int,string>
+     */
+    private function renderEvents(array $events): array
     {
         $rendered = [];
 
         foreach ($events as $event) {
             if ($event instanceof CallEvent) {
+                /** @var Call */
                 $call = $event->call();
                 $renderedArguments = [];
 
@@ -3684,6 +3866,8 @@ class AssertionRenderer
                 $call =
                     $this->exporter->exportCallable($call->callback()) .
                     '(' . implode(', ', $renderedArguments) . ')';
+            } else {
+                $call = null;
             }
 
             if ($event instanceof Call) {
@@ -3746,13 +3930,13 @@ class AssertionRenderer
     }
 
     private function renderCardinality(
-        $minimum,
-        $maximum,
-        $matchCount,
-        $totalCount,
-        $callCount,
-        $isFailureCause
-    ) {
+        int $minimum,
+        int $maximum,
+        int $matchCount,
+        int $totalCount,
+        int $callCount,
+        bool $isFailureCause
+    ): string {
         if (!$minimum) {
             if (0 === $maximum) {
                 $expected = '';
@@ -3790,20 +3974,83 @@ class AssertionRenderer
     const PASS = "\u{2713}";
     const FAIL = "\u{2717}";
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var MatcherVerifier
+     */
     private $matcherVerifier;
+
+    /**
+     * @var Exporter
+     */
     private $exporter;
+
+    /**
+     * @var DifferenceEngine
+     */
     private $differenceEngine;
+
+    /**
+     * @var FeatureDetector
+     */
     private $featureDetector;
+
+    /**
+     * @var string
+     */
     private $reset;
+
+    /**
+     * @var string
+     */
     private $bold;
+
+    /**
+     * @var string
+     */
     private $faint;
+
+    /**
+     * @var string
+     */
     private $passStart;
+
+    /**
+     * @var string
+     */
     private $failStart;
+
+    /**
+     * @var string
+     */
     private $pass;
+
+    /**
+     * @var string
+     */
     private $fail;
+
+    /**
+     * @var string
+     */
     private $addStart;
+
+    /**
+     * @var string
+     */
     private $addEnd;
+
+    /**
+     * @var string
+     */
     private $removeStart;
+
+    /**
+     * @var string
+     */
     private $removeEnd;
 }

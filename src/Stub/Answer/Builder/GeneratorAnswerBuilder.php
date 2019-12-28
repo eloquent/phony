@@ -60,11 +60,11 @@ class GeneratorAnswerBuilder
      *
      * This method supports reference parameters.
      *
-     * @param callable        $callback              The callback.
-     * @param Arguments|array $arguments             The arguments.
-     * @param bool|null       $prefixSelf            True if the self value should be prefixed.
-     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     * @param callable                   $callback              The callback.
+     * @param Arguments|array<int,mixed> $arguments             The arguments.
+     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
+     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This builder.
      */
@@ -130,11 +130,11 @@ class GeneratorAnswerBuilder
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param int             $index                 The argument index.
-     * @param Arguments|array $arguments             The arguments.
-     * @param bool            $prefixSelf            True if the self value should be prefixed.
-     * @param bool            $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool            $suffixArguments       True if the arguments should be appended individually.
+     * @param int                        $index                 The argument index.
+     * @param Arguments|array<int,mixed> $arguments             The arguments.
+     * @param bool                       $prefixSelf            True if the self value should be prefixed.
+     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This builder.
      */
@@ -277,11 +277,11 @@ class GeneratorAnswerBuilder
     /**
      * Add a set of yielded values to the answer.
      *
-     * @param mixed<mixed,mixed> $values The set of keys and values to yield.
+     * @param iterable<mixed> $values The set of keys and values to yield.
      *
      * @return $this This builder.
      */
-    public function yieldsFrom($values): self
+    public function yieldsFrom(iterable $values): self
     {
         $this->iterations[] =
             new GeneratorYieldFromIteration($this->requests, $values);
@@ -385,9 +385,12 @@ class GeneratorAnswerBuilder
             $copies[$i] = clone $this;
         }
 
-        if (is_string($exception)) {
+        if (null === $exception) {
+            $exception = new Exception();
+        } elseif (is_string($exception)) {
             $exception = new Exception($exception);
         } elseif ($exception instanceof InstanceHandle) {
+            /** @var Throwable */
             $exception = $exception->get();
         }
 
@@ -477,13 +480,48 @@ class GeneratorAnswerBuilder
         }
     }
 
+    /**
+     * @var Stub
+     */
     private $stub;
+
+    /**
+     * @var InvocableInspector
+     */
     private $invocableInspector;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
+
+    /**
+     * @var array<int,CallRequest>
+     */
     private $requests;
+
+    /**
+     * @var array<int,GeneratorYieldIteration|GeneratorYieldFromIteration>
+     */
     private $iterations;
+
+    /**
+     * @var ?Throwable
+     */
     private $exception;
+
+    /**
+     * @var mixed
+     */
     private $returnValue;
+
+    /**
+     * @var ?int
+     */
     private $returnsArgument;
+
+    /**
+     * @var bool
+     */
     private $returnsSelf;
 }

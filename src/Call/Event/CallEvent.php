@@ -24,7 +24,7 @@ interface CallEvent extends Event
     /**
      * Get the call.
      *
-     * @return Call|null The call, or null if no call has been set.
+     * @return ?Call The call, or null if no call has been set.
      */
     public function call(): ?Call;
 }

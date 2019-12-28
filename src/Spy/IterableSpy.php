@@ -11,6 +11,7 @@ use Iterator;
 /**
  * The interface implemented by iterable spies.
  *
+ * @extends ArrayAccess<mixed,mixed>
  * @extends Iterator<mixed>
  */
 interface IterableSpy extends ArrayAccess, Countable, Iterator

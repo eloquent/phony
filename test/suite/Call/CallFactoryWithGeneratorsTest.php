@@ -31,7 +31,7 @@ class CallFactoryWithGeneratorsTest extends TestCase
         $callback = function () { return; yield null; };
         $arguments = Arguments::create(['a', 'b']);
         $generator = call_user_func($callback);
-        $spy = $this->spyFactory->create();
+        $spy = $this->spyFactory->create(null);
         $expected = new CallData(0, $this->eventFactory->createCalled($spy, $arguments));
         $expected->setResponseEvent($this->eventFactory->createReturned($generator));
         $this->eventFactory->reset();

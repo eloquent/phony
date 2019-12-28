@@ -73,7 +73,7 @@ interface Call extends Event, EventCollection
      *
      * @return callable The callback.
      */
-    public function callback();
+    public function callback(): callable;
 
     /**
      * Get the arguments.
@@ -130,7 +130,7 @@ interface Call extends Event, EventCollection
     /**
      * Get the response.
      *
-     * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @return array{0:?Throwable,1:mixed} A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded.
      */
     public function response(): array;
@@ -138,7 +138,7 @@ interface Call extends Event, EventCollection
     /**
      * Get the response from the generator.
      *
-     * @return tuple<Throwable|null,mixed> A 2-tuple of thrown exception or null, and return value.
+     * @return array{0:?Throwable,1:mixed} A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded via generator.
      */
     public function generatorResponse(): array;
@@ -148,7 +148,7 @@ interface Call extends Event, EventCollection
      *
      * A call that has responded has returned a value, or thrown an exception.
      *
-     * @return float|null The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
+     * @return ?float The time at which the call responded, in seconds since the Unix epoch, or null if the call has not yet responded.
      */
     public function responseTime(): ?float;
 
@@ -163,7 +163,7 @@ interface Call extends Event, EventCollection
      * iterable will not be considered complete until the iterable has been
      * completely consumed via iteration.
      *
-     * @return float|null The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
+     * @return ?float The time at which the call completed, in seconds since the Unix epoch, or null if the call has not yet completed.
      */
     public function endTime(): ?float;
 
@@ -186,7 +186,7 @@ interface Call extends Event, EventCollection
     /**
      * Get the response event.
      *
-     * @return ResponseEvent|null The response event, or null if the call has not yet responded.
+     * @return ?ResponseEvent The response event, or null if the call has not yet responded.
      */
     public function responseEvent(): ?ResponseEvent;
 
@@ -202,7 +202,7 @@ interface Call extends Event, EventCollection
     /**
      * Get the iterable events.
      *
-     * @return array<IterableEvent> The iterable events.
+     * @return array<int,IterableEvent> The iterable events.
      */
     public function iterableEvents(): array;
 
@@ -218,7 +218,7 @@ interface Call extends Event, EventCollection
     /**
      * Get the end event.
      *
-     * @return EndEvent|null The end event, or null if the call has not yet completed.
+     * @return ?EndEvent The end event, or null if the call has not yet completed.
      */
     public function endEvent(): ?EndEvent;
 }

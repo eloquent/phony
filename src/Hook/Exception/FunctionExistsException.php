@@ -39,5 +39,8 @@ final class FunctionExistsException extends Exception implements
         return $this->functionName;
     }
 
+    /**
+     * @var string
+     */
     private $functionName;
 }

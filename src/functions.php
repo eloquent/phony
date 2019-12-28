@@ -68,8 +68,8 @@ function mock($types = []): InstanceHandle
  * with an empty argument list. However, if a `null` value is supplied for
  * `$arguments`, the original constructor will not be called at all.
  *
- * @param mixed                $types     The types to mock.
- * @param Arguments|array|null $arguments The constructor arguments, or null to bypass the constructor.
+ * @param mixed                           $types     The types to mock.
+ * @param Arguments|array<int,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
  *
  * @return InstanceHandle A handle around the new mock.
  */
@@ -97,7 +97,7 @@ function on($mock): InstanceHandle
 /**
  * Create a new static handle.
  *
- * @param Mock|Handle|ReflectionClass|string $class The class.
+ * @param Mock|Handle|ReflectionClass<object>|string $class The class.
  *
  * @return StaticHandle  The newly created handle.
  * @throws MockException If the supplied class name is not a mock class.
@@ -110,7 +110,7 @@ function onStatic($class): StaticHandle
 /**
  * Create a new spy.
  *
- * @param callable|null $callback The callback, or null to create an anonymous spy.
+ * @param ?callable $callback The callback, or null to create an anonymous spy.
  *
  * @return SpyVerifier The new spy.
  */
@@ -124,8 +124,8 @@ function spy(callable $callback = null): SpyVerifier
  * Create a spy of a function in the global namespace, and declare it as a
  * function in another namespace.
  *
- * @param string $function  The name of the function in the global namespace.
- * @param string $namespace The namespace in which to create the new function.
+ * @param callable&string $function  The name of the function in the global namespace.
+ * @param string          $namespace The namespace in which to create the new function.
  *
  * @return SpyVerifier The new spy.
  */
@@ -138,7 +138,7 @@ function spyGlobal(string $function, string $namespace): SpyVerifier
 /**
  * Create a new stub.
  *
- * @param callable|null $callback The callback, or null to create an anonymous stub.
+ * @param ?callable $callback The callback, or null to create an anonymous stub.
  *
  * @return StubVerifier The new stub.
  */
@@ -155,8 +155,8 @@ function stub(callable $callback = null): StubVerifier
  * Stubs created via this function do not forward to the original function by
  * default. This differs from stubs created by other methods.
  *
- * @param string $function  The name of the function in the global namespace.
- * @param string $namespace The namespace in which to create the new function.
+ * @param callable&string $function  The name of the function in the global namespace.
+ * @param string          $namespace The namespace in which to create the new function.
  *
  * @return StubVerifier The new stub.
  */
@@ -180,9 +180,9 @@ function restoreGlobalFunctions(): void
  *
  * @param Event|EventCollection ...$events The events.
  *
- * @return EventCollection|null The result.
+ * @return ?EventCollection The result.
  */
-function checkInOrder(...$events): ?EventCollection
+function checkInOrder(object ...$events): ?EventCollection
 {
     return Globals::$container->eventOrderVerifier->checkInOrder(...$events);
 }
@@ -196,9 +196,12 @@ function checkInOrder(...$events): ?EventCollection
  * @return EventCollection The result.
  * @throws Throwable       If the assertion fails.
  */
-function inOrder(...$events): EventCollection
+function inOrder(object ...$events): EventCollection
 {
-    return Globals::$container->eventOrderVerifier->inOrder(...$events);
+    /** @var EventCollection */
+    $result = Globals::$container->eventOrderVerifier->inOrder(...$events);
+
+    return $result;
 }
 
 /**
@@ -206,10 +209,10 @@ function inOrder(...$events): EventCollection
  *
  * @param Event|EventCollection ...$events The events.
  *
- * @return EventCollection|null     The result.
+ * @return ?EventCollection         The result.
  * @throws InvalidArgumentException If invalid input is supplied.
  */
-function checkAnyOrder(...$events): ?EventCollection
+function checkAnyOrder(object ...$events): ?EventCollection
 {
     return Globals::$container->eventOrderVerifier->checkAnyOrder(...$events);
 }
@@ -223,9 +226,12 @@ function checkAnyOrder(...$events): ?EventCollection
  * @throws InvalidArgumentException If invalid input is supplied.
  * @throws Throwable                If the assertion fails.
  */
-function anyOrder(...$events): EventCollection
+function anyOrder(object ...$events): EventCollection
 {
-    return Globals::$container->eventOrderVerifier->anyOrder(...$events);
+    /** @var EventCollection */
+    $result = Globals::$container->eventOrderVerifier->anyOrder(...$events);
+
+    return $result;
 }
 
 /**
@@ -313,7 +319,7 @@ function setExportDepth(int $depth): int
  *
  * Pass `null` to detect automatically.
  *
- * @param bool|null $useColor True to use color.
+ * @param ?bool $useColor True to use color.
  */
 function setUseColor(?bool $useColor): void
 {

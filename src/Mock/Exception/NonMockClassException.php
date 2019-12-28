@@ -16,8 +16,8 @@ final class NonMockClassException extends Exception implements
     /**
      * Construct a non-mock class exception.
      *
-     * @param string         $className The class name.
-     * @param Throwable|null $cause     The cause, if available.
+     * @param string     $className The class name.
+     * @param ?Throwable $cause     The cause, if available.
      */
     public function __construct(string $className, Throwable $cause = null)
     {
@@ -43,5 +43,8 @@ final class NonMockClassException extends Exception implements
         return $this->className;
     }
 
+    /**
+     * @var string
+     */
     private $className;
 }

@@ -20,7 +20,7 @@ final class AssertionException extends Exception
      *
      * @param Exception $exception The exception.
      */
-    public static function trim(Exception $exception)
+    public static function trim(Exception $exception): void
     {
         $reflector = new ReflectionClass(Exception::class);
 
@@ -47,9 +47,9 @@ final class AssertionException extends Exception
     /**
      * Find the Phony entry point call in a stack trace.
      *
-     * @param array $trace The stack trace.
+     * @param array<int,array<string,mixed>> $trace The stack trace.
      *
-     * @return array The call, or an empty array if unable to determine the entry point.
+     * @return array<string,mixed> The call, or an empty array if unable to determine the entry point.
      */
     public static function tracePhonyCall(array $trace): array
     {

@@ -102,7 +102,7 @@ class EqualToMatcher implements Matcher
         $visitedArrays = [];
 
         /*
-         * @var array<&array> Arrays that have been marked with an internal ID.
+         * @var array<int,&array<mixed>> Arrays that have been marked with an internal ID.
          *
          * In order to detect cyclic arrays we need to mark them with an ID.
          * This ID must be removed upon completion of the comparison.
@@ -110,7 +110,7 @@ class EqualToMatcher implements Matcher
         $markedArrays = [];
 
         /*
-         * @var array<&array> Stacks of values that are currently being compared.
+         * @var array<int,&array<mixed>> Stacks of values that are currently being compared.
          *
          * We maintain our own stack in order to:
          *
@@ -338,7 +338,7 @@ class EqualToMatcher implements Matcher
     /**
      * Describe this matcher.
      *
-     * @param Exporter|null $exporter The exporter to use.
+     * @param ?Exporter $exporter The exporter to use.
      *
      * @return string The description.
      */
@@ -363,7 +363,18 @@ class EqualToMatcher implements Matcher
 
     const ARRAY_ID_KEY = "\0__phony__\0";
 
+    /**
+     * @var mixed
+     */
     private $value;
+
+    /**
+     * @var bool
+     */
     private $useSubstitution;
+
+    /**
+     * @var Exporter
+     */
     private $exporter;
 }

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Invocation;
 
 use Closure;
+use Eloquent\Phony\Mock\Method\WrappedMethod;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
-use ReflectionType;
 
 /**
  * Utilities for inspecting invocables.
@@ -17,9 +17,9 @@ use ReflectionType;
 class InvocableInspector
 {
     /**
-     * Get the static instance of this inspector.
+     * Get the static instance of this class.
      *
-     * @return InvocableInspector The static inspector.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -38,9 +38,14 @@ class InvocableInspector
      * @return ReflectionFunctionAbstract The reflector.
      * @throws ReflectionException        If the callback cannot be reflected.
      */
-    public function callbackReflector($callback): ReflectionFunctionAbstract
-    {
+    public function callbackReflector(
+        callable $callback
+    ): ReflectionFunctionAbstract {
         while ($callback instanceof WrappedInvocable) {
+            if ($callback instanceof WrappedMethod) {
+                return $callback->method();
+            }
+
             $callback = $callback->callback();
         }
 
@@ -58,21 +63,13 @@ class InvocableInspector
             return new ReflectionMethod($callback, '__invoke');
         }
 
+        /** @var string $callback */
+
         return new ReflectionFunction($callback);
     }
 
     /**
-     * Get the return type for the supplied callback.
-     *
-     * @param callable $callback The callback.
-     *
-     * @return ReflectionType|null The return type, or null if no return type is defined.
-     * @throws ReflectionException If the callback cannot be reflected.
+     * @var ?self
      */
-    public function callbackReturnType($callback): ?ReflectionType
-    {
-        return $this->callbackReflector($callback)->getReturnType();
-    }
-
     private static $instance;
 }

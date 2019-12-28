@@ -8,8 +8,10 @@ use ArrayIterator;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallFactory;
+use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Collection\NormalizesIndices;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\Invoker;
@@ -24,12 +26,13 @@ use Traversable;
  */
 class SpyData implements Spy
 {
+    use NormalizesIndices;
     use WrappedInvocableTrait;
 
     /**
      * Construct a new spy.
      *
-     * @param callable|null       $callback            The callback, or null to create an anonymous spy.
+     * @param ?callable           $callback            The callback, or null to create an anonymous spy.
      * @param string              $label               The label.
      * @param CallFactory         $callFactory         The call factory to use.
      * @param Invoker             $invoker             The invoker to use.
@@ -37,7 +40,7 @@ class SpyData implements Spy
      * @param IterableSpyFactory  $iterableSpyFactory  The iterable spy factory to use.
      */
     public function __construct(
-        $callback,
+        ?callable $callback,
         string $label,
         CallFactory $callFactory,
         Invoker $invoker,
@@ -149,7 +152,7 @@ class SpyData implements Spy
     /**
      * Set the calls.
      *
-     * @param array<Call> $calls The calls.
+     * @param array<int,Call> $calls The calls.
      */
     public function setCalls(array $calls): void
     {
@@ -219,7 +222,7 @@ class SpyData implements Spy
     /**
      * Get all events as an array.
      *
-     * @return array<Event> The events.
+     * @return array<int,Event> The events.
      */
     public function allEvents(): array
     {
@@ -229,7 +232,7 @@ class SpyData implements Spy
     /**
      * Get all calls as an array.
      *
-     * @return array<Call> The calls.
+     * @return array<int,Call> The calls.
      */
     public function allCalls(): array
     {
@@ -351,7 +354,7 @@ class SpyData implements Spy
      *
      * This method supports reference parameters.
      *
-     * @param Arguments|array $arguments The arguments.
+     * @param Arguments|array<int,mixed> $arguments The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
@@ -362,11 +365,14 @@ class SpyData implements Spy
             $arguments = new Arguments($arguments);
         }
 
+        /** @var callable */
+        $callback = $this->callback;
+
         if (!$this->isRecording) {
-            return $this->invoker->callWith($this->callback, $arguments);
+            return $this->invoker->callWith($callback, $arguments);
         }
 
-        $call = $this->callFactory->record($this->callback, $arguments, $this);
+        $call = $this->callFactory->record($callback, $arguments, $this);
         $responseEvent = $call->responseEvent();
 
         if ($responseEvent instanceof ThrewEvent) {
@@ -375,7 +381,9 @@ class SpyData implements Spy
             throw $responseEvent->exception();
         }
 
-        $returnValue = $responseEvent->value();
+        /** @var ReturnedEvent */
+        $returnedEvent = $responseEvent;
+        $returnValue = $returnedEvent->value();
 
         if ($this->useGeneratorSpies && $returnValue instanceof Generator) {
             return $this->generatorSpyFactory->create($call, $returnValue);
@@ -388,48 +396,58 @@ class SpyData implements Spy
             return $this->iterableSpyFactory->create($call, $returnValue);
         }
 
-        $call->setEndEvent($call->responseEvent());
+        $call->setEndEvent($returnedEvent);
 
         return $returnValue;
     }
 
     /**
      * Limits the output displayed when `var_dump` is used.
+     *
+     * @return array<string,mixed> The contents to export.
      */
     public function __debugInfo(): array
     {
         return ['label' => $this->label];
     }
 
-    private function normalizeIndex($size, $index, &$normalized = null)
-    {
-        $normalized = null;
-
-        if ($index < 0) {
-            $potential = $size + $index;
-
-            if ($potential < 0) {
-                return false;
-            }
-        } else {
-            $potential = $index;
-        }
-
-        if ($potential >= $size) {
-            return false;
-        }
-
-        $normalized = $potential;
-
-        return true;
-    }
-
+    /**
+     * @var CallFactory
+     */
     private $callFactory;
+
+    /**
+     * @var Invoker
+     */
     private $invoker;
+
+    /**
+     * @var GeneratorSpyFactory
+     */
     private $generatorSpyFactory;
+
+    /**
+     * @var IterableSpyFactory
+     */
     private $iterableSpyFactory;
+
+    /**
+     * @var bool
+     */
     private $useGeneratorSpies;
+
+    /**
+     * @var bool
+     */
     private $useIterableSpies;
+
+    /**
+     * @var bool
+     */
     private $isRecording;
+
+    /**
+     * @var array<int,Call>
+     */
     private $calls;
 }

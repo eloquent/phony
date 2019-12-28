@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Hamcrest;
 
-use Eloquent\Phony\Matcher\Matchable;
+use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherDriver;
-use Hamcrest\Matcher;
+use Hamcrest\Matcher as ExternalMatcher;
 
 /**
  * A matcher driver for Hamcrest matchers.
@@ -14,9 +14,9 @@ use Hamcrest\Matcher;
 class HamcrestMatcherDriver implements MatcherDriver
 {
     /**
-     * Get the static instance of this driver.
+     * Get the static instance of this class.
      *
-     * @return MatcherDriver The static driver.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -34,30 +34,33 @@ class HamcrestMatcherDriver implements MatcherDriver
      */
     public function isAvailable(): bool
     {
-        return interface_exists(Matcher::class);
+        return interface_exists(ExternalMatcher::class);
     }
 
     /**
      * Get the supported matcher class names.
      *
-     * @return array<string> The matcher class names.
+     * @return array<int,string> The matcher class names.
      */
     public function matcherClassNames(): array
     {
-        return [Matcher::class];
+        return [ExternalMatcher::class];
     }
 
     /**
      * Wrap the supplied third party matcher.
      *
-     * @param object $matcher The matcher to wrap.
+     * @param ExternalMatcher $matcher The matcher to wrap.
      *
-     * @return Matchable The wrapped matcher.
+     * @return Matcher The wrapped matcher.
      */
-    public function wrapMatcher($matcher): Matchable
+    public function wrapMatcher(object $matcher): Matcher
     {
         return new HamcrestMatcher($matcher);
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
 }

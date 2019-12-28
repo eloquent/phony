@@ -13,9 +13,9 @@ use ReflectionClass;
 class FeatureDetector
 {
     /**
-     * Get the static instance of this detector.
+     * Get the static instance of this class.
      *
-     * @return FeatureDetector The static detector.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -29,8 +29,8 @@ class FeatureDetector
     /**
      * Construct a new feature detector.
      *
-     * @param array<string,callable>|null $features  The features.
-     * @param array<string,bool>          $supported The known feature support.
+     * @param ?array<string,callable> $features  The features.
+     * @param array<string,bool>      $supported The known feature support.
      */
     public function __construct(
         array $features = null,
@@ -110,8 +110,11 @@ class FeatureDetector
     {
         return [
             'reflection.reference' => function () {
-                if (class_exists('ReflectionReference', false)) {
-                    $class = new ReflectionClass('ReflectionReference');
+                /** @var class-string */
+                $className = 'ReflectionReference';
+
+                if (class_exists($className, false)) {
+                    $class = new ReflectionClass($className);
 
                     return $class->isInternal();
                 }
@@ -125,9 +128,9 @@ class FeatureDetector
                     return
                         0 >= version_compare(
                             '10.0.10586',
-                            PHP_WINDOWS_VERSION_MAJOR .
-                            '.' . PHP_WINDOWS_VERSION_MINOR .
-                            '.' . PHP_WINDOWS_VERSION_BUILD
+                            constant('PHP_WINDOWS_VERSION_MAJOR') .
+                            '.' . constant('PHP_WINDOWS_VERSION_MINOR') .
+                            '.' . constant('PHP_WINDOWS_VERSION_BUILD')
                         ) ||
                         false !== getenv('ANSICON') ||
                         'ON' === getenv('ConEmuANSI') ||
@@ -141,7 +144,18 @@ class FeatureDetector
         ];
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var array<string,callable>
+     */
     private $features;
+
+    /**
+     * @var array<string,bool>
+     */
     private $supported;
 }

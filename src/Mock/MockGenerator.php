@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock;
 
+use Eloquent\Phony\Mock\Builder\Method\MethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\TraitMethodDefinition;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
+use ReflectionMethod;
+use ReflectionNamedType;
 
 /**
  * Generates mock classes.
@@ -15,9 +18,9 @@ use Eloquent\Phony\Sequencer\Sequencer;
 class MockGenerator
 {
     /**
-     * Get the static instance of this generator.
+     * Get the static instance of this class.
      *
-     * @return MockGenerator The static generator.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -74,6 +77,7 @@ class MockGenerator
         }
 
         if (null !== $subject) {
+            /** @var array<int,string> */
             $subjectAtoms = preg_split('/[_\\\\]/', $subject);
             $className .= '_' . array_pop($subjectAtoms);
         }
@@ -140,8 +144,10 @@ class MockGenerator
         return $source;
     }
 
-    private function generateHeader($definition, $className)
-    {
+    private function generateHeader(
+        MockDefinition $definition,
+        string $className
+    ): string {
         $classNameParts = explode('\\', $className);
 
         if (count($classNameParts) > 1) {
@@ -201,7 +207,7 @@ class MockGenerator
         return $source;
     }
 
-    private function generateConstants($definition)
+    private function generateConstants(MockDefinition $definition): string
     {
         $constants = $definition->customConstants();
         $source = '';
@@ -221,7 +227,7 @@ class MockGenerator
         return $source;
     }
 
-    private function generateMagicCallStatic($definition)
+    private function generateMagicCallStatic(MockDefinition $definition): string
     {
         $methods = $definition->methods();
         $callStaticName = $methods->methodName('__callstatic');
@@ -231,6 +237,7 @@ class MockGenerator
             return '';
         }
 
+        /** @var ReflectionMethod */
         $methodReflector = $methods[$callStaticName]->method();
         $returnsReference = $methodReflector->returnsReference() ? '&' : '';
 
@@ -257,6 +264,7 @@ EOD;
         }
 
         if ($methodReflector->hasReturnType()) {
+            /** @var ReflectionNamedType */
             $type = $methodReflector->getReturnType();
             $isBuiltin = $type->isBuiltin();
 
@@ -305,8 +313,10 @@ EOD;
         return $source;
     }
 
-    private function generateStructors($definition, $hasParentClass)
-    {
+    private function generateStructors(
+        MockDefinition $definition,
+        bool $hasParentClass
+    ): string {
         $constructor = null;
         $destructor = null;
 
@@ -358,8 +368,13 @@ EOD;
         return $source;
     }
 
-    private function generateMethods($methods, $hasParentClass)
-    {
+    /**
+     * @param array<string,MethodDefinition> $methods
+     */
+    private function generateMethods(
+        array $methods,
+        bool $hasParentClass
+    ): string {
         $source = '';
 
         foreach ($methods as $method) {
@@ -419,6 +434,7 @@ EOD;
             }
 
             if ($methodReflector->hasReturnType()) {
+                /** @var ReflectionNamedType */
                 $type = $methodReflector->getReturnType();
                 $isBuiltin = $type->isBuiltin();
 
@@ -429,8 +445,10 @@ EOD;
                 }
 
                 if ('self' === $typeString) {
+                    /** @var ReflectionMethod */
+                    $methodReflectorMethod = $methodReflector;
                     $typeString =
-                        $methodReflector->getDeclaringClass()->getName();
+                        $methodReflectorMethod->getDeclaringClass()->getName();
                 }
 
                 if ($isBuiltin) {
@@ -547,7 +565,7 @@ EOD;
         return $source;
     }
 
-    private function generateMagicCall($definition)
+    private function generateMagicCall(MockDefinition $definition): string
     {
         $methods = $definition->methods();
         $callName = $methods->methodName('__call');
@@ -557,6 +575,7 @@ EOD;
             return '';
         }
 
+        /** @var ReflectionMethod */
         $methodReflector = $methods[$callName]->method();
         $returnsReference = $methodReflector->returnsReference() ? '&' : '';
 
@@ -581,6 +600,7 @@ EOD;
         }
 
         if ($methodReflector->hasReturnType()) {
+            /** @var ReflectionNamedType */
             $type = $methodReflector->getReturnType();
             $isBuiltin = $type->isBuiltin();
 
@@ -630,10 +650,10 @@ EOD;
     }
 
     private function generateCallParentMethods(
-        $definition,
-        $hasParentClass,
-        $parentClassName
-    ) {
+        MockDefinition $definition,
+        bool $hasParentClass,
+        string $parentClassName
+    ): string {
         $methods = $definition->methods();
         $traitNames = $definition->traitNames();
         $hasTraits = (bool) $traitNames;
@@ -789,11 +809,14 @@ EOD;
                 }
 
                 if ($constructor) {
+                    /** @var class-string $constructorTraitNameClassName */
+                    $constructorTraitNameClassName = $constructorTraitName;
+
                     $constructorName = '_callTrait_' .
                         \str_replace(
                             '\\',
                             self::NS_SEPARATOR,
-                            $constructorTraitName
+                            $constructorTraitNameClassName
                         ) .
                         self::METHOD_SEPARATOR .
                         $constructor->getName();
@@ -885,7 +908,7 @@ EOD;
         return $source;
     }
 
-    private function generateProperties($definition)
+    private function generateProperties(MockDefinition $definition): string
     {
         $staticProperties = $definition->customStaticProperties();
         $properties = $definition->customProperties();
@@ -951,7 +974,18 @@ EOD;
     const NS_SEPARATOR = "\u{a6}";
     const METHOD_SEPARATOR = "\u{bb}";
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var Sequencer
+     */
     private $labelSequencer;
+
+    /**
+     * @var FunctionSignatureInspector
+     */
     private $signatureInspector;
 }

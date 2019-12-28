@@ -297,7 +297,6 @@ class CallVerifierTest extends TestCase
         $this->subjectWithNoResponse->setEndEvent($this->returnedEvent);
 
         $this->assertSame($this->returnedEvent, $this->subjectWithNoResponse->endEvent());
-        $this->assertSame($this->returnedEvent, $this->subjectWithNoResponse->responseEvent());
     }
 
     public function testDuration()

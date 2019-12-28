@@ -15,9 +15,9 @@ use Traversable;
 class IterableSpyFactory
 {
     /**
-     * Get the static instance of this factory.
+     * Get the static instance of this class.
      *
-     * @return IterableSpyFactory The static factory.
+     * @return self The static instance.
      */
     public static function instance(): self
     {
@@ -41,8 +41,8 @@ class IterableSpyFactory
     /**
      * Create a new iterable spy.
      *
-     * @param Call     $call     The call from which the iterable originated.
-     * @param iterable $iterable The iterable.
+     * @param Call  $call     The call from which the iterable originated.
+     * @param mixed $iterable The iterable.
      *
      * @return IterableSpy              The newly created iterable spy.
      * @throws InvalidArgumentException If the supplied iterable is invalid.
@@ -72,6 +72,13 @@ class IterableSpyFactory
         );
     }
 
+    /**
+     * @var ?self
+     */
     private static $instance;
+
+    /**
+     * @var CallEventFactory
+     */
     private $callEventFactory;
 }
