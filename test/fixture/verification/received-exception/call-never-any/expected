@@ -1,0 +1,10 @@
+%RESET%Expected %BOLD%stub#0[label]%RESET% call #1 not to behave like:
+    %RED%✗%RESET% Returned Generator, then:
+        %RED%✗%RESET% Received exception <any>
+Matched 1 of 1:
+%RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
+    %RED%✗%RESET% Returned Generator#2{}, then:
+        - Started iterating
+        - Produced 0 => "BONOBO"
+        %RED%✗%RESET% Received exception RuntimeException#1{message: "MECHA-BONOBO"}
+        - Threw RuntimeException#1{message: "MECHA-BONOBO"}
