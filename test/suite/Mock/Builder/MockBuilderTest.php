@@ -377,11 +377,17 @@ class MockBuilderTest extends TestCase
             $definition->customMethods()
         );
         $this->assertSame(
-            ['propertyA' => 'valueA', 'propertyB' => 'valueB'],
+            [
+                'propertyA' => [null, 'valueA'],
+                'propertyB' => [null, 'valueB'],
+            ],
             $definition->customStaticProperties()
         );
         $this->assertSame(
-            ['propertyC' => 'valueC', 'propertyD' => $this->callbackE],
+            [
+                'propertyC' => [null, 'valueC'],
+                'propertyD' => [null, $this->callbackE],
+            ],
             $definition->customProperties()
         );
         $this->assertSame(
@@ -460,7 +466,10 @@ class MockBuilderTest extends TestCase
 
         $definition = $this->subject->definition();
 
-        $this->assertSame(['propertyA' => $value, 'propertyB' => null], $definition->customProperties());
+        $this->assertSame([
+            'propertyA' => [null, $value],
+            'propertyB' => [null, null],
+        ], $definition->customProperties());
     }
 
     public function testAddPropertyFailureFinalized()
@@ -482,7 +491,10 @@ class MockBuilderTest extends TestCase
 
         $definition = $this->subject->definition();
 
-        $this->assertSame(['propertyA' => $value, 'propertyB' => null], $definition->customStaticProperties());
+        $this->assertSame([
+            'propertyA' => [null, $value],
+            'propertyB' => [null, null],
+        ], $definition->customStaticProperties());
     }
 
     public function testAddStaticPropertyFailureFinalized()

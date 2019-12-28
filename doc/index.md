@@ -582,8 +582,13 @@ echo $mock->a(); // outputs 'A is for apple.'
 echo $mock->b;   // outputs 'B is for banana.'
 ```
 
-To override the default treatment of values, or to define static methods or
-properties, keywords can be added to the keys of the definition value:
+Extra information can be added to the keys of the definition value for cases
+where it's desirable to:
+
+- Override the default treatment of values
+- Define static methods or properties
+- Define class constants
+- Define typed properties
 
 ```php
 $handle = partialMock(
@@ -593,13 +598,8 @@ $handle = partialMock(
             return 'B is for banana.';
         },
         'static c' => 'C is for cat.',
-        'var d' => function () {
-            return 'D is for dog.';
-        },
-        'static var e' => function () {
-            return 'E is for egg.';
-        },
-        'function f' => 'implode',
+        'string d' => 'D is for dog.'
+        'function e' => 'implode',
     ]
 );
 
@@ -609,11 +609,9 @@ $class = get_class($mock);
 echo $class::A;   // outputs 'A is for apple.'
 echo $class::b(); // outputs 'B is for banana.'
 echo $class::c;   // outputs 'C is for cat.'
+echo $mock->d;    // outputs 'D is for dog.'
 
-echo var_dump(isset($mock->d));  // outputs 'bool(true)'
-echo var_dump(isset($class::e)); // outputs 'bool(true)'
-
-echo $mock->f(', ', ['a', 'b']); // outputs 'a, b'
+echo $mock->e(', ', ['a', 'b']); // outputs 'a, b'
 ```
 
 #### Ad hoc definition magic "self" values
@@ -867,7 +865,7 @@ $builder
             // ...
         }
     )
-    ->addProperty('propertyA', 'a')
+    ->addProperty('propertyA', 'a', 'string')
 ```
 
 This is only a small example of what is possible. For a full list of the
@@ -5339,9 +5337,12 @@ Add a custom method.
 
 ----
 
-> *fluent* $builder->[**addProperty**](#builder.addProperty)($name, $value = null)
+> *fluent* $builder->[**addProperty**](#builder.addProperty)($name, $value = null, $type = null)
 
 Add a custom property.
+
+*If supplied, `$type` will be used literally as the type declaration for the
+property*
 
 *See [Customizing the mock class].*
 
@@ -5359,9 +5360,12 @@ Add a custom static method.
 
 ----
 
-> *fluent* $builder->[**addStaticProperty**](#builder.addStaticProperty)($name, $value = null)
+> *fluent* $builder->[**addStaticProperty**](#builder.addStaticProperty)($name, $value = null, $type = null)
 
 Add a custom static property.
+
+*If supplied, `$type` will be used literally as the type declaration for the
+property*
 
 *See [Customizing the mock class].*
 
