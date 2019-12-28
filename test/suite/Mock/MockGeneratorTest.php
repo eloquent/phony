@@ -101,10 +101,13 @@ class MockGeneratorTest extends TestCase
         $fixturePath = __DIR__ . '/../../fixture/mock-generator';
 
         $detector = FeatureDetector::instance();
-        $isSupported = require $fixturePath . '/' . $testName . '/supported.php';
 
-        if (!$isSupported) {
-            $this->markTestSkipped($message);
+        if (is_file($fixturePath . '/' . $testName . '/supported.php')) {
+            $isSupported = require $fixturePath . '/' . $testName . '/supported.php';
+
+            if (!$isSupported) {
+                $this->markTestSkipped($message);
+            }
         }
 
         $factory = MockBuilderFactory::instance();
