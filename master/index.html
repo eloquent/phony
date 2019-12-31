@@ -746,8 +746,14 @@ a property:</p>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>a(); <span class="pl-c"><span class="pl-c">//</span> outputs 'A is for apple.'</span></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span><span class="pl-smi">b</span>;   <span class="pl-c"><span class="pl-c">//</span> outputs 'B is for banana.'</span></span></pre></div>
-<p>To override the default treatment of values, or to define static methods or
-properties, keywords can be added to the keys of the definition value:</p>
+<p>Extra information can be added to the keys of the definition value for cases
+where it's desirable to:</p>
+<ul>
+<li>Override the default treatment of values</li>
+<li>Define static methods or properties</li>
+<li>Define class constants</li>
+<li>Define typed properties</li>
+</ul>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$handle</span> <span class="pl-k">=</span> partialMock(</span>
 <span class="pl-s1">    [</span>
 <span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>const A<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>A is for apple.<span class="pl-pds">'</span></span>,</span>
@@ -755,13 +761,8 @@ properties, keywords can be added to the keys of the definition value:</p>
 <span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">'</span>B is for banana.<span class="pl-pds">'</span></span>;</span>
 <span class="pl-s1">        },</span>
 <span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>static c<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>C is for cat.<span class="pl-pds">'</span></span>,</span>
-<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>var d<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-k">function</span> () {</span>
-<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">'</span>D is for dog.<span class="pl-pds">'</span></span>;</span>
-<span class="pl-s1">        },</span>
-<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>static var e<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-k">function</span> () {</span>
-<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">'</span>E is for egg.<span class="pl-pds">'</span></span>;</span>
-<span class="pl-s1">        },</span>
-<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>function f<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>implode<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>string d<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>D is for dog.<span class="pl-pds">'</span></span></span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>function e<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>implode<span class="pl-pds">'</span></span>,</span>
 <span class="pl-s1">    ]</span>
 <span class="pl-s1">);</span>
 <span class="pl-s1"></span>
@@ -771,11 +772,9 @@ properties, keywords can be added to the keys of the definition value:</p>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$class</span><span class="pl-k">::</span><span class="pl-c1">A</span>;   <span class="pl-c"><span class="pl-c">//</span> outputs 'A is for apple.'</span></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$class</span><span class="pl-k">::</span>b(); <span class="pl-c"><span class="pl-c">//</span> outputs 'B is for banana.'</span></span>
 <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$class</span><span class="pl-k">::</span><span class="pl-c1">c</span>;   <span class="pl-c"><span class="pl-c">//</span> outputs 'C is for cat.'</span></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span><span class="pl-smi">d</span>;    <span class="pl-c"><span class="pl-c">//</span> outputs 'D is for dog.'</span></span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-c1">var_dump</span>(<span class="pl-c1">isset</span>(<span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span><span class="pl-smi">d</span>));  <span class="pl-c"><span class="pl-c">//</span> outputs 'bool(true)'</span></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-c1">var_dump</span>(<span class="pl-c1">isset</span>(<span class="pl-smi">$class</span><span class="pl-k">::</span><span class="pl-c1">e</span>)); <span class="pl-c"><span class="pl-c">//</span> outputs 'bool(true)'</span></span>
-<span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>f(<span class="pl-s"><span class="pl-pds">'</span>, <span class="pl-pds">'</span></span>, [<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>]); <span class="pl-c"><span class="pl-c">//</span> outputs 'a, b'</span></span></pre></div>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$mock</span><span class="pl-k">-&gt;</span>e(<span class="pl-s"><span class="pl-pds">'</span>, <span class="pl-pds">'</span></span>, [<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>]); <span class="pl-c"><span class="pl-c">//</span> outputs 'a, b'</span></span></pre></div>
 <h4>
 <a id="ad-hoc-definition-magic-self-values" class="anchor" href="#ad-hoc-definition-magic-self-values" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ad hoc definition magic "self" values</h4>
 <p>Methods defined in an <a href="#ad-hoc-mocks">ad hoc mock</a> definition can take advantage of
@@ -944,7 +943,7 @@ the generated mock class:</p>
 <span class="pl-s1">            <span class="pl-c"><span class="pl-c">//</span> ...</span></span>
 <span class="pl-s1">        }</span>
 <span class="pl-s1">    )</span>
-<span class="pl-s1">    <span class="pl-k">-&gt;</span>addProperty(<span class="pl-s"><span class="pl-pds">'</span>propertyA<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>)</span></pre></div>
+<span class="pl-s1">    <span class="pl-k">-&gt;</span>addProperty(<span class="pl-s"><span class="pl-pds">'</span>propertyA<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>string<span class="pl-pds">'</span></span>)</span></pre></div>
 <p>This is only a small example of what is possible. For a full list of the
 available methods, see <a href="#the-mock-builder-api">the mock builder API</a>.</p>
 <h4>
@@ -4336,9 +4335,11 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="builder.addProperty"></a>
 <hr>
 <blockquote>
-<p><em>fluent</em> $builder-&gt;<a href="#builder.addProperty"><strong>addProperty</strong></a>($name, $value = null)</p>
+<p><em>fluent</em> $builder-&gt;<a href="#builder.addProperty"><strong>addProperty</strong></a>($name, $value = null, $type = null)</p>
 </blockquote>
 <p>Add a custom property.</p>
+<p><em>If supplied, <code>$type</code> will be used literally as the type declaration for the
+property</em></p>
 <p><em>See <a href="#customizing-the-mock-class">Customizing the mock class</a>.</em></p>
 <a name="builder.addStaticMethod"></a>
 <hr>
@@ -4350,9 +4351,11 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="builder.addStaticProperty"></a>
 <hr>
 <blockquote>
-<p><em>fluent</em> $builder-&gt;<a href="#builder.addStaticProperty"><strong>addStaticProperty</strong></a>($name, $value = null)</p>
+<p><em>fluent</em> $builder-&gt;<a href="#builder.addStaticProperty"><strong>addStaticProperty</strong></a>($name, $value = null, $type = null)</p>
 </blockquote>
 <p>Add a custom static property.</p>
+<p><em>If supplied, <code>$type</code> will be used literally as the type declaration for the
+property</em></p>
 <p><em>See <a href="#customizing-the-mock-class">Customizing the mock class</a>.</em></p>
 <a name="builder.addConstant"></a>
 <hr>
