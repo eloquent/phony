@@ -34,6 +34,7 @@ use Eloquent\Phony\Test\TestClassG;
 use Eloquent\Phony\Test\TestClassI;
 use Eloquent\Phony\Test\TestClassWithFinalReturnType;
 use Eloquent\Phony\Test\TestClassWithSerializeMagicMethods;
+use Eloquent\Phony\Test\TestClassWithToStringException;
 use Eloquent\Phony\Test\TestFinalClass;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestInterfaceC;
@@ -1708,5 +1709,31 @@ class FunctionalTest extends TestCase
         $handle->__serialize->returns(['c', 'd']);
 
         $this->assertSame(['c', 'd'], unserialize(serialize($mock))->values);
+    }
+
+    /**
+     * @requires PHP >= 7.4
+     */
+    public function testMockWithToStringExceptions()
+    {
+        $handle = mock(TestClassWithToStringException::class);
+        $mock = $handle->get();
+        $expected = new RuntimeException('Exception message');
+        $handle->__toString->throws($expected);
+
+        $this->expectExceptionObject($expected);
+        strval($mock);
+    }
+
+    /**
+     * @requires PHP >= 7.4
+     */
+    public function testPartialMockWithToStringExceptions()
+    {
+        $mock = partialMock(TestClassWithToStringException::class)->get();
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('You done goofed');
+        strval($mock);
     }
 }
