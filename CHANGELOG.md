@@ -1,11 +1,13 @@
 # Phony changelog
 
-## Next release
+## 4.0.0 (2019-12-31)
 
 - **[BC BREAK]** PHP 7.1 is no longer supported.
 - **[NEW]** Added support for specifying ad-hoc mock property types ([#247]).
 - **[IMPROVED]** Improved exporter output for array references ([#244]).
 - **[IMPROVED]** Improved exporter output for weak references ([#245]).
+- **[IMPROVED]** Improved type hints and type declarations for better
+  integration with PHPStan.
 
 [#244]: https://github.com/eloquent/phony/issues/244
 [#245]: https://github.com/eloquent/phony/issues/245
