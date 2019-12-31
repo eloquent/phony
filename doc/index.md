@@ -5060,7 +5060,7 @@ Set the default export depth, and return the previous depth.
 [Mock handles] implement the following methods:
 
 - [`$handle->get()`](#handle.get)
-- [`$handle->$method`](`#handle.__get)
+- [`$handle->$method`](#handle.__get)
 - [`$handle->stub()`](#handle.stub)
 - [`$handle->label()`](#handle.label)
 - [`$handle->setLabel()`](#handle.setLabel)
