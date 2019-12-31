@@ -33,6 +33,7 @@ use Eloquent\Phony\Test\TestClassD;
 use Eloquent\Phony\Test\TestClassG;
 use Eloquent\Phony\Test\TestClassI;
 use Eloquent\Phony\Test\TestClassWithFinalReturnType;
+use Eloquent\Phony\Test\TestClassWithSerializeMagicMethods;
 use Eloquent\Phony\Test\TestFinalClass;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestInterfaceC;
@@ -1691,5 +1692,21 @@ class FunctionalTest extends TestCase
             '$/'
         );
         $mock->undefined();
+    }
+
+    /**
+     * @requires PHP >= 7.4
+     */
+    public function testMockWithCustomSerializationMethods()
+    {
+        $handle = partialMock(TestClassWithSerializeMagicMethods::class, [['a', 'b']]);
+        $mock = $handle->get();
+
+        $this->assertSame(['a', 'b'], $mock->values);
+        $this->assertSame(['a', 'b'], unserialize(serialize($mock))->values);
+
+        $handle->__serialize->returns(['c', 'd']);
+
+        $this->assertSame(['c', 'd'], unserialize(serialize($mock))->values);
     }
 }
