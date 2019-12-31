@@ -1072,6 +1072,13 @@ class FunctionalTest extends TestCase
         $handle->test->calledWith('a');
     }
 
+    public function testAdHocMocksWithCustomMethodStringCallable()
+    {
+        $mock = partialMock(['function test' => 'implode'])->get();
+
+        $this->assertSame('a, b', $mock->test(', ', ['a', 'b']));
+    }
+
     public function testBasicGeneratorStubbing()
     {
         $stub = stub()

@@ -264,19 +264,23 @@ class MockBuilder
     /**
      * Add a custom property.
      *
-     * @param string $name  The name.
-     * @param mixed  $value The value.
+     * @param string  $name  The name.
+     * @param mixed   $value The value.
+     * @param ?string $type  The type.
      *
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
      */
-    public function addProperty(string $name, $value = null): self
-    {
+    public function addProperty(
+        string $name,
+        $value = null,
+        string $type = null
+    ): self {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
         }
 
-        $this->customProperties[$name] = $value;
+        $this->customProperties[$name] = [$type, $value];
 
         return $this;
     }
@@ -312,19 +316,23 @@ class MockBuilder
     /**
      * Add a custom static property.
      *
-     * @param string $name  The name.
-     * @param mixed  $value The value.
+     * @param string  $name  The name.
+     * @param mixed   $value The value.
+     * @param ?string $type  The type.
      *
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
      */
-    public function addStaticProperty(string $name, $value = null): self
-    {
+    public function addStaticProperty(
+        string $name,
+        $value = null,
+        string $type = null
+    ): self {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
         }
 
-        $this->customStaticProperties[$name] = $value;
+        $this->customStaticProperties[$name] = [$type, $value];
 
         return $this;
     }
@@ -665,10 +673,16 @@ class MockBuilder
             } elseif ($isConstant) {
                 $this->addConstant($name, $value);
             } else {
+                $type = array_pop($nameParts);
+
+                if (!$type || 'static' === $type || 'var' === $type) {
+                    $type = null;
+                }
+
                 if ($isStatic) {
-                    $this->addStaticProperty($name, $value);
+                    $this->addStaticProperty($name, $value, $type);
                 } else {
-                    $this->addProperty($name, $value);
+                    $this->addProperty($name, $value, $type);
                 }
             }
         }

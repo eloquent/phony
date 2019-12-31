@@ -914,18 +914,26 @@ EOD;
         $properties = $definition->customProperties();
         $source = '';
 
-        foreach ($staticProperties as $name => $value) {
+        foreach ($staticProperties as $name => $tuple) {
+            list($type, $value) = $tuple;
+
             $source .=
-                "\n    public static $" .
+                "\n    public static " .
+                ($type ? $type . ' ' : '') .
+                '$' .
                 $name .
                 ' = ' .
                 (null === $value ? 'null' : var_export($value, true)) .
                 ';';
         }
 
-        foreach ($properties as $name => $value) {
+        foreach ($properties as $name => $tuple) {
+            list($type, $value) = $tuple;
+
             $source .=
-                "\n    public $" .
+                "\n    public " .
+                ($type ? $type . ' ' : '') .
+                '$' .
                 $name .
                 ' = ' .
                 (null === $value ? 'null' : var_export($value, true)) .
