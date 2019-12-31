@@ -52,8 +52,10 @@ function mockBuilder($types = []): MockBuilder
  */
 function mock($types = []): InstanceHandle
 {
-    return Globals::$container->handleFactory->instanceHandle(
-        Globals::$container->mockBuilderFactory->create($types)->full()
+    $container = Globals::$container;
+
+    return $container->handleFactory->instanceHandle(
+        $container->mockBuilderFactory->create($types)->full()
     );
 }
 
@@ -75,9 +77,10 @@ function mock($types = []): InstanceHandle
  */
 function partialMock($types = [], $arguments = []): InstanceHandle
 {
-    return Globals::$container->handleFactory->instanceHandle(
-        Globals::$container->mockBuilderFactory->create($types)
-            ->partialWith($arguments)
+    $container = Globals::$container;
+
+    return $container->handleFactory->instanceHandle(
+        $container->mockBuilderFactory->create($types)->partialWith($arguments)
     );
 }
 
@@ -323,6 +326,8 @@ function setExportDepth(int $depth): int
  */
 function setUseColor(?bool $useColor): void
 {
-    Globals::$container->assertionRenderer->setUseColor($useColor);
-    Globals::$container->differenceEngine->setUseColor($useColor);
+    $container = Globals::$container;
+
+    $container->assertionRenderer->setUseColor($useColor);
+    $container->differenceEngine->setUseColor($useColor);
 }
