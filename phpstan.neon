@@ -26,34 +26,6 @@ parameters:
     - message: '/Access to an undefined property Generator::\$_phonySubject/'
       path: src/Spy/GeneratorSpyFactory.php
 
-    # @extends being ignored
-    - message: '/no value type specified in iterable type .*(Eloquent\\Phony\\Call\\Call|Eloquent\\Phony\\Spy\\Spy)/'
-      paths:
-      - src/Assertion/AssertionRenderer.php
-      - src/Call/CallData.php
-      - src/Call/CallVerifier.php
-      - src/Call/CallVerifierFactory.php
-      - src/Call/Event/CallEvent.php
-      - src/Call/Event/CallEventTrait.php
-      - src/Event/EventCollection.php
-      - src/Event/EventSequence.php
-      - src/Mock/Handle/Handle.php
-      - src/Mock/Handle/HandleTrait.php
-      - src/Spy/ArraySpy.php
-      - src/Spy/GeneratorSpyFactory.php
-      - src/Spy/IterableSpyFactory.php
-      - src/Spy/Spy.php
-      - src/Spy/SpyData.php
-      - src/Spy/SpyFactory.php
-      - src/Spy/SpyVerifier.php
-      - src/Spy/SpyVerifierFactory.php
-      - src/Spy/TraversableSpy.php
-      - src/Stub/StubVerifier.php
-      - src/Verification/GeneratorVerifier.php
-      - src/Verification/GeneratorVerifierFactory.php
-      - src/Verification/IterableVerifier.php
-      - src/Verification/IterableVerifierFactory.php
-
   #   # (tests only) ignore undefined properties
   #   - message: '/^Access to an undefined property /'
   #     path: test

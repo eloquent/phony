@@ -21,13 +21,14 @@ class MatcherFactory
     public static function instance(): self
     {
         if (!self::$instance) {
-            self::$instance = new self(
+            $instance = new self(
                 AnyMatcher::instance(),
                 WildcardMatcher::instance(),
                 InlineExporter::instance()
             );
-            self::$instance
-                ->addMatcherDriver(HamcrestMatcherDriver::instance());
+            $instance->addMatcherDriver(HamcrestMatcherDriver::instance());
+
+            self::$instance = $instance;
         }
 
         return self::$instance;
