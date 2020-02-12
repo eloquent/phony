@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+docker run --rm -it -v "$(pwd):/tmp" phpdaily/php:8.0.0-dev-cli-alpine sh -c "cd /tmp; vendor/bin/phpunit --no-coverage --do-not-cache-result ""$@"
