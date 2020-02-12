@@ -154,7 +154,10 @@ class TraversableSpy implements IterableSpy
             throw new NonArrayAccessTraversableException($this->traversable);
         }
 
-        return isset($this->traversable[$key]);
+        /** @var ArrayAccess<mixed,mixed> */
+        $arrayAccess = $this->traversable;
+
+        return isset($arrayAccess[$key]);
     }
 
     /**
@@ -170,7 +173,10 @@ class TraversableSpy implements IterableSpy
             throw new NonArrayAccessTraversableException($this->traversable);
         }
 
-        return $this->traversable[$key];
+        /** @var ArrayAccess<mixed,mixed> */
+        $arrayAccess = $this->traversable;
+
+        return $arrayAccess[$key];
     }
 
     /**
@@ -199,7 +205,10 @@ class TraversableSpy implements IterableSpy
             throw new NonArrayAccessTraversableException($this->traversable);
         }
 
-        unset($this->traversable[$key]);
+        /** @var ArrayAccess<mixed,mixed> */
+        $arrayAccess = $this->traversable;
+
+        unset($arrayAccess[$key]);
     }
 
     /**
