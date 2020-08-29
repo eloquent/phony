@@ -17,7 +17,7 @@
     "require-dev": {
         "ext-pdo": "*",
         "eloquent/code-style": "^1.0",
-        "eloquent/phpstan-phony": "^0.7-dev",
+        "eloquent/phpstan-phony": "^0.7",
         "errors/exceptions": "^0.2",
         "friendsofphp/php-cs-fixer": "^2",
         "hamcrest/hamcrest-php": "^2",

@@ -1967,6 +1967,28 @@ implements \Eloquent\Phony\Mock\Mock
         return $result;
     }
 
+    public function __debugInfo()
+    {
+        $argumentCount = \func_num_args();
+        $arguments = [];
+
+        for ($i = 0; $i < $argumentCount; ++$i) {
+            $arguments[] = \func_get_arg($i);
+        }
+
+        if (!$this->_handle) {
+            $result = parent::__debugInfo(...$arguments);
+
+            return $result;
+        }
+
+        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+            new \Eloquent\Phony\Call\Arguments($arguments)
+        );
+
+        return $result;
+    }
+
     private static function _callParentStatic(
         $name,
         \Eloquent\Phony\Call\Arguments $arguments
