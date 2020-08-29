@@ -1,5 +1,11 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** Nullable variadics can now be mocked ([#248] - thanks [@keksa]).
+
+[#248]: https://github.com/eloquent/phony/issues/248
+
 ## 4.0.0 (2019-12-31)
 
 - **[BC BREAK]** PHP 7.1 is no longer supported.
@@ -591,6 +597,8 @@ and version constraint will need to be updated:
 ## 0.1.0 (2014-10-21)
 
 - **[NEW]** Initial implementation.
+
+<!-- Contributors -->
 
 [@jmalloc]: https://github.com/jmalloc
 [@keksa]: https://github.com/keksa
