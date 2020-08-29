@@ -1574,7 +1574,7 @@ class FunctionalTest extends TestCase
         $mock = mock(TestClassWithFinalReturnType::class)->get();
 
         $this->expectException(FinalReturnTypeException::class);
-        $this->expectExceptionMessageRegExp(
+        $this->expectExceptionMessageMatches(
             '/^' .
             preg_quote("Unable to create a default return value for 'TestClassWithFinalReturnType[", '/') .
             '\d+' .
@@ -1591,7 +1591,7 @@ class FunctionalTest extends TestCase
         $mock = mock(TestClassWithFinalReturnType::class)->get();
 
         $this->expectException(FinalReturnTypeException::class);
-        $this->expectExceptionMessageRegExp(
+        $this->expectExceptionMessageMatches(
             '/^' .
             preg_quote("Unable to create a default return value for 'TestClassWithFinalReturnType[", '/') .
             '\d+' .
@@ -1620,7 +1620,7 @@ class FunctionalTest extends TestCase
         $mock = mock(AbstractTestClassWithFinalReturnType::class)->get();
 
         $this->expectException(FinalReturnTypeException::class);
-        $this->expectExceptionMessageRegExp(
+        $this->expectExceptionMessageMatches(
             '/^' .
             preg_quote("Unable to create a default return value for 'AbstractTestClassWithFinalReturnType[", '/') .
             '\d+' .
@@ -1637,7 +1637,7 @@ class FunctionalTest extends TestCase
         $mock = mock(AbstractTestClassWithFinalReturnType::class)->get();
 
         $this->expectException(FinalReturnTypeException::class);
-        $this->expectExceptionMessageRegExp(
+        $this->expectExceptionMessageMatches(
             '/^' .
             preg_quote("Unable to create a default return value for 'AbstractTestClassWithFinalReturnType[", '/') .
             '\d+' .
@@ -1666,7 +1666,7 @@ class FunctionalTest extends TestCase
         $mock = mock(TestInterfaceWithFinalReturnType::class)->get();
 
         $this->expectException(FinalReturnTypeException::class);
-        $this->expectExceptionMessageRegExp(
+        $this->expectExceptionMessageMatches(
             '/^' .
             preg_quote("Unable to create a default return value for 'TestInterfaceWithFinalReturnType[", '/') .
             '\d+' .
@@ -1683,7 +1683,7 @@ class FunctionalTest extends TestCase
         $mock = mock(TestInterfaceWithFinalReturnType::class)->get();
 
         $this->expectException(FinalReturnTypeException::class);
-        $this->expectExceptionMessageRegExp(
+        $this->expectExceptionMessageMatches(
             '/^' .
             preg_quote("Unable to create a default return value for 'TestInterfaceWithFinalReturnType[", '/') .
             '\d+' .
