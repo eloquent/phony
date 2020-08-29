@@ -1,7 +1,7 @@
 parameters:
   level: max
   paths: [src]
-  autoload_directories:
+  scanDirectories:
   - test/src/Phpstan
   ignoreErrors:
     # allow @throws with interfaces
@@ -23,13 +23,5 @@ parameters:
       - src/Verification/CardinalityVerifierTrait.php
 
     # allow setting special property on generators
-    - message: '/Access to an undefined property Generator::\$_phonySubject/'
+    - message: '/Access to an undefined property Generator.*::\$_phonySubject/'
       path: src/Spy/GeneratorSpyFactory.php
-
-  #   # (tests only) ignore undefined properties
-  #   - message: '/^Access to an undefined property /'
-  #     path: test
-
-  #   # (tests only) Eloquent\Phony\Phpunit\Facade is a namespace alias, and not expected to exist
-  #   - message: '/^(Class|Function) Eloquent\\Phony\\Phpunit\\Facade(\\\w+)? not found.$/'
-  #     path: test/suite/PhonyTest.php
