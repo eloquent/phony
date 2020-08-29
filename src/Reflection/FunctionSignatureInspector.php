@@ -91,10 +91,15 @@ class FunctionSignatureInspector
             }
 
             $byReference = $match[4];
+            $isVariadic = $parameter->isVariadic();
 
-            if ($parameter->isVariadic()) {
+            if ($isVariadic) {
                 $variadic = '...';
                 $optional = false;
+
+                if ($match[3]) {
+                    $typehint = '?' . $typehint;
+                }
             } else {
                 $variadic = '';
                 $optional = 'optional' === $match[1];
@@ -107,7 +112,7 @@ class FunctionSignatureInspector
                     $defaultValue = ' = ' .
                         var_export($parameter->getDefaultValue(), true);
                 }
-            } elseif ($optional || $match[3]) {
+            } elseif (!$isVariadic && ($optional || $match[3])) {
                 $defaultValue = ' = null';
             } else {
                 $defaultValue = '';

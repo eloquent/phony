@@ -45,6 +45,7 @@ use Eloquent\Phony\Test\TestInterfaceWithReturnType;
 use Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint;
 use Eloquent\Phony\Test\TestInterfaceWithVariadicParameter;
 use Eloquent\Phony\Test\TestInterfaceWithVariadicParameterByReference;
+use Eloquent\Phony\Test\TestInterfaceWithVariadicParameterWithNullableType;
 use Eloquent\Phony\Test\TestInterfaceWithVariadicParameterWithType;
 use Eloquent\Phony\Test\TestInvocable;
 use Eloquent\Phony\Test\TestTraitA;
@@ -169,6 +170,21 @@ class FunctionalTest extends TestCase
         $b = (object) [];
 
         $this->assertSame([$a, $b], $handle->get()->method($a, $b));
+    }
+
+    public function testVariadicParameterMockingWithNullableType()
+    {
+        $handle = mock(TestInterfaceWithVariadicParameterWithNullableType::class);
+        $handle->method->does(
+            function () {
+                return func_get_args();
+            }
+        );
+        $a = (object) [];
+        $b = null;
+        $c = (object) [];
+
+        $this->assertSame([$a, $b, $c], $handle->get()->method($a, $b, $c));
     }
 
     public function testVariadicParameterMockingByReference()
