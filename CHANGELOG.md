@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 4.0.1 (2020-08-29)
 
 - **[FIXED]** Nullable variadics can now be mocked ([#248] - thanks [@keksa]).
 
