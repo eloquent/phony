@@ -14,15 +14,15 @@
         </testsuite>
     </testsuites>
 
-    <logging>
-        <log type="coverage-text" target="php://stdout" showOnlySummary="true" />
-    </logging>
+    <coverage>
+        <report>
+            <text outputFile="php://stdout" showOnlySummary="true"/>
+        </report>
 
-    <filter>
-        <whitelist>
+        <include>
             <directory>src</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </coverage>
 
     <php>
         <ini name="error_reporting" value="-1"/>
