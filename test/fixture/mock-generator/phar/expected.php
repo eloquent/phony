@@ -935,7 +935,7 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function setMetadata(
-        \mixed $a0
+        $a0
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];

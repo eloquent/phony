@@ -58,6 +58,11 @@ class FunctionSignatureInspector
             $typehint = $match[3];
 
             switch ($typehint) {
+                case 'mixed ':
+                    $typehint = '';
+
+                    break;
+
                 case '':
                 case 'array ':
                 case 'bool ':
@@ -97,7 +102,7 @@ class FunctionSignatureInspector
                 $variadic = '...';
                 $optional = false;
 
-                if ($match[4]) {
+                if ($match[2] || $match[4]) {
                     $typehint = '?' . $typehint;
                 }
             } else {
@@ -112,7 +117,7 @@ class FunctionSignatureInspector
                     $defaultValue = ' = ' .
                         var_export($parameter->getDefaultValue(), true);
                 }
-            } elseif ($match[2] || !$isVariadic && ($optional || $match[4])) {
+            } elseif (!$isVariadic && ($optional || $match[2] || $match[4])) {
                 $defaultValue = ' = null';
             } else {
                 $defaultValue = '';
