@@ -26,7 +26,7 @@ class FunctionSignatureInspector
         return self::$instance;
     }
 
-    const PARAMETER_PATTERN = '/^\s*Parameter #\d+ \[ <(required|optional)> (\S+ )?(or NULL )?(&)?(?:\.\.\.)?\$(\S+)( = [^$]+)? ]$/m';
+    const PARAMETER_PATTERN = '/^\s*Parameter #\d+ \[ <(required|optional)> (\?)?(\S+ )?(or NULL )?(&)?(?:\.\.\.)?\$(\S+)( = [^$]+)? ]$/m';
 
     /**
      * Get the function signature of the supplied function.
@@ -55,7 +55,7 @@ class FunctionSignatureInspector
         foreach ($matches as $match) {
             $parameter = $parameters[++$index];
 
-            $typehint = $match[2];
+            $typehint = $match[3];
 
             switch ($typehint) {
                 case '':
@@ -90,14 +90,14 @@ class FunctionSignatureInspector
                     $typehint = '\\' . $typehint;
             }
 
-            $byReference = $match[4];
+            $byReference = $match[5];
             $isVariadic = $parameter->isVariadic();
 
             if ($isVariadic) {
                 $variadic = '...';
                 $optional = false;
 
-                if ($match[3]) {
+                if ($match[4]) {
                     $typehint = '?' . $typehint;
                 }
             } else {
@@ -105,14 +105,14 @@ class FunctionSignatureInspector
                 $optional = 'optional' === $match[1];
             }
 
-            if (isset($match[6])) {
-                if (' = NULL' === $match[6]) {
+            if (isset($match[7])) {
+                if (' = null' === $match[7] || ' = NULL' === $match[7]) {
                     $defaultValue = ' = null';
                 } else {
                     $defaultValue = ' = ' .
                         var_export($parameter->getDefaultValue(), true);
                 }
-            } elseif (!$isVariadic && ($optional || $match[3])) {
+            } elseif ($match[2] || !$isVariadic && ($optional || $match[4])) {
                 $defaultValue = ' = null';
             } else {
                 $defaultValue = '';
@@ -121,7 +121,7 @@ class FunctionSignatureInspector
             /**
              * @var string
              */
-            $name = $match[5];
+            $name = $match[6];
             $signature[$name] =
                 [$typehint, $byReference, $variadic, $defaultValue];
         }

@@ -89,7 +89,7 @@ class FunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionMethod('ReflectionClass', 'getMethods');
         $actual = $this->subject->signature($function);
         $expected = [
-            'filter' => ['', '', '', ' = null'],
+            'filter' => ['int ', '', '', ' = null'],
         ];
 
         $this->assertEquals($expected, $actual);
@@ -115,7 +115,7 @@ class FunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionMethod($this, 'methodA');
         $actual = $this->subject->signature($function);
         $expected = [
-            'a' => ['', '', '', ' = 4'],
+            'a' => ['', '', '', sprintf(' = %d', ReflectionMethod::IS_FINAL)],
             'b' => ['', '', '', " = 'a'"],
         ];
 
