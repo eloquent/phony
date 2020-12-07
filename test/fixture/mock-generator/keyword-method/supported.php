@@ -1,5 +1,5 @@
 <?php
 
-$message = 'Requires the PHP7 amqp extension.';
+$message = 'Requires the amqp extension.';
 
 return class_exists('AMQPQueue');
