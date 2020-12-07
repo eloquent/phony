@@ -797,7 +797,7 @@ class MockBuilderTest extends TestCase
         $this->setUpWith($this->typeNames);
         $actual = $this->subject->className();
 
-        $this->assertRegExp('/^PhonyMock_TestClassB_\d+$/', $actual);
+        $this->assertMatchesRegularExpression('/^PhonyMock_TestClassB_\d+$/', $actual);
         $this->assertTrue($this->subject->isFinalized());
         $this->assertTrue($this->subject->isBuilt());
         $this->assertSame($actual, $this->subject->className());
