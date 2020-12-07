@@ -19,6 +19,7 @@ _DOC_HTML_FILES := $(_DOC_MARKDOWN_FILES:doc/%.md=artifacts/build/doc-html/%.htm
 
 GENERATED_FILES += $(_HOOK_FIXTURE_OUTPUT_FILES) $(_MOCK_FIXTURE_OUTPUT_FILES) $(_VERIFICATION_FIXTURE_OUTPUT_FILES)
 CI_VERIFY_GENERATED_FILES :=
+PHP_COMPOSER_INSTALL_ARGS += --ignore-platform-reqs
 
 ################################################################################
 
