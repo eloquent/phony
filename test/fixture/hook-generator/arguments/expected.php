@@ -5,12 +5,19 @@ namespace Foo\Bar;
 function functionName(
     $a0,
     &$a1,
-    $a2,
-    $a3,
-    $a4,
-    $a5,
-    $a6,
-    \Eloquent\Phony\Test\TestClassA $a7,
+    \Eloquent\Phony\Test\TestClassA $a2,
+    $a3 = null,
+    $a4 = 111,
+    $a5 = array (
+),
+    $a6 = array (
+  0 => 'valueA',
+  1 => 'valueB',
+),
+    $a7 = array (
+  'keyA' => 'valueA',
+  'keyB' => 'valueB',
+),
     ?\Eloquent\Phony\Test\TestClassA $a8 = null,
     array $a9 = array (
 ),
