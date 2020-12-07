@@ -54,14 +54,14 @@ final class TestClassH
         return 'final protected ' . implode(func_get_args());
     }
 
-    final private static function testClassAStaticMethodE()
+    private static function testClassAStaticMethodE()
     {
-        return 'final private ' . implode(func_get_args());
+        return 'private ' . implode(func_get_args());
     }
 
-    final private function testClassAMethodE()
+    private function testClassAMethodE()
     {
-        return 'final private ' . implode(func_get_args());
+        return 'private ' . implode(func_get_args());
     }
 
     public $constructorArguments;
