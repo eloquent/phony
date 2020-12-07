@@ -48,7 +48,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function addFile(
         string $a0,
-        string $a1 = null
+        ?string $a1 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -141,7 +141,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function buildFromIterator(
         \Traversable $a0,
-        string $a1 = null
+        ?string $a1 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -221,7 +221,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function compress(
         int $a0,
-        string $a1 = null
+        ?string $a1 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -251,7 +251,7 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function decompress(
-        string $a0 = null
+        ?string $a0 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -278,9 +278,9 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function convertToExecutable(
-        int $a0 = null,
-        int $a1 = null,
-        string $a2 = null
+        ?int $a0 = null,
+        ?int $a1 = null,
+        ?string $a2 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -313,9 +313,9 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function convertToData(
-        int $a0 = null,
-        int $a1 = null,
-        string $a2 = null
+        ?int $a0 = null,
+        ?int $a1 = null,
+        ?string $a2 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -456,7 +456,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function extractTo(
         string $a0,
-        \array|string|null $a1 = null,
+        array|string|null $a1 = null,
         bool $a2 = false
     ) {
         $argumentCount = \func_num_args();
@@ -904,8 +904,8 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function setDefaultStub(
-        string $a0 = null,
-        string $a1 = null
+        ?string $a0 = null,
+        ?string $a1 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -963,7 +963,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function setSignatureAlgorithm(
         int $a0,
-        string $a1 = null
+        ?string $a1 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -1836,7 +1836,7 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function getFileInfo(
-        string $a0 = null
+        ?string $a0 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -1863,7 +1863,7 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function getPathInfo(
-        string $a0 = null
+        ?string $a0 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];

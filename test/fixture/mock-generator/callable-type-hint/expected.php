@@ -5,7 +5,7 @@ implements \Eloquent\Phony\Mock\Mock
 {
     public function methodA(
         callable $a0,
-        callable $a1 = null
+        ?callable $a1 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];

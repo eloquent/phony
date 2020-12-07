@@ -9,6 +9,10 @@ use ReflectionFunctionAbstract;
 
 /**
  * Inspects functions to determine their signature under PHP.
+ *
+ * The implementation here is much faster than using reflection due to reduced
+ * function call overhead. Phony needs to inspect a lot of functions, so this
+ * has a pretty significant impact on overall performance.
  */
 class FunctionSignatureInspector
 {
@@ -26,7 +30,73 @@ class FunctionSignatureInspector
         return self::$instance;
     }
 
-    const PARAMETER_PATTERN = '/^\s*Parameter #\d+ \[ <(required|optional)> (\?)?(\S+ )?(or NULL )?(&)?(?:\.\.\.)?\$(\S+)( = [^$]+)? ]$/m';
+    /**
+     * Matches the output from casting a ReflectionFunctionAbstract to a string.
+     *
+     * Prefix ------------------------------------------------------------------
+     *
+     *   Parameter #\d+ \[
+     *
+     * "Optional" flag ---------------------------------------------------------
+     *
+     *   (?:<required>|(<optional>)?)
+     *
+     *   Capture group 1:
+     *     Non-empty if the argument is optional
+     *
+     *   For some built-in methods, this used to be the only indication that an
+     *   argument was optional. Seems to be fixed in PHP 8, but still required
+     *   for PHP 7.
+     *
+     * Type definition ---------------------------------------------------------
+     *
+     *   (?:(\?)?(\S+) (or NULL )?)?
+     *
+     *   Capture group 2:
+     *     Non-empty if the type is nullable (PHP 8)
+     *
+     *   Capture group 3:
+     *     Contains the type definition itself
+     *
+     *   Capture group 4:
+     *     Non-empty if the type is nullable (PHP 7)
+     *
+     * By-reference arguments --------------------------------------------------
+     *
+     *   ?(&)?
+     *
+     *   Capture group 5:
+     *     Non-empty if the argument is by-reference
+     *
+     * Variadic arguments ------------------------------------------------------
+     *
+     *   (\.{3})?
+     *
+     *   Capture group 6:
+     *     Non-empty if the argument is by-variadic
+     *
+     * Argument name -----------------------------------------------------------
+     *
+     *   \$(\S+)
+     *
+     *   Capture group 7:
+     *     Contains the argument name (without the "$" symbol)
+     *
+     * Default value -----------------------------------------------------------
+     *
+     *   ((?: = \S+)?)
+     *
+     *   Capture group 8:
+     *     Contains a string representation the default value
+     *
+     *   Matches the default value. Can only be trusted for default values of
+     *   "null", otherwise the *actual* default must be read via reflection.
+     *
+     *   It's expressed as a capturing group around a non-capturing group,
+     *   because otherwise PHP will leave this group's offset completely
+     *   undefined in the match array.
+     */
+    const PARAMETER_PATTERN = '/Parameter #\d+ \[ (?:<required>|(<optional>)?) (?:(\?)?(\S+) (or NULL )?)?(&)?(\.{3})?\$(\S+)((?: = \S+)?)/';
 
     /**
      * Get the function signature of the supplied function.
@@ -48,91 +118,117 @@ class FunctionSignatureInspector
             return [];
         }
 
-        $parameters = $function->getParameters();
         $signature = [];
+        $parameters = null;
         $index = -1;
 
         foreach ($matches as $match) {
-            $parameter = $parameters[++$index];
-
-            $typehint = $match[3];
-
-            switch ($typehint) {
-                case 'mixed ':
-                    $typehint = '';
-
-                    break;
-
-                case '':
-                case 'array ':
-                case 'bool ':
-                case 'callable ':
-                case 'float ':
-                case 'int ':
-                case 'iterable ':
-                case 'object ':
-                case 'string ':
-                    break;
-
-                case 'boolean ':
-                    $typehint = 'bool ';
-
-                    break;
-
-                case 'integer ':
-                    $typehint = 'int ';
-
-                    break;
-
-                case 'self ':
-                    /** @var ReflectionClass<object> */
-                    $declaringClass = $parameter->getDeclaringClass();
-                    $typehint = '\\' . $declaringClass->getName() . ' ';
-
-                    break;
-
-                default:
-                    $typehint = '\\' . $typehint;
-            }
-
-            $byReference = $match[5];
-            $isVariadic = $parameter->isVariadic();
-
-            if ($isVariadic) {
-                $variadic = '...';
-                $optional = false;
-
-                if ($match[2] || $match[4]) {
-                    $typehint = '?' . $typehint;
-                }
-            } else {
-                $variadic = '';
-                $optional = 'optional' === $match[1];
-            }
-
-            if (isset($match[7])) {
-                if (' = null' === $match[7] || ' = NULL' === $match[7]) {
-                    $defaultValue = ' = null';
-                } else {
-                    $defaultValue = ' = ' .
-                        var_export($parameter->getDefaultValue(), true);
-                }
-            } elseif (!$isVariadic && ($optional || $match[2] || $match[4])) {
-                $defaultValue = ' = null';
-            } else {
-                $defaultValue = '';
-            }
+            ++$index;
 
             /**
-             * @var string
+             * @var string $isOptional
+             * @var string $isNullablePhp8
+             * @var string $typeReference
+             * @var string $isNullablePhp7
+             * @var string $byReference
+             * @var string $variadic
+             * @var string $name
+             * @var string $defaultValue
              */
-            $name = $match[6];
-            $signature[$name] =
-                [$typehint, $byReference, $variadic, $defaultValue];
+            list(,
+                $isOptional,
+                $isNullablePhp8,
+                $typeReference,
+                $isNullablePhp7,
+                $byReference,
+                $variadic,
+                $name,
+                $defaultValue,
+            ) = $match;
+
+            $type = '';
+
+            if ('mixed' !== $typeReference) {
+                $subTypes = explode(self::UNION, $typeReference);
+
+                foreach ($subTypes as $subType) {
+                    if ($type) {
+                        $type .= self::UNION;
+                    }
+
+                    switch ($subType) {
+                        case '':
+                        case 'array':
+                        case 'bool':
+                        case 'callable':
+                        case 'float':
+                        case 'int':
+                        case 'iterable':
+                        case 'null':
+                        case 'object':
+                        case 'string':
+                            $type .= $subType;
+
+                            break;
+
+                        case 'self':
+                            if (!$parameters) {
+                                $parameters = $function->getParameters();
+                            }
+
+                            $parameter = $parameters[$index];
+
+                            /** @var ReflectionClass<object> */
+                            $declaringClass = $parameter->getDeclaringClass();
+                            $type .= self::NS . $declaringClass->getName();
+
+                            break;
+
+                        default:
+                            $type .= self::NS . $subType;
+                    }
+                }
+            }
+
+            if ($type) {
+                $type .= ' ';
+
+                if ($isNullablePhp7 || $isNullablePhp8) {
+                    $type = '?' . $type;
+                }
+            }
+
+            if ($defaultValue) {
+                if ($defaultValue === ' = NULL') {
+                    $defaultValue = self::DEFAULT_NULL;
+                } elseif ($defaultValue !== self::DEFAULT_NULL) {
+                    if (!$parameters) {
+                        $parameters = $function->getParameters();
+                    }
+
+                    $parameter = $parameters[$index];
+                    $realDefaultValue = $parameter->getDefaultValue();
+
+                    if (null === $realDefaultValue) {
+                        $defaultValue = self::DEFAULT_NULL;
+                    } else {
+                        $defaultValue =
+                            ' = ' . var_export($realDefaultValue, true);
+                    }
+                }
+            } elseif ($isOptional && !$variadic) {
+                $defaultValue = self::DEFAULT_NULL;
+            }
+
+            $signature[$name] = [$type, $byReference, $variadic, $defaultValue];
         }
 
         return $signature;
     }
+
+    const DEFAULT_NULL = ' = null';
+    const NS = '\\';
+    const UNION = '|';
 
     /**
      * @var ?self

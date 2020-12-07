@@ -6,7 +6,7 @@ class MockGeneratorNonOptionalNullableObject
 implements \Eloquent\Phony\Mock\Mock
 {
     public function methodA(
-        \stdClass $a0 = null,
+        ?\stdClass $a0,
         $a1
     ) {
         $argumentCount = \func_num_args();

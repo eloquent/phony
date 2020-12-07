@@ -611,10 +611,10 @@ implements \Eloquent\Phony\Mock\Mock,
 
     public function methodC(
         \Eloquent\Phony\Test\TestClassA $a0,
-        \Eloquent\Phony\Test\TestClassA $a1 = null,
+        ?\Eloquent\Phony\Test\TestClassA $a1 = null,
         array $a2 = array (
 ),
-        array $a3 = null
+        ?array $a3 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];

@@ -25,9 +25,9 @@ class FunctionSignatureInspectorTest extends TestCase
             function (
                 $a,
                 &$b,
-                array $c = null,
+                ?array $c,
                 array &$d,
-                \Type $e = null,
+                ?\Type $e,
                 \Type &$f,
                 \Namespaced\Type $g,
                 \Namespaced\Type &$h,
@@ -45,20 +45,20 @@ class FunctionSignatureInspectorTest extends TestCase
         $expected = [
             'a' => ['',                                         '',  '', ''],
             'b' => ['',                                         '&', '', ''],
-            'c' => ['array ',                                   '',  '', ' = null'],
+            'c' => ['?array ',                                   '',  '', ''],
             'd' => ['array ',                                   '&', '', ''],
-            'e' => ['\Type ',                                   '',  '', ' = null'],
+            'e' => ['?\Type ',                                   '',  '', ''],
             'f' => ['\Type ',                                   '&', '', ''],
             'g' => ['\Namespaced\Type ',                        '',  '', ''],
             'h' => ['\Namespaced\Type ',                        '&', '', ''],
             'i' => ['\Eloquent\Phony\Reflection\FeatureDetector ', '',  '', ''],
             'j' => ['',                                         '',  '', " = 'string'"],
             'k' => ['',                                         '&', '', ' = 111'],
-            'm' => ['array ',                                   '&', '', ' = null'],
-            'n' => ['\Type ',                                   '',  '', ' = null'],
-            'o' => ['\Type ',                                   '&', '', ' = null'],
-            'p' => ['\Namespaced\Type ',                        '',  '', ' = null'],
-            'q' => ['\Namespaced\Type ',                        '&', '', ' = null'],
+            'm' => ['?array ',                                   '&', '', ' = null'],
+            'n' => ['?\Type ',                                   '',  '', ' = null'],
+            'o' => ['?\Type ',                                   '&', '', ' = null'],
+            'p' => ['?\Namespaced\Type ',                        '',  '', ' = null'],
+            'q' => ['?\Namespaced\Type ',                        '&', '', ' = null'],
         ];
 
         $this->assertEquals($expected, $actual);
@@ -84,12 +84,15 @@ class FunctionSignatureInspectorTest extends TestCase
         $this->assertSame(['a', 'b', 'c' => 'd'], eval('return $r' . $actual['a'][3] . ';'));
     }
 
+    /**
+     * @requires PHP >= 8
+     */
     public function testSignatureWithUnavailableDefaultValue()
     {
         $function = new ReflectionMethod('ReflectionClass', 'getMethods');
         $actual = $this->subject->signature($function);
         $expected = [
-            'filter' => ['int ', '', '', ' = null'],
+            'filter' => ['?int ', '', '', ' = null'],
         ];
 
         $this->assertEquals($expected, $actual);
@@ -101,9 +104,9 @@ class FunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionFunction(function (callable $a = null, callable $b, callable $c = null) {});
         $actual = $this->subject->signature($function);
         $expected = [
-            'a' => ['callable ', '', '', ' = null'],
+            'a' => ['?callable ', '', '', ''],
             'b' => ['callable ', '', '', ''],
-            'c' => ['callable ', '', '', ' = null'],
+            'c' => ['?callable ', '', '', ' = null'],
         ];
 
         $this->assertEquals($expected, $actual);
@@ -128,7 +131,7 @@ class FunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionMethod($this, 'methodB');
         $actual = $this->subject->signature($function);
         $expected = [
-            'a' => ['\Eloquent\Phony\Reflection\FunctionSignatureInspectorTest ', '', '', ' = null'],
+            'a' => ['?\Eloquent\Phony\Reflection\FunctionSignatureInspectorTest ', '', '', ''],
             'b' => ['\Eloquent\Phony\Reflection\FunctionSignatureInspectorTest ', '', '', ''],
         ];
 

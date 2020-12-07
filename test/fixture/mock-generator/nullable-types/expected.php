@@ -5,8 +5,8 @@ implements \Eloquent\Phony\Mock\Mock,
            \Eloquent\Phony\Test\TestInterfaceWithNullableTypes
 {
     public static function customStaticMethod(
-        string $a0 = null,
-        \stdClass $a1 = null
+        ?string $a0,
+        ?\stdClass $a1
     ) : ?\TestClassA {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -46,8 +46,8 @@ implements \Eloquent\Phony\Mock\Mock,
     }
 
     public function staticMethodA(
-        string $a0 = null,
-        \stdClass $a1 = null
+        ?string $a0,
+        ?\stdClass $a1
     ) : ?\Eloquent\Phony\Test\TestClassA {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -99,8 +99,8 @@ implements \Eloquent\Phony\Mock\Mock,
     }
 
     public function methodA(
-        string $a0 = null,
-        \stdClass $a1 = null
+        ?string $a0,
+        ?\stdClass $a1
     ) : ?\Eloquent\Phony\Test\TestClassA {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -152,8 +152,8 @@ implements \Eloquent\Phony\Mock\Mock,
     }
 
     public function customMethod(
-        string $a0 = null,
-        \stdClass $a1 = null
+        ?string $a0,
+        ?\stdClass $a1
     ) : ?\TestClassA {
         $argumentCount = \func_num_args();
         $arguments = [];
