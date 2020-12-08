@@ -8,6 +8,7 @@ use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use ReflectionFunctionAbstract;
 use ReflectionNamedType;
 use ReflectionType;
+use ReflectionUnionType;
 
 /**
  * Creates empty values from arbitrary types.
@@ -63,12 +64,20 @@ class EmptyValueFactory
             return null;
         }
 
-        /** @var ReflectionNamedType */
-        $namedType = $type;
-        $typeName = $namedType->getName();
+        if ($type instanceof ReflectionNamedType) {
+            $typeName = $type->getName();
+        } elseif ($type instanceof ReflectionUnionType) {
+            $subTypes = $type->getTypes();
+            /** @var ReflectionNamedType */
+            $lastSubType = end($subTypes);
+            $typeName = $lastSubType->getName();
+        } else {
+            return null;
+        }
 
         switch (strtolower($typeName)) {
             case 'bool':
+            case 'false':
                 return false;
 
             case 'int':

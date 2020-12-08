@@ -22,6 +22,7 @@ use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\TestClassC;
 use Eloquent\Phony\Test\TestInterfaceWithReturnType;
 use EmptyIterator;
 use Error;
@@ -116,6 +117,71 @@ class EmptyValueFactoryTest extends TestCase
     public function testFromType($type, $expected)
     {
         $this->assertSame($expected, $this->subject->fromType($this->createType($type)));
+    }
+
+    public function fromTypeWithUnionTypeData()
+    {
+        $types = [
+            'string|false' => false,
+            'string|object' => '',
+            'object|string' => '',
+            'array|generator' => [],
+            'callable|object|array|string|int|float|bool|null' => null,
+            'bool|callable|object|null|array|string|int|float' => null,
+            'callable|object|array|string|int|float|bool'      => false,
+            'callable|object|array|string|int|float'           => .0,
+            'callable|object|array|string|int'                 => 0,
+            'callable|object|array|string'                     => '',
+            'callable|object|array'                            => [],
+        ];
+        $data = [];
+
+        foreach ($types as $type => $expected) {
+            $data[$type] = [$type, $expected];
+        }
+
+        return $data;
+    }
+
+    /**
+     * @requires PHP >= 8
+     *
+     * @dataProvider fromTypeWithUnionTypeData
+     */
+    public function testFromTypeWithUnionType($type, $expected)
+    {
+        $this->assertSame($expected, $this->subject->fromType($this->createType($type)));
+    }
+
+    /**
+     * @requires PHP >= 8
+     */
+    public function testFromTypeWithComplexUnionType()
+    {
+        $callableOrClosure = $this->subject->fromType($this->createType('callable|closure'));
+
+        $this->assertNotInstanceOf(Closure::class, $callableOrClosure);
+        $this->assertInstanceOf(StubVerifier::class, $callableOrClosure);
+
+        $objectOrCallable = $this->subject->fromType($this->createType('callable|object'));
+
+        $this->assertFalse(is_callable($objectOrCallable));
+        $this->assertIsObject($objectOrCallable);
+        $this->assertSame([], (array) $objectOrCallable);
+
+        $objectOrIterable = $this->subject->fromType($this->createType('iterable|object'));
+
+        $this->assertFalse(is_iterable($objectOrIterable));
+        $this->assertIsObject($objectOrIterable);
+        $this->assertSame([], (array) $objectOrIterable);
+
+        $classAOrclassC = $this->subject->fromType($this->createType(TestClassA::class . '|' . TestClassC::class));
+
+        $this->assertInstanceOf(TestClassC::class, $classAOrclassC);
+
+        $classCOrclassA = $this->subject->fromType($this->createType(TestClassC::class . '|' . TestClassA::class));
+
+        $this->assertInstanceOf(TestClassA::class, $classCOrclassA);
     }
 
     public function testFromTypeWithStdClass()
