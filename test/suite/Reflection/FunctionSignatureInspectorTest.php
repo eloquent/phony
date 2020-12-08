@@ -149,6 +149,23 @@ class FunctionSignatureInspectorTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * @requires PHP >= 8
+     */
+    public function testSignatureWithUnionType()
+    {
+        $function = new ReflectionFunction(
+            eval('return function (callable|object|array|string|int|float|false|null $a) {};')
+        );
+        $actual = $this->subject->signature($function);
+        $expected = [
+            'a' => ['callable|object|array|string|int|float|false|null ', '', '', ''],
+        ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
     public function testInstance()
     {
         $class = get_class($this->subject);

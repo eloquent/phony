@@ -161,6 +161,7 @@ class FunctionSignatureInspector
                         case 'array':
                         case 'bool':
                         case 'callable':
+                        case 'false':
                         case 'float':
                         case 'int':
                         case 'iterable':
