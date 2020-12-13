@@ -39,7 +39,7 @@ class FunctionSignatureInspectorTest extends TestCase
                 \Type &$o = null,
                 \Namespaced\Type $p = null,
                 \Namespaced\Type &$q = null
-            ) {}
+            ): void {}
         );
         $actual = $this->subject->signature($function);
         $expected = [
@@ -61,6 +61,7 @@ class FunctionSignatureInspectorTest extends TestCase
                 'p' => ['?\Namespaced\Type ',                        '',  '', ' = null'],
                 'q' => ['?\Namespaced\Type ',                        '&', '', ' = null'],
             ],
+            'void',
         ];
 
         $this->assertEquals($expected, $actual);
@@ -71,7 +72,7 @@ class FunctionSignatureInspectorTest extends TestCase
     {
         $function = new ReflectionFunction(function () {});
         $actual = $this->subject->signature($function);
-        $expected = [[]];
+        $expected = [[], ''];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
@@ -97,6 +98,7 @@ class FunctionSignatureInspectorTest extends TestCase
             [
                 'filter' => ['?int ', '', '', ' = null'],
             ],
+            '',
         ];
 
         $this->assertEquals($expected, $actual);
@@ -113,6 +115,7 @@ class FunctionSignatureInspectorTest extends TestCase
                 'b' => ['callable ', '', '', ''],
                 'c' => ['?callable ', '', '', ' = null'],
             ],
+            '',
         ];
 
         $this->assertEquals($expected, $actual);
@@ -128,6 +131,7 @@ class FunctionSignatureInspectorTest extends TestCase
                 'a' => ['', '', '', sprintf(' = %d', ReflectionMethod::IS_FINAL)],
                 'b' => ['', '', '', " = 'a'"],
             ],
+            '',
         ];
 
         $this->assertEquals($expected, $actual);
@@ -143,6 +147,7 @@ class FunctionSignatureInspectorTest extends TestCase
                 'a' => [sprintf('?\%s ', FunctionSignatureInspectorTest::class), '', '', ''],
                 'b' => [sprintf('\%s ', FunctionSignatureInspectorTest::class), '', '', ''],
             ],
+            sprintf('\%s', FunctionSignatureInspectorTest::class),
         ];
 
         $this->assertEquals($expected, $actual);
@@ -158,7 +163,22 @@ class FunctionSignatureInspectorTest extends TestCase
                 'a' => [sprintf('?\%s ', TestCase::class), '', '', ''],
                 'b' => [sprintf('\%s ', TestCase::class), '', '', ''],
             ],
+            sprintf('\%s', TestCase::class),
         ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @requires PHP >= 8
+     */
+    public function testSignatureWithStaticTypeHint()
+    {
+        eval('class TestClassWithStaticReturnType { public function methodA(): static {}}');
+        $function = new ReflectionMethod('TestClassWithStaticReturnType', 'methodA');
+        $actual = $this->subject->signature($function);
+        $expected = [[], 'static'];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
@@ -168,10 +188,46 @@ class FunctionSignatureInspectorTest extends TestCase
     {
         $function = new ReflectionFunction(function (...$a) {});
         $actual = $this->subject->signature($function);
-        $expected = [['a' => ['', '', '...', '']]];
+        $expected = [['a' => ['', '', '...', '']], ''];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
+    }
+
+    public function signatureWithReturnTypeData()
+    {
+        return [
+            ['',      function () {}],
+            ['array', function (): array { return []; }],
+            ['bool',  function (): bool { return false; }],
+            ['callable',  function (): callable { return function () {}; }],
+            ['float',  function (): float { return .0; }],
+            ['int',  function (): int { return 0; }],
+            ['iterable',  function (): iterable { return []; }],
+            ['object',  function (): object { return (object) []; }],
+            ['string',  function (): string { return ''; }],
+            ['void',  function (): void {}],
+        ];
+    }
+
+    /**
+     * @dataProvider signatureWithReturnTypeData
+     */
+    public function testSignatureWithReturnType(string $expected, callable $function)
+    {
+        list(, $actual) = $this->subject->signature(new ReflectionFunction($function));
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @requires PHP >= 8
+     */
+    public function testSignatureWithMixedReturnType()
+    {
+        list(, $actual) = $this->subject->signature(new ReflectionFunction(function (): mixed {}));
+
+        $this->assertEquals('mixed', $actual);
     }
 
     /**
@@ -179,14 +235,17 @@ class FunctionSignatureInspectorTest extends TestCase
      */
     public function testSignatureWithUnionType()
     {
+        $actual = 'callable|object|array|string|int|float|false|null';
+        $expected = 'callable|object|array|string|int|float|false|null';
         $function = new ReflectionFunction(
-            eval('return function (callable|object|array|string|int|float|false|null $a) {};')
+            eval(sprintf('return function (%s $a): %s {};', $actual, $actual))
         );
         $actual = $this->subject->signature($function);
         $expected = [
             [
-                'a' => ['callable|object|array|string|int|float|false|null ', '', '', ''],
+                'a' => [sprintf('%s ', $expected), '', '', ''],
             ],
+            $expected,
         ];
 
         $this->assertEquals($expected, $actual);
@@ -210,11 +269,13 @@ class FunctionSignatureInspectorTest extends TestCase
     {
     }
 
-    protected function methodB(self $a = null, self $b)
+    protected function methodB(self $a = null, self $b): self
     {
+        return $this;
     }
 
-    protected function methodC(parent $a = null, parent $b)
+    protected function methodC(parent $a = null, parent $b): parent
     {
+        return $this;
     }
 }

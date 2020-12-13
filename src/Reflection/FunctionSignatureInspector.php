@@ -6,6 +6,7 @@ namespace Eloquent\Phony\Reflection;
 
 use ReflectionClass;
 use ReflectionFunctionAbstract;
+use ReflectionMethod;
 
 /**
  * Inspects functions to determine their signature under PHP.
@@ -31,7 +32,8 @@ class FunctionSignatureInspector
     }
 
     /**
-     * Matches the output from casting a ReflectionFunctionAbstract to a string.
+     * Matches the parameter information in the result of casting a
+     * ReflectionFunctionAbstract to a string.
      *
      * Prefix ------------------------------------------------------------------
      *
@@ -99,31 +101,99 @@ class FunctionSignatureInspector
     const PARAMETER_PATTERN = '/Parameter #\d+ \[ (?:<required>|(<optional>)?) (?:(\?)?(\S+) (or NULL )?)?(&)?(\.{3})?\$(\S+)((?: = \S+)?)/';
 
     /**
+     * Matches the return tyoe information in the result of casting a
+     * ReflectionFunctionAbstract to a string.
+     */
+    const RETURN_PATTERN = '/Return \[ (\S+)/';
+
+    /**
      * Get the function signature of the supplied function.
      *
      * @param ReflectionFunctionAbstract $function The function.
      *
-     * @return array<int,array<string,array<int,string>>> The function signature.
+     * @return array{0:array<string,array<int,string>>,1:string} The function signature.
      */
     public function signature(ReflectionFunctionAbstract $function): array
     {
-        $isMatch = preg_match_all(
+        $functionString = (string) $function;
+        $hasReturnType = preg_match(
+            static::RETURN_PATTERN,
+            $functionString,
+            $returnMatches
+        );
+        $hasParameters = preg_match_all(
             static::PARAMETER_PATTERN,
-            (string) $function,
-            $matches,
+            $functionString,
+            $parameterMatches,
             PREG_SET_ORDER
         );
 
-        $signature = [[]];
+        $returnType = '';
 
-        if (!$isMatch) {
+        if ($hasReturnType) {
+            list(, $typeReference) = $returnMatches;
+
+            $subTypes = explode(self::UNION, $typeReference);
+
+            foreach ($subTypes as $subType) {
+                if ($returnType) {
+                    $returnType .= self::UNION;
+                }
+
+                switch ($subType) {
+                    case 'array':
+                    case 'bool':
+                    case 'callable':
+                    case 'false':
+                    case 'float':
+                    case 'int':
+                    case 'iterable':
+                    case 'mixed':
+                    case 'null':
+                    case 'object':
+                    case 'static':
+                    case 'string':
+                    case 'void':
+                        $returnType .= $subType;
+
+                        break;
+
+                    case 'self':
+                        /** @var ReflectionMethod */
+                        $method = $function;
+                        /** @var ReflectionClass<object> */
+                        $declaringClass = $method->getDeclaringClass();
+                        $returnType .= self::NS . $declaringClass->getName();
+
+                        break;
+
+                    case 'parent':
+                        /** @var ReflectionMethod */
+                        $method = $function;
+                        /** @var ReflectionClass<object> */
+                        $declaringClass = $method->getDeclaringClass();
+                        /** @var ReflectionClass<object> */
+                        $parentClass = $declaringClass->getParentClass();
+                        $returnType .= self::NS . $parentClass->getName();
+
+                        break;
+
+                    default:
+                        $returnType .= self::NS . $subType;
+                }
+            }
+        }
+
+        $signature = [[], $returnType];
+
+        if (!$hasParameters) {
             return $signature;
         }
 
         $parameters = null;
         $index = -1;
 
-        foreach ($matches as $match) {
+        foreach ($parameterMatches as $match) {
             ++$index;
 
             /**
@@ -149,7 +219,7 @@ class FunctionSignatureInspector
 
             $type = '';
 
-            if ('mixed' !== $typeReference) {
+            if ($typeReference && 'mixed' !== $typeReference) {
                 $subTypes = explode(self::UNION, $typeReference);
 
                 foreach ($subTypes as $subType) {
@@ -166,6 +236,7 @@ class FunctionSignatureInspector
                         case 'float':
                         case 'int':
                         case 'iterable':
+                        case 'mixed':
                         case 'null':
                         case 'object':
                         case 'string':
@@ -237,7 +308,8 @@ class FunctionSignatureInspector
                 $defaultValue = self::DEFAULT_NULL;
             }
 
-            $signature[0][$name] = [$type, $byReference, $variadic, $defaultValue];
+            $signature[0][$name] =
+                [$type, $byReference, $variadic, $defaultValue];
         }
 
         return $signature;

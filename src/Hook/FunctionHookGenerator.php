@@ -26,9 +26,9 @@ class FunctionHookGenerator
     /**
      * Generate the source code for a function hook.
      *
-     * @param string                                     $name      The function name.
-     * @param string                                     $namespace The namespace.
-     * @param array<int,array<string,array<int,string>>> $signature The function signature.
+     * @param string                                            $name      The function name.
+     * @param string                                            $namespace The namespace.
+     * @param array{0:array<string,array<int,string>>,1:string} $signature The function signature.
      *
      * @return string The source code.
      */
