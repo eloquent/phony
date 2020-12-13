@@ -26,9 +26,9 @@ class FunctionHookGenerator
     /**
      * Generate the source code for a function hook.
      *
-     * @param string                          $name      The function name.
-     * @param string                          $namespace The namespace.
-     * @param array<string,array<int,string>> $signature The function signature.
+     * @param string                                     $name      The function name.
+     * @param string                                     $namespace The namespace.
+     * @param array<int,array<string,array<int,string>>> $signature The function signature.
      *
      * @return string The source code.
      */
@@ -38,13 +38,14 @@ class FunctionHookGenerator
         array $signature
     ): string {
         $source = "namespace $namespace;\n\nfunction $name";
-        $parameterCount = count($signature);
+        list($parameters) = $signature;
+        $parameterCount = count($parameters);
 
         if ($parameterCount > 0) {
             $index = -1;
             $isFirst = true;
 
-            foreach ($signature as $parameter) {
+            foreach ($parameters as $parameter) {
                 if ($isFirst) {
                     $isFirst = false;
                     $source .= "(\n    ";
@@ -72,7 +73,7 @@ class FunctionHookGenerator
             $argumentPacking = "\n";
             $index = -1;
 
-            foreach ($signature as $parameter) {
+            foreach ($parameters as $parameter) {
                 if ($parameter[2]) {
                     --$parameterCount;
 

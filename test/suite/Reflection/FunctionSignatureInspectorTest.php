@@ -43,22 +43,24 @@ class FunctionSignatureInspectorTest extends TestCase
         );
         $actual = $this->subject->signature($function);
         $expected = [
-            'a' => ['',                                         '',  '', ''],
-            'b' => ['',                                         '&', '', ''],
-            'c' => ['?array ',                                   '',  '', ''],
-            'd' => ['array ',                                   '&', '', ''],
-            'e' => ['?\Type ',                                   '',  '', ''],
-            'f' => ['\Type ',                                   '&', '', ''],
-            'g' => ['\Namespaced\Type ',                        '',  '', ''],
-            'h' => ['\Namespaced\Type ',                        '&', '', ''],
-            'i' => ['\Eloquent\Phony\Reflection\FeatureDetector ', '',  '', ''],
-            'j' => ['',                                         '',  '', " = 'string'"],
-            'k' => ['',                                         '&', '', ' = 111'],
-            'm' => ['?array ',                                   '&', '', ' = null'],
-            'n' => ['?\Type ',                                   '',  '', ' = null'],
-            'o' => ['?\Type ',                                   '&', '', ' = null'],
-            'p' => ['?\Namespaced\Type ',                        '',  '', ' = null'],
-            'q' => ['?\Namespaced\Type ',                        '&', '', ' = null'],
+            [
+                'a' => ['',                                         '',  '', ''],
+                'b' => ['',                                         '&', '', ''],
+                'c' => ['?array ',                                   '',  '', ''],
+                'd' => ['array ',                                   '&', '', ''],
+                'e' => ['?\Type ',                                   '',  '', ''],
+                'f' => ['\Type ',                                   '&', '', ''],
+                'g' => ['\Namespaced\Type ',                        '',  '', ''],
+                'h' => ['\Namespaced\Type ',                        '&', '', ''],
+                'i' => ['\Eloquent\Phony\Reflection\FeatureDetector ', '',  '', ''],
+                'j' => ['',                                         '',  '', " = 'string'"],
+                'k' => ['',                                         '&', '', ' = 111'],
+                'm' => ['?array ',                                   '&', '', ' = null'],
+                'n' => ['?\Type ',                                   '',  '', ' = null'],
+                'o' => ['?\Type ',                                   '&', '', ' = null'],
+                'p' => ['?\Namespaced\Type ',                        '',  '', ' = null'],
+                'q' => ['?\Namespaced\Type ',                        '&', '', ' = null'],
+            ],
         ];
 
         $this->assertEquals($expected, $actual);
@@ -69,7 +71,7 @@ class FunctionSignatureInspectorTest extends TestCase
     {
         $function = new ReflectionFunction(function () {});
         $actual = $this->subject->signature($function);
-        $expected = [];
+        $expected = [[]];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
@@ -80,8 +82,8 @@ class FunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionFunction(function ($a = ['a', 'b', 'c' => 'd']) {});
         $actual = $this->subject->signature($function);
 
-        $this->assertArrayHasKey('a', $actual);
-        $this->assertSame(['a', 'b', 'c' => 'd'], eval('return $r' . $actual['a'][3] . ';'));
+        $this->assertArrayHasKey('a', $actual[0]);
+        $this->assertSame(['a', 'b', 'c' => 'd'], eval('return $r' . $actual[0]['a'][3] . ';'));
     }
 
     /**
@@ -92,7 +94,9 @@ class FunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionMethod('ReflectionClass', 'getMethods');
         $actual = $this->subject->signature($function);
         $expected = [
-            'filter' => ['?int ', '', '', ' = null'],
+            [
+                'filter' => ['?int ', '', '', ' = null'],
+            ],
         ];
 
         $this->assertEquals($expected, $actual);
@@ -104,9 +108,11 @@ class FunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionFunction(function (callable $a = null, callable $b, callable $c = null) {});
         $actual = $this->subject->signature($function);
         $expected = [
-            'a' => ['?callable ', '', '', ''],
-            'b' => ['callable ', '', '', ''],
-            'c' => ['?callable ', '', '', ' = null'],
+            [
+                'a' => ['?callable ', '', '', ''],
+                'b' => ['callable ', '', '', ''],
+                'c' => ['?callable ', '', '', ' = null'],
+            ],
         ];
 
         $this->assertEquals($expected, $actual);
@@ -118,8 +124,10 @@ class FunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionMethod($this, 'methodA');
         $actual = $this->subject->signature($function);
         $expected = [
-            'a' => ['', '', '', sprintf(' = %d', ReflectionMethod::IS_FINAL)],
-            'b' => ['', '', '', " = 'a'"],
+            [
+                'a' => ['', '', '', sprintf(' = %d', ReflectionMethod::IS_FINAL)],
+                'b' => ['', '', '', " = 'a'"],
+            ],
         ];
 
         $this->assertEquals($expected, $actual);
@@ -131,8 +139,10 @@ class FunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionMethod($this, 'methodB');
         $actual = $this->subject->signature($function);
         $expected = [
-            'a' => [sprintf('?\%s ', FunctionSignatureInspectorTest::class), '', '', ''],
-            'b' => [sprintf('\%s ', FunctionSignatureInspectorTest::class), '', '', ''],
+            [
+                'a' => [sprintf('?\%s ', FunctionSignatureInspectorTest::class), '', '', ''],
+                'b' => [sprintf('\%s ', FunctionSignatureInspectorTest::class), '', '', ''],
+            ],
         ];
 
         $this->assertEquals($expected, $actual);
@@ -144,8 +154,10 @@ class FunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionMethod($this, 'methodC');
         $actual = $this->subject->signature($function);
         $expected = [
-            'a' => [sprintf('?\%s ', TestCase::class), '', '', ''],
-            'b' => [sprintf('\%s ', TestCase::class), '', '', ''],
+            [
+                'a' => [sprintf('?\%s ', TestCase::class), '', '', ''],
+                'b' => [sprintf('\%s ', TestCase::class), '', '', ''],
+            ],
         ];
 
         $this->assertEquals($expected, $actual);
@@ -156,7 +168,7 @@ class FunctionSignatureInspectorTest extends TestCase
     {
         $function = new ReflectionFunction(function (...$a) {});
         $actual = $this->subject->signature($function);
-        $expected = ['a' => ['', '', '...', '']];
+        $expected = [['a' => ['', '', '...', '']]];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
@@ -172,7 +184,9 @@ class FunctionSignatureInspectorTest extends TestCase
         );
         $actual = $this->subject->signature($function);
         $expected = [
-            'a' => ['callable|object|array|string|int|float|false|null ', '', '', ''],
+            [
+                'a' => ['callable|object|array|string|int|float|false|null ', '', '', ''],
+            ],
         ];
 
         $this->assertEquals($expected, $actual);

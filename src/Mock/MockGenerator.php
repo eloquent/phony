@@ -246,8 +246,8 @@ class MockGenerator
     public static function ${returnsReference}__callStatic(
 EOD;
 
-        $signature = $this->signatureInspector
-            ->signature($methodReflector);
+        list($signature) =
+            $this->signatureInspector->signature($methodReflector);
         $index = -1;
 
         foreach ($signature as $parameter) {
@@ -390,7 +390,8 @@ EOD;
                     continue 2;
             }
 
-            $signature = $this->signatureInspector->signature($methodReflector);
+            list($signature) =
+                $this->signatureInspector->signature($methodReflector);
 
             if ($method->isCustom()) {
                 $parameterName = null;
@@ -583,7 +584,8 @@ EOD;
 
     public function ${returnsReference}__call(
 EOD;
-        $signature = $this->signatureInspector->signature($methodReflector);
+        list($signature) =
+            $this->signatureInspector->signature($methodReflector);
         $index = -1;
 
         foreach ($signature as $parameter) {

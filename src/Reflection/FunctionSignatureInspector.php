@@ -103,7 +103,7 @@ class FunctionSignatureInspector
      *
      * @param ReflectionFunctionAbstract $function The function.
      *
-     * @return array<string,array<int,string>> The function signature.
+     * @return array<int,array<string,array<int,string>>> The function signature.
      */
     public function signature(ReflectionFunctionAbstract $function): array
     {
@@ -114,11 +114,12 @@ class FunctionSignatureInspector
             PREG_SET_ORDER
         );
 
+        $signature = [[]];
+
         if (!$isMatch) {
-            return [];
+            return $signature;
         }
 
-        $signature = [];
         $parameters = null;
         $index = -1;
 
@@ -236,7 +237,7 @@ class FunctionSignatureInspector
                 $defaultValue = self::DEFAULT_NULL;
             }
 
-            $signature[$name] = [$type, $byReference, $variadic, $defaultValue];
+            $signature[0][$name] = [$type, $byReference, $variadic, $defaultValue];
         }
 
         return $signature;

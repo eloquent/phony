@@ -70,11 +70,12 @@ class FunctionHookManager
         $signature = $this->signatureInspector->signature(
             $this->invocableInspector->callbackReflector($callback)
         );
+        list($parameters) = $signature;
         $fullName = $namespace . '\\' . $name;
         $key = strtolower($fullName);
 
         if (isset(self::$hooks[$key])) {
-            if ($signature !== self::$hooks[$key]['signature']) {
+            if ($parameters !== self::$hooks[$key]['signature']) {
                 throw new FunctionSignatureMismatchException($fullName);
             }
 
@@ -117,7 +118,7 @@ class FunctionHookManager
         }
 
         self::$hooks[$key] =
-            ['callback' => $callback, 'signature' => $signature];
+            ['callback' => $callback, 'signature' => $parameters];
 
         return $replaced;
     }
