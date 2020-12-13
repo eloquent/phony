@@ -23,6 +23,7 @@ use Eloquent\Phony\Stub\Exception\FinalReturnTypeException;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Exception;
 use ReflectionNamedType;
+use ReflectionUnionType;
 use Throwable;
 
 /**
@@ -526,12 +527,26 @@ class StubData implements Stub
                             try {
                                 $value = $emptyValueFactory->fromType($type);
                             } catch (FinalClassException $e) {
-                                /** @var ReflectionNamedType */
-                                $namedType = $type;
+                                if ($type instanceof ReflectionNamedType) {
+                                    $typeString = $type->getName();
+                                } elseif ($type instanceof ReflectionUnionType) {
+                                    $typeString = '';
+
+                                    /** @var ReflectionNamedType $subType  */
+                                    foreach ($type->getTypes() as $subType) {
+                                        if ($typeString) {
+                                            $typeString .= '|';
+                                        }
+
+                                        $typeString .= $subType->getName();
+                                    }
+                                } else {
+                                    $typeString = '<unknown>';
+                                }
 
                                 throw new FinalReturnTypeException(
                                     $this->exporter->exportCallable($callback),
-                                    $namedType->getName(),
+                                    $typeString,
                                     $e
                                 );
                             }
