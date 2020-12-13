@@ -131,8 +131,21 @@ class FunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionMethod($this, 'methodB');
         $actual = $this->subject->signature($function);
         $expected = [
-            'a' => ['?\Eloquent\Phony\Reflection\FunctionSignatureInspectorTest ', '', '', ''],
-            'b' => ['\Eloquent\Phony\Reflection\FunctionSignatureInspectorTest ', '', '', ''],
+            'a' => [sprintf('?\%s ', FunctionSignatureInspectorTest::class), '', '', ''],
+            'b' => [sprintf('\%s ', FunctionSignatureInspectorTest::class), '', '', ''],
+        ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureWithParentTypeHint()
+    {
+        $function = new ReflectionMethod($this, 'methodC');
+        $actual = $this->subject->signature($function);
+        $expected = [
+            'a' => [sprintf('?\%s ', TestCase::class), '', '', ''],
+            'b' => [sprintf('\%s ', TestCase::class), '', '', ''],
         ];
 
         $this->assertEquals($expected, $actual);
@@ -184,6 +197,10 @@ class FunctionSignatureInspectorTest extends TestCase
     }
 
     protected function methodB(self $a = null, self $b)
+    {
+    }
+
+    protected function methodC(parent $a = null, parent $b)
     {
     }
 }

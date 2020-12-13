@@ -185,6 +185,21 @@ class FunctionSignatureInspector
 
                             break;
 
+                        case 'parent':
+                            if (!$parameters) {
+                                $parameters = $function->getParameters();
+                            }
+
+                            $parameter = $parameters[$index];
+
+                            /** @var ReflectionClass<object> */
+                            $declaringClass = $parameter->getDeclaringClass();
+                            /** @var ReflectionClass<object> */
+                            $parentClass = $declaringClass->getParentClass();
+                            $type .= self::NS . $parentClass->getName();
+
+                            break;
+
                         default:
                             $type .= self::NS . $subType;
                     }
