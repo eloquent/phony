@@ -103,8 +103,25 @@ class FunctionSignatureInspector
     /**
      * Matches the return tyoe information in the result of casting a
      * ReflectionFunctionAbstract to a string.
+     *
+     * Prefix ------------------------------------------------------------------
+     *
+     *   Return \[
+     *
+     * Type definition ---------------------------------------------------------
+     *
+     *   (\?)?(\S+) ((?:or NULL )?)
+     *
+     *   Capture group 1:
+     *     Non-empty if the type is nullable (PHP 8)
+     *
+     *   Capture group 2:
+     *     Contains the type definition itself
+     *
+     *   Capture group 3:
+     *     Non-empty if the type is nullable (PHP 7)
      */
-    const RETURN_PATTERN = '/Return \[ (\S+)/';
+    const RETURN_PATTERN = '/Return \[ (\?)?(\S+) ((?:or NULL )?)/';
 
     /**
      * Get the function signature of the supplied function.
@@ -131,7 +148,16 @@ class FunctionSignatureInspector
         $returnType = '';
 
         if ($hasReturnType) {
-            list(, $typeReference) = $returnMatches;
+            /**
+             * @var string $isNullablePhp8
+             * @var string $typeReference
+             * @var string $isNullablePhp7
+             */
+            list(,
+                $isNullablePhp8,
+                $typeReference,
+                $isNullablePhp7,
+            ) = $returnMatches;
 
             $subTypes = explode(self::UNION, $typeReference);
 
@@ -181,6 +207,10 @@ class FunctionSignatureInspector
                     default:
                         $returnType .= self::NS . $subType;
                 }
+            }
+
+            if ($isNullablePhp7 || $isNullablePhp8) {
+                $returnType = '?' . $returnType;
             }
         }
 

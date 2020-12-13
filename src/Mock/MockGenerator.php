@@ -10,7 +10,6 @@ use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use ReflectionMethod;
-use ReflectionNamedType;
 
 /**
  * Generates mock classes.
@@ -246,11 +245,11 @@ class MockGenerator
     public static function ${returnsReference}__callStatic(
 EOD;
 
-        list($signature) =
+        list($parameters, $returnType) =
             $this->signatureInspector->signature($methodReflector);
         $index = -1;
 
-        foreach ($signature as $parameter) {
+        foreach ($parameters as $parameter) {
             if (-1 !== $index) {
                 $source .= ',';
             }
@@ -263,30 +262,9 @@ EOD;
                 $parameter[3];
         }
 
-        if ($methodReflector->hasReturnType()) {
-            /** @var ReflectionNamedType */
-            $type = $methodReflector->getReturnType();
-            $isBuiltin = $type->isBuiltin();
-
-            if ($type->allowsNull()) {
-                $typeString = '?' . $type->getName();
-            } else {
-                $typeString = $type->getName();
-            }
-
-            if ('self' === $typeString) {
-                $typeString = $methodReflector->getDeclaringClass()->getName();
-            }
-
-            if ($isBuiltin) {
-                $source .= "\n    ) : " . $typeString . " {\n";
-            } elseif (0 === strpos($typeString, '?')) {
-                $source .= "\n    ) : ?\\" . substr($typeString, 1) . " {\n";
-            } else {
-                $source .= "\n    ) : \\" . $typeString . " {\n";
-            }
-
-            $isVoidReturn = $isBuiltin && 'void' === $typeString;
+        if ($returnType) {
+            $source .= "\n    ) : " . $returnType . " {\n";
+            $isVoidReturn = 'void' === $returnType;
         } else {
             $source .= "\n    ) {\n";
             $isVoidReturn = false;
@@ -390,32 +368,32 @@ EOD;
                     continue 2;
             }
 
-            list($signature) =
+            list($parameters, $returnType) =
                 $this->signatureInspector->signature($methodReflector);
 
             if ($method->isCustom()) {
                 $parameterName = null;
 
-                foreach ($signature as $parameterName => $parameter) {
+                foreach ($parameters as $parameterName => $parameter) {
                     break;
                 }
 
                 if ('phonySelf' === $parameterName) {
-                    array_shift($signature);
+                    array_shift($parameters);
                 }
             }
 
-            $parameterCount = count($signature);
+            $parameterCount = count($parameters);
             $variadicIndex = -1;
             $variadicReference = '';
 
-            if (empty($signature)) {
+            if (empty($parameters)) {
                 $argumentPacking = '';
             } else {
                 $argumentPacking = "\n";
                 $index = -1;
 
-                foreach ($signature as $parameter) {
+                foreach ($parameters as $parameter) {
                     if ($parameter[2]) {
                         --$parameterCount;
 
@@ -434,35 +412,11 @@ EOD;
                 }
             }
 
-            if ($methodReflector->hasReturnType()) {
-                /** @var ReflectionNamedType */
-                $type = $methodReflector->getReturnType();
-                $isBuiltin = $type->isBuiltin();
-
-                if ($type->allowsNull()) {
-                    $typeString = '?' . $type->getName();
-                } else {
-                    $typeString = $type->getName();
-                }
-
-                if ('self' === $typeString) {
-                    /** @var ReflectionMethod */
-                    $methodReflectorMethod = $methodReflector;
-                    $typeString =
-                        $methodReflectorMethod->getDeclaringClass()->getName();
-                }
-
-                if ($isBuiltin) {
-                    $returnType = ' : ' . $typeString;
-                } elseif (0 === strpos($typeString, '?')) {
-                    $returnType = ' : ?\\' . substr($typeString, 1);
-                } else {
-                    $returnType = ' : \\' . $typeString;
-                }
-
-                $isVoidReturn = $isBuiltin && 'void' === $typeString;
+            if ($returnType) {
+                $returnTypeSource = ' : ' . $returnType;
+                $isVoidReturn = 'void' === $returnType;
             } else {
-                $returnType = '';
+                $returnTypeSource = '';
                 $isVoidReturn = false;
             }
 
@@ -535,13 +489,13 @@ EOD;
                 $returnsReference .
                 $name;
 
-            if (empty($signature)) {
-                $source .= '()' . $returnType . "\n    {\n";
+            if (empty($parameters)) {
+                $source .= '()' . $returnTypeSource . "\n    {\n";
             } else {
                 $index = -1;
                 $isFirst = true;
 
-                foreach ($signature as $parameter) {
+                foreach ($parameters as $parameter) {
                     if ($isFirst) {
                         $isFirst = false;
                         $source .= "(\n        ";
@@ -557,7 +511,7 @@ EOD;
                         $parameter[3];
                 }
 
-                $source .= "\n    )" . $returnType . " {\n";
+                $source .= "\n    )" . $returnTypeSource . " {\n";
             }
 
             $source .= $body . "\n    }\n";
@@ -584,11 +538,11 @@ EOD;
 
     public function ${returnsReference}__call(
 EOD;
-        list($signature) =
+        list($parameters, $returnType) =
             $this->signatureInspector->signature($methodReflector);
         $index = -1;
 
-        foreach ($signature as $parameter) {
+        foreach ($parameters as $parameter) {
             if (-1 !== $index) {
                 $source .= ',';
             }
@@ -601,30 +555,9 @@ EOD;
                 $parameter[2];
         }
 
-        if ($methodReflector->hasReturnType()) {
-            /** @var ReflectionNamedType */
-            $type = $methodReflector->getReturnType();
-            $isBuiltin = $type->isBuiltin();
-
-            if ($type->allowsNull()) {
-                $typeString = '?' . $type->getName();
-            } else {
-                $typeString = $type->getName();
-            }
-
-            if ('self' === $typeString) {
-                $typeString = $methodReflector->getDeclaringClass()->getName();
-            }
-
-            if ($isBuiltin) {
-                $source .= "\n    ) : " . $typeString . " {\n";
-            } elseif (0 === strpos($typeString, '?')) {
-                $source .= "\n    ) : ?\\" . substr($typeString, 1) . " {\n";
-            } else {
-                $source .= "\n    ) : \\" . $typeString . " {\n";
-            }
-
-            $isVoidReturn = $isBuiltin && 'void' === $typeString;
+        if ($returnType) {
+            $source .= "\n    ) : " . $returnType . " {\n";
+            $isVoidReturn = 'void' === $returnType;
         } else {
             $source .= "\n    ) {\n";
             $isVoidReturn = false;
