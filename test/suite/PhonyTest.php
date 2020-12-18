@@ -290,7 +290,7 @@ class PhonyTest extends TestCase
 
         $this->assertInstanceOf(StubVerifier::class, $actual);
         $this->assertSame('a, b', TestNamespace\vsprintf('%s, %s', ['a', 'b']));
-        $this->assertEmpty(TestNamespace\vsprintf('x', 'y'));
+        $this->assertEmpty(TestNamespace\vsprintf('x', ['y']));
         $this->assertTrue((bool) $actual->calledWith('%s, %s', ['a', 'b']));
     }
 
