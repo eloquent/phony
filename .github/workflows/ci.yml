@@ -19,7 +19,7 @@ jobs:
       uses: shivammathur/setup-php@master
       with:
         php-version: ${{ matrix.php }}
-        extensions: amqp, mbstring
+        extensions: mbstring
         coverage: pcov
     - name: Check PHP version
       run: php -v
