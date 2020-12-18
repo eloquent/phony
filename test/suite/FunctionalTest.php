@@ -427,7 +427,7 @@ class FunctionalTest extends TestCase
     {
         $stubA = stubGlobal('vsprintf', Test::class);
 
-        $this->assertNull(Test\vsprintf('%s, %s', ['a', 'b']));
+        $this->assertEmpty(Test\vsprintf('%s, %s', ['a', 'b']));
 
         $stubA->returns('x');
 
@@ -440,7 +440,7 @@ class FunctionalTest extends TestCase
 
         $stubB = stubGlobal('vsprintf', Test::class);
 
-        $this->assertNull(Test\vsprintf('%s, %s', ['a', 'b']));
+        $this->assertEmpty(Test\vsprintf('%s, %s', ['a', 'b']));
         $stubB->calledWith('%s, %s', ['a', 'b']);
 
         $stubB->returns('x');
@@ -677,8 +677,8 @@ class FunctionalTest extends TestCase
         $traceProperty->setValue($exception, []);
         AssertionException::trim($exception);
 
-        $this->assertNull($exception->getFile());
-        $this->assertNull($exception->getLine());
+        $this->assertEmpty($exception->getFile());
+        $this->assertEmpty($exception->getLine());
         $this->assertSame([], $exception->getTrace());
     }
 

@@ -130,7 +130,7 @@ class StubVerifierFactoryTest extends TestCase
 
         $this->assertSame('c', TestNamespace\sprintf('a', 'b'));
         $this->assertSame('a, b, c', TestNamespace\sprintf('%s, %s, %s', 'a', 'b', 'c'));
-        $this->assertNull(TestNamespace\sprintf('x', 'y'));
+        $this->assertEmpty(TestNamespace\sprintf('x', 'y'));
     }
 
     public function testCreateGlobalWithReferenceParameters()
