@@ -31,6 +31,7 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\GeneratorSpyFactory;
+use Eloquent\Phony\Spy\GeneratorSpyMap;
 use Eloquent\Phony\Spy\IterableSpyFactory;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Spy\SpyVerifierFactory;
@@ -115,10 +116,12 @@ trait FacadeContainerTrait
         $objectIdSequence = Sequencer::sequence('exporter-object-id');
         $invocableInspector = new InvocableInspector();
         $featureDetector = new FeatureDetector();
+        $generatorSpyMap = new GeneratorSpyMap($featureDetector);
         $exporter = new InlineExporter(
             1,
             $arrayIdSequence,
             $objectIdSequence,
+            $generatorSpyMap,
             $invocableInspector,
             $featureDetector
         );
@@ -171,7 +174,8 @@ trait FacadeContainerTrait
             $invoker
         );
         $generatorSpyFactory = new GeneratorSpyFactory(
-            $eventFactory
+            $eventFactory,
+            $generatorSpyMap
         );
         $iterableSpyFactory = new IterableSpyFactory(
             $eventFactory

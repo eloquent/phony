@@ -15,6 +15,7 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Spy\GeneratorSpyMap;
 use Eloquent\Phony\Test\TestCallFactory;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -32,10 +33,12 @@ class EventOrderVerifierTest extends TestCase
         $this->arraySequencer = new Sequencer();
         $this->objectSequencer = new Sequencer();
         $this->featureDetector = FeatureDetector::instance();
+        $this->generatorSpyMap = GeneratorSpyMap::instance();
         $this->inlineExporter = new InlineExporter(
             1,
             $this->arraySequencer,
             $this->objectSequencer,
+            $this->generatorSpyMap,
             $this->invocableInspector,
             $this->featureDetector
         );

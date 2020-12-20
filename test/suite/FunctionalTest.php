@@ -1213,8 +1213,6 @@ class FunctionalTest extends TestCase
         $stub->returns($generatorSpyA);
         $generatorSpyB = $stub();
 
-        $this->assertSame($generatorSpyA, $generatorSpyB->_phonySubject);
-
         $first = true;
         $generatorSpyAContents = [];
         foreach ($generatorSpyA as $value) {

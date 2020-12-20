@@ -529,49 +529,6 @@ class EqualToMatcherTest extends TestCase
         $this->assertFalse($matcher->matches($iterableSpyC));
     }
 
-    public function testMatchesGeneratorSpySubstitution()
-    {
-        $functionA = function () { yield 'a'; yield 'b'; };
-        $functionB = function () { yield 'b'; yield 'c'; };
-
-        $generatorA = $functionA();
-        $generatorB = $functionA();
-        $generatorC = $functionB();
-
-        $stub = Phony::stub()->returns($generatorA, $generatorB, $generatorC);
-        $generatorSpyA = $stub();
-        $generatorSpyB = $stub();
-        $generatorSpyC = $stub();
-
-        $matcher = new EqualToMatcher($generatorSpyA, true, $this->exporter);
-
-        $this->assertTrue($matcher->matches($generatorA));
-        $this->assertTrue($matcher->matches($generatorSpyA));
-        $this->assertTrue($matcher->matches($generatorSpyB));
-        $this->assertTrue($matcher->matches($generatorSpyC));
-
-        $matcher = new EqualToMatcher($generatorSpyA, false, $this->exporter);
-
-        $this->assertFalse($matcher->matches($generatorA));
-        $this->assertTrue($matcher->matches($generatorSpyA));
-        $this->assertTrue($matcher->matches($generatorSpyB));
-        $this->assertTrue($matcher->matches($generatorSpyC));
-
-        $matcher = new EqualToMatcher($generatorA, true, $this->exporter);
-
-        $this->assertTrue($matcher->matches($generatorA));
-        $this->assertTrue($matcher->matches($generatorSpyA));
-        $this->assertTrue($matcher->matches($generatorSpyB));
-        $this->assertTrue($matcher->matches($generatorSpyC));
-
-        $matcher = new EqualToMatcher($generatorA, false, $this->exporter);
-
-        $this->assertTrue($matcher->matches($generatorA));
-        $this->assertFalse($matcher->matches($generatorSpyA));
-        $this->assertFalse($matcher->matches($generatorSpyB));
-        $this->assertFalse($matcher->matches($generatorSpyC));
-    }
-
     public function testMatchesInstanceHandleSubstitution()
     {
         $handle = Phony::mock();

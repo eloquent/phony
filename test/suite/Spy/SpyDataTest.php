@@ -8,7 +8,6 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
 use Exception;
 use PHPUnit\Framework\TestCase;
@@ -22,7 +21,7 @@ class SpyDataTest extends TestCase
         $this->callFactory = new TestCallFactory();
         $this->invoker = new Invoker();
         $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory, FeatureDetector::instance());
+        $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory, GeneratorSpyMap::instance());
         $this->iterableSpyFactory = new IterableSpyFactory($this->callEventFactory);
         $this->subject = new SpyData(
             $this->callback,

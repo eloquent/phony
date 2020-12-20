@@ -12,6 +12,7 @@ final class ReflectionReference
      */
     public static function fromArrayElement(array $array, $key): ?ReflectionReference
     {
+        return null;
     }
 
     /**
@@ -19,5 +20,6 @@ final class ReflectionReference
      */
     public function getId()
     {
+        return 0;
     }
 }

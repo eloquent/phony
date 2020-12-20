@@ -14,6 +14,7 @@ use Eloquent\Phony\Mock\Method\WrappedMethod;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Spy\GeneratorSpyMap;
 use Eloquent\Phony\Spy\IterableSpy;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyVerifier;
@@ -45,6 +46,7 @@ class InlineExporter implements Exporter
                 1,
                 Sequencer::sequence('exporter-array-id'),
                 Sequencer::sequence('exporter-object-id'),
+                GeneratorSpyMap::instance(),
                 InvocableInspector::instance(),
                 FeatureDetector::instance()
             );
@@ -59,6 +61,7 @@ class InlineExporter implements Exporter
      * @param int                $depth              The depth.
      * @param Sequencer          $arraySequencer     The array sequencer to use.
      * @param Sequencer          $objectSequencer    The object sequencer to use.
+     * @param GeneratorSpyMap    $generatorSpyMap    The generator spy map to use.
      * @param InvocableInspector $invocableInspector The invocable inspector to use.
      * @param FeatureDetector    $featureDetector    The feature detector to use.
      */
@@ -66,12 +69,14 @@ class InlineExporter implements Exporter
         int $depth,
         Sequencer $arraySequencer,
         Sequencer $objectSequencer,
+        GeneratorSpyMap $generatorSpyMap,
         InvocableInspector $invocableInspector,
         FeatureDetector $featureDetector
     ) {
         $this->depth = $depth;
         $this->arraySequencer = $arraySequencer;
         $this->objectSequencer = $objectSequencer;
+        $this->generatorSpyMap = $generatorSpyMap;
         $this->invocableInspector = $invocableInspector;
         $this->featureDetector = $featureDetector;
         $this->arrayIds = [];
@@ -288,13 +293,15 @@ class InlineExporter implements Exporter
                     $isStubVerifier = false;
                     $isWeakReference = false;
                     $isWrapper = false;
+                    $spiedGenerator = null;
 
                     if ($value instanceof Closure) {
                         $isClosure = true;
                     } elseif ($value instanceof Throwable) {
                         $isException = true;
                     } elseif ($value instanceof Generator) {
-                        $isWrapper = isset($value->_phonySubject);
+                        $spiedGenerator = $this->generatorSpyMap->get($value);
+                        $isWrapper = (bool) $spiedGenerator;
                         $isGeneratorSpy = $isWrapper;
                     } elseif ($value instanceof Handle) {
                         $isWrapper = true;
@@ -395,7 +402,7 @@ class InlineExporter implements Exporter
                     } elseif ($isGeneratorSpy) {
                         $result->child = new ExporterResult();
                         $stack[] = [
-                            $value->_phonySubject,
+                            $spiedGenerator,
                             $result->child,
                             $currentDepth,
                             'object',
@@ -762,6 +769,11 @@ class InlineExporter implements Exporter
      * @var Sequencer
      */
     private $objectSequencer;
+
+    /**
+     * @var GeneratorSpyMap
+     */
+    private $generatorSpyMap;
 
     /**
      * @var InvocableInspector

@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestCallFactory;
 use Generator;
 use PHPUnit\Framework\TestCase;
@@ -20,8 +19,8 @@ class SpyDataWithGeneratorsTest extends TestCase
         $this->callFactory = new TestCallFactory();
         $this->invoker = new Invoker();
         $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->featureDetector = FeatureDetector::instance();
-        $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory, $this->featureDetector);
+        $this->generatorSpyMap = GeneratorSpyMap::instance();
+        $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory, $this->generatorSpyMap);
         $this->iterableSpyFactory = new IterableSpyFactory($this->callEventFactory);
         $this->subject = new SpyData(
             $this->callback,

@@ -22,7 +22,10 @@ class GeneratorSpyFactory
     public static function instance(): self
     {
         if (!self::$instance) {
-            self::$instance = new self(CallEventFactory::instance());
+            self::$instance = new self(
+                CallEventFactory::instance(),
+                GeneratorSpyMap::instance()
+            );
         }
 
         return self::$instance;
@@ -32,10 +35,14 @@ class GeneratorSpyFactory
      * Construct a new generator spy factory.
      *
      * @param CallEventFactory $callEventFactory The call event factory to use.
+     * @param GeneratorSpyMap  $generatorSpyMap  The generator spy map to use.
      */
-    public function __construct(CallEventFactory $callEventFactory)
-    {
+    public function __construct(
+        CallEventFactory $callEventFactory,
+        GeneratorSpyMap $generatorSpyMap
+    ) {
         $this->callEventFactory = $callEventFactory;
+        $this->generatorSpyMap = $generatorSpyMap;
     }
 
     /**
@@ -49,7 +56,7 @@ class GeneratorSpyFactory
     public function create(Call $call, Generator $generator): Generator
     {
         $spy = $this->createSpy($call, $generator);
-        $spy->_phonySubject = $generator;
+        $this->generatorSpyMap->set($spy, $generator);
 
         return $spy;
     }
@@ -131,4 +138,9 @@ class GeneratorSpyFactory
      * @var CallEventFactory
      */
     private $callEventFactory;
+
+    /**
+     * @var GeneratorSpyMap
+     */
+    private $generatorSpyMap;
 }

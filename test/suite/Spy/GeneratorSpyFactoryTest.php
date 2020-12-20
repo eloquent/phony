@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Spy;
 
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Generator;
@@ -18,8 +17,8 @@ class GeneratorSpyFactoryTest extends TestCase
     {
         $this->callFactory = new TestCallFactory();
         $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->featureDetector = new FeatureDetector();
-        $this->subject = new GeneratorSpyFactory($this->callEventFactory, $this->featureDetector);
+        $this->generatorSpyMap = GeneratorSpyMap::instance();
+        $this->subject = new GeneratorSpyFactory($this->callEventFactory, $this->generatorSpyMap);
 
         $this->call = $this->callFactory->create(
             $this->callEventFactory->createCalled(),
@@ -58,7 +57,7 @@ class GeneratorSpyFactoryTest extends TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf(Generator::class, $spy);
-        $this->assertSame($generator, $spy->_phonySubject);
+        $this->assertSame($generator, $this->generatorSpyMap->get($spy));
         $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
     }
@@ -100,7 +99,7 @@ class GeneratorSpyFactoryTest extends TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf(Generator::class, $spy);
-        $this->assertSame($generator, $spy->_phonySubject);
+        $this->assertSame($generator, $this->generatorSpyMap->get($spy));
         $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
         $this->assertSame($exception, $caughtException);
@@ -146,7 +145,7 @@ class GeneratorSpyFactoryTest extends TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf(Generator::class, $spy);
-        $this->assertSame($generator, $spy->_phonySubject);
+        $this->assertSame($generator, $this->generatorSpyMap->get($spy));
         $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
     }
@@ -171,7 +170,7 @@ class GeneratorSpyFactoryTest extends TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf(Generator::class, $spy);
-        $this->assertSame($generator, $spy->_phonySubject);
+        $this->assertSame($generator, $this->generatorSpyMap->get($spy));
         $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
     }
@@ -201,7 +200,7 @@ class GeneratorSpyFactoryTest extends TestCase
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf(Generator::class, $spy);
-        $this->assertSame($generator, $spy->_phonySubject);
+        $this->assertSame($generator, $this->generatorSpyMap->get($spy));
         $this->assertEquals($generatorEvents, $this->call->iterableEvents());
         $this->assertEquals($endEvent, $this->call->endEvent());
         $this->assertSame($exception, $caughtException);

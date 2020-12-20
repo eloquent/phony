@@ -9,6 +9,7 @@ use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Spy\GeneratorSpyMap;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Spy\SpyVerifierFactory;
 use Eloquent\Phony\Stub\StubFactory;
@@ -32,12 +33,14 @@ class InlineExporterTest extends TestCase
         $this->depth = -1;
         $this->arraySequencer = new Sequencer();
         $this->objectSequencer = new Sequencer();
+        $this->generatorSpyMap = GeneratorSpyMap::instance();
         $this->invocableInspector = InvocableInspector::instance();
         $this->featureDetector = FeatureDetector::instance();
         $this->subject = new InlineExporter(
             $this->depth,
             $this->arraySequencer,
             $this->objectSequencer,
+            $this->generatorSpyMap,
             $this->invocableInspector,
             $this->featureDetector
         );

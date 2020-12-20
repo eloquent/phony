@@ -21,6 +21,7 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Spy\GeneratorSpyMap;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
@@ -39,10 +40,12 @@ class IterableVerifierTest extends TestCase
         $this->objectSequencer = new Sequencer();
         $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = FeatureDetector::instance();
+        $this->generatorSpyMap = GeneratorSpyMap::instance();
         $this->exporter = new InlineExporter(
             1,
             $this->arraySequencer,
             $this->objectSequencer,
+            $this->generatorSpyMap,
             $this->invocableInspector,
             $this->featureDetector
         );

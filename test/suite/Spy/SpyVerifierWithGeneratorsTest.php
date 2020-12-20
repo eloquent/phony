@@ -50,10 +50,12 @@ class SpyVerifierWithGeneratorsTest extends TestCase
         $this->objectSequencer = new Sequencer();
         $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = FeatureDetector::instance();
+        $this->generatorSpyMap = GeneratorSpyMap::instance();
         $this->exporter = new InlineExporter(
             1,
             $this->arraySequencer,
             $this->objectSequencer,
+            $this->generatorSpyMap,
             $this->invocableInspector,
             $this->featureDetector
         );
