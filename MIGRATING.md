@@ -1,5 +1,19 @@
 # Migration guide
 
+## Migrating from `4.x` to `5.x`
+
+The *Phony* `5.x` release drops support for PHP 7.2. If you only need to support
+PHP 7.3 or later, then it is recommended that you upgrade to *Phony* `5.x`. If
+you still need to support PHP 7.2, then you are free to continue using the `4.x`
+version of *Phony*.
+
+## Migrating from `3.x` to `4.x`
+
+The *Phony* `4.x` release drops support for PHP 7.1. If you only need to support
+PHP 7.2 or later, then it is recommended that you upgrade to *Phony* `4.x`. If
+you still need to support PHP 7.1, then you are free to continue using the `3.x`
+version of *Phony*.
+
 ## Migrating from `2.x` to `3.x`
 
 - [The `3.x` release only supports PHP 7.1 or later]

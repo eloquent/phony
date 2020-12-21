@@ -1,5 +1,24 @@
 # Phony changelog
 
+## 5.0.0 (2020-12-21)
+
+- **[BC BREAK]** PHP 7.2 is no longer supported.
+- **[NEW]** Added support for PHP 8 union types ([#250]).
+- **[NEW]** Added support for PHP 8 `false` types ([#250]).
+- **[NEW]** Added support for PHP 8 `mixed` types ([#250]).
+- **[NEW]** Added support for PHP 8 `static` return types ([#250]).
+- **[NEW]** Added support for `parent` types ([#250]).
+
+### Known issues
+
+- PHP 8 named arguments are not supported.
+- No guarantees are made about which specific value will be returned from a stub
+  (or mock method) with a union return type, when no explicit return value is
+  specified. The value may differ depending on the order in which the union
+  type's members appear.
+
+[#250]: https://github.com/eloquent/phony/issues/250
+
 ## 4.0.1 (2020-08-29)
 
 - **[FIXED]** Nullable variadics can now be mocked ([#248] - thanks [@keksa]).
