@@ -30,7 +30,7 @@ jobs:
       run: make ci
     - name: Make
       if: ${{ startsWith(matrix.php, '8.') }}
-      run: make ci-phpunit
+      run: make artifacts/coverage/phpunit/clover.xml
     - name: Upload coverage reports
       if: success()
       run: |
