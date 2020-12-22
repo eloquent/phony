@@ -30,7 +30,7 @@ jobs:
       run: make ci
     - name: Make
       if: ${{ startsWith(matrix.php, '8.') }}
-      run: make test
+      run: make coverage
     - name: Upload coverage reports
       if: success()
       run: |
