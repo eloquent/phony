@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Reflection;
 
 use ReflectionClass;
+use ReflectionException;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
 
@@ -325,7 +326,12 @@ class FunctionSignatureInspector
                     }
 
                     $parameter = $parameters[$index];
-                    $realDefaultValue = $parameter->getDefaultValue();
+
+                    try {
+                        $realDefaultValue = $parameter->getDefaultValue();
+                    } catch (ReflectionException $e) {
+                        $realDefaultValue = null;
+                    }
 
                     if (null === $realDefaultValue) {
                         $defaultValue = self::DEFAULT_NULL;

@@ -1,5 +1,10 @@
 # Phony changelog
 
+## Next release
+
+- **[FIXED]** Functions and methods with "unavailable" default values no longer
+  cause exceptions to be thrown when attempting to determine the default value.
+
 ## 5.0.0 (2020-12-21)
 
 - **[BC BREAK]** PHP 7.2 is no longer supported.

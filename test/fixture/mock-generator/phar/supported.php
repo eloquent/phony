@@ -6,6 +6,14 @@ if (!class_exists('Phar')) {
     return false;
 }
 
-$message = 'Requires PHP >= 8.0';
+if (version_compare(PHP_VERSION, '8.0.x', '<')) {
+    $message = 'Requires PHP >= 8.0';
 
-return version_compare(PHP_VERSION, '8.0.x', '>=');
+    return false;
+}
+
+$setStub = new ReflectionMethod('Phar', 'setStub');
+list(, $length) = $setStub->getParameters();
+$message = "Requires Phar::setStub()'s len parameter's default value to be unavailable";
+
+return !$length->isDefaultValueAvailable();

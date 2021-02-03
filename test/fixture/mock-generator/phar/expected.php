@@ -994,7 +994,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function setStub(
         $a0,
-        int $a1 = -1
+        int $a1 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];
