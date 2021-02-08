@@ -137,9 +137,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedSubject =
                 $this->bold .
@@ -249,9 +249,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedSubject =
                 $this->bold .
@@ -489,9 +489,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
@@ -615,9 +615,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
@@ -821,9 +821,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
@@ -986,9 +986,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
@@ -1153,9 +1153,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
@@ -1296,9 +1296,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
@@ -1444,9 +1444,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
@@ -1763,9 +1763,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
@@ -2125,9 +2125,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
@@ -2465,9 +2465,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
@@ -2771,9 +2771,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
@@ -3084,9 +3084,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
@@ -3396,9 +3396,9 @@ class AssertionRenderer
         if ($isCall) {
             /** @var Call $subject */
 
-            /** @var array<int,Call> */
+            /** @var array<int,Call> $calls */
             $calls = [$subject];
-            /** @var callable */
+            /** @var callable $callback */
             $callback = $subject->callback();
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
