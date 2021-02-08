@@ -6,21 +6,21 @@ class MockGeneratorNonOptionalNullableObject
 implements \Eloquent\Phony\Mock\Mock
 {
     public function methodA(
-        ?\stdClass $a0,
-        $a1
+        ?\stdClass $first,
+        $second
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = $first;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¢argumentCount > 1) {
+            $¢arguments[] = $second;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 2; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!$this->_handle) {
@@ -30,7 +30,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;

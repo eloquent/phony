@@ -6,11 +6,11 @@ implements \Eloquent\Phony\Mock\Mock,
 {
     public static function staticMethod() : \Eloquent\Phony\Test\TestInterfaceWithSelfReturnType
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 0; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!self::$_staticHandle) {
@@ -20,7 +20,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
@@ -41,11 +41,11 @@ implements \Eloquent\Phony\Mock\Mock,
 
     public function method() : \Eloquent\Phony\Test\TestInterfaceWithSelfReturnType
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 0; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!$this->_handle) {
@@ -55,7 +55,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;

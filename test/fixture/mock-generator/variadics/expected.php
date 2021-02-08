@@ -6,22 +6,22 @@ class MockGeneratorVariadics
 implements \Eloquent\Phony\Mock\Mock
 {
     public function methodA(
-        $a0,
-        $a1,
-        ...$a2
+        $a,
+        $b,
+        ...$c
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = $a;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¢argumentCount > 1) {
+            $¢arguments[] = $b;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = $a2[$i - 2];
+        for ($i = 2; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = $c[$i - 2];
         }
 
         if (!$this->_handle) {
@@ -31,29 +31,29 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
     }
 
     public function methodB(
-        $a0,
-        $a1,
-        \stdClass ...$a2
+        $a,
+        $b,
+        \stdClass ...$c
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = $a;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¢argumentCount > 1) {
+            $¢arguments[] = $b;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = $a2[$i - 2];
+        for ($i = 2; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = $c[$i - 2];
         }
 
         if (!$this->_handle) {
@@ -63,29 +63,29 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
     }
 
     public function methodC(
-        $a0,
-        $a1,
-        &...$a2
+        $a,
+        $b,
+        &...$c
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = $a;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¢argumentCount > 1) {
+            $¢arguments[] = $b;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = &$a2[$i - 2];
+        for ($i = 2; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = &$c[$i - 2];
         }
 
         if (!$this->_handle) {
@@ -95,29 +95,29 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
     }
 
     public function methodD(
-        $a0,
-        $a1,
-        ?\stdClass ...$a2
+        $a,
+        $b,
+        ?\stdClass ...$c
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = $a;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¢argumentCount > 1) {
+            $¢arguments[] = $b;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = $a2[$i - 2];
+        for ($i = 2; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = $c[$i - 2];
         }
 
         if (!$this->_handle) {
@@ -127,7 +127,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;

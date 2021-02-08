@@ -5,35 +5,35 @@ extends \Eloquent\Phony\Test\TestClassG
 implements \Eloquent\Phony\Mock\Mock
 {
     public static function &testClassGStaticMethodA(
-        $a0,
-        &$a1,
-        &$a2
+        $a,
+        &$b,
+        &$c
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = $a;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = &$a1;
+        if ($¢argumentCount > 1) {
+            $¢arguments[] = &$b;
         }
-        if ($argumentCount > 2) {
-            $arguments[] = &$a2;
+        if ($¢argumentCount > 2) {
+            $¢arguments[] = &$c;
         }
 
-        for ($i = 3; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 3; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!self::$_staticHandle) {
-            $result = parent::testClassGStaticMethodA(...$arguments);
+            $result = parent::testClassGStaticMethodA(...$¢arguments);
 
             return $result;
         }
 
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
@@ -53,35 +53,35 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public function &testClassGMethodA(
-        $a0,
-        &$a1,
-        &$a2
+        $a,
+        &$b,
+        &$c
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = $a;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = &$a1;
+        if ($¢argumentCount > 1) {
+            $¢arguments[] = &$b;
         }
-        if ($argumentCount > 2) {
-            $arguments[] = &$a2;
+        if ($¢argumentCount > 2) {
+            $¢arguments[] = &$c;
         }
 
-        for ($i = 3; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 3; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!$this->_handle) {
-            $result = parent::testClassGMethodA(...$arguments);
+            $result = parent::testClassGMethodA(...$¢arguments);
 
             return $result;
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;

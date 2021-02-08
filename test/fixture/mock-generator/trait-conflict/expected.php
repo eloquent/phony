@@ -24,17 +24,17 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     public static function testClassAStaticMethodA(
-        &$a0 = null
+        &$first = null
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = &$a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = &$first;
         }
 
-        for ($i = 1; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 1; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!self::$_staticHandle) {
@@ -44,36 +44,36 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
     }
 
     public function testClassAMethodB(
-        $a0,
-        $a1,
-        &$a2 = null,
-        &$a3 = null
+        $first,
+        $second,
+        &$third = null,
+        &$fourth = null
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = $first;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¢argumentCount > 1) {
+            $¢arguments[] = $second;
         }
-        if ($argumentCount > 2) {
-            $arguments[] = &$a2;
+        if ($¢argumentCount > 2) {
+            $¢arguments[] = &$third;
         }
-        if ($argumentCount > 3) {
-            $arguments[] = &$a3;
+        if ($¢argumentCount > 3) {
+            $¢arguments[] = &$fourth;
         }
 
-        for ($i = 4; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 4; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!$this->_handle) {
@@ -83,7 +83,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
@@ -91,11 +91,11 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function testTraitBMethodA()
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 0; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!$this->_handle) {
@@ -105,7 +105,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
@@ -113,11 +113,11 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function testTraitCMethodA()
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 0; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!$this->_handle) {
@@ -127,7 +127,7 @@ implements \Eloquent\Phony\Mock\Mock
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;

@@ -368,6 +368,7 @@ EOD;
         bool $hasParentClass
     ): string {
         $source = '';
+        $v = self::VARIABLE_PREFIX;
 
         foreach ($methods as $method) {
             $name = $method->name();
@@ -399,6 +400,7 @@ EOD;
 
             $parameterCount = count($parameters);
             $variadicIndex = -1;
+            $variadicName = '';
             $variadicReference = '';
 
             if (empty($parameters)) {
@@ -407,20 +409,21 @@ EOD;
                 $argumentPacking = "\n";
                 $index = -1;
 
-                foreach ($parameters as $parameter) {
+                foreach ($parameters as $parameterName => $parameter) {
                     if ($parameter[2]) {
                         --$parameterCount;
 
                         $variadicIndex = ++$index;
+                        $variadicName = $parameterName;
                         $variadicReference = $parameter[1];
                     } else {
                         $argumentPacking .=
-                            "\n        if (\$argumentCount > " .
+                            "\n        if (${v}argumentCount > " .
                             ++$index .
-                            ") {\n            \$arguments[] = " .
+                            ") {\n            ${v}arguments[] = " .
                             $parameter[1] .
-                            '$a' .
-                            $index .
+                            '$' .
+                            $parameterName .
                             ";\n        }";
                     }
                 }
@@ -443,18 +446,20 @@ EOD;
             }
 
             $body =
-                "        \$argumentCount = \\func_num_args();\n" .
-                '        $arguments = [];' .
+                "        ${v}argumentCount = \\func_num_args();\n" .
+                "        ${v}arguments = [];" .
                 $argumentPacking .
                 "\n\n        for (\$i = " .
                 $parameterCount .
-                "; \$i < \$argumentCount; ++\$i) {\n";
+                "; \$i < ${v}argumentCount; ++\$i) {\n";
 
             if ($variadicIndex > -1) {
-                $body .= "            \$arguments[] = $variadicReference\$a" .
-                    "${variadicIndex}[\$i - $variadicIndex];\n";
+                $body .= '            ' .
+                    "${v}arguments[] = $variadicReference\$" .
+                    "${variadicName}[\$i - $variadicIndex];\n";
             } else {
-                $body .= "            \$arguments[] = \\func_get_arg(\$i);\n";
+                $body .= '            ' .
+                    "${v}arguments[] = \\func_get_arg(\$i);\n";
             }
 
             $body .=
@@ -467,7 +472,7 @@ EOD;
             }
 
             if ($hasParentClass) {
-                $resultExpression = "parent::$name(...\$arguments)";
+                $resultExpression = "parent::$name(...${v}arguments)";
             } else {
                 $resultExpression = 'null';
             }
@@ -482,14 +487,14 @@ EOD;
                     "        ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
                     '            new \Eloquent\Phony\Call\Arguments' .
-                    "(\$arguments)\n        );";
+                    "(${v}arguments)\n        );";
             } else {
                 $body .=
                     "\n\n            return \$result;\n        }\n\n" .
                     "        \$result = ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
                     '            new \Eloquent\Phony\Call\Arguments' .
-                    "(\$arguments)\n        );\n\n" .
+                    "(${v}arguments)\n        );\n\n" .
                     '        return $result;';
             }
 
@@ -506,10 +511,9 @@ EOD;
             if (empty($parameters)) {
                 $source .= '()' . $returnTypeSource . "\n    {\n";
             } else {
-                $index = -1;
                 $isFirst = true;
 
-                foreach ($parameters as $parameter) {
+                foreach ($parameters as $parameterName => $parameter) {
                     if ($isFirst) {
                         $isFirst = false;
                         $source .= "(\n        ";
@@ -520,8 +524,8 @@ EOD;
                     $source .= $parameter[0] .
                         $parameter[1] .
                         $parameter[2] .
-                        '$a' .
-                        ++$index .
+                        '$' .
+                        $parameterName .
                         $parameter[3];
                 }
 
@@ -942,8 +946,9 @@ EOD;
         return $source;
     }
 
-    const NS_SEPARATOR = "\u{a6}";
     const METHOD_SEPARATOR = "\u{bb}";
+    const NS_SEPARATOR = "\u{a6}";
+    const VARIABLE_PREFIX = "\$\u{a2}";
 
     /**
      * @var ?self

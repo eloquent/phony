@@ -5,21 +5,21 @@ implements \Eloquent\Phony\Mock\Mock,
            \Eloquent\Phony\Test\TestInterfaceWithNullableBuiltinTypes
 {
     public static function customStaticMethod(
-        ?string $a0,
-        ?\stdClass $a1
+        ?string $string,
+        ?\stdClass $object
     ) : ?\TestClassA {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = $string;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¢argumentCount > 1) {
+            $¢arguments[] = $object;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 2; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!self::$_staticHandle) {
@@ -29,7 +29,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
@@ -49,21 +49,21 @@ implements \Eloquent\Phony\Mock\Mock,
     }
 
     public function staticMethodA(
-        ?string $a0,
-        ?int $a1
+        ?string $string,
+        ?int $object
     ) : ?bool {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = $string;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¢argumentCount > 1) {
+            $¢arguments[] = $object;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 2; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!$this->_handle) {
@@ -73,7 +73,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
@@ -81,11 +81,11 @@ implements \Eloquent\Phony\Mock\Mock,
 
     public function staticMethodB() : ?int
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 0; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!$this->_handle) {
@@ -95,28 +95,28 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
     }
 
     public function methodA(
-        ?string $a0,
-        ?int $a1
+        ?string $string,
+        ?int $object
     ) : ?bool {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = $string;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¢argumentCount > 1) {
+            $¢arguments[] = $object;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 2; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!$this->_handle) {
@@ -126,7 +126,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
@@ -134,11 +134,11 @@ implements \Eloquent\Phony\Mock\Mock,
 
     public function methodB() : ?int
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 0; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!$this->_handle) {
@@ -148,28 +148,28 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
     }
 
     public function customMethod(
-        ?string $a0,
-        ?\stdClass $a1
+        ?string $string,
+        ?\stdClass $object
     ) : ?\TestClassA {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¢argumentCount = \func_num_args();
+        $¢arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¢argumentCount > 0) {
+            $¢arguments[] = $string;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¢argumentCount > 1) {
+            $¢arguments[] = $object;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($i = 2; $i < $¢argumentCount; ++$i) {
+            $¢arguments[] = \func_get_arg($i);
         }
 
         if (!$this->_handle) {
@@ -179,7 +179,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
+            new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
         return $result;
