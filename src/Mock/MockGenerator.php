@@ -247,18 +247,26 @@ EOD;
 
         list($parameters, $returnType) =
             $this->signatureInspector->signature($methodReflector);
-        $index = -1;
 
-        foreach ($parameters as $parameter) {
-            if (-1 !== $index) {
+        $nameParameterName = '';
+        $argumentsParameterName = '';
+
+        foreach ($parameters as $parameterName => $parameter) {
+            if ($nameParameterName) {
                 $source .= ',';
+
+                if (!$argumentsParameterName) {
+                    $argumentsParameterName = $parameterName;
+                }
+            } else {
+                $nameParameterName = $parameterName;
             }
 
             $source .= "\n        " .
                 $parameter[0] .
                 $parameter[1] .
-                '$a' .
-                ++$index .
+                '$' .
+                $parameterName .
                 $parameter[3];
         }
 
@@ -271,18 +279,24 @@ EOD;
         }
 
         if ($isVoidReturn) {
-            $source .= <<<'EOD'
-        self::$_staticHandle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+            $source .= <<<EOD
+        self::\$_staticHandle
+            ->spy(\$$nameParameterName)
+            ->invokeWith(
+                new \Eloquent\Phony\Call\Arguments(\$$argumentsParameterName)
+            );
     }
 
 EOD;
         } else {
-            $source .= <<<'EOD'
-        $result = self::$_staticHandle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+            $source .= <<<EOD
+        \$result = self::\$_staticHandle
+            ->spy(\$$nameParameterName)
+            ->invokeWith(
+                new \Eloquent\Phony\Call\Arguments(\$$argumentsParameterName)
+            );
 
-        return $result;
+        return \$result;
     }
 
 EOD;
@@ -540,19 +554,27 @@ EOD;
 EOD;
         list($parameters, $returnType) =
             $this->signatureInspector->signature($methodReflector);
-        $index = -1;
 
-        foreach ($parameters as $parameter) {
-            if (-1 !== $index) {
+        $nameParameterName = '';
+        $argumentsParameterName = '';
+
+        foreach ($parameters as $parameterName => $parameter) {
+            if ($nameParameterName) {
                 $source .= ',';
+
+                if (!$argumentsParameterName) {
+                    $argumentsParameterName = $parameterName;
+                }
+            } else {
+                $nameParameterName = $parameterName;
             }
 
             $source .= "\n        " .
                 $parameter[0] .
                 $parameter[1] .
-                '$a' .
-                ++$index .
-                $parameter[2];
+                '$' .
+                $parameterName .
+                $parameter[3];
         }
 
         if ($returnType) {
@@ -564,18 +586,24 @@ EOD;
         }
 
         if ($isVoidReturn) {
-            $source .= <<<'EOD'
-        $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+            $source .= <<<EOD
+        \$this->_handle
+            ->spy(\$$nameParameterName)
+            ->invokeWith(
+                new \Eloquent\Phony\Call\Arguments(\$$argumentsParameterName)
+            );
     }
 
 EOD;
         } else {
-            $source .= <<<'EOD'
-        $result = $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+            $source .= <<<EOD
+        \$result = \$this->_handle
+            ->spy(\$$nameParameterName)
+            ->invokeWith(
+                new \Eloquent\Phony\Call\Arguments(\$$argumentsParameterName)
+            );
 
-        return $result;
+        return \$result;
     }
 
 EOD;

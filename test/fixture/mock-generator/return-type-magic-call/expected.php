@@ -4,21 +4,27 @@ class MockGeneratorReturnTypeMagicCall
 implements \Eloquent\Phony\Mock\Mock
 {
     public static function __callStatic(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) : \stdClass {
-        $result = self::$_staticHandle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+        $result = self::$_staticHandle
+            ->spy($name)
+            ->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
 
         return $result;
     }
 
     public function __call(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) : \stdClass {
-        $result = $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+        $result = $this->_handle
+            ->spy($name)
+            ->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
 
         return $result;
     }

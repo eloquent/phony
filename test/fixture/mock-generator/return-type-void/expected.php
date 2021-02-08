@@ -25,11 +25,14 @@ implements \Eloquent\Phony\Mock\Mock,
     }
 
     public static function __callStatic(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) : void {
-        self::$_staticHandle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+        self::$_staticHandle
+            ->spy($name)
+            ->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
     }
 
     public function method() : void
@@ -73,11 +76,14 @@ implements \Eloquent\Phony\Mock\Mock,
     }
 
     public function __call(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) : void {
-        $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+        $this->_handle
+            ->spy($name)
+            ->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
     }
 
     private static function _callMagicStatic(

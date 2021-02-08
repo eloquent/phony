@@ -5,11 +5,14 @@ implements \Eloquent\Phony\Mock\Mock,
            \Eloquent\Phony\Test\TestInterfaceWithReturnType
 {
     public static function __callStatic(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) : string {
-        $result = self::$_staticHandle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+        $result = self::$_staticHandle
+            ->spy($name)
+            ->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
 
         return $result;
     }
@@ -103,11 +106,14 @@ implements \Eloquent\Phony\Mock\Mock,
     }
 
     public function __call(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) : string {
-        $result = $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+        $result = $this->_handle
+            ->spy($name)
+            ->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
 
         return $result;
     }
