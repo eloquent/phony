@@ -1,6 +1,6 @@
 # Phony changelog
 
-## Next release
+## 5.0.1 (2021-02-08)
 
 - **[FIXED]** Functions and methods with "unavailable" default values no longer
   cause exceptions to be thrown when attempting to determine the default value.
