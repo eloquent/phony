@@ -137,22 +137,39 @@ class FeatureDetector
 
             'stdout.ansi' => function () {
                 // @codeCoverageIgnoreStart
+
+                // adhere to https://no-color.org/
+                if (isset($_SERVER['NO_COLOR']) || false !== getenv('NO_COLOR')) {
+                    return false;
+                }
+
+                if ('Hyper' === getenv('TERM_PROGRAM')) {
+                    return true;
+                }
+
+                $isStdoutDefined = defined('STDOUT');
+
                 if (DIRECTORY_SEPARATOR === '\\') {
+                    if ($isStdoutDefined && function_exists('sapi_windows_vt100_support')) {
+                        $hasVt100Support = @sapi_windows_vt100_support(constant('STDOUT'));
+
+                        if ($hasVt100Support) {
+                            return true;
+                        }
+                    }
+
                     return
-                        0 >= version_compare(
-                            '10.0.10586',
-                            constant('PHP_WINDOWS_VERSION_MAJOR') .
-                            '.' . constant('PHP_WINDOWS_VERSION_MINOR') .
-                            '.' . constant('PHP_WINDOWS_VERSION_BUILD')
-                        ) ||
                         false !== getenv('ANSICON') ||
                         'ON' === getenv('ConEmuANSI') ||
-                        'xterm' === getenv('TERM') ||
-                        false !== getenv('BABUN_HOME');
+                        'xterm' === getenv('TERM');
                 }
                 // @codeCoverageIgnoreEnd
 
-                return function_exists('posix_isatty') && @posix_isatty(STDOUT);
+                if (!$isStdoutDefined || !function_exists('posix_isatty')) {
+                    return false;
+                }
+
+                return @posix_isatty(constant('STDOUT'));
             },
         ];
     }
