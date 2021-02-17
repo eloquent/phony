@@ -1,5 +1,12 @@
 # Phony changelog
 
+## 5.0.2 (2021-02-17)
+
+- **[FIXED]** An exception is no longer thrown under non-CLI SAPIs when
+  detecting ANSI color support ([#252] - thanks [@yanneg]).
+
+[#252]: https://github.com/eloquent/phony/issues/252
+
 ## 5.0.1 (2021-02-08)
 
 - **[FIXED]** Functions and methods with "unavailable" default values no longer
@@ -628,3 +635,4 @@ and version constraint will need to be updated:
 [@keksa]: https://github.com/keksa
 [@pmall]: https://github.com/pmall
 [@shadowhand]: https://github.com/shadowhand
+[@yanneg]: https://github.com/yanneg
