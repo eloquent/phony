@@ -1,7 +1,7 @@
 <svg viewBox="0 0 640 800" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
   <style>
     .foreground { fill: #24292e; }
-    .background { fill: transparent; }
+    .background { fill: #fff; }
 
     @media (prefers-color-scheme: dark) {
       .foreground { fill: #0d1117; }
