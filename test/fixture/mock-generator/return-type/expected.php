@@ -8,13 +8,13 @@ implements \Eloquent\Phony\Mock\Mock,
         $name,
         array $arguments
     ) : string {
-        $result = self::$_staticHandle
+        $¢result = self::$_staticHandle
             ->spy($name)
             ->invokeWith(
                 new \Eloquent\Phony\Call\Arguments($arguments)
             );
 
-        return $result;
+        return $¢result;
     }
 
     public function classType() : \Eloquent\Phony\Test\TestClassA
@@ -22,21 +22,21 @@ implements \Eloquent\Phony\Mock\Mock,
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = null;
+            $¢result = null;
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function scalarType() : int
@@ -44,21 +44,21 @@ implements \Eloquent\Phony\Mock\Mock,
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = null;
+            $¢result = null;
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function customMethodWithClassType() : \stdClass
@@ -66,21 +66,21 @@ implements \Eloquent\Phony\Mock\Mock,
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = null;
+            $¢result = null;
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function customMethodWithScalarType() : int
@@ -88,34 +88,34 @@ implements \Eloquent\Phony\Mock\Mock,
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = null;
+            $¢result = null;
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function __call(
         $name,
         array $arguments
     ) : string {
-        $result = $this->_handle
+        $¢result = $this->_handle
             ->spy($name)
             ->invokeWith(
                 new \Eloquent\Phony\Call\Arguments($arguments)
             );
 
-        return $result;
+        return $¢result;
     }
 
     private static function _callMagicStatic(

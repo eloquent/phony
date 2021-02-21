@@ -289,14 +289,15 @@ EOD;
 
 EOD;
         } else {
+            $v = self::VARIABLE_PREFIX;
             $source .= <<<EOD
-        \$result = self::\$_staticHandle
+        ${v}result = self::\$_staticHandle
             ->spy(\$$nameParameterName)
             ->invokeWith(
                 new \Eloquent\Phony\Call\Arguments(\$$argumentsParameterName)
             );
 
-        return \$result;
+        return ${v}result;
     }
 
 EOD;
@@ -449,17 +450,17 @@ EOD;
                 "        ${v}argumentCount = \\func_num_args();\n" .
                 "        ${v}arguments = [];" .
                 $argumentPacking .
-                "\n\n        for (\$i = " .
+                "\n\n        for (${v}i = " .
                 $parameterCount .
-                "; \$i < ${v}argumentCount; ++\$i) {\n";
+                "; ${v}i < ${v}argumentCount; ++${v}i) {\n";
 
             if ($variadicIndex > -1) {
                 $body .= '            ' .
                     "${v}arguments[] = $variadicReference\$" .
-                    "${variadicName}[\$i - $variadicIndex];\n";
+                    "${variadicName}[${v}i - $variadicIndex];\n";
             } else {
                 $body .= '            ' .
-                    "${v}arguments[] = \\func_get_arg(\$i);\n";
+                    "${v}arguments[] = \\func_get_arg(${v}i);\n";
             }
 
             $body .=
@@ -468,7 +469,7 @@ EOD;
             if ($isVoidReturn) {
                 $resultAssign = '';
             } else {
-                $resultAssign = '$result = ';
+                $resultAssign = "${v}result = ";
             }
 
             if ($hasParentClass) {
@@ -490,12 +491,12 @@ EOD;
                     "(${v}arguments)\n        );";
             } else {
                 $body .=
-                    "\n\n            return \$result;\n        }\n\n" .
-                    "        \$result = ${handle}->spy" .
+                    "\n\n            return ${v}result;\n        }\n\n" .
+                    "        ${v}result = ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
                     '            new \Eloquent\Phony\Call\Arguments' .
                     "(${v}arguments)\n        );\n\n" .
-                    '        return $result;';
+                    "        return ${v}result;";
             }
 
             $returnsReference = $methodReflector->returnsReference() ? '&' : '';
@@ -600,14 +601,15 @@ EOD;
 
 EOD;
         } else {
+            $v = self::VARIABLE_PREFIX;
             $source .= <<<EOD
-        \$result = \$this->_handle
+        ${v}result = \$this->_handle
             ->spy(\$$nameParameterName)
             ->invokeWith(
                 new \Eloquent\Phony\Call\Arguments(\$$argumentsParameterName)
             );
 
-        return \$result;
+        return ${v}result;
     }
 
 EOD;

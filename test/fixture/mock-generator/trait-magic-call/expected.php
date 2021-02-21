@@ -15,26 +15,26 @@ implements \Eloquent\Phony\Mock\Mock
         $name,
         array $arguments
     ) {
-        $result = self::$_staticHandle
+        $¢result = self::$_staticHandle
             ->spy($name)
             ->invokeWith(
                 new \Eloquent\Phony\Call\Arguments($arguments)
             );
 
-        return $result;
+        return $¢result;
     }
 
     public function __call(
         $name,
         array $arguments
     ) {
-        $result = $this->_handle
+        $¢result = $this->_handle
             ->spy($name)
             ->invokeWith(
                 new \Eloquent\Phony\Call\Arguments($arguments)
             );
 
-        return $result;
+        return $¢result;
     }
 
     private static function _callTraitStatic(

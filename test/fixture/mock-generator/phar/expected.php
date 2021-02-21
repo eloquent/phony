@@ -29,21 +29,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $directory;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::addEmptyDir(...$¢arguments);
+            $¢result = parent::addEmptyDir(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function addFile(
@@ -60,21 +60,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $localName;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::addFile(...$¢arguments);
+            $¢result = parent::addFile(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function addFromString(
@@ -91,21 +91,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $contents;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::addFromString(...$¢arguments);
+            $¢result = parent::addFromString(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function buildFromDirectory(
@@ -122,21 +122,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $pattern;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::buildFromDirectory(...$¢arguments);
+            $¢result = parent::buildFromDirectory(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function buildFromIterator(
@@ -153,21 +153,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $baseDirectory;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::buildFromIterator(...$¢arguments);
+            $¢result = parent::buildFromIterator(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function compressFiles(
@@ -180,21 +180,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $compression;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::compressFiles(...$¢arguments);
+            $¢result = parent::compressFiles(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function decompressFiles()
@@ -202,21 +202,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::decompressFiles(...$¢arguments);
+            $¢result = parent::decompressFiles(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function compress(
@@ -233,21 +233,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $extension;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::compress(...$¢arguments);
+            $¢result = parent::compress(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function decompress(
@@ -260,21 +260,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $extension;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::decompress(...$¢arguments);
+            $¢result = parent::decompress(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function convertToExecutable(
@@ -295,21 +295,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $extension;
         }
 
-        for ($i = 3; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 3; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::convertToExecutable(...$¢arguments);
+            $¢result = parent::convertToExecutable(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function convertToData(
@@ -330,21 +330,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $extension;
         }
 
-        for ($i = 3; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 3; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::convertToData(...$¢arguments);
+            $¢result = parent::convertToData(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function copy(
@@ -361,21 +361,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $from;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::copy(...$¢arguments);
+            $¢result = parent::copy(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function count(
@@ -388,21 +388,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $mode;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::count(...$¢arguments);
+            $¢result = parent::count(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function delete(
@@ -415,21 +415,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $localName;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::delete(...$¢arguments);
+            $¢result = parent::delete(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function delMetadata()
@@ -437,21 +437,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::delMetadata(...$¢arguments);
+            $¢result = parent::delMetadata(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function extractTo(
@@ -472,21 +472,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $overwrite;
         }
 
-        for ($i = 3; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 3; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::extractTo(...$¢arguments);
+            $¢result = parent::extractTo(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getAlias()
@@ -494,21 +494,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getAlias(...$¢arguments);
+            $¢result = parent::getAlias(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getPath()
@@ -516,21 +516,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getPath(...$¢arguments);
+            $¢result = parent::getPath(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getMetadata(
@@ -544,21 +544,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $unserializeOptions;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getMetadata(...$¢arguments);
+            $¢result = parent::getMetadata(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getModified()
@@ -566,21 +566,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getModified(...$¢arguments);
+            $¢result = parent::getModified(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getSignature()
@@ -588,21 +588,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getSignature(...$¢arguments);
+            $¢result = parent::getSignature(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getStub()
@@ -610,21 +610,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getStub(...$¢arguments);
+            $¢result = parent::getStub(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getVersion()
@@ -632,21 +632,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getVersion(...$¢arguments);
+            $¢result = parent::getVersion(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function hasMetadata()
@@ -654,21 +654,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::hasMetadata(...$¢arguments);
+            $¢result = parent::hasMetadata(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function isBuffering()
@@ -676,21 +676,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::isBuffering(...$¢arguments);
+            $¢result = parent::isBuffering(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function isCompressed()
@@ -698,21 +698,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::isCompressed(...$¢arguments);
+            $¢result = parent::isCompressed(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function isFileFormat(
@@ -725,21 +725,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $format;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::isFileFormat(...$¢arguments);
+            $¢result = parent::isFileFormat(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function isWritable()
@@ -747,21 +747,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::isWritable(...$¢arguments);
+            $¢result = parent::isWritable(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function offsetExists(
@@ -774,21 +774,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $localName;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::offsetExists(...$¢arguments);
+            $¢result = parent::offsetExists(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function offsetGet(
@@ -801,21 +801,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $localName;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::offsetGet(...$¢arguments);
+            $¢result = parent::offsetGet(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function offsetSet(
@@ -832,21 +832,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $value;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::offsetSet(...$¢arguments);
+            $¢result = parent::offsetSet(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function offsetUnset(
@@ -859,21 +859,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $localName;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::offsetUnset(...$¢arguments);
+            $¢result = parent::offsetUnset(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function setAlias(
@@ -886,21 +886,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $alias;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::setAlias(...$¢arguments);
+            $¢result = parent::setAlias(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function setDefaultStub(
@@ -917,21 +917,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $webIndex;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::setDefaultStub(...$¢arguments);
+            $¢result = parent::setDefaultStub(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function setMetadata(
@@ -944,21 +944,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $metadata;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::setMetadata(...$¢arguments);
+            $¢result = parent::setMetadata(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function setSignatureAlgorithm(
@@ -975,21 +975,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $privateKey;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::setSignatureAlgorithm(...$¢arguments);
+            $¢result = parent::setSignatureAlgorithm(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function setStub(
@@ -1006,21 +1006,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $length;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::setStub(...$¢arguments);
+            $¢result = parent::setStub(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function startBuffering()
@@ -1028,21 +1028,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::startBuffering(...$¢arguments);
+            $¢result = parent::startBuffering(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function stopBuffering()
@@ -1050,21 +1050,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::stopBuffering(...$¢arguments);
+            $¢result = parent::stopBuffering(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function hasChildren(
@@ -1077,21 +1077,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $allowLinks;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::hasChildren(...$¢arguments);
+            $¢result = parent::hasChildren(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getChildren()
@@ -1099,21 +1099,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getChildren(...$¢arguments);
+            $¢result = parent::getChildren(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getSubPath()
@@ -1121,21 +1121,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getSubPath(...$¢arguments);
+            $¢result = parent::getSubPath(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getSubPathname()
@@ -1143,21 +1143,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getSubPathname(...$¢arguments);
+            $¢result = parent::getSubPathname(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function rewind()
@@ -1165,21 +1165,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::rewind(...$¢arguments);
+            $¢result = parent::rewind(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function key()
@@ -1187,21 +1187,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::key(...$¢arguments);
+            $¢result = parent::key(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function current()
@@ -1209,21 +1209,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::current(...$¢arguments);
+            $¢result = parent::current(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getFlags()
@@ -1231,21 +1231,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getFlags(...$¢arguments);
+            $¢result = parent::getFlags(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function setFlags(
@@ -1258,21 +1258,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $flags;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::setFlags(...$¢arguments);
+            $¢result = parent::setFlags(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getFilename()
@@ -1280,21 +1280,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getFilename(...$¢arguments);
+            $¢result = parent::getFilename(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getExtension()
@@ -1302,21 +1302,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getExtension(...$¢arguments);
+            $¢result = parent::getExtension(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getBasename(
@@ -1329,21 +1329,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $suffix;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getBasename(...$¢arguments);
+            $¢result = parent::getBasename(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function isDot()
@@ -1351,21 +1351,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::isDot(...$¢arguments);
+            $¢result = parent::isDot(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function valid()
@@ -1373,21 +1373,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::valid(...$¢arguments);
+            $¢result = parent::valid(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function next()
@@ -1395,21 +1395,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::next(...$¢arguments);
+            $¢result = parent::next(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function seek(
@@ -1422,21 +1422,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $offset;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::seek(...$¢arguments);
+            $¢result = parent::seek(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function __toString() : string
@@ -1444,21 +1444,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::__toString(...$¢arguments);
+            $¢result = parent::__toString(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getPathname()
@@ -1466,21 +1466,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getPathname(...$¢arguments);
+            $¢result = parent::getPathname(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getPerms()
@@ -1488,21 +1488,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getPerms(...$¢arguments);
+            $¢result = parent::getPerms(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getInode()
@@ -1510,21 +1510,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getInode(...$¢arguments);
+            $¢result = parent::getInode(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getSize()
@@ -1532,21 +1532,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getSize(...$¢arguments);
+            $¢result = parent::getSize(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getOwner()
@@ -1554,21 +1554,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getOwner(...$¢arguments);
+            $¢result = parent::getOwner(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getGroup()
@@ -1576,21 +1576,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getGroup(...$¢arguments);
+            $¢result = parent::getGroup(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getATime()
@@ -1598,21 +1598,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getATime(...$¢arguments);
+            $¢result = parent::getATime(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getMTime()
@@ -1620,21 +1620,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getMTime(...$¢arguments);
+            $¢result = parent::getMTime(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getCTime()
@@ -1642,21 +1642,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getCTime(...$¢arguments);
+            $¢result = parent::getCTime(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getType()
@@ -1664,21 +1664,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getType(...$¢arguments);
+            $¢result = parent::getType(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function isReadable()
@@ -1686,21 +1686,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::isReadable(...$¢arguments);
+            $¢result = parent::isReadable(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function isExecutable()
@@ -1708,21 +1708,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::isExecutable(...$¢arguments);
+            $¢result = parent::isExecutable(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function isFile()
@@ -1730,21 +1730,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::isFile(...$¢arguments);
+            $¢result = parent::isFile(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function isDir()
@@ -1752,21 +1752,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::isDir(...$¢arguments);
+            $¢result = parent::isDir(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function isLink()
@@ -1774,21 +1774,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::isLink(...$¢arguments);
+            $¢result = parent::isLink(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getLinkTarget()
@@ -1796,21 +1796,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getLinkTarget(...$¢arguments);
+            $¢result = parent::getLinkTarget(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getRealPath()
@@ -1818,21 +1818,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getRealPath(...$¢arguments);
+            $¢result = parent::getRealPath(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getFileInfo(
@@ -1845,21 +1845,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $class;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getFileInfo(...$¢arguments);
+            $¢result = parent::getFileInfo(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function getPathInfo(
@@ -1872,21 +1872,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $class;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::getPathInfo(...$¢arguments);
+            $¢result = parent::getPathInfo(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function openFile(
@@ -1907,21 +1907,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $context;
         }
 
-        for ($i = 3; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 3; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::openFile(...$¢arguments);
+            $¢result = parent::openFile(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function setFileClass(
@@ -1934,21 +1934,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $class;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::setFileClass(...$¢arguments);
+            $¢result = parent::setFileClass(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function setInfoClass(
@@ -1961,21 +1961,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $class;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::setInfoClass(...$¢arguments);
+            $¢result = parent::setInfoClass(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function __debugInfo()
@@ -1983,21 +1983,21 @@ implements \Eloquent\Phony\Mock\Mock
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::__debugInfo(...$¢arguments);
+            $¢result = parent::__debugInfo(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     private static function _callParentStatic(

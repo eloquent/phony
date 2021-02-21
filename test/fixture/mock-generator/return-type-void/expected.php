@@ -9,8 +9,8 @@ implements \Eloquent\Phony\Mock\Mock,
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!self::$_staticHandle) {
@@ -40,8 +40,8 @@ implements \Eloquent\Phony\Mock\Mock,
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
@@ -60,8 +60,8 @@ implements \Eloquent\Phony\Mock\Mock,
         $¢argumentCount = \func_num_args();
         $¢arguments = [];
 
-        for ($i = 0; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 0; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {

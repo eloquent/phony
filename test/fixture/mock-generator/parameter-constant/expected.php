@@ -13,21 +13,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $first;
         }
 
-        for ($i = 1; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 1; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = null;
+            $¢result = null;
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     private static $_uncallableMethods = [];

@@ -20,21 +20,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $b;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = $c[$i - 2];
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = $c[$¢i - 2];
         }
 
         if (!$this->_handle) {
-            $result = null;
+            $¢result = null;
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function methodB(
@@ -52,21 +52,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $b;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = $c[$i - 2];
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = $c[$¢i - 2];
         }
 
         if (!$this->_handle) {
-            $result = null;
+            $¢result = null;
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function methodC(
@@ -84,21 +84,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $b;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = &$c[$i - 2];
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = &$c[$¢i - 2];
         }
 
         if (!$this->_handle) {
-            $result = null;
+            $¢result = null;
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function methodD(
@@ -116,21 +116,21 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = $b;
         }
 
-        for ($i = 2; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = $c[$i - 2];
+        for ($¢i = 2; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = $c[$¢i - 2];
         }
 
         if (!$this->_handle) {
-            $result = null;
+            $¢result = null;
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     private static $_uncallableMethods = [];

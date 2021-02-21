@@ -22,34 +22,34 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = &$c;
         }
 
-        for ($i = 3; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 3; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!self::$_staticHandle) {
-            $result = parent::testClassGStaticMethodA(...$¢arguments);
+            $¢result = parent::testClassGStaticMethodA(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
+        $¢result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public static function &__callStatic(
         $name,
         array $arguments
     ) {
-        $result = self::$_staticHandle
+        $¢result = self::$_staticHandle
             ->spy($name)
             ->invokeWith(
                 new \Eloquent\Phony\Call\Arguments($arguments)
             );
 
-        return $result;
+        return $¢result;
     }
 
     public function &testClassGMethodA(
@@ -70,34 +70,34 @@ implements \Eloquent\Phony\Mock\Mock
             $¢arguments[] = &$c;
         }
 
-        for ($i = 3; $i < $¢argumentCount; ++$i) {
-            $¢arguments[] = \func_get_arg($i);
+        for ($¢i = 3; $¢i < $¢argumentCount; ++$¢i) {
+            $¢arguments[] = \func_get_arg($¢i);
         }
 
         if (!$this->_handle) {
-            $result = parent::testClassGMethodA(...$¢arguments);
+            $¢result = parent::testClassGMethodA(...$¢arguments);
 
-            return $result;
+            return $¢result;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $¢result = $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($¢arguments)
         );
 
-        return $result;
+        return $¢result;
     }
 
     public function &__call(
         $name,
         array $arguments
     ) {
-        $result = $this->_handle
+        $¢result = $this->_handle
             ->spy($name)
             ->invokeWith(
                 new \Eloquent\Phony\Call\Arguments($arguments)
             );
 
-        return $result;
+        return $¢result;
     }
 
     private static function _callParentStatic(
