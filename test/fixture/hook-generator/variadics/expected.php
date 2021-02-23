@@ -3,22 +3,22 @@
 namespace Foo\Bar;
 
 function functionName(
-    $a0,
-    $a1,
-    ...$a2
+    $a,
+    $b,
+    ...$c
 ) {
     $argumentCount = \func_num_args();
     $arguments = [];
 
     if ($argumentCount > 0) {
-        $arguments[] = $a0;
+        $arguments[] = $a;
     }
     if ($argumentCount > 1) {
-        $arguments[] = $a1;
+        $arguments[] = $b;
     }
 
     for ($i = 2; $i < $argumentCount; ++$i) {
-        $arguments[] = $a2[$i - 2];
+        $arguments[] = $c[$i - 2];
     }
 
     $name = 'foo\\bar\\functionname';

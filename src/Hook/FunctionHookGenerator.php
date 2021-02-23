@@ -42,10 +42,9 @@ class FunctionHookGenerator
         $parameterCount = count($parameters);
 
         if ($parameterCount > 0) {
-            $index = -1;
             $isFirst = true;
 
-            foreach ($parameters as $parameter) {
+            foreach ($parameters as $parameterName => $parameter) {
                 if ($isFirst) {
                     $isFirst = false;
                     $source .= "(\n    ";
@@ -56,8 +55,8 @@ class FunctionHookGenerator
                 $source .= $parameter[0] .
                     $parameter[1] .
                     $parameter[2] .
-                    '$a' .
-                    ++$index .
+                    '$' .
+                    $parameterName .
                     $parameter[3];
             }
 
@@ -67,17 +66,19 @@ class FunctionHookGenerator
         }
 
         $variadicIndex = -1;
+        $variadicName = '';
         $variadicReference = '';
 
         if ($parameterCount > 0) {
             $argumentPacking = "\n";
             $index = -1;
 
-            foreach ($parameters as $parameter) {
+            foreach ($parameters as $parameterName => $parameter) {
                 if ($parameter[2]) {
                     --$parameterCount;
 
                     $variadicIndex = ++$index;
+                    $variadicName = $parameterName;
                     $variadicReference = $parameter[1];
                 } else {
                     $argumentPacking .=
@@ -85,8 +86,8 @@ class FunctionHookGenerator
                         ++$index .
                         ") {\n        \$arguments[] = " .
                         $parameter[1] .
-                        '$a' .
-                        $index .
+                        '$' .
+                        $parameterName .
                         ";\n    }";
                 }
             }
@@ -104,8 +105,8 @@ class FunctionHookGenerator
 
         if ($variadicIndex > -1) {
             $source .=
-                "        \$arguments[] = $variadicReference\$a" .
-                $variadicIndex . "[\$i - $variadicIndex];\n" .
+                "        \$arguments[] = $variadicReference\$" .
+                "${variadicName}[\$i - $variadicIndex];\n" .
                 '    }';
         } else {
             $source .=
@@ -139,6 +140,8 @@ class FunctionHookGenerator
 
         return $source;
     }
+
+    const VARIABLE_PREFIX = "\$\u{a2}";
 
     /**
      * @var ?self
