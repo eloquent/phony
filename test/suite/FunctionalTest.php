@@ -1750,4 +1750,37 @@ class FunctionalTest extends TestCase
         $this->expectExceptionMessage('You done goofed');
         strval($mock);
     }
+
+    /**
+     * @requires PHP >= 8
+     */
+    public function testMockNamedArguments()
+    {
+        $handle = partialMock(TestClassA::class);
+        $handle->testClassAMethodB->with('a', 'b')->returns('x');
+        $mock = $handle->get();
+
+        $this->assertSame('x', eval('return $mock->testClassAMethodB(second: "b", first: "a");'));
+        $this->assertSame('cd', eval('return $mock->testClassAMethodB(second: "d", first: "c");'));
+        $this->assertSame(
+            ['a', 'b'],
+            $handle->testClassAMethodB->calledWith('a', '*')->firstCall()->arguments()->all()
+        );
+        $this->assertSame('b', $handle->testClassAMethodB->calledWith('a', '*')->firstCall()->argument(1));
+    }
+
+    /**
+     * @requires PHP >= 8
+     */
+    public function testHookNamedArguments()
+    {
+        $namespace = Test::class;
+        $stubA = stubGlobal('vsprintf', $namespace);
+        $stubA->forwards();
+
+        $this->assertSame('a, b', eval("return $namespace\\vsprintf(values: ['a', 'b'], format: '%s, %s');"));
+        $stubA->calledWith('%s, %s', ['a', 'b']);
+
+        restoreGlobalFunctions();
+    }
 }
