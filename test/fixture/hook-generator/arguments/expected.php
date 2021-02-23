@@ -23,63 +23,63 @@ function functionName(
 ),
     ?array $eleventh = null
 ) {
-    $argumentCount = \func_num_args();
-    $arguments = [];
+    $¢argumentCount = \func_num_args();
+    $¢arguments = [];
 
-    if ($argumentCount > 0) {
-        $arguments[] = $first;
+    if ($¢argumentCount > 0) {
+        $¢arguments[] = $first;
     }
-    if ($argumentCount > 1) {
-        $arguments[] = &$second;
+    if ($¢argumentCount > 1) {
+        $¢arguments[] = &$second;
     }
-    if ($argumentCount > 2) {
-        $arguments[] = $third;
+    if ($¢argumentCount > 2) {
+        $¢arguments[] = $third;
     }
-    if ($argumentCount > 3) {
-        $arguments[] = $fourth;
+    if ($¢argumentCount > 3) {
+        $¢arguments[] = $fourth;
     }
-    if ($argumentCount > 4) {
-        $arguments[] = $fifth;
+    if ($¢argumentCount > 4) {
+        $¢arguments[] = $fifth;
     }
-    if ($argumentCount > 5) {
-        $arguments[] = $sixth;
+    if ($¢argumentCount > 5) {
+        $¢arguments[] = $sixth;
     }
-    if ($argumentCount > 6) {
-        $arguments[] = $seventh;
+    if ($¢argumentCount > 6) {
+        $¢arguments[] = $seventh;
     }
-    if ($argumentCount > 7) {
-        $arguments[] = $eighth;
+    if ($¢argumentCount > 7) {
+        $¢arguments[] = $eighth;
     }
-    if ($argumentCount > 8) {
-        $arguments[] = $ninth;
+    if ($¢argumentCount > 8) {
+        $¢arguments[] = $ninth;
     }
-    if ($argumentCount > 9) {
-        $arguments[] = $tenth;
+    if ($¢argumentCount > 9) {
+        $¢arguments[] = $tenth;
     }
-    if ($argumentCount > 10) {
-        $arguments[] = $eleventh;
-    }
-
-    for ($i = 11; $i < $argumentCount; ++$i) {
-        $arguments[] = \func_get_arg($i);
+    if ($¢argumentCount > 10) {
+        $¢arguments[] = $eleventh;
     }
 
-    $name = 'foo\\bar\\functionname';
+    for ($¢i = 11; $¢i < $¢argumentCount; ++$¢i) {
+        $¢arguments[] = \func_get_arg($¢i);
+    }
+
+    $¢name = 'foo\\bar\\functionname';
 
     if (
         !isset(
-            \Eloquent\Phony\Hook\FunctionHookManager::$hooks[$name]['callback']
+            \Eloquent\Phony\Hook\FunctionHookManager::$hooks[$¢name]['callback']
         )
     ) {
-        return \functionName(...$arguments);
+        return \functionName(...$¢arguments);
     }
 
-    $callback =
-        \Eloquent\Phony\Hook\FunctionHookManager::$hooks[$name]['callback'];
+    $¢callback =
+        \Eloquent\Phony\Hook\FunctionHookManager::$hooks[$¢name]['callback'];
 
-    if ($callback instanceof \Eloquent\Phony\Invocation\Invocable) {
-        return $callback->invokeWith($arguments);
+    if ($¢callback instanceof \Eloquent\Phony\Invocation\Invocable) {
+        return $¢callback->invokeWith($¢arguments);
     }
 
-    return $callback(...$arguments);
+    return $¢callback(...$¢arguments);
 }

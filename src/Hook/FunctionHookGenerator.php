@@ -40,6 +40,7 @@ class FunctionHookGenerator
         $source = "namespace $namespace;\n\nfunction $name";
         list($parameters) = $signature;
         $parameterCount = count($parameters);
+        $v = self::VARIABLE_PREFIX;
 
         if ($parameterCount > 0) {
             $isFirst = true;
@@ -82,9 +83,9 @@ class FunctionHookGenerator
                     $variadicReference = $parameter[1];
                 } else {
                     $argumentPacking .=
-                        "\n    if (\$argumentCount > " .
+                        "\n    if (${v}argumentCount > " .
                         ++$index .
-                        ") {\n        \$arguments[] = " .
+                        ") {\n        ${v}arguments[] = " .
                         $parameter[1] .
                         '$' .
                         $parameterName .
@@ -96,21 +97,21 @@ class FunctionHookGenerator
         }
 
         $source .=
-            "    \$argumentCount = \\func_num_args();\n" .
-            '    $arguments = [];' .
+            "    ${v}argumentCount = \\func_num_args();\n" .
+            "    ${v}arguments = [];" .
             $argumentPacking .
-            "\n\n    for (\$i = " .
+            "\n\n    for (${v}i = " .
             $parameterCount .
-            "; \$i < \$argumentCount; ++\$i) {\n";
+            "; ${v}i < ${v}argumentCount; ++${v}i) {\n";
 
         if ($variadicIndex > -1) {
             $source .=
-                "        \$arguments[] = $variadicReference\$" .
-                "${variadicName}[\$i - $variadicIndex];\n" .
+                "        ${v}arguments[] = $variadicReference\$" .
+                "${variadicName}[${v}i - $variadicIndex];\n" .
                 '    }';
         } else {
             $source .=
-                "        \$arguments[] = \\func_get_arg(\$i);\n" .
+                "        ${v}arguments[] = \\func_get_arg(${v}i);\n" .
                 '    }';
         }
 
@@ -118,19 +119,19 @@ class FunctionHookGenerator
 
         $renderedName = var_export(strtolower($namespace . '\\' . $name), true);
         $source .=
-            "\n\n    \$name = $renderedName;\n\n    if (" .
+            "\n\n    ${v}name = $renderedName;\n\n    if (" .
             "\n        !isset(\n            " .
-            '\Eloquent\Phony\Hook\FunctionHookManager::$hooks[$name]' .
+            "\Eloquent\Phony\Hook\FunctionHookManager::\$hooks[${v}name]" .
             "['callback']\n        )\n    ) {\n        " .
-            "$ret \\$name(...\$arguments);" .
-            "\n    }\n\n    \$callback =\n        " .
+            "$ret \\$name(...${v}arguments);" .
+            "\n    }\n\n    ${v}callback =\n        " .
             '\Eloquent\Phony\Hook\FunctionHookManager::$hooks' .
-            "[\$name]['callback'];\n\n" .
-            '    if ($callback instanceof ' .
+            "[${v}name]['callback'];\n\n" .
+            "    if (${v}callback instanceof " .
             "\Eloquent\Phony\Invocation\Invocable) {\n" .
-            "        $ret \$callback->invokeWith(\$arguments);\n" .
+            "        $ret ${v}callback->invokeWith(${v}arguments);\n" .
             "    }\n\n    " .
-            "$ret \$callback(...\$arguments);\n}\n";
+            "$ret ${v}callback(...${v}arguments);\n}\n";
 
         // @codeCoverageIgnoreStart
         if ("\n" !== PHP_EOL) {
