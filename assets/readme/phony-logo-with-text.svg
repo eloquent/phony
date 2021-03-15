@@ -5,7 +5,7 @@
 
     @media (prefers-color-scheme: light) {
       .foreground { fill: #24292e; }
-      .background { fill: transparent; }
+      .background { fill: fff; }
     }
 
     @media (prefers-color-scheme: dark) {
