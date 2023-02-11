@@ -242,7 +242,7 @@ class MockGenerator
 
         $source = <<<EOD
 
-    public static function ${returnsReference}__callStatic(
+    public static function {$returnsReference}__callStatic(
 EOD;
 
         list($parameters, $returnType) =
@@ -334,7 +334,7 @@ EOD;
     public function __destruct()
     {
         if (!\$this->_handle) {
-            ${parentDestruct}return;
+            {$parentDestruct}return;
         }
 
         \$this->_handle->spy('__destruct')->invokeWith([]);
@@ -438,24 +438,24 @@ EOD;
 
             if ($variadicIndex > -1) {
                 $body .= "            \$arguments[] = $variadicReference\$a" .
-                    "${variadicIndex}[\$i - $variadicIndex];\n";
+                    "{$variadicIndex}[\$i - $variadicIndex];\n";
             } else {
                 $body .= "            \$arguments[] = \\func_get_arg(\$i);\n";
             }
 
             $body .=
-                "        }\n\n        if (${handle}) {\n";
+                "        }\n\n        if ({$handle}) {\n";
 
             if ($canReturn) {
                 $body .=
-                    "            \$result = ${handle}->spy" .
+                    "            \$result = {$handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
                     '                new \Eloquent\Phony\Call\Arguments' .
                     "(\$arguments)\n            );\n\n" .
                     '            return $result;';
             } else {
                 $body .=
-                    "            ${handle}->spy" .
+                    "            {$handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
                     '                new \Eloquent\Phony\Call\Arguments' .
                     "(\$arguments)\n            );";
@@ -542,7 +542,7 @@ EOD;
 
         $source = <<<EOD
 
-    public function ${returnsReference}__call(
+    public function {$returnsReference}__call(
 EOD;
         list($parameters, $returnType) =
             $this->signatureInspector->signature($methodReflector);
