@@ -264,25 +264,25 @@ EOD;
 
         if ($returnType) {
             $source .= "\n    ) : " . $returnType . " {\n";
-            $isVoidReturn = 'void' === $returnType;
+            $canReturn = 'never' !== $returnType && 'void' !== $returnType;
         } else {
             $source .= "\n    ) {\n";
-            $isVoidReturn = false;
+            $canReturn = true;
         }
 
-        if ($isVoidReturn) {
-            $source .= <<<'EOD'
-        self::$_staticHandle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
-    }
-
-EOD;
-        } else {
+        if ($canReturn) {
             $source .= <<<'EOD'
         $result = self::$_staticHandle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
 
         return $result;
+    }
+
+EOD;
+        } else {
+            $source .= <<<'EOD'
+        self::$_staticHandle->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
     }
 
 EOD;
@@ -414,10 +414,10 @@ EOD;
 
             if ($returnType) {
                 $returnTypeSource = ' : ' . $returnType;
-                $isVoidReturn = 'void' === $returnType;
+                $canReturn = 'never' !== $returnType && 'void' !== $returnType;
             } else {
                 $returnTypeSource = '';
-                $isVoidReturn = false;
+                $canReturn = true;
             }
 
             $isStatic = $method->isStatic() ? 'static ' : '';
@@ -446,39 +446,39 @@ EOD;
             $body .=
                 "        }\n\n        if (${handle}) {\n";
 
-            if ($isVoidReturn) {
-                $body .=
-                    "            ${handle}->spy" .
-                    "(__FUNCTION__)->invokeWith(\n" .
-                    '                new \Eloquent\Phony\Call\Arguments' .
-                    "(\$arguments)\n            );";
-            } else {
+            if ($canReturn) {
                 $body .=
                     "            \$result = ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
                     '                new \Eloquent\Phony\Call\Arguments' .
                     "(\$arguments)\n            );\n\n" .
                     '            return $result;';
+            } else {
+                $body .=
+                    "            ${handle}->spy" .
+                    "(__FUNCTION__)->invokeWith(\n" .
+                    '                new \Eloquent\Phony\Call\Arguments' .
+                    "(\$arguments)\n            );";
             }
 
             $body .= "\n        }";
 
-            if ($hasParentClass || !$isVoidReturn) {
+            if ($hasParentClass || $canReturn) {
                 $body .= " else {\n            ";
 
-                if ($isVoidReturn) {
-                    $body .= '';
-                } else {
+                if ($canReturn) {
                     $body .= '$result = ';
+                } else {
+                    $body .= '';
                 }
 
                 if ($hasParentClass) {
                     $body .= "parent::$name(...\$arguments);";
-                } else if (!$isVoidReturn) {
+                } else if ($canReturn) {
                     $body .= 'null;';
                 }
 
-                if (!$isVoidReturn) {
+                if ($canReturn) {
                     $body .= "\n\n            return \$result;";
                 }
 
@@ -563,25 +563,25 @@ EOD;
 
         if ($returnType) {
             $source .= "\n    ) : " . $returnType . " {\n";
-            $isVoidReturn = 'void' === $returnType;
+            $canReturn = 'never' !== $returnType && 'void' !== $returnType;
         } else {
             $source .= "\n    ) {\n";
-            $isVoidReturn = false;
+            $canReturn = true;
         }
 
-        if ($isVoidReturn) {
-            $source .= <<<'EOD'
-        $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
-    }
-
-EOD;
-        } else {
+        if ($canReturn) {
             $source .= <<<'EOD'
         $result = $this->_handle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
 
         return $result;
+    }
+
+EOD;
+        } else {
+            $source .= <<<'EOD'
+        $this->_handle->spy($a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
     }
 
 EOD;
