@@ -458,20 +458,24 @@ EOD;
                 $resultExpression = 'null';
             }
 
-            $body .=  <<<EOD
+            if (!$isVoidReturn || $hasParentClass) {
+                $body .=  <<<EOD
             $resultAssign$resultExpression;
+
+
 EOD;
+            }
 
             if ($isVoidReturn) {
                 $body .=
-                    "\n\n            return;\n        }\n\n" .
+                    "            return;\n        }\n\n" .
                     "        ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
                     '            new \Eloquent\Phony\Call\Arguments' .
                     "(\$arguments)\n        );";
             } else {
                 $body .=
-                    "\n\n            return \$result;\n        }\n\n" .
+                    "            return \$result;\n        }\n\n" .
                     "        \$result = ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
                     '            new \Eloquent\Phony\Call\Arguments' .

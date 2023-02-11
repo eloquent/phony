@@ -14,8 +14,6 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!self::$_staticHandle) {
-            null;
-
             return;
         }
 
@@ -42,8 +40,6 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            null;
-
             return;
         }
 
@@ -62,8 +58,6 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            null;
-
             return;
         }
 
