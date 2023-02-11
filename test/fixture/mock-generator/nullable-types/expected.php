@@ -22,17 +22,17 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!self::$_staticHandle) {
+        if (self::$_staticHandle) {
+            $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
+
+            return $result;
+        } else {
             $result = null;
 
             return $result;
         }
-
-        $result = self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
-
-        return $result;
     }
 
     public static function __callStatic(
@@ -63,17 +63,17 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
+        if ($this->_handle) {
+            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
+
+            return $result;
+        } else {
             $result = null;
 
             return $result;
         }
-
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
-
-        return $result;
     }
 
     public function staticMethodB() : ?\Eloquent\Phony\Test\TestClassB
@@ -85,17 +85,17 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
+        if ($this->_handle) {
+            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
+
+            return $result;
+        } else {
             $result = null;
 
             return $result;
         }
-
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
-
-        return $result;
     }
 
     public function methodA(
@@ -116,17 +116,17 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
+        if ($this->_handle) {
+            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
+
+            return $result;
+        } else {
             $result = null;
 
             return $result;
         }
-
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
-
-        return $result;
     }
 
     public function methodB() : ?\Eloquent\Phony\Test\TestClassB
@@ -138,17 +138,17 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
+        if ($this->_handle) {
+            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
+
+            return $result;
+        } else {
             $result = null;
 
             return $result;
         }
-
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
-
-        return $result;
     }
 
     public function customMethod(
@@ -169,17 +169,17 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
+        if ($this->_handle) {
+            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
+
+            return $result;
+        } else {
             $result = null;
 
             return $result;
         }
-
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
-
-        return $result;
     }
 
     public function __call(

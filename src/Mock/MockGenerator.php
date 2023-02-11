@@ -444,43 +444,45 @@ EOD;
             }
 
             $body .=
-                "        }\n\n        if (!${handle}) {\n";
-
-            if ($isVoidReturn) {
-                $resultAssign = '';
-            } else {
-                $resultAssign = '$result = ';
-            }
-
-            if ($hasParentClass) {
-                $resultExpression = "parent::$name(...\$arguments)";
-            } else {
-                $resultExpression = 'null';
-            }
-
-            if (!$isVoidReturn || $hasParentClass) {
-                $body .=  <<<EOD
-            $resultAssign$resultExpression;
-
-
-EOD;
-            }
+                "        }\n\n        if (${handle}) {\n";
 
             if ($isVoidReturn) {
                 $body .=
-                    "            return;\n        }\n\n" .
-                    "        ${handle}->spy" .
+                    "            ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
-                    '            new \Eloquent\Phony\Call\Arguments' .
-                    "(\$arguments)\n        );";
+                    '                new \Eloquent\Phony\Call\Arguments' .
+                    "(\$arguments)\n            );";
             } else {
                 $body .=
-                    "            return \$result;\n        }\n\n" .
-                    "        \$result = ${handle}->spy" .
+                    "            \$result = ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
-                    '            new \Eloquent\Phony\Call\Arguments' .
-                    "(\$arguments)\n        );\n\n" .
-                    '        return $result;';
+                    '                new \Eloquent\Phony\Call\Arguments' .
+                    "(\$arguments)\n            );\n\n" .
+                    '            return $result;';
+            }
+
+            $body .= "\n        }";
+
+            if ($hasParentClass || !$isVoidReturn) {
+                $body .= " else {\n            ";
+
+                if ($isVoidReturn) {
+                    $body .= '';
+                } else {
+                    $body .= '$result = ';
+                }
+
+                if ($hasParentClass) {
+                    $body .= "parent::$name(...\$arguments);";
+                } else if (!$isVoidReturn) {
+                    $body .= 'null;';
+                }
+
+                if (!$isVoidReturn) {
+                    $body .= "\n\n            return \$result;";
+                }
+
+                $body .= "\n        }";
             }
 
             $returnsReference = $methodReflector->returnsReference() ? '&' : '';

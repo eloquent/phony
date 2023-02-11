@@ -13,13 +13,11 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!self::$_staticHandle) {
-            return;
+        if (self::$_staticHandle) {
+            self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
         }
-
-        self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
     }
 
     public static function __callStatic(
@@ -39,13 +37,11 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
-            return;
+        if ($this->_handle) {
+            $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
         }
-
-        $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
     }
 
     public function customMethod() : void
@@ -57,13 +53,11 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
-            return;
+        if ($this->_handle) {
+            $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
         }
-
-        $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
     }
 
     public function __call(

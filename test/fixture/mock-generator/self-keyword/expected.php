@@ -22,17 +22,17 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
+        if ($this->_handle) {
+            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
+
+            return $result;
+        } else {
             $result = parent::methodA(...$arguments);
 
             return $result;
         }
-
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
-
-        return $result;
     }
 
     public function methodB(
@@ -57,17 +57,17 @@ implements \Eloquent\Phony\Mock\Mock
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
+        if ($this->_handle) {
+            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
+
+            return $result;
+        } else {
             $result = parent::methodB(...$arguments);
 
             return $result;
         }
-
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
-
-        return $result;
     }
 
     private static function _callParentStatic(

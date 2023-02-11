@@ -23,17 +23,17 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
+        if ($this->_handle) {
+            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
+
+            return $result;
+        } else {
             $result = null;
 
             return $result;
         }
-
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
-
-        return $result;
     }
 
     public function scalarType() : int
@@ -45,17 +45,17 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
+        if ($this->_handle) {
+            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
+
+            return $result;
+        } else {
             $result = null;
 
             return $result;
         }
-
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
-
-        return $result;
     }
 
     public function customMethodWithClassType() : \stdClass
@@ -67,17 +67,17 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
+        if ($this->_handle) {
+            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
+
+            return $result;
+        } else {
             $result = null;
 
             return $result;
         }
-
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
-
-        return $result;
     }
 
     public function customMethodWithScalarType() : int
@@ -89,17 +89,17 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (!$this->_handle) {
+        if ($this->_handle) {
+            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new \Eloquent\Phony\Call\Arguments($arguments)
+            );
+
+            return $result;
+        } else {
             $result = null;
 
             return $result;
         }
-
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-            new \Eloquent\Phony\Call\Arguments($arguments)
-        );
-
-        return $result;
     }
 
     public function __call(
