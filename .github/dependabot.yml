@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: composer
+    schedule:
+      interval: weekly
+    reviewers:
+      - eloquent/dependabot-reviewers
+  - package-ecosystem: github-actions
+    schedule:
+      interval: weekly
+    reviewers:
+      - eloquent/dependabot-reviewers
