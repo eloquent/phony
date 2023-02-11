@@ -4,8 +4,8 @@ class MockGeneratorIterableTypeHint
 implements \Eloquent\Phony\Mock\Mock
 {
     public function methodA(
-        iterable $a0,
-        ?iterable $a1 = null
+        \Traversable|array $a0,
+        \Traversable|array|null $a1 = null
     ) {
         $argumentCount = \func_num_args();
         $arguments = [];
