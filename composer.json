@@ -11,6 +11,11 @@
             "homepage": "http://ezzatron.com/"
         }
     ],
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
     "require": {
         "php": "^7.3 || ^8"
     },
