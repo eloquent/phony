@@ -34,8 +34,4 @@ jobs:
         run: make artifacts/coverage/phpunit/clover.xml
       - name: Publish coverage reports
         if: inputs.publish-coverage && success()
-        run: |
-          test ! -z "$TOKEN"
-          bash <(curl -s https://codecov.io/bash) -t "$TOKEN" -B "${{ github.ref }}"
-        env:
-          TOKEN: "${{ secrets.CODECOV_TOKEN }}"
+        uses: codecov/codecov-action@v3
