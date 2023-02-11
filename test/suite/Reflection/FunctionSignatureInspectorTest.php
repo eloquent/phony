@@ -89,8 +89,9 @@ class FunctionSignatureInspectorTest extends TestCase
 
     /**
      * @requires PHP >= 8
+     * @requires PHP < 8.1
      */
-    public function testSignatureWithUnavailableDefaultValue()
+    public function testSignatureWithUnavailableDefaultValuePhp80()
     {
         $function = new ReflectionMethod('ReflectionClass', 'getMethods');
         $actual = $this->subject->signature($function);
@@ -99,6 +100,24 @@ class FunctionSignatureInspectorTest extends TestCase
                 'filter' => ['?int ', '', '', ' = null'],
             ],
             '',
+        ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testSignatureWithUnavailableDefaultValuePhp81()
+    {
+        $function = new ReflectionMethod('ReflectionClass', 'getMethods');
+        $actual = $this->subject->signature($function);
+        $expected = [
+            [
+                'filter' => ['?int ', '', '', ' = null'],
+            ],
+            'array',
         ];
 
         $this->assertEquals($expected, $actual);
@@ -247,6 +266,19 @@ class FunctionSignatureInspectorTest extends TestCase
             ],
             $expected,
         ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testSignatureWithTentativeReturnType()
+    {
+        $function = new ReflectionMethod('Exception', '__wakeup');
+        $actual = $this->subject->signature($function);
+        $expected = [[], 'void'];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);

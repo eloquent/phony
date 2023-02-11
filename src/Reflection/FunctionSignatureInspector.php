@@ -107,7 +107,7 @@ class FunctionSignatureInspector
      *
      * Prefix ------------------------------------------------------------------
      *
-     *   Return \[
+     *   (?:Return|Tentative return) \[
      *
      * Type definition ---------------------------------------------------------
      *
@@ -122,7 +122,7 @@ class FunctionSignatureInspector
      *   Capture group 3:
      *     Non-empty if the type is nullable (PHP 7)
      */
-    const RETURN_PATTERN = '/Return \[ (\?)?(\S+) ((?:or NULL )?)/';
+    const RETURN_PATTERN = '/(?:Return|Tentative return) \[ (\?)?(\S+) ((?:or NULL )?)/';
 
     /**
      * Get the function signature of the supplied function.
