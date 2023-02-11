@@ -53,7 +53,7 @@ class TraversableSpy implements IterableSpy
      *
      * @return mixed The current key.
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->key;
     }
@@ -63,7 +63,7 @@ class TraversableSpy implements IterableSpy
      *
      * @return mixed The current value.
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->value;
     }
@@ -167,7 +167,7 @@ class TraversableSpy implements IterableSpy
      *
      * @return mixed The value.
      */
-    public function offsetGet($key)
+    public function offsetGet($key): mixed
     {
         if (!$this->traversable instanceof ArrayAccess) {
             throw new NonArrayAccessTraversableException($this->traversable);

@@ -46,7 +46,7 @@ class ArraySpy implements IterableSpy
      *
      * @return mixed The current key.
      */
-    public function key()
+    public function key(): mixed
     {
         return key($this->array);
     }
@@ -56,7 +56,7 @@ class ArraySpy implements IterableSpy
      *
      * @return mixed The current value.
      */
-    public function current()
+    public function current(): mixed
     {
         return current($this->array);
     }
@@ -129,7 +129,7 @@ class ArraySpy implements IterableSpy
      *
      * @return mixed The value.
      */
-    public function offsetGet($key)
+    public function offsetGet($key): mixed
     {
         return $this->array[$key];
     }
