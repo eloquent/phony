@@ -102,7 +102,7 @@ class FunctionSignatureInspector
     const PARAMETER_PATTERN = '/Parameter #\d+ \[ (?:<required>|(<optional>)?) (?:(\?)?(\S+) (or NULL )?)?(&)?(\.{3})?\$(\S+)((?: = \S+)?)/';
 
     /**
-     * Matches the return tyoe information in the result of casting a
+     * Matches the return type information in the result of casting a
      * ReflectionFunctionAbstract to a string.
      *
      * Prefix ------------------------------------------------------------------
