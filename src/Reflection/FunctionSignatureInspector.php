@@ -176,6 +176,7 @@ class FunctionSignatureInspector
                     case 'int':
                     case 'iterable':
                     case 'mixed':
+                    case 'never':
                     case 'null':
                     case 'object':
                     case 'static':

@@ -250,6 +250,16 @@ class FunctionSignatureInspectorTest extends TestCase
     }
 
     /**
+     * @requires PHP >= 8.1
+     */
+    public function testSignatureWithNeverReturnType()
+    {
+        list(, $actual) = $this->subject->signature(new ReflectionFunction(function (): never {}));
+
+        $this->assertEquals('never', $actual);
+    }
+
+    /**
      * @requires PHP >= 8
      */
     public function testSignatureWithUnionType()
