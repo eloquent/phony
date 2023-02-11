@@ -5,22 +5,22 @@ parameters:
     - test/src/Phpstan
   ignoreErrors:
     # allow @throws with interfaces
-    - message: '/@throws with type .* is not subtype of Throwable/'
+    - message: "/@throws with type .* is not subtype of Throwable/"
       paths:
-      - src/Call/CallData.php
-      - src/Call/CallVerifier.php
-      - src/Facade/FacadeTrait.php
-      - src/functions.php
-      - src/Hook/FunctionHookManager.php
-      - src/Invocation/WrappedInvocableTrait.php
-      - src/Mock/Builder/MockBuilder.php
-      - src/Mock/Handle/Handle.php
-      - src/Mock/Handle/HandleFactory.php
-      - src/Mock/Handle/HandleTrait.php
-      - src/Mock/MockFactory.php
-      - src/Verification/Cardinality.php
-      - src/Verification/CardinalityVerifier.php
-      - src/Verification/CardinalityVerifierTrait.php
+        - src/Call/CallData.php
+        - src/Call/CallVerifier.php
+        - src/Facade/FacadeTrait.php
+        - src/functions.php
+        - src/Hook/FunctionHookManager.php
+        - src/Invocation/WrappedInvocableTrait.php
+        - src/Mock/Builder/MockBuilder.php
+        - src/Mock/Handle/Handle.php
+        - src/Mock/Handle/HandleFactory.php
+        - src/Mock/Handle/HandleTrait.php
+        - src/Mock/MockFactory.php
+        - src/Verification/Cardinality.php
+        - src/Verification/CardinalityVerifier.php
+        - src/Verification/CardinalityVerifierTrait.php
 
     # allow setting special property on generators under PHP 7
     - message: '/Access to an undefined property Generator.*::\$_phonySubject/'

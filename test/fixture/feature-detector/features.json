@@ -1,5 +1,5 @@
 {
-    "Can use weak maps":                     ["collection.weak-map",  "8.0.x", "999", []],
-    "Can use reference reflection":          ["reflection.reference", "7.4.x", "999", []],
-    "Can use ANSI escape codes with STDOUT": ["stdout.ansi", "0.x", "999", []]
+  "Can use weak maps": ["collection.weak-map", "8.0.x", "999", []],
+  "Can use reference reflection": ["reflection.reference", "7.4.x", "999", []],
+  "Can use ANSI escape codes with STDOUT": ["stdout.ansi", "0.x", "999", []]
 }

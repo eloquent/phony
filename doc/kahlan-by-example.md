@@ -56,18 +56,18 @@ system we'll be testing:
 
 ```json
 {
-    "autoload": {
-        "psr-4": {
-            "Example\\Dns\\": "src"
-        }
-    },
-    "require-dev": {
-        "kahlan/kahlan": "^4",
-        "eloquent/phony-kahlan": "^1"
-    },
-    "require": {
-        "psr/simple-cache": "^1"
+  "autoload": {
+    "psr-4": {
+      "Example\\Dns\\": "src"
     }
+  },
+  "require-dev": {
+    "kahlan/kahlan": "^4",
+    "eloquent/phony-kahlan": "^1"
+  },
+  "require": {
+    "psr/simple-cache": "^1"
+  }
 }
 ```
 
@@ -797,17 +797,17 @@ Thanks for reading!
 <!-- External references -->
 
 [`called()`]: .#spy.called
-[`calledWith()`]: .#spy.calledWith
+[`calledwith()`]: .#spy.calledWith
 [`expect()`]: https://kahlan.github.io/docs/dsl#expectations
 [`gethostbyname()`]: http://php.net/gethostbyname
 [`mock()`]: .#facade.mock
 [`never()`]: .#spy.never
 [`on()`]: .#facade.on
 [`require`]: https://getcomposer.org/doc/03-cli.md#require
-[`restoreGlobalFunctions()`]: .#facade.restoreGlobalFunctions
+[`restoreglobalfunctions()`]: .#facade.restoreGlobalFunctions
 [`returns()`]: .#stub.returns
-[`returnsArgument()`]: .#stub.returnsArgument
-[`stubGlobal()`]: .#facade.stubGlobal
+[`returnsargument()`]: .#stub.returnsArgument
+[`stubglobal()`]: .#facade.stubGlobal
 [composer]: https://getcomposer.org/
 [kahlan configuration file]: https://kahlan.github.io/docs/config-file
 [kahlan documentation]: https://kahlan.github.io/docs/

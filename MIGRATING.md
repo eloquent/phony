@@ -2,17 +2,17 @@
 
 ## Migrating from `4.x` to `5.x`
 
-The *Phony* `5.x` release drops support for PHP 7.2. If you only need to support
-PHP 7.3 or later, then it is recommended that you upgrade to *Phony* `5.x`. If
+The _Phony_ `5.x` release drops support for PHP 7.2. If you only need to support
+PHP 7.3 or later, then it is recommended that you upgrade to _Phony_ `5.x`. If
 you still need to support PHP 7.2, then you are free to continue using the `4.x`
-version of *Phony*.
+version of _Phony_.
 
 ## Migrating from `3.x` to `4.x`
 
-The *Phony* `4.x` release drops support for PHP 7.1. If you only need to support
-PHP 7.2 or later, then it is recommended that you upgrade to *Phony* `4.x`. If
+The _Phony_ `4.x` release drops support for PHP 7.1. If you only need to support
+PHP 7.2 or later, then it is recommended that you upgrade to _Phony_ `4.x`. If
 you still need to support PHP 7.1, then you are free to continue using the `3.x`
-version of *Phony*.
+version of _Phony_.
 
 ## Migrating from `2.x` to `3.x`
 
@@ -26,14 +26,14 @@ version of *Phony*.
 
 ### The `3.x` release only supports PHP 7.1 or later
 
-The *Phony* `3.x` release drops support for PHP 7.0. If you only need to support
-PHP 7.1 or later, then it is recommended that you upgrade to *Phony* `3.x`. If
+The _Phony_ `3.x` release drops support for PHP 7.0. If you only need to support
+PHP 7.1 or later, then it is recommended that you upgrade to _Phony_ `3.x`. If
 you still need to support PHP 7.0, then you are free to continue using the `2.x`
-version of *Phony*.
+version of _Phony_.
 
 ### Utilization of void and nullable type hints
 
-Where possible, the entire *Phony* `3.x` API now takes advantage of
+Where possible, the entire _Phony_ `3.x` API now takes advantage of
 [nullable types] and [void functions].
 
 In terms of usage, this only affects [`setUseColor()`], which had an
@@ -41,7 +41,7 @@ undocumented default value of `null` for its only argument. This function now
 requires an explicit `null` value if you wish to set color usage based upon the
 current environment.
 
-[`setUseColor()`]: http://eloquent-software.com/phony/3.0/#facade.setUseColor
+[`setusecolor()`]: http://eloquent-software.com/phony/3.0/#facade.setUseColor
 [nullable types]: http://php.net/manual/migration71.new-features.php#migration71.new-features.nullable-types
 [void functions]: http://php.net/manual/migration71.new-features.php#migration71.new-features.void-functions
 
@@ -66,16 +66,16 @@ allows `class` as a method name.
 
 ### The `2.x` release only supports PHP 7
 
-The *Phony* `2.x` release is primarily about dropping support for PHP 5 and
+The _Phony_ `2.x` release is primarily about dropping support for PHP 5 and
 HHVM. If you only need to support PHP 7, then it is recommended that you upgrade
-to *Phony* `2.x`. If you still need to support PHP 5, then you are free to
-continue using the `1.x` version of *Phony*.
+to _Phony_ `2.x`. If you still need to support PHP 5, then you are free to
+continue using the `1.x` version of _Phony_.
 
 ### More type hints, less squishy types
 
-Where possible, the entire *Phony* `2.x` API has introduced scalar type hints.
+Where possible, the entire _Phony_ `2.x` API has introduced scalar type hints.
 If your tests use [strict typing], and you are passing an incorrect type to
-*Phony*, an error will now be thrown.
+_Phony_, an error will now be thrown.
 
 [strict typing]: http://php.net/functions.arguments#functions.arguments.type-declaration.strict
 
@@ -84,29 +84,29 @@ In addition; some values that were previously represented as a scalar value OR
 
 - [Mock labels] and [spy labels] now use an empty string instead of `null` to
   represent "no label". Affects:
-    - [`$handle->setLabel()`]
-    - [`$handle->label()`]
-    - [`$spy->setLabel()`]
-    - [`$spy->label()`]
+  - [`$handle->setLabel()`]
+  - [`$handle->label()`]
+  - [`$spy->setLabel()`]
+  - [`$spy->label()`]
 - Places where a "no maximum" amount is represented now use negative integers
   instead of `null`. Affects:
-    - [`$spy->between()`]
-    - [`$call->between()`]
-    - [`$verification->between()`]
-    - [`wildcard()`]
-    - [`$wildcard->maximumArguments()`]
+  - [`$spy->between()`]
+  - [`$call->between()`]
+  - [`$verification->between()`]
+  - [`wildcard()`]
+  - [`$wildcard->maximumArguments()`]
 
 [mock labels]: http://eloquent-software.com/phony/2.0/#labeling-mocks
 [spy labels]: http://eloquent-software.com/phony/2.0/#labeling-spies
-[`$handle->setLabel()`]: http://eloquent-software.com/phony/2.0/#handle.setLabel
+[`$handle->setlabel()`]: http://eloquent-software.com/phony/2.0/#handle.setLabel
 [`$handle->label()`]: http://eloquent-software.com/phony/2.0/#handle.label
-[`$spy->setLabel()`]: http://eloquent-software.com/phony/2.0/#spy.setLabel
+[`$spy->setlabel()`]: http://eloquent-software.com/phony/2.0/#spy.setLabel
 [`$spy->label()`]: http://eloquent-software.com/phony/2.0/#spy.label
 [`$spy->between()`]: http://eloquent-software.com/phony/2.0/#spy.between
 [`$call->between()`]: http://eloquent-software.com/phony/2.0/#call.between
 [`$verification->between()`]: http://eloquent-software.com/phony/2.0/#verification.between
 [`wildcard()`]: http://eloquent-software.com/phony/2.0/#facade.wildcard
-[`$wildcard->maximumArguments()`]: http://eloquent-software.com/phony/2.0/#wildcard.maximumArguments
+[`$wildcard->maximumarguments()`]: http://eloquent-software.com/phony/2.0/#wildcard.maximumArguments
 
 ### Dynamic order verification functions removed
 
@@ -118,12 +118,12 @@ been made redundant:
 - [`anyOrderSequence()`]
 - [`checkAnyOrderSequence()`]
 
-[`inOrderSequence()`]: http://eloquent-software.com/phony/1.0/#facade.inOrderSequence
-[`checkInOrderSequence()`]: http://eloquent-software.com/phony/1.0/#facade.checkInOrderSequence
-[`anyOrderSequence()`]: http://eloquent-software.com/phony/1.0/#facade.anyOrderSequence
-[`checkAnyOrderSequence()`]: http://eloquent-software.com/phony/1.0/#facade.checkAnyOrderSequence
+[`inordersequence()`]: http://eloquent-software.com/phony/1.0/#facade.inOrderSequence
+[`checkinordersequence()`]: http://eloquent-software.com/phony/1.0/#facade.checkInOrderSequence
+[`anyordersequence()`]: http://eloquent-software.com/phony/1.0/#facade.anyOrderSequence
+[`checkanyordersequence()`]: http://eloquent-software.com/phony/1.0/#facade.checkAnyOrderSequence
 
-In order to perform dynamic order verification under *Phony* `2.x`, simply use
+In order to perform dynamic order verification under _Phony_ `2.x`, simply use
 the `...` operator:
 
 ```php

@@ -66,7 +66,7 @@
 ## 3.0.1 (2018-06-07)
 
 - **[FIXED]** Fixed a bug where creating handles for uncallable methods with
- final class return types would throw exceptions ([#237] - thanks [@pmall]).
+  final class return types would throw exceptions ([#237] - thanks [@pmall]).
 
 [#237]: https://github.com/eloquent/phony/issues/237
 
