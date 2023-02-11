@@ -6,8 +6,8 @@ if (!class_exists('Phar')) {
     return false;
 }
 
-if (version_compare(PHP_VERSION, '8.0.x', '<')) {
-    $message = 'Requires PHP >= 8.0';
+if (version_compare(PHP_VERSION, '8.1.x', '<')) {
+    $message = 'Requires PHP >= 8.1';
 
     return false;
 }

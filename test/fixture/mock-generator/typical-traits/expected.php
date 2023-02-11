@@ -365,7 +365,7 @@ implements \Eloquent\Phony\Mock\Mock,
         return $result;
     }
 
-    public function current()
+    public function current() : mixed
     {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -387,7 +387,7 @@ implements \Eloquent\Phony\Mock\Mock,
         return $result;
     }
 
-    public function next()
+    public function next() : void
     {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -397,19 +397,17 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::next(...$arguments);
+            parent::next(...$arguments);
 
-            return $result;
+            return;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
-
-        return $result;
     }
 
-    public function key()
+    public function key() : mixed
     {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -431,7 +429,7 @@ implements \Eloquent\Phony\Mock\Mock,
         return $result;
     }
 
-    public function valid()
+    public function valid() : bool
     {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -453,7 +451,7 @@ implements \Eloquent\Phony\Mock\Mock,
         return $result;
     }
 
-    public function rewind()
+    public function rewind() : void
     {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -463,19 +461,17 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::rewind(...$arguments);
+            parent::rewind(...$arguments);
 
-            return $result;
+            return;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
-
-        return $result;
     }
 
-    public function count()
+    public function count() : int
     {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -499,7 +495,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
     public function offsetExists(
         $a0
-    ) {
+    ) : bool {
         $argumentCount = \func_num_args();
         $arguments = [];
 
@@ -526,7 +522,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
     public function offsetGet(
         $a0
-    ) {
+    ) : mixed {
         $argumentCount = \func_num_args();
         $arguments = [];
 
@@ -554,7 +550,7 @@ implements \Eloquent\Phony\Mock\Mock,
     public function offsetSet(
         $a0,
         $a1
-    ) {
+    ) : void {
         $argumentCount = \func_num_args();
         $arguments = [];
 
@@ -570,21 +566,19 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::offsetSet(...$arguments);
+            parent::offsetSet(...$arguments);
 
-            return $result;
+            return;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
-
-        return $result;
     }
 
     public function offsetUnset(
         $a0
-    ) {
+    ) : void {
         $argumentCount = \func_num_args();
         $arguments = [];
 
@@ -597,16 +591,14 @@ implements \Eloquent\Phony\Mock\Mock,
         }
 
         if (!$this->_handle) {
-            $result = parent::offsetUnset(...$arguments);
+            parent::offsetUnset(...$arguments);
 
-            return $result;
+            return;
         }
 
-        $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+        $this->_handle->spy(__FUNCTION__)->invokeWith(
             new \Eloquent\Phony\Call\Arguments($arguments)
         );
-
-        return $result;
     }
 
     public function methodC(
