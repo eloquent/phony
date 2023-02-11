@@ -1,11 +1,12 @@
 name: CI
 on:
-  push:
-  pull_request:
-  schedule:
-    - cron: 0 14 * * 0 # Sunday 2PM UTC = Monday 12AM AEST
+  workflow_call:
+    inputs:
+      publish-coverage:
+        type: boolean
+        required: true
 jobs:
-  test:
+  ci:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -26,9 +27,13 @@ jobs:
       - name: Install dependencies
         run: make vendor
       - name: Make
+        if: "!inputs.publish-coverage"
+        run: make ci
+      - name: Make
+        if: inputs.publish-coverage
         run: make artifacts/coverage/phpunit/clover.xml
-      - name: Upload coverage reports
-        if: success()
+      - name: Publish coverage reports
+        if: inputs.publish-coverage && success()
         run: |
           test ! -z "$TOKEN"
           bash <(curl -s https://codecov.io/bash) -t "$TOKEN" -B "${{ github.ref }}"

@@ -1,0 +1,10 @@
+name: CI (scheduled)
+on:
+  schedule:
+    - cron: 0 14 * * 0 # Sunday 2PM UTC = Monday 12AM AEST
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+    with:
+      publish-coverage: false
+    secrets: inherit
