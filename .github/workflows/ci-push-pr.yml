@@ -3,8 +3,9 @@ on:
   push:
   pull_request:
 jobs:
-  ci:
+  CI:
+    name: CI
     uses: ./.github/workflows/ci.yml
+    secrets: inherit
     with:
       publish-coverage: true
-    secrets: inherit

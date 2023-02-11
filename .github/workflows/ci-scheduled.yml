@@ -3,8 +3,9 @@ on:
   schedule:
     - cron: 0 14 * * 0 # Sunday 2PM UTC = Monday 12AM AEST
 jobs:
-  ci:
+  CI:
+    name: CI
     uses: ./.github/workflows/ci.yml
+    secrets: inherit
     with:
       publish-coverage: false
-    secrets: inherit

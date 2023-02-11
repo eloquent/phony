@@ -6,7 +6,7 @@ on:
         type: boolean
         required: true
 jobs:
-  ci:
+  CI:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
