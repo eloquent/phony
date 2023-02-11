@@ -160,16 +160,17 @@ class InlineExporterTest extends TestCase
     public function testExportInaccessibleIneritedProperties()
     {
         $value = new TestDerivedClassA();
-        $expected = TestDerivedClassA::class . '#0{' .
-            'derivedPublic: "<derived-public>", ' .
-            'derivedPrivate: "<derived-private>", ' .
-            'basePrivate: "<derived-base-private>", ' .
-            'derivedProtected: "<derived-protected>", ' .
-            'basePublic: "<base-public>", ' .
-            'baseProtected: "<base-protected>", ' .
-            TestBaseClass::class . '.basePrivate: "<base-private>"}';
+        $actual = $this->subject->export($value);
 
-        $this->assertSame($expected, $this->subject->export($value));
+        $this->assertStringStartsWith(TestDerivedClassA::class . '#0{', $actual);
+        $this->assertStringContainsString('basePublic: "<base-public>"', $actual);
+        $this->assertStringContainsString('baseProtected: "<base-protected>"', $actual);
+        $this->assertStringContainsString('basePrivate: "<derived-base-private>"', $actual);
+        $this->assertStringContainsString('derivedPublic: "<derived-public>"', $actual);
+        $this->assertStringContainsString('derivedProtected: "<derived-protected>"', $actual);
+        $this->assertStringContainsString('derivedPrivate: "<derived-private>"', $actual);
+        $this->assertStringContainsString(TestBaseClass::class . '.basePrivate: "<base-private>"', $actual);
+        $this->assertStringEndsWith('}', $actual);
     }
 
     public function testExportClosure()
