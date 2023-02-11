@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Test;
 
 use IteratorAggregate;
+use Traversable;
 
 class TestIteratorAggregate implements IteratorAggregate
 {
@@ -13,7 +14,7 @@ class TestIteratorAggregate implements IteratorAggregate
         $this->iterator = $iterator;
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return $this->iterator;
     }
