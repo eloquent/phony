@@ -18,7 +18,6 @@ _DOC_MARKDOWN_FILES := $(wildcard doc/*.md)
 _DOC_HTML_FILES := $(_DOC_MARKDOWN_FILES:doc/%.md=artifacts/build/doc-html/%.html)
 
 GENERATED_FILES += $(_HOOK_FIXTURE_OUTPUT_FILES) $(_MOCK_FIXTURE_OUTPUT_FILES) $(_VERIFICATION_FIXTURE_OUTPUT_FILES)
-CI_VERIFY_GENERATED_FILES :=
 
 ################################################################################
 
