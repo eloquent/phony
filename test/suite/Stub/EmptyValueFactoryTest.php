@@ -176,13 +176,13 @@ class EmptyValueFactoryTest extends TestCase
         $this->assertIsObject($objectOrIterable);
         $this->assertSame([], (array) $objectOrIterable);
 
-        $classAOrclassC = $this->subject->fromType($this->createType(TestClassA::class . '|' . TestClassC::class));
+        $classAOrClassC = $this->subject->fromType($this->createType(TestClassA::class . '|' . TestClassC::class));
 
-        $this->assertInstanceOf(TestClassC::class, $classAOrclassC);
+        $this->assertInstanceOf(TestClassC::class, $classAOrClassC);
 
-        $classCOrclassA = $this->subject->fromType($this->createType(TestClassC::class . '|' . TestClassA::class));
+        $classCOrClassA = $this->subject->fromType($this->createType(TestClassC::class . '|' . TestClassA::class));
 
-        $this->assertInstanceOf(TestClassA::class, $classCOrclassA);
+        $this->assertInstanceOf(TestClassA::class, $classCOrClassA);
     }
 
     public function testFromTypeWithStdClass()
