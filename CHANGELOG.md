@@ -16,6 +16,7 @@
   indicating their type (e.g. `&1[]`, `&2{}`, `&3()`), since all types now share
   a single sequence of identifier numbers. References will now be rendered as
   just an ampersand followed by the identifier number (e.g. `&1`, `&2`, `&3`).
+- **[FIXED]** The exporter no longer omits falsy labels like `'0'`.
 
 [#255]: https://github.com/eloquent/phony/issues/255
 [#256]: https://github.com/eloquent/phony/pull/256

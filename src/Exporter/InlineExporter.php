@@ -603,7 +603,7 @@ class InlineExporter implements Exporter
                 $result->final .= ']';
             }
 
-            if ($result->label) {
+            if ('' !== $result->label) {
                 $result->final .= '[' . $result->label . ']';
             }
         }

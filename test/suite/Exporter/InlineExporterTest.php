@@ -392,6 +392,14 @@ class InlineExporterTest extends TestCase
         );
     }
 
+    public function testExportFalsyLabel()
+    {
+        $a = $this->mockBuilderFactory->create()->named('PhonyMockInlineExporterFalsyLabel')->get();
+        Phony::on($a)->setLabel('0');
+
+        $this->assertSame('PhonyMockInlineExporterFalsyLabel#0{}[0]', $this->subject->export($a));
+    }
+
     public function testExportCallable()
     {
         $closure = function () {};
