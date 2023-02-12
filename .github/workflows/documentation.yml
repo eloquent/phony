@@ -23,3 +23,5 @@ jobs:
       - name: Publish documentation
         if: success()
         run: make doc-publish
+        env:
+          DOC_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
