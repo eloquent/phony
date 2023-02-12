@@ -22,8 +22,6 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: mbstring
           coverage: pcov
-      - name: Check PHP version
-        run: php -v
       - name: Install dependencies
         run: make vendor
       - name: Make
