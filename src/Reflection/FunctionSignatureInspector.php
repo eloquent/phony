@@ -38,58 +38,44 @@ class FunctionSignatureInspector
      *
      * Prefix ------------------------------------------------------------------
      *
-     *   Parameter #\d+ \[
-     *
-     * "Optional" flag ---------------------------------------------------------
-     *
-     *   (?:<required>|(<optional>)?)
-     *
-     *   Capture group 1:
-     *     Non-empty if the argument is optional
-     *
-     *   For some built-in methods, this used to be the only indication that an
-     *   argument was optional. Seems to be fixed in PHP 8, but still required
-     *   for PHP 7.
+     *   Parameter #\d+ \[ <(?:required|optional)>
      *
      * Type definition ---------------------------------------------------------
      *
-     *   (?:(\?)?(\S+) (or NULL )?)?
+     *   (?:(\?)?(\S+) )?
+     *
+     *   Capture group 1:
+     *     Non-empty if the type is nullable
      *
      *   Capture group 2:
-     *     Non-empty if the type is nullable (PHP 8)
-     *
-     *   Capture group 3:
      *     Contains the type definition itself
-     *
-     *   Capture group 4:
-     *     Non-empty if the type is nullable (PHP 7)
      *
      * By-reference arguments --------------------------------------------------
      *
      *   ?(&)?
      *
-     *   Capture group 5:
+     *   Capture group 3:
      *     Non-empty if the argument is by-reference
      *
      * Variadic arguments ------------------------------------------------------
      *
      *   (\.{3})?
      *
-     *   Capture group 6:
+     *   Capture group 4:
      *     Non-empty if the argument is by-variadic
      *
      * Argument name -----------------------------------------------------------
      *
      *   \$(\S+)
      *
-     *   Capture group 7:
+     *   Capture group 5:
      *     Contains the argument name (without the "$" symbol)
      *
      * Default value -----------------------------------------------------------
      *
      *   ((?: = \S+)?)
      *
-     *   Capture group 8:
+     *   Capture group 6:
      *     Contains a string representation the default value
      *
      *   Matches the default value. Can only be trusted for default values of
@@ -99,7 +85,7 @@ class FunctionSignatureInspector
      *   because otherwise PHP will leave this group's offset completely
      *   undefined in the match array.
      */
-    const PARAMETER_PATTERN = '/Parameter #\d+ \[ (?:<required>|(<optional>)?) (?:(\?)?(\S+) (or NULL )?)?(&)?(\.{3})?\$(\S+)((?: = \S+)?)/';
+    const PARAMETER_PATTERN = '/Parameter #\d+ \[ <(?:required|optional)> (?:(\?)?(\S+) )?(&)?(\.{3})?\$(\S+)((?: = \S+)?)/';
 
     /**
      * Matches the return type information in the result of casting a
@@ -111,18 +97,15 @@ class FunctionSignatureInspector
      *
      * Type definition ---------------------------------------------------------
      *
-     *   (\?)?(\S+) ((?:or NULL )?)
+     *   (\?)?(\S+)
      *
      *   Capture group 1:
-     *     Non-empty if the type is nullable (PHP 8)
+     *     Non-empty if the type is nullable
      *
      *   Capture group 2:
      *     Contains the type definition itself
-     *
-     *   Capture group 3:
-     *     Non-empty if the type is nullable (PHP 7)
      */
-    const RETURN_PATTERN = '/(?:Return|Tentative return) \[ (\?)?(\S+) ((?:or NULL )?)/';
+    const RETURN_PATTERN = '/(?:Return|Tentative return) \[ (\?)?(\S+)/';
 
     /**
      * Get the function signature of the supplied function.
@@ -150,14 +133,12 @@ class FunctionSignatureInspector
 
         if ($hasReturnType) {
             /**
-             * @var string $isNullablePhp8
+             * @var string $isNullable
              * @var string $typeReference
-             * @var string $isNullablePhp7
              */
             list(,
-                $isNullablePhp8,
+                $isNullable,
                 $typeReference,
-                $isNullablePhp7,
             ) = $returnMatches;
 
             $subTypes = explode(self::UNION, $typeReference);
@@ -211,7 +192,7 @@ class FunctionSignatureInspector
                 }
             }
 
-            if ($isNullablePhp7 || $isNullablePhp8) {
+            if ($isNullable) {
                 $returnType = '?' . $returnType;
             }
         }
@@ -229,20 +210,16 @@ class FunctionSignatureInspector
             ++$index;
 
             /**
-             * @var string $isOptional
-             * @var string $isNullablePhp8
+             * @var string $isNullable
              * @var string $typeReference
-             * @var string $isNullablePhp7
              * @var string $byReference
              * @var string $variadic
              * @var string $name
              * @var string $defaultValue
              */
             list(,
-                $isOptional,
-                $isNullablePhp8,
+                $isNullable,
                 $typeReference,
-                $isNullablePhp7,
                 $byReference,
                 $variadic,
                 $name,
@@ -313,7 +290,7 @@ class FunctionSignatureInspector
             if ($type) {
                 $type .= ' ';
 
-                if ($isNullablePhp7 || $isNullablePhp8) {
+                if ($isNullable) {
                     $type = '?' . $type;
                 }
             }
@@ -341,8 +318,6 @@ class FunctionSignatureInspector
                             ' = ' . var_export($realDefaultValue, true);
                     }
                 }
-            } elseif ($isOptional && !$variadic) {
-                $defaultValue = self::DEFAULT_NULL;
             }
 
             $signature[0][$name] =
