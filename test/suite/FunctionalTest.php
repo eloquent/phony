@@ -1,6 +1,5 @@
 <?php
 
-use Eloquent\Phony\Test\WithDynamicProperties;
 use function Eloquent\Phony\anyOrder;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use function Eloquent\Phony\equalTo;
@@ -55,6 +54,7 @@ use Eloquent\Phony\Test\TestTraitE;
 use Eloquent\Phony\Test\TestTraitF;
 use Eloquent\Phony\Test\TestTraitH;
 use Eloquent\Phony\Test\TestTraitJ;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 
 class FunctionalTest extends TestCase

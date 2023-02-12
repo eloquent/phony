@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Reflection;
 
 use Eloquent\Phony\Reflection\Exception\UndefinedFeatureException;
-use ReflectionClass;
 
 /**
  * Detects support for language features in the current runtime environment.

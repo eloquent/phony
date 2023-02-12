@@ -367,27 +367,27 @@ class InlineExporterTest extends TestCase
         $valueB = [$d, $c, &$b, &$a];
 
         $this->assertSame(
-            "#0[#1[], #2[], #3{}, #4{}, &1[], &2[], &3{}, &4{}]",
+            '#0[#1[], #2[], #3{}, #4{}, &1[], &2[], &3{}, &4{}]',
             $this->subject->export($valueA)
         );
         $this->assertSame(
-            "#5[#4{}, #3{}, #2[], #1[]]",
+            '#5[#4{}, #3{}, #2[], #1[]]',
             $this->subject->export($valueB)
         );
 
-        $e = $this->mockBuilderFactory->create()->named("E")->get();
-        $f = $this->mockBuilderFactory->create()->named("F")->get();
-        $g = Phony::on($e)->setLabel("g");
-        $h = Phony::on($f)->setLabel("h");
+        $e = $this->mockBuilderFactory->create()->named('E')->get();
+        $f = $this->mockBuilderFactory->create()->named('F')->get();
+        $g = Phony::on($e)->setLabel('g');
+        $h = Phony::on($f)->setLabel('h');
         $valueC = [$e, $f, $g, $h, $e, $f, $g, $h];
         $valueD = [$h, $g, $f, $e];
 
         $this->assertSame(
-            "#6[E#7{}[g], F#8{}[h], handle#9(&7{}), handle#10(&8{}), &7{}, &8{}, &9(), &10()]",
+            '#6[E#7{}[g], F#8{}[h], handle#9(&7{}), handle#10(&8{}), &7{}, &8{}, &9(), &10()]',
             $this->subject->export($valueC)
         );
         $this->assertSame(
-            "#11[handle#10(&8{}), handle#9(&7{}), F#8{}[h], E#7{}[g]]",
+            '#11[handle#10(&8{}), handle#9(&7{}), F#8{}[h], E#7{}[g]]',
             $this->subject->export($valueD)
         );
     }
