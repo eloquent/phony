@@ -7,7 +7,6 @@ namespace Eloquent\Phony\Mock;
 use Countable;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClassB;
@@ -27,8 +26,7 @@ class MockGeneratorTest extends TestCase
     {
         $this->labelSequencer = new Sequencer();
         $this->signatureInspector = FunctionSignatureInspector::instance();
-        $this->featureDetector = new FeatureDetector();
-        $this->subject = new MockGenerator($this->labelSequencer, $this->signatureInspector, $this->featureDetector);
+        $this->subject = new MockGenerator($this->labelSequencer, $this->signatureInspector);
     }
 
     public function classNameData()
@@ -102,8 +100,6 @@ class MockGeneratorTest extends TestCase
     public function testGenerate($testName)
     {
         $fixturePath = __DIR__ . '/../../fixture/mock-generator';
-
-        $detector = FeatureDetector::instance();
 
         if (is_file($fixturePath . '/' . $testName . '/supported.php')) {
             $isSupported = require $fixturePath . '/' . $testName . '/supported.php';

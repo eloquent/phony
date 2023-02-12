@@ -10,7 +10,6 @@ use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Phony;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Test\TupleIterator;
 use Eloquent\Phony\Test\WithDynamicProperties;
@@ -40,7 +39,6 @@ class GeneratorAnswerBuilderTest extends TestCase
     {
         $this->self = (object) [];
         $this->stub = StubFactory::instance()->create(null, null)->setSelf($this->self);
-        $this->featureDetector = FeatureDetector::instance();
         $this->invocableInspector = new InvocableInspector();
         $this->invoker = new Invoker();
         $this->subject = new GeneratorAnswerBuilder(

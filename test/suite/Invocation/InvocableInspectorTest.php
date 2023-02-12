@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Invocation;
 
 use Eloquent\Phony\Phony;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestInvocable;
 use Eloquent\Phony\Test\TestWrappedInvocable;
@@ -26,8 +25,6 @@ class InvocableInspectorTest extends TestCase
         $this->callback = function () {};
         $this->invocable = new TestInvocable();
         $this->wrappedInvocable = new TestWrappedInvocable($this->callback);
-
-        $this->featureDetector = FeatureDetector::instance();
     }
 
     public function testCallbackReflector()

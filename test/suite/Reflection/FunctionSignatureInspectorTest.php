@@ -18,8 +18,7 @@ class FunctionSignatureInspectorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->featureDetector = new FeatureDetector();
-        $this->subject = new FunctionSignatureInspector($this->featureDetector);
+        $this->subject = new FunctionSignatureInspector();
     }
 
     public function testSignature()

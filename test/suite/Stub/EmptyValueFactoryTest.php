@@ -20,7 +20,6 @@ use DivisionByZeroError;
 use DomainException;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Mock;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassC;
 use Eloquent\Phony\Test\TestInterfaceWithReturnType;
@@ -90,8 +89,7 @@ class EmptyValueFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->featureDetector = FeatureDetector::instance();
-        $this->subject = new EmptyValueFactory($this->featureDetector);
+        $this->subject = new EmptyValueFactory();
         $this->subject->setStubVerifierFactory(StubVerifierFactory::instance());
         $this->subject->setMockBuilderFactory(MockBuilderFactory::instance());
     }

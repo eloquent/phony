@@ -7,7 +7,6 @@ namespace Eloquent\Phony\Matcher;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Hamcrest\HamcrestMatcherDriver;
 use Eloquent\Phony\Phony;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestMatcherA;
 use Eloquent\Phony\Test\TestMatcherB;
@@ -31,8 +30,6 @@ class MatcherFactoryTest extends TestCase
         $this->driverA = new TestMatcherDriverA();
         $this->driverB = new TestMatcherDriverB();
         $this->drivers = [$this->driverA, $this->driverB];
-
-        $this->featureDetector = FeatureDetector::instance();
     }
 
     public function testAddMatcherDriver()

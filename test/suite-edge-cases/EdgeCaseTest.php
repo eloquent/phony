@@ -2,18 +2,12 @@
 
 use function Eloquent\Phony\mock;
 use function Eloquent\Phony\partialMock;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use function Eloquent\Phony\stubGlobal;
 use Eloquent\Phony\Test\EdgeCase as TestNamespace;
 use PHPUnit\Framework\TestCase;
 
 class EdgeCaseTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $this->featureDetector = FeatureDetector::instance();
-    }
-
     public function testSimpleXmlElementFull()
     {
         if (!class_exists('SimpleXMLElement')) {

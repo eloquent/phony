@@ -9,7 +9,6 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Test\WithDynamicProperties;
@@ -45,8 +44,7 @@ class StubDataWithGeneratorsTest extends TestCase
         $this->matcherVerifier = new MatcherVerifier();
         $this->invoker = new Invoker();
         $this->invocableInspector = new InvocableInspector();
-        $this->featureDetector = FeatureDetector::instance();
-        $this->emptyValueFactory = new EmptyValueFactory($this->featureDetector);
+        $this->emptyValueFactory = new EmptyValueFactory();
         $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
         $this->exporter = InlineExporter::instance();
         $this->subject = new StubData(

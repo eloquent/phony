@@ -7,7 +7,6 @@ namespace Eloquent\Phony\Matcher;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\Properties\TestBaseClass;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\Properties\TestDerivedClassB;
@@ -26,8 +25,6 @@ class EqualToMatcherTest extends TestCase
         $this->value = 'x';
         $this->exporter = InlineExporter::instance();
         $this->subject = new EqualToMatcher($this->value, true, $this->exporter);
-
-        $this->featureDetector = FeatureDetector::instance();
     }
 
     public function testConstructor()

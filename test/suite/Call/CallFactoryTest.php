@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Test\TestCallEventFactory;
 use Eloquent\Phony\Test\WithDynamicProperties;
@@ -25,7 +24,6 @@ class CallFactoryTest extends TestCase
         $this->subject = new CallFactory($this->eventFactory, $this->invoker);
 
         $this->spyFactory = SpyFactory::instance();
-        $this->featureDetector = new FeatureDetector();
     }
 
     public function testRecord()

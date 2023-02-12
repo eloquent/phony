@@ -15,7 +15,6 @@ use function Eloquent\Phony\on;
 use function Eloquent\Phony\onStatic;
 use function Eloquent\Phony\partialMock;
 use Eloquent\Phony\Phony;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use function Eloquent\Phony\restoreGlobalFunctions;
 use function Eloquent\Phony\setUseColor;
 use function Eloquent\Phony\spy;
@@ -64,7 +63,6 @@ class FunctionalTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->featureDetector = FeatureDetector::instance();
         $this->exporter = InlineExporter::instance();
 
         setUseColor(false);

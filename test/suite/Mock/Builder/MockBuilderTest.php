@@ -22,7 +22,6 @@ use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Mock\MockGenerator;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
@@ -55,7 +54,6 @@ class MockBuilderTest extends TestCase
     protected function setUp(): void
     {
         $this->invocableInspector = new InvocableInspector();
-        $this->featureDetector = new FeatureDetector();
 
         $this->typeNames = [
             TestClassB::class,
@@ -105,7 +103,6 @@ class MockBuilderTest extends TestCase
             new Sequencer(),
             MockGenerator::instance(),
             $this->handleFactory,
-            $this->featureDetector
         );
 
         return $this->subject = new MockBuilder(

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Eloquent\Phony;
 
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\Phony as TestPhony;
 use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
@@ -17,8 +16,6 @@ class VerificationTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->featureDetector = FeatureDetector::instance();
-
         TestPhony::setUseColor(true);
     }
 
@@ -55,8 +52,6 @@ class VerificationTest extends TestCase
     public function testVerification($verification, $testName)
     {
         $path = __DIR__ . '/../fixture/verification/' . $verification . '/' . $testName;
-
-        $detector = $this->featureDetector;
 
         if (is_file($path . '/supported.php')) {
             $isSupported = require $path . '/supported.php';

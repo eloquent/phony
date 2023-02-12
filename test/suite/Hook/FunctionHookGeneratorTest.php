@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Hook;
 
 use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
@@ -46,7 +45,6 @@ class FunctionHookGeneratorTest extends TestCase
     {
         $fixturePath = __DIR__ . '/../../fixture/hook-generator';
 
-        $detector = FeatureDetector::instance();
         $supportedPath = $fixturePath . '/' . $testName . '/supported.php';
 
         if (is_file($supportedPath)) {
