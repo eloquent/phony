@@ -25,14 +25,9 @@ implements \Eloquent\Phony\Mock\Mock
     private function _callParentConstructor(
         \Eloquent\Phony\Call\Arguments $arguments
     ) {
-        $constructor = function () use ($arguments) {
-            \call_user_func_array(
-                [$this, 'parent::__construct'],
-                $arguments->all()
-            );
-        };
-        $constructor = $constructor->bindTo($this, 'Eloquent\Phony\Test\TestClassD');
-        $constructor();
+        $constructor = new ReflectionMethod('Eloquent\\Phony\\Test\\TestClassD', "__construct");
+        $constructor->setAccessible(true);
+        $constructor->invokeArgs($this,$arguments->all());
     }
 
     private static $_uncallableMethods = [];

@@ -706,19 +706,15 @@ EOD;
                 $constructorName = $constructor->getName();
 
                 if ($constructor->isPrivate()) {
+                    $parentClassNameQuoted = var_export($parentClassName, true);
                     $source .= <<<EOD
 
     private function _callParentConstructor(
         \Eloquent\Phony\Call\Arguments \$arguments
     ) {
-        \$constructor = function () use (\$arguments) {
-            \call_user_func_array(
-                [\$this, 'parent::$constructorName'],
-                \$arguments->all()
-            );
-        };
-        \$constructor = \$constructor->bindTo(\$this, '$parentClassName');
-        \$constructor();
+        \$constructor = new ReflectionMethod($parentClassNameQuoted, "__construct");
+        \$constructor->setAccessible(true);
+        \$constructor->invokeArgs(\$this,\$arguments->all());
     }
 
 EOD;
