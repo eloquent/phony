@@ -7,10 +7,5 @@ if [[ -z "$1" ]]; then
   exit 1
 fi
 
-if [[ -z "$DOC_GITHUB_TOKEN" ]]; then
-  >&2 echo "DOC_GITHUB_TOKEN must be set"
-  exit 1
-fi
-
 cd "$1"
-git push "https://${DOC_GITHUB_TOKEN}:x-oauth-basic@github.com/eloquent/phony.git" gh-pages:gh-pages
+git push "https://github.com/eloquent/phony.git" gh-pages:gh-pages
