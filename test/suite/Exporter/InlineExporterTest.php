@@ -109,8 +109,8 @@ class InlineExporterTest extends TestCase
 
         $this->assertSame('#0[~2]', $this->subject->export($value, 0));
         $this->assertSame('#0[#1[], #2[~1]]', $this->subject->export($value, 1));
-        $this->assertSame('#0[#1[], #2[&1[]]]', $this->subject->export($value, 2));
-        $this->assertSame('#0[#1[], #2[&1[]]]', $this->subject->export($value));
+        $this->assertSame('#0[#1[], #2[&1]]', $this->subject->export($value, 2));
+        $this->assertSame('#0[#1[], #2[&1]]', $this->subject->export($value));
     }
 
     public function testExportMaxDepthWithObjects()
@@ -120,8 +120,8 @@ class InlineExporterTest extends TestCase
 
         $this->assertSame('#0{~2}', $this->subject->export($value, 0));
         $this->assertSame('#0{a: #1{}, b: #2{~1}}', $this->subject->export($value, 1));
-        $this->assertSame('#0{a: #1{}, b: #2{a: &1{}}}', $this->subject->export($value, 2));
-        $this->assertSame('#0{a: #1{}, b: #2{a: &1{}}}', $this->subject->export($value));
+        $this->assertSame('#0{a: #1{}, b: #2{a: &1}}', $this->subject->export($value, 2));
+        $this->assertSame('#0{a: #1{}, b: #2{a: &1}}', $this->subject->export($value));
         $this->assertSame('#1{}', $this->subject->export($object, 0));
     }
 
@@ -130,7 +130,7 @@ class InlineExporterTest extends TestCase
         $value = new ClassWithProperty();
         $value->c = $value;
 
-        $this->assertSame('ClassWithProperty#0{c: &0{}}', $this->subject->export($value));
+        $this->assertSame('ClassWithProperty#0{c: &0}', $this->subject->export($value));
     }
 
     public function testExportRecursiveArray()
@@ -138,7 +138,7 @@ class InlineExporterTest extends TestCase
         $value = [];
         $value['inner'] = &$value;
 
-        $this->assertSame('#0["inner": &0[]]', $this->subject->export($value));
+        $this->assertSame('#0["inner": &0]', $this->subject->export($value));
     }
 
     public function testExportObjectPersistentIds()
@@ -263,7 +263,7 @@ class InlineExporterTest extends TestCase
         $this->assertSame('spy#3[anonymous]', $this->subject->export($anonymous));
         $this->assertSame('spy#4(implode)[verifier]', $this->subject->export($verifier));
         $this->assertSame('spy#5[anonymous-verifier]', $this->subject->export($anonymousVerifier));
-        $this->assertSame('#6[spy#0(implode)[label], &0()]', $this->subject->export($repeated));
+        $this->assertSame('#6[spy#0(implode)[label], &0]', $this->subject->export($repeated));
     }
 
     public function testExportStubs()
@@ -354,7 +354,7 @@ class InlineExporterTest extends TestCase
         $repeated = [$weakReference, $weakReference];
 
         $this->assertSame('weak#0(#1{a: "b"})', $this->subject->export($weakReference));
-        $this->assertSame('#2[weak#0(#1{a: "b"}), &0()]', $this->subject->export($repeated));
+        $this->assertSame('#2[weak#0(#1{a: "b"}), &0]', $this->subject->export($repeated));
     }
 
     public function testExportIdPersistence()
@@ -367,7 +367,7 @@ class InlineExporterTest extends TestCase
         $valueB = [$d, $c, &$b, &$a];
 
         $this->assertSame(
-            '#0[#1[], #2[], #3{}, #4{}, &1[], &2[], &3{}, &4{}]',
+            '#0[#1[], #2[], #3{}, #4{}, &1, &2, &3, &4]',
             $this->subject->export($valueA)
         );
         $this->assertSame(
@@ -383,11 +383,11 @@ class InlineExporterTest extends TestCase
         $valueD = [$h, $g, $f, $e];
 
         $this->assertSame(
-            '#6[E#7{}[g], F#8{}[h], handle#9(&7{}), handle#10(&8{}), &7{}, &8{}, &9(), &10()]',
+            '#6[E#7{}[g], F#8{}[h], handle#9(&7), handle#10(&8), &7, &8, &9, &10]',
             $this->subject->export($valueC)
         );
         $this->assertSame(
-            '#11[handle#10(&8{}), handle#9(&7{}), F#8{}[h], E#7{}[g]]',
+            '#11[handle#10(&8), handle#9(&7), F#8{}[h], E#7{}[g]]',
             $this->subject->export($valueD)
         );
     }

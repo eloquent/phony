@@ -158,8 +158,6 @@
 - [The exporter]
   - [The export format]
     - [Export identifiers and references]
-      - [Export reference types]
-      - [Export reference exclusions]
       - [Export identifier persistence]
     - [Exporting recursive values]
     - [Exporter special cases]
@@ -4456,56 +4454,19 @@ followed by the identifier:
 ```php
 $inner = [1, 2];
 $value = [&$inner, &$inner];
-// $value is exported as '#0[#1[1, 2], &1[]]'
+// $value is exported as '#0[#1[1, 2], &1]'
+```
 
+```php
 $inner = (object) ['a' => 1];
 $value = (object) ['b' => $inner, 'c' => $inner];
-// $value is exported as '#0{b: #1{a: 1}, c: &1{}}'
+// $value is exported as '#0{b: #1{a: 1}, c: &1}'
+```
 
+```php
 $inner = mock(ClassA::class)->setLabel('mock-label');
 $value = [$inner, $inner];
-// $value is exported as '#0[handle#1(PhonyMock_ClassA_0#0{}[mock-label]), &1()]'
-```
-
-##### Export reference types
-
-Array references appear followed by brackets (e.g. `&0[]`), object references
-appear followed by braces (e.g. `&0{}`), and wrapper references appear followed
-by parentheses (e.g. `&0()`):
-
-```php
-$array = [];
-$object = (object) [];
-$weakRef = WeakReference::create($object);
-$wrapper = spy('implode')->setLabel('spy-label');
-
-$value = [&$array, &$array];
-// $value is exported as '#0[#1[], &1[]]'
-
-$value = [$object, $object];
-// $value is exported as '#0[#0{}, &0{}]'
-
-$value = [$weakRef, $weakRef];
-// $value is exported as '#0[weak#1(#0{}), &1()]'
-
-$value = [$wrapper, $wrapper];
-// $value is exported as '#0[spy#1(implode)[spy-label], &1()]'
-```
-
-##### Export reference exclusions
-
-As well as excluding the content, object references exclude the class name, and
-wrapper references exclude the type, for brevity:
-
-```php
-$inner = new ClassA();
-$inner->c = "d";
-$value = (object) ['a' => $inner, 'b' => $inner];
-// $value is exported as '#0{a: ClassA#1{c: "d"}, b: &1{}}'
-
-$inner = mock();
-$value = [$inner, $inner];
-// $value is exported as '#0[handle#0(PhonyMock_0#1{}[0]), &0()]'
+// $value is exported as '#0[handle#1(PhonyMock_ClassA_0#0{}[mock-label]), &1]'
 ```
 
 ##### Export identifier persistence
@@ -4521,7 +4482,7 @@ $d = (object) [];
 
 $valueA = [&$a, &$b, $c, $d, &$a, &$b, $c, $d];
 // $valueA is exported as:
-// '"#0[#1[], #2[], #3{}, #4{}, &1[], &2[], &3{}, &4{}]"'
+// '#0[#1[], #2[], #3{}, #4{}, &1, &2, &3, &4]'
 
 $valueB = [$d, $c, &$b, &$a];
 // $valueB is exported as:
@@ -4534,11 +4495,11 @@ $h = on($f)->setLabel('h');            // handle for $f
 
 $valueC = [$e, $f, $g, $h, $e, $f, $g, $h];
 // $valueC is exported as:
-// '#6[handle#7(&9{}), handle#8(&10{}), PhonyMock_0#9{}[e], PhonyMock_0#10{}[f], &7(), &8(), &9{}, &10{}]'
+// '#6[E#7{}[g], F#8{}[h], handle#9(&7), handle#10(&8), &7, &8, &9, &10]'
 
 $valueD = [$h, $g, $f, $e];
 // $valueD is exported as:
-// '#0[#1{}, #0{}, &1{}, handle#2(PhonyMock_0#3{}[0])]'
+// '#11[handle#10(&8), handle#9(&7), F#8{}[h], E#7{}[g]]'
 ```
 
 #### Exporting recursive values
@@ -4550,11 +4511,11 @@ handled:
 ```php
 $value = [];
 $value[] = &$value;
-// $value is exported as '#0[&0[]]'
+// $value is exported as '#0[&0]'
 
 $value = (object) [];
 $value->a = $value;
-// $value is exported as '#0{a: &0{}}'
+// $value is exported as '#0{a: &0}'
 ```
 
 #### Exporter special cases
@@ -8194,8 +8155,6 @@ For the full copyright and license information, please view the [LICENSE file].
 [export depth]: #export-depth
 [export identifier persistence]: #export-identifier-persistence
 [export identifiers and references]: #export-identifiers-and-references
-[export reference exclusions]: #export-reference-exclusions
-[export reference types]: #export-reference-types
 [exporter special cases]: #exporter-special-cases
 [exporting closures]: #exporting-closures
 [exporting exceptions]: #exporting-exceptions

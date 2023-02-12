@@ -1262,14 +1262,14 @@ class FunctionalTest extends TestCase
             'object'         => [new ClassA(),                  'ClassA#%d{}'],
 
             // Export identifiers and references
-            'repeated sequence'       => [$repeatedSequences, '#%d[#%d[1, 2], &%d[]]'],
-            'repeated generic object' => [$repeatedObjects,   '#%d{b: #%d{a: 1}, c: &%d{}}'],
+            'repeated sequence'       => [$repeatedSequences, '#%d[#%d[1, 2], &%d]'],
+            'repeated generic object' => [$repeatedObjects,   '#%d{b: #%d{a: 1}, c: &%d}'],
 
             // Export reference types
             'identifier collision' => [$identifierCollision, '#%d[#%d{}, #%d[#%d{}]]'],
 
             // Export reference exclusions
-            'class name exclusion' => [$classNameExclusion, '#%d{a: ClassWithProperty#%d{c: "d"}, b: &%d{}}'],
+            'class name exclusion' => [$classNameExclusion, '#%d{a: ClassWithProperty#%d{c: "d"}, b: &%d}'],
 
             // Exporting closures
             'closure' => [function () {}, 'Closure#%d{}[FunctionalTest.php:' . __LINE__ . ']'],
@@ -1297,7 +1297,7 @@ class FunctionalTest extends TestCase
         $this->exporter->reset();
 
         $this->assertStringMatchesFormat(
-            '#%d[handle#%d(PhonyMock_ClassA_%d#%d{}[mock-label]), &%d()]',
+            '#%d[handle#%d(PhonyMock_ClassA_%d#%d{}[mock-label]), &%d]',
             $this->exporter->export($value, -1)
         );
     }
@@ -1314,11 +1314,11 @@ class FunctionalTest extends TestCase
         $valueD = [$wrapper, $wrapper];
         $this->exporter->reset();
 
-        $this->assertStringMatchesFormat('#%d[#%d[], &%d[]]', $this->exporter->export($valueA, -1));
-        $this->assertStringMatchesFormat('#%d[#%d{}, &%d{}]', $this->exporter->export($valueB, -1));
-        $this->assertStringMatchesFormat('#%d[weak#%d(#%d{}), &%d()]', $this->exporter->export($valueC, -1));
+        $this->assertStringMatchesFormat('#%d[#%d[], &%d]', $this->exporter->export($valueA, -1));
+        $this->assertStringMatchesFormat('#%d[#%d{}, &%d]', $this->exporter->export($valueB, -1));
+        $this->assertStringMatchesFormat('#%d[weak#%d(#%d{}), &%d]', $this->exporter->export($valueC, -1));
         $this->assertStringMatchesFormat(
-            '#%d[spy#%d(implode)[spy-label], &%d()]',
+            '#%d[spy#%d(implode)[spy-label], &%d]',
             $this->exporter->export($valueD, -1)
         );
     }
@@ -1330,7 +1330,7 @@ class FunctionalTest extends TestCase
         $this->exporter->reset();
 
         $this->assertStringMatchesFormat(
-            '#%d[handle#%d(PhonyMock_%d#%d{}[%d]), &%d()]',
+            '#%d[handle#%d(PhonyMock_%d#%d{}[%d]), &%d]',
             $this->exporter->export($value, -1)
         );
     }
@@ -1345,11 +1345,11 @@ class FunctionalTest extends TestCase
         $this->exporter->reset();
 
         $this->assertStringMatchesFormat(
-            '#%d[#%d{}, #%d{}, handle#%d(PhonyMock_%d#%d{}[%d]), &%d{}]',
+            '#%d[#%d{}, #%d{}, handle#%d(PhonyMock_%d#%d{}[%d]), &%d]',
             $this->exporter->export($valueA, -1)
         );
         $this->assertStringMatchesFormat(
-            '#%d[#%d{}, #%d{}, &%d{}, handle#%d(PhonyMock_%d#%d{}[%d])]',
+            '#%d[#%d{}, #%d{}, &%d, handle#%d(PhonyMock_%d#%d{}[%d])]',
             $this->exporter->export($valueB, -1)
         );
     }
@@ -1362,8 +1362,8 @@ class FunctionalTest extends TestCase
         $valueB = [&$b, &$a, &$b];
         $this->exporter->reset();
 
-        $this->assertStringMatchesFormat('#%d[#%d[], #%d[], &%d[]]', $this->exporter->export($valueA, -1));
-        $this->assertStringMatchesFormat('#%d[#%d[], #%d[], &%d[]]', $this->exporter->export($valueB, -1));
+        $this->assertStringMatchesFormat('#%d[#%d[], #%d[], &%d]', $this->exporter->export($valueA, -1));
+        $this->assertStringMatchesFormat('#%d[#%d[], #%d[], &%d]', $this->exporter->export($valueB, -1));
     }
 
     public function testExporterExamplesRecursiveValues()
@@ -1374,8 +1374,8 @@ class FunctionalTest extends TestCase
         $recursiveObject->a = $recursiveObject;
         $this->exporter->reset();
 
-        $this->assertStringMatchesFormat('#%d[&%d[]]', $this->exporter->export($recursiveArray, -1));
-        $this->assertStringMatchesFormat('#%d{a: &%d{}}', $this->exporter->export($recursiveObject, -1));
+        $this->assertStringMatchesFormat('#%d[&%d]', $this->exporter->export($recursiveArray, -1));
+        $this->assertStringMatchesFormat('#%d{a: &%d}', $this->exporter->export($recursiveObject, -1));
     }
 
     public function testExporterExamplesMocks()

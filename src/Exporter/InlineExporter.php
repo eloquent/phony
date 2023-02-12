@@ -177,7 +177,7 @@ class InlineExporter implements Exporter
                     }
 
                     if (isset($arrayResults[$id])) {
-                        $result->type = '&' . $id . '[]';
+                        $result->type = '&' . $id;
 
                         break;
                     }
@@ -241,13 +241,13 @@ class InlineExporter implements Exporter
                     }
 
                     if ($seenWrappers->contains($value)) {
-                        $result->type = '&' . $id . '()';
+                        $result->type = '&' . $id;
 
                         break;
                     }
 
                     if ($seenObjects->contains($value)) {
-                        $result->type = '&' . $id . '{}';
+                        $result->type = '&' . $id;
 
                         break;
                     }
