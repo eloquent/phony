@@ -109,32 +109,6 @@ class FeatureDetector
     public function standardFeatures(): array
     {
         return [
-            'collection.weak-map' => function () {
-                /** @var class-string */
-                $className = 'WeakMap';
-
-                if (class_exists($className, false)) {
-                    $class = new ReflectionClass($className);
-
-                    return $class->isInternal();
-                }
-
-                return false;
-            },
-
-            'reflection.reference' => function () {
-                /** @var class-string */
-                $className = 'ReflectionReference';
-
-                if (class_exists($className, false)) {
-                    $class = new ReflectionClass($className);
-
-                    return $class->isInternal();
-                }
-
-                return false;
-            },
-
             'stdout.ansi' => function () {
                 // @codeCoverageIgnoreStart
 
