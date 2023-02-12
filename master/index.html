@@ -377,8 +377,6 @@
 <li>
 <a href="#export-identifiers-and-references">Export identifiers and references</a>
 <ul>
-<li><a href="#export-reference-types">Export reference types</a></li>
-<li><a href="#export-reference-exclusions">Export reference exclusions</a></li>
 <li><a href="#export-identifier-persistence">Export identifier persistence</a></li>
 </ul>
 </li>
@@ -3485,55 +3483,13 @@ reference to the value's identifier. This is represented as an ampersand (<code>
 followed by the identifier:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>inner</span> = [<span class="pl-c1">1</span>, <span class="pl-c1">2</span>];
 <span class="pl-s1"><span class="pl-c1">$</span>value</span> = [&amp;<span class="pl-s1"><span class="pl-c1">$</span>inner</span>, &amp;<span class="pl-s1"><span class="pl-c1">$</span>inner</span>];
-<span class="pl-c">// $value is exported as '#0[#1[1, 2], &amp;1[]]'</span>
-
-<span class="pl-s1"><span class="pl-c1">$</span>inner</span> = (<span class="pl-smi">object</span>) [<span class="pl-s">'a'</span> =&gt; <span class="pl-c1">1</span>];
+<span class="pl-c">// $value is exported as '#0[#1[1, 2], &amp;1]'</span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>inner</span> = (<span class="pl-smi">object</span>) [<span class="pl-s">'a'</span> =&gt; <span class="pl-c1">1</span>];
 <span class="pl-s1"><span class="pl-c1">$</span>value</span> = (<span class="pl-smi">object</span>) [<span class="pl-s">'b'</span> =&gt; <span class="pl-s1"><span class="pl-c1">$</span>inner</span>, <span class="pl-s">'c'</span> =&gt; <span class="pl-s1"><span class="pl-c1">$</span>inner</span>];
-<span class="pl-c">// $value is exported as '#0{b: #1{a: 1}, c: &amp;1{}}'</span>
-
-<span class="pl-s1"><span class="pl-c1">$</span>inner</span> = mock(<span class="pl-v">ClassA</span>::class)-&gt;<span class="pl-en">setLabel</span>(<span class="pl-s">'mock-label'</span>);
+<span class="pl-c">// $value is exported as '#0{b: #1{a: 1}, c: &amp;1}'</span></pre></div>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>inner</span> = mock(<span class="pl-v">ClassA</span>::class)-&gt;<span class="pl-en">setLabel</span>(<span class="pl-s">'mock-label'</span>);
 <span class="pl-s1"><span class="pl-c1">$</span>value</span> = [<span class="pl-s1"><span class="pl-c1">$</span>inner</span>, <span class="pl-s1"><span class="pl-c1">$</span>inner</span>];
-<span class="pl-c">// $value is exported as '#0[handle#1(PhonyMock_ClassA_0#0{}[mock-label]), &amp;1()]'</span></pre></div>
-<h5><a id="export-reference-types" class="anchor" aria-hidden="true" href="#export-reference-types"><span aria-hidden="true" class="octicon octicon-link"></span></a>Export reference types</h5>
-<p>Array references appear followed by brackets (e.g. <code>&amp;0[]</code>), object references
-appear followed by braces (e.g. <code>&amp;0{}</code>), and wrapper references appear followed
-by parentheses (e.g. <code>&amp;0()</code>):</p>
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>array</span> = [];
-<span class="pl-s1"><span class="pl-c1">$</span>object</span> = (<span class="pl-smi">object</span>) [];
-<span class="pl-s1"><span class="pl-c1">$</span>weakRef</span> = <span class="pl-v">WeakReference</span>::<span class="pl-en">create</span>(<span class="pl-s1"><span class="pl-c1">$</span>object</span>);
-<span class="pl-s1"><span class="pl-c1">$</span>wrapper</span> = spy(<span class="pl-s">'implode'</span>)-&gt;<span class="pl-en">setLabel</span>(<span class="pl-s">'spy-label'</span>);
-
-<span class="pl-s1"><span class="pl-c1">$</span>value</span> = [&amp;<span class="pl-s1"><span class="pl-c1">$</span>array</span>, &amp;<span class="pl-s1"><span class="pl-c1">$</span>array</span>];
-<span class="pl-c">// $value is exported as '#0[#1[], &amp;1[]]'</span>
-
-<span class="pl-s1"><span class="pl-c1">$</span>value</span> = [<span class="pl-s1"><span class="pl-c1">$</span>object</span>, <span class="pl-s1"><span class="pl-c1">$</span>object</span>];
-<span class="pl-c">// $value is exported as '#0[#0{}, &amp;0{}]'</span>
-
-<span class="pl-s1"><span class="pl-c1">$</span>value</span> = [<span class="pl-s1"><span class="pl-c1">$</span>weakRef</span>, <span class="pl-s1"><span class="pl-c1">$</span>weakRef</span>];
-<span class="pl-c">// $value is exported as '#0[weak#1(#0{}), &amp;1()]'</span>
-
-<span class="pl-s1"><span class="pl-c1">$</span>value</span> = [<span class="pl-s1"><span class="pl-c1">$</span>wrapper</span>, <span class="pl-s1"><span class="pl-c1">$</span>wrapper</span>];
-<span class="pl-c">// $value is exported as '#0[spy#1(implode)[spy-label], &amp;1()]'</span></pre></div>
-<p>This is necessary in order to disambiguate references, because arrays and other
-types can sometimes have the same identifier:</p>
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>value</span> = [
-    (<span class="pl-smi">object</span>) [],
-    [
-        (<span class="pl-smi">object</span>) [],
-    ],
-];
-<span class="pl-c">// $value is exported as '#0[#0{}, #1[#1{}]]'</span></pre></div>
-<h5><a id="export-reference-exclusions" class="anchor" aria-hidden="true" href="#export-reference-exclusions"><span aria-hidden="true" class="octicon octicon-link"></span></a>Export reference exclusions</h5>
-<p>As well as excluding the content, object references exclude the class name, and
-wrapper references exclude the type, for brevity:</p>
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>inner</span> = <span class="pl-k">new</span> <span class="pl-v">ClassA</span>();
-<span class="pl-s1"><span class="pl-c1">$</span>inner</span>-&gt;<span class="pl-c1">c</span> = "<span class="pl-s">d</span>";
-<span class="pl-s1"><span class="pl-c1">$</span>value</span> = (<span class="pl-smi">object</span>) [<span class="pl-s">'a'</span> =&gt; <span class="pl-s1"><span class="pl-c1">$</span>inner</span>, <span class="pl-s">'b'</span> =&gt; <span class="pl-s1"><span class="pl-c1">$</span>inner</span>];
-<span class="pl-c">// $value is exported as '#0{a: ClassA#1{c: "d"}, b: &amp;1{}}'</span>
-
-<span class="pl-s1"><span class="pl-c1">$</span>inner</span> = mock();
-<span class="pl-s1"><span class="pl-c1">$</span>value</span> = [<span class="pl-s1"><span class="pl-c1">$</span>inner</span>, <span class="pl-s1"><span class="pl-c1">$</span>inner</span>];
-<span class="pl-c">// $value is exported as '#0[handle#0(PhonyMock_0#1{}[0]), &amp;0()]'</span></pre></div>
+<span class="pl-c">// $value is exported as '#0[handle#1(PhonyMock_ClassA_0#0{}[mock-label]), &amp;1]'</span></pre></div>
 <h5><a id="export-identifier-persistence" class="anchor" aria-hidden="true" href="#export-identifier-persistence"><span aria-hidden="true" class="octicon octicon-link"></span></a>Export identifier persistence</h5>
 <p>Identifiers for arrays, objects, and wrappers are persistent across invocations
 of the exporter, and share a single sequence of numbers:</p>
@@ -3544,7 +3500,7 @@ of the exporter, and share a single sequence of numbers:</p>
 
 <span class="pl-s1"><span class="pl-c1">$</span>valueA</span> = [&amp;<span class="pl-s1"><span class="pl-c1">$</span>a</span>, &amp;<span class="pl-s1"><span class="pl-c1">$</span>b</span>, <span class="pl-s1"><span class="pl-c1">$</span>c</span>, <span class="pl-s1"><span class="pl-c1">$</span>d</span>, &amp;<span class="pl-s1"><span class="pl-c1">$</span>a</span>, &amp;<span class="pl-s1"><span class="pl-c1">$</span>b</span>, <span class="pl-s1"><span class="pl-c1">$</span>c</span>, <span class="pl-s1"><span class="pl-c1">$</span>d</span>];
 <span class="pl-c">// $valueA is exported as:</span>
-<span class="pl-c">// '"#0[#1[], #2[], #3{}, #4{}, &amp;1[], &amp;2[], &amp;3{}, &amp;4{}]"'</span>
+<span class="pl-c">// '#0[#1[], #2[], #3{}, #4{}, &amp;1, &amp;2, &amp;3, &amp;4]'</span>
 
 <span class="pl-s1"><span class="pl-c1">$</span>valueB</span> = [<span class="pl-s1"><span class="pl-c1">$</span>d</span>, <span class="pl-s1"><span class="pl-c1">$</span>c</span>, &amp;<span class="pl-s1"><span class="pl-c1">$</span>b</span>, &amp;<span class="pl-s1"><span class="pl-c1">$</span>a</span>];
 <span class="pl-c">// $valueB is exported as:</span>
@@ -3557,22 +3513,22 @@ of the exporter, and share a single sequence of numbers:</p>
 
 <span class="pl-s1"><span class="pl-c1">$</span>valueC</span> = [<span class="pl-s1"><span class="pl-c1">$</span>e</span>, <span class="pl-s1"><span class="pl-c1">$</span>f</span>, <span class="pl-s1"><span class="pl-c1">$</span>g</span>, <span class="pl-s1"><span class="pl-c1">$</span>h</span>, <span class="pl-s1"><span class="pl-c1">$</span>e</span>, <span class="pl-s1"><span class="pl-c1">$</span>f</span>, <span class="pl-s1"><span class="pl-c1">$</span>g</span>, <span class="pl-s1"><span class="pl-c1">$</span>h</span>];
 <span class="pl-c">// $valueC is exported as:</span>
-<span class="pl-c">// '#6[handle#7(&amp;9{}), handle#8(&amp;10{}), PhonyMock_0#9{}[e], PhonyMock_0#10{}[f], &amp;7(), &amp;8(), &amp;9{}, &amp;10{}]'</span>
+<span class="pl-c">// '#6[E#7{}[g], F#8{}[h], handle#9(&amp;7), handle#10(&amp;8), &amp;7, &amp;8, &amp;9, &amp;10]'</span>
 
 <span class="pl-s1"><span class="pl-c1">$</span>valueD</span> = [<span class="pl-s1"><span class="pl-c1">$</span>h</span>, <span class="pl-s1"><span class="pl-c1">$</span>g</span>, <span class="pl-s1"><span class="pl-c1">$</span>f</span>, <span class="pl-s1"><span class="pl-c1">$</span>e</span>];
 <span class="pl-c">// $valueD is exported as:</span>
-<span class="pl-c">// '#0[#1{}, #0{}, &amp;1{}, handle#2(PhonyMock_0#3{}[0])]'</span></pre></div>
+<span class="pl-c">// '#11[handle#10(&amp;8), handle#9(&amp;7), F#8{}[h], E#7{}[g]]'</span></pre></div>
 <h4><a id="exporting-recursive-values" class="anchor" aria-hidden="true" href="#exporting-recursive-values"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exporting recursive values</h4>
 <p>If a recursive value is exported, the points of recursion are exported as
 <a href="#export-identifiers-and-references">references</a>, in the same way that multiple instances of the same value are
 handled:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>value</span> = [];
 <span class="pl-s1"><span class="pl-c1">$</span>value</span>[] = &amp;<span class="pl-s1"><span class="pl-c1">$</span>value</span>;
-<span class="pl-c">// $value is exported as '#0[&amp;0[]]'</span>
+<span class="pl-c">// $value is exported as '#0[&amp;0]'</span>
 
 <span class="pl-s1"><span class="pl-c1">$</span>value</span> = (<span class="pl-smi">object</span>) [];
 <span class="pl-s1"><span class="pl-c1">$</span>value</span>-&gt;<span class="pl-c1">a</span> = <span class="pl-s1"><span class="pl-c1">$</span>value</span>;
-<span class="pl-c">// $value is exported as '#0{a: &amp;0{}}'</span></pre></div>
+<span class="pl-c">// $value is exported as '#0{a: &amp;0}'</span></pre></div>
 <h4><a id="exporter-special-cases" class="anchor" aria-hidden="true" href="#exporter-special-cases"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exporter special cases</h4>
 <p>For certain types of values, the exporter will exhibit special behavior, in
 order to improve the usefulness of its output, or to improve performance in
