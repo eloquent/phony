@@ -17,7 +17,7 @@ const VERSION_PATTERN_SHORT = '/^(\d+)\.(\d+)$/';
 const VERSION_PATTERN_LONG = '/^(\d+)\.(\d+)\.(\d+)$/';
 
 $currentVersion = currentVersion();
-$versions = ['master', $currentVersion];
+$versions = ['main', $currentVersion];
 
 foreach (scandir($workPath) as $entry) {
     if (!preg_match(VERSION_PATTERN_SHORT, $entry)) {
@@ -106,7 +106,7 @@ foreach ($pages as $page) {
     $html = strtr(
         $html,
         [
-            'data-version="master"' => sprintf(
+            'data-version="main"' => sprintf(
                 'data-version="%s"',
                 htmlspecialchars($currentVersion)
             ),
@@ -144,7 +144,7 @@ foreach ($versions as $version) {
         $html = strtr(
             $html,
             [
-                'data-version="master"' => sprintf(
+                'data-version="main"' => sprintf(
                     'data-version="%s"',
                     htmlspecialchars($version)
                 ),
@@ -221,9 +221,9 @@ function compareVersions($left, $right) {
         }
     } elseif ($rightMatch) {
         return 1;
-    } elseif ('master' === $left) {
+    } elseif ('main' === $left) {
         return -1;
-    } elseif ('master' === $right) {
+    } elseif ('main' === $right) {
         return 1;
     } else {
         return strcmp($left, $right);
