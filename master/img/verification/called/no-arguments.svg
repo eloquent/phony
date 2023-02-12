@@ -84,10 +84,10 @@
     <text x="16" y="60" xml:space="preserve"><tspan class="red">✗</tspan> Call #0 (no arguments)</text>
     <text x="16" y="76" xml:space="preserve"><tspan class="red">✗</tspan> Call #1:</text>
     <text x="16" y="92" xml:space="preserve">    <tspan class="red">✗</tspan> &quot;aardvark&quot;</text>
-    <text x="16" y="108" xml:space="preserve">    <tspan class="red">✗</tspan> #0[&quot;bonobo&quot;, &quot;capybara&quot;, &quot;dugong&quot;]</text>
+    <text x="16" y="108" xml:space="preserve">    <tspan class="red">✗</tspan> #1[&quot;bonobo&quot;, &quot;capybara&quot;, &quot;dugong&quot;]</text>
     <text x="16" y="124" xml:space="preserve"><tspan class="red">✗</tspan> Call #2 (no arguments)</text>
     <text x="16" y="140" xml:space="preserve"><tspan class="red">✗</tspan> Call #3:</text>
     <text x="16" y="156" xml:space="preserve">    <tspan class="red">✗</tspan> &quot;armadillo&quot;</text>
-    <text x="16" y="172" xml:space="preserve">    <tspan class="red">✗</tspan> #0[&quot;bonobo&quot;, &quot;chameleon&quot;, &quot;dormouse&quot;]</text>
+    <text x="16" y="172" xml:space="preserve">    <tspan class="red">✗</tspan> #1[&quot;bonobo&quot;, &quot;chameleon&quot;, &quot;dormouse&quot;]</text>
     <text x="16" y="188" xml:space="preserve"><tspan class="red">✗</tspan> Call #4 (no arguments)</text>
 </svg>

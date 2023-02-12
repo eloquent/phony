@@ -85,5 +85,5 @@
     <text x="16" y="76" xml:space="preserve"><tspan class="red">✗</tspan> Call #0 - stub#0[label](&quot;aardvark&quot;):</text>
     <text x="16" y="92" xml:space="preserve">    <tspan class="red">✗</tspan> Returned &quot;AARDVARK&quot;</text>
     <text x="16" y="108" xml:space="preserve"><tspan class="green">✓</tspan> Call #1 - stub#0[label](&quot;bonobo&quot;):</text>
-    <text x="16" y="124" xml:space="preserve">    <tspan class="green">✓</tspan> Returned #0[&quot;BONOBO&quot;]</text>
+    <text x="16" y="124" xml:space="preserve">    <tspan class="green">✓</tspan> Returned #1[&quot;BONOBO&quot;]</text>
 </svg>

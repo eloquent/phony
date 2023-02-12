@@ -84,12 +84,12 @@
     <text x="16" y="60" xml:space="preserve">        <tspan class="red">✗</tspan> Received &quot;MECHA-CHAMELEON&quot;</text>
     <text x="16" y="76" xml:space="preserve">Matched 0 of 1:</text>
     <text x="16" y="92" xml:space="preserve"><tspan class="faint">- Call #0 - stub#0[label](&quot;aardvark&quot;):</tspan></text>
-    <text x="16" y="108" xml:space="preserve"><tspan class="faint">    - Returned #0[~1], then:</tspan></text>
+    <text x="16" y="108" xml:space="preserve"><tspan class="faint">    - Returned #1[~1], then:</tspan></text>
     <text x="16" y="124" xml:space="preserve"><tspan class="faint">        - Started iterating</tspan></text>
     <text x="16" y="140" xml:space="preserve"><tspan class="faint">        - Produced 0 =&gt; &quot;AARDVARK&quot;</tspan></text>
     <text x="16" y="156" xml:space="preserve"><tspan class="faint">        - Finished iterating</tspan></text>
     <text x="16" y="172" xml:space="preserve"><tspan class="red">✗</tspan> Call #1 - stub#0[label](&quot;bonobo&quot;):</text>
-    <text x="16" y="188" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator#1{}, then:</text>
+    <text x="16" y="188" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator#2{}, then:</text>
     <text x="16" y="204" xml:space="preserve">        - Started iterating</text>
     <text x="16" y="220" xml:space="preserve">        - Produced 0 =&gt; &quot;BONOBO&quot;</text>
     <text x="16" y="236" xml:space="preserve">        <tspan class="red">✗</tspan> Received &quot;MECHA-<tspan class="faint cyan">[-</tspan><tspan class="cyan underline">CHAMELEON</tspan><tspan class="faint cyan">-]</tspan><tspan class="faint yellow">{+</tspan><tspan class="yellow underline">BONOBO</tspan><tspan class="faint yellow">+}</tspan>&quot;</text>
@@ -99,5 +99,5 @@
     <text x="16" y="300" xml:space="preserve"><tspan class="faint">- Call #2 - stub#0[label](&quot;chameleon&quot;):</tspan></text>
     <text x="16" y="316" xml:space="preserve"><tspan class="faint">    - Returned &quot;CHAMELEON&quot;</tspan></text>
     <text x="16" y="332" xml:space="preserve"><tspan class="faint">- Call #3 - stub#0[label](&quot;dugong&quot;):</tspan></text>
-    <text x="16" y="348" xml:space="preserve"><tspan class="faint">    - Threw RuntimeException#2{message: &quot;DUGONG&quot;}</tspan></text>
+    <text x="16" y="348" xml:space="preserve"><tspan class="faint">    - Threw RuntimeException#3{message: &quot;DUGONG&quot;}</tspan></text>
 </svg>

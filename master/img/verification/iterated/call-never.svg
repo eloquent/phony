@@ -82,5 +82,5 @@
     <text x="16" y="28" xml:space="preserve">Expected <tspan class="bold">stub#0[label]</tspan> call #1 not to behave like:</text>
     <text x="16" y="44" xml:space="preserve">    <tspan class="red">✗</tspan> Returned &lt;iterable&gt;</text>
     <text x="16" y="60" xml:space="preserve"><tspan class="red">✗</tspan> Call #1 - stub#0[label](&quot;bonobo&quot;):</text>
-    <text x="16" y="76" xml:space="preserve">    <tspan class="red">✗</tspan> Returned #0[&quot;BONOBO&quot;]</text>
+    <text x="16" y="76" xml:space="preserve">    <tspan class="red">✗</tspan> Returned #1[&quot;BONOBO&quot;]</text>
 </svg>

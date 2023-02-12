@@ -84,18 +84,18 @@
     <text x="16" y="60" xml:space="preserve">        <tspan class="red">✗</tspan> Received exception RuntimeException#1{message: &quot;MECHA-BONOBO&quot;}</text>
     <text x="16" y="76" xml:space="preserve"><tspan class="red">Between 2 and 3 allowed. Matched 1 of 2:</tspan></text>
     <text x="16" y="92" xml:space="preserve"><tspan class="faint">- Call #0 - stub#0[label](&quot;aardvark&quot;):</tspan></text>
-    <text x="16" y="108" xml:space="preserve"><tspan class="faint">    - Returned #0[~1], then:</tspan></text>
+    <text x="16" y="108" xml:space="preserve"><tspan class="faint">    - Returned #2[~1], then:</tspan></text>
     <text x="16" y="124" xml:space="preserve"><tspan class="faint">        - Started iterating</tspan></text>
     <text x="16" y="140" xml:space="preserve"><tspan class="faint">        - Produced 0 =&gt; &quot;AARDVARK&quot;</tspan></text>
     <text x="16" y="156" xml:space="preserve"><tspan class="faint">        - Finished iterating</tspan></text>
     <text x="16" y="172" xml:space="preserve"><tspan class="green">✓</tspan> Call #1 - stub#0[label](&quot;bonobo&quot;):</text>
-    <text x="16" y="188" xml:space="preserve">    <tspan class="green">✓</tspan> Returned Generator#3{}, then:</text>
+    <text x="16" y="188" xml:space="preserve">    <tspan class="green">✓</tspan> Returned Generator#4{}, then:</text>
     <text x="16" y="204" xml:space="preserve">        - Started iterating</text>
     <text x="16" y="220" xml:space="preserve">        - Produced 0 =&gt; &quot;BONOBO&quot;</text>
-    <text x="16" y="236" xml:space="preserve">        <tspan class="green">✓</tspan> Received exception RuntimeException#2{message: &quot;MECHA-BONOBO&quot;}</text>
-    <text x="16" y="252" xml:space="preserve">        - Threw RuntimeException#2{message: &quot;MECHA-BONOBO&quot;}</text>
+    <text x="16" y="236" xml:space="preserve">        <tspan class="green">✓</tspan> Received exception RuntimeException#3{message: &quot;MECHA-BONOBO&quot;}</text>
+    <text x="16" y="252" xml:space="preserve">        - Threw RuntimeException#3{message: &quot;MECHA-BONOBO&quot;}</text>
     <text x="16" y="268" xml:space="preserve"><tspan class="red">✗</tspan> Call #2 - stub#0[label](&quot;chameleon&quot;):</text>
-    <text x="16" y="284" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator#4{}, then:</text>
+    <text x="16" y="284" xml:space="preserve">    <tspan class="red">✗</tspan> Returned Generator#5{}, then:</text>
     <text x="16" y="300" xml:space="preserve">        - Started iterating</text>
     <text x="16" y="316" xml:space="preserve">        - Produced 0 =&gt; &quot;CHAMELEON&quot;</text>
     <text x="16" y="332" xml:space="preserve">        - Received null</text>
