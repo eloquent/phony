@@ -170,12 +170,6 @@ class EmptyValueFactoryTest extends TestCase
         $this->assertIsObject($objectOrCallable);
         $this->assertSame([], (array) $objectOrCallable);
 
-        $objectOrIterable = $this->subject->fromType($this->createType('iterable|object'));
-
-        $this->assertFalse(is_iterable($objectOrIterable));
-        $this->assertIsObject($objectOrIterable);
-        $this->assertSame([], (array) $objectOrIterable);
-
         $classAOrClassC = $this->subject->fromType($this->createType(TestClassA::class . '|' . TestClassC::class));
 
         $this->assertInstanceOf(TestClassC::class, $classAOrClassC);
@@ -183,6 +177,29 @@ class EmptyValueFactoryTest extends TestCase
         $classCOrClassA = $this->subject->fromType($this->createType(TestClassC::class . '|' . TestClassA::class));
 
         $this->assertInstanceOf(TestClassA::class, $classCOrClassA);
+    }
+
+    /**
+     * @requires PHP < 8.2
+     */
+    public function testFromTypeWithIterableOrObjectUnionTypePhp80()
+    {
+        $objectOrIterable = $this->subject->fromType($this->createType('iterable|object'));
+
+        $this->assertFalse(is_iterable($objectOrIterable));
+        $this->assertIsObject($objectOrIterable);
+        $this->assertSame([], (array) $objectOrIterable);
+    }
+
+    /**
+     * @requires PHP >= 8.2
+     */
+    public function testFromTypeWithIterableOrObjectUnionTypePhp82()
+    {
+        $objectOrIterable = $this->subject->fromType($this->createType('iterable|object'));
+
+        $this->assertIsArray($objectOrIterable);
+        $this->assertSame([], $objectOrIterable);
     }
 
     public function testFromTypeWithStdClass()
