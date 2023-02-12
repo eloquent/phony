@@ -21,7 +21,3 @@ parameters:
         - src/Verification/Cardinality.php
         - src/Verification/CardinalityVerifier.php
         - src/Verification/CardinalityVerifierTrait.php
-
-    # allow setting special property on generators under PHP 7
-    - message: '/Access to an undefined property Generator.*::\$_phonySubject/'
-      path: src/Spy/GeneratorSpyMap.php
