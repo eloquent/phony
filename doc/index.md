@@ -4488,8 +4488,8 @@ $valueB = [$d, $c, &$b, &$a];
 // $valueB is exported as:
 // '#5[#4{}, #3{}, #2[], #1[]]'
 
-$e = mockBuilder()->named('E')->get(); // mock of class E
-$f = mockBuilder()->named('F')->get(); // mock of class F
+$e = mockBuilder()->named('E')->get(); // mock with class name E
+$f = mockBuilder()->named('F')->get(); // mock with class name F
 $g = on($e)->setLabel('g');            // handle for $e
 $h = on($f)->setLabel('h');            // handle for $f
 
@@ -4512,7 +4512,9 @@ handled:
 $value = [];
 $value[] = &$value;
 // $value is exported as '#0[&0]'
+```
 
+```php
 $value = (object) [];
 $value->a = $value;
 // $value is exported as '#0{a: &0}'
@@ -4658,7 +4660,9 @@ exist within that value:
 ```php
 $value = [[], ['a', 'b', 'c']];
 // $value is exported as '#0[#1[], #2[~3]]'
+```
 
+```php
 $value = [(object) [], (object) ['a', 'b', 'c']];
 // $value is exported as '#0[#0{}, #1{~3}]'
 ```
