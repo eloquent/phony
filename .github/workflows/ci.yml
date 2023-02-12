@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: make vendor
       - name: Make
-        run: make ${{ inputs.publish-coverage && 'artifacts/coverage/phpunit/clover.xml' || 'ci' }}
+        run: make ci
       - name: Publish coverage reports
         if: inputs.publish-coverage && success()
         uses: codecov/codecov-action@v3
