@@ -1,5 +1,5 @@
 <?php
 
-$message = 'Requires PHP >= 7.4';
+$message = 'Requires PHP >= 8.2';
 
-return version_compare(PHP_VERSION, '7.4.x', '>=');
+return version_compare(PHP_VERSION, '8.2.x', '>=');
