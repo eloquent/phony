@@ -145,7 +145,7 @@ class InlineExporter implements Exporter
                     break;
 
                 case 'double':
-                    /** @var double $value */
+                    /** @var float $value */
                     $result->type = sprintf('%e', $value);
 
                     break;

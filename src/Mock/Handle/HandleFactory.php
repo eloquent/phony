@@ -160,7 +160,6 @@ class HandleFactory
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
 
-
         /** @var StaticHandle|null $handle */
         $handle = $handleProperty->getValue();
 

@@ -554,8 +554,8 @@ class CallData implements Call
     /**
      * Get the response.
      *
-     * @return array{?Throwable,mixed}     A 2-tuple of thrown exception or null, and return value.
-     * @throws UndefinedResponseException  If this call has not yet responded.
+     * @return array{?Throwable,mixed}    A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException If this call has not yet responded.
      */
     public function response(): array
     {
@@ -573,8 +573,8 @@ class CallData implements Call
     /**
      * Get the response from the generator.
      *
-     * @return array{?Throwable,mixed}     A 2-tuple of thrown exception or null, and return value.
-     * @throws UndefinedResponseException  If this call has not yet responded via generator.
+     * @return array{?Throwable,mixed}    A 2-tuple of thrown exception or null, and return value.
+     * @throws UndefinedResponseException If this call has not yet responded via generator.
      */
     public function generatorResponse(): array
     {
