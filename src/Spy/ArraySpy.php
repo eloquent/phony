@@ -46,7 +46,6 @@ class ArraySpy implements IterableSpy
      *
      * @return mixed The current key.
      */
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return key($this->array);
@@ -57,7 +56,6 @@ class ArraySpy implements IterableSpy
      *
      * @return mixed The current value.
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         return current($this->array);
@@ -131,7 +129,6 @@ class ArraySpy implements IterableSpy
      *
      * @return mixed The value.
      */
-    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return $this->array[$key];

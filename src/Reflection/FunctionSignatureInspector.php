@@ -125,13 +125,6 @@ class FunctionSignatureInspector
     const RETURN_PATTERN = '/Return \[ (\?)?(\S+) ((?:or NULL )?)/';
 
     /**
-     * Same as above but for tentative return types in PHP 8.1.
-     *
-     * @see https://wiki.php.net/rfc/internal_method_return_types
-     */
-    const TENTATIVE_RETURN_PATTERN = '/Tentative return \[ (\?)?(\S+) ((?:or NULL )?)/';
-
-    /**
      * Get the function signature of the supplied function.
      *
      * @param ReflectionFunctionAbstract $function The function.
@@ -141,11 +134,11 @@ class FunctionSignatureInspector
     public function signature(ReflectionFunctionAbstract $function): array
     {
         $functionString = (string) $function;
-        $hasReturnType = preg_match(static::RETURN_PATTERN, $functionString, $returnMatches);
-        // check tentative return type as a fallback for PHP 8.1
-        if (! $hasReturnType) {
-            $hasReturnType = preg_match(static::TENTATIVE_RETURN_PATTERN, $functionString, $returnMatches);
-        }
+        $hasReturnType = preg_match(
+            static::RETURN_PATTERN,
+            $functionString,
+            $returnMatches
+        );
         $hasParameters = preg_match_all(
             static::PARAMETER_PATTERN,
             $functionString,
@@ -188,7 +181,6 @@ class FunctionSignatureInspector
                     case 'static':
                     case 'string':
                     case 'void':
-                    case 'never':
                         $returnType .= $subType;
 
                         break;

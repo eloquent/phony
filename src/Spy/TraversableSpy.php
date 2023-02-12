@@ -53,7 +53,6 @@ class TraversableSpy implements IterableSpy
      *
      * @return mixed The current key.
      */
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->key;
@@ -64,7 +63,6 @@ class TraversableSpy implements IterableSpy
      *
      * @return mixed The current value.
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->value;
@@ -169,7 +167,6 @@ class TraversableSpy implements IterableSpy
      *
      * @return mixed The value.
      */
-    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         if (!$this->traversable instanceof ArrayAccess) {

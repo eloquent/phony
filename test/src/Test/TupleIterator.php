@@ -13,29 +13,27 @@ class TupleIterator implements Iterator
         $this->tuples = $tuples;
     }
 
-    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->tuples[key($this->tuples)][1];
     }
 
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->tuples[key($this->tuples)][0];
     }
 
-    public function next(): void
+    public function next()
     {
         next($this->tuples);
     }
 
-    public function rewind(): void
+    public function rewind()
     {
         reset($this->tuples);
     }
 
-    public function valid(): bool
+    public function valid()
     {
         return null !== key($this->tuples);
     }

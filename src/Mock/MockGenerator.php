@@ -265,14 +265,12 @@ EOD;
         if ($returnType) {
             $source .= "\n    ) : " . $returnType . " {\n";
             $isVoidReturn = 'void' === $returnType;
-            $isNeverReturn = 'never' === $returnType;
         } else {
             $source .= "\n    ) {\n";
             $isVoidReturn = false;
-            $isNeverReturn = false;
         }
 
-        if ($isVoidReturn || $isNeverReturn) {
+        if ($isVoidReturn) {
             $source .= <<<'EOD'
         self::$_staticHandle->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
@@ -417,11 +415,9 @@ EOD;
             if ($returnType) {
                 $returnTypeSource = ' : ' . $returnType;
                 $isVoidReturn = 'void' === $returnType;
-                $isNeverReturn = 'never' === $returnType;
             } else {
                 $returnTypeSource = '';
                 $isVoidReturn = false;
-                $isNeverReturn = false;
             }
 
             $isStatic = $method->isStatic() ? 'static ' : '';
@@ -450,7 +446,7 @@ EOD;
             $body .=
                 "        }\n\n        if (!${handle}) {\n";
 
-            if ($isVoidReturn || $isNeverReturn) {
+            if ($isVoidReturn) {
                 $resultAssign = '';
             } else {
                 $resultAssign = '$result = ';
@@ -469,13 +465,6 @@ EOD;
             if ($isVoidReturn) {
                 $body .=
                     "\n\n            return;\n        }\n\n" .
-                    "        ${handle}->spy" .
-                    "(__FUNCTION__)->invokeWith(\n" .
-                    '            new \Eloquent\Phony\Call\Arguments' .
-                    "(\$arguments)\n        );";
-            } else if ($isNeverReturn) {
-                $body .=
-                    "\n        }\n\n" .
                     "        ${handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
                     '            new \Eloquent\Phony\Call\Arguments' .
