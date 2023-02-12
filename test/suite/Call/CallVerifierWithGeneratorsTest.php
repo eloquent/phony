@@ -54,8 +54,7 @@ class CallVerifierWithGeneratorsTest extends TestCase
             $this->arraySequencer,
             $this->objectSequencer,
             $this->generatorSpyMap,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
         $this->matcherFactory =
             new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);

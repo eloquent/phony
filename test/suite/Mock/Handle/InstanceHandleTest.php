@@ -67,8 +67,7 @@ class InstanceHandleTest extends TestCase
             $this->arraySequencer,
             $this->objectSequencer,
             $this->generatorSpyMap,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
         $this->matcherVerifier = new MatcherVerifier();
         $this->differenceEngine = new DifferenceEngine($this->featureDetector);

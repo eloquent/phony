@@ -41,8 +41,7 @@ class AssertionRendererTest extends TestCase
             $this->arraySequencer,
             $this->objectSequencer,
             $this->generatorSpyMap,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
         $this->differenceEngine = DifferenceEngine::instance();
         $this->differenceEngine->setUseColor(false);

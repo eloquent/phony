@@ -61,8 +61,7 @@ class CallVerifierTest extends TestCase
             $this->arraySequencer,
             $this->objectSequencer,
             $this->generatorSpyMap,
-            $this->invocableInspector,
-            $this->featureDetector
+            $this->invocableInspector
         );
         $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
         $this->iterableVerifierFactory = IterableVerifierFactory::instance();

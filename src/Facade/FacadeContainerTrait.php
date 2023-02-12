@@ -122,8 +122,7 @@ trait FacadeContainerTrait
             $arrayIdSequence,
             $objectIdSequence,
             $generatorSpyMap,
-            $invocableInspector,
-            $featureDetector
+            $invocableInspector
         );
         $invoker = new Invoker();
         $matcherVerifier = new MatcherVerifier();
