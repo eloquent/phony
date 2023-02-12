@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Spy;
 
-use Eloquent\Phony\Reflection\FeatureDetector;
 use Generator;
 use WeakMap;
 
@@ -21,7 +20,7 @@ class GeneratorSpyMap
     public static function instance(): self
     {
         if (!self::$instance) {
-            self::$instance = new self(FeatureDetector::instance());
+            self::$instance = new self();
         }
 
         return self::$instance;
@@ -29,17 +28,10 @@ class GeneratorSpyMap
 
     /**
      * Construct a new generator spy map.
-     *
-     * @param FeatureDetector $featureDetector The feature detector to use.
      */
-    public function __construct(FeatureDetector $featureDetector)
+    public function __construct()
     {
-        $this->isWeakMapSupported =
-            $featureDetector->isSupported('collection.weak-map');
-
-        if ($this->isWeakMapSupported) {
-            $this->mapping = new WeakMap();
-        }
+        $this->mapping = new WeakMap();
     }
 
     /**
@@ -50,12 +42,6 @@ class GeneratorSpyMap
      */
     public function set(Generator $spy, Generator $generator): void
     {
-        if (!$this->isWeakMapSupported) {
-            $spy->_phonySubject = $generator;
-
-            return;
-        }
-
         /** @var WeakMap */
         $mapping = $this->mapping;
         $mapping->offsetSet($spy, $generator);
@@ -70,14 +56,6 @@ class GeneratorSpyMap
      */
     public function get(Generator $spy): ?Generator
     {
-        if (!$this->isWeakMapSupported) {
-            if (isset($spy->_phonySubject)) {
-                return $spy->_phonySubject;
-            }
-
-            return null;
-        }
-
         /** @var WeakMap */
         $mapping = $this->mapping;
 
@@ -92,11 +70,6 @@ class GeneratorSpyMap
      * @var ?self
      */
     private static $instance;
-
-    /**
-     * @var bool
-     */
-    private $isWeakMapSupported;
 
     /**
      * @var ?WeakMap

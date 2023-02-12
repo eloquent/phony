@@ -115,8 +115,7 @@ trait FacadeContainerTrait
         $arrayIdSequence = Sequencer::sequence('exporter-array-id');
         $objectIdSequence = Sequencer::sequence('exporter-object-id');
         $invocableInspector = new InvocableInspector();
-        $featureDetector = new FeatureDetector();
-        $generatorSpyMap = new GeneratorSpyMap($featureDetector);
+        $generatorSpyMap = new GeneratorSpyMap();
         $exporter = new InlineExporter(
             1,
             $arrayIdSequence,
@@ -188,6 +187,7 @@ trait FacadeContainerTrait
             $generatorSpyFactory,
             $iterableSpyFactory
         );
+        $featureDetector = new FeatureDetector();
         $differenceEngine = new DifferenceEngine(
             $featureDetector
         );
