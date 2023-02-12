@@ -4492,19 +4492,6 @@ $value = [$wrapper, $wrapper];
 // $value is exported as '#0[spy#1(implode)[spy-label], &1()]'
 ```
 
-This is necessary in order to disambiguate references, because arrays and other
-types can sometimes have the same identifier:
-
-```php
-$value = [
-    (object) [],
-    [
-        (object) [],
-    ],
-];
-// $value is exported as '#0[#0{}, #1[#1{}]]'
-```
-
 ##### Export reference exclusions
 
 As well as excluding the content, object references exclude the class name, and
