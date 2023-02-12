@@ -145,6 +145,7 @@ class InlineExporter implements Exporter
                     break;
 
                 case 'double':
+                    /** @var double $value */
                     $result->type = sprintf('%e', $value);
 
                     break;
@@ -162,7 +163,8 @@ class InlineExporter implements Exporter
                     break;
 
                 case 'array':
-                    /** @var ReflectionReference */
+                    /** @var array $value */
+                    /** @var ReflectionReference $reference */
                     $reference =
                         ReflectionReference::fromArrayElement([&$value], 0);
                     $referenceId = $reference->getId();
@@ -228,6 +230,7 @@ class InlineExporter implements Exporter
                     break;
 
                 case 'object':
+                    /** @var object $value */
                     $hash = spl_object_hash($value);
 
                     if (isset($this->objectIds[$hash])) {
@@ -376,6 +379,7 @@ class InlineExporter implements Exporter
                             'object',
                         ];
                     } elseif ($isIterableSpy) {
+                        /** @var IterableSpy $value */
                         $iterable = $value->iterable();
                         $result->child = new ExporterResult();
                         $stack[] = [
@@ -385,6 +389,7 @@ class InlineExporter implements Exporter
                             gettype($iterable),
                         ];
                     } elseif ($isWeakReference) {
+                        /** @var WeakReference<object> $value */
                         $result->child = new ExporterResult();
                         $stack[] = [
                             $value->get(),
@@ -422,6 +427,7 @@ class InlineExporter implements Exporter
                                 $phpValues['xdebug_message']
                             );
                         } elseif ($isClosure) {
+                            /** @var Closure $value */
                             $reflector = new ReflectionFunction($value);
                             /** @var string */
                             $filename = $reflector->getFilename();

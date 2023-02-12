@@ -2,7 +2,6 @@ parameters:
   level: max
   paths:
     - src
-    - test/src/Phpstan
   ignoreErrors:
     # allow @throws with interfaces
     - message: "/@throws with type .* is not subtype of Throwable/"
@@ -21,3 +20,8 @@ parameters:
         - src/Verification/Cardinality.php
         - src/Verification/CardinalityVerifier.php
         - src/Verification/CardinalityVerifierTrait.php
+    # allow testing for class existence with ReflectionClass constructor
+    - message: "/class ReflectionClass constructor expects class-string.* string given/"
+      paths:
+        - src/Mock/Builder/MockBuilder.php
+        - src/Mock/Handle/HandleFactory.php

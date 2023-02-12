@@ -170,11 +170,8 @@ class MockBuilder
 
         foreach ($final as $type) {
             if (is_string($type)) {
-                /** @var class-string $classString */
-                $classString = $type;
-
                 try {
-                    $type = new ReflectionClass($classString);
+                    $type = new ReflectionClass($type);
                 } catch (ReflectionException $e) {
                     throw new InvalidTypeException($type, $e);
                 }
@@ -528,6 +525,8 @@ class MockBuilder
      *
      * Calling this method will finalize the mock builder.
      *
+     * Does not support named arguments.
+     *
      * @param mixed ...$arguments The constructor arguments.
      *
      * @return Mock          The mock instance.
@@ -535,6 +534,8 @@ class MockBuilder
      */
     public function partial(...$arguments): Mock
     {
+        /** @var array<int,mixed> $arguments */
+
         $this->mock = $this->factory
             ->createPartialMock($this->build(), $arguments);
 
@@ -665,6 +666,7 @@ class MockBuilder
             }
 
             if ($isFunction) {
+                /** @var callable $value */
                 if ($isStatic) {
                     $this->addStaticMethod($name, $value);
                 } else {
@@ -716,22 +718,22 @@ class MockBuilder
     private $parentClassName;
 
     /**
-     * @var array<string,array{0:callable,1:ReflectionFunctionAbstract}>
+     * @var array<string,array{callable,ReflectionFunctionAbstract}>
      */
     private $customMethods;
 
     /**
-     * @var array<string,mixed>
+     * @var array<string,array{string|null,mixed}>
      */
     private $customProperties;
 
     /**
-     * @var array<string,array{0:callable,1:ReflectionFunctionAbstract}>
+     * @var array<string,array{callable,ReflectionFunctionAbstract}>
      */
     private $customStaticMethods;
 
     /**
-     * @var array<string,mixed>
+     * @var array<string,array{string|null,mixed}>
      */
     private $customStaticProperties;
 

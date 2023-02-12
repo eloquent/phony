@@ -106,6 +106,7 @@ class TraversableSpy implements IterableSpy
                     $iterator = $iterator->getIterator();
                 }
             } else {
+                /** @var Iterator $iterator */
                 $iterator = $this->traversable;
             }
 

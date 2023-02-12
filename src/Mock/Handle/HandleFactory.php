@@ -96,6 +96,7 @@ class HandleFactory
         $handleProperty = $class->getProperty('_handle');
         $handleProperty->setAccessible(true);
 
+        /** @var InstanceHandle|null $handle */
         $handle = @$handleProperty->getValue($mock);
 
         if ($handle) {
@@ -143,13 +144,10 @@ class HandleFactory
         } elseif ($class instanceof Mock) {
             $class = new ReflectionClass($class);
         } elseif (is_string($class)) {
-            /** @var class-string $classString */
-            $classString = $class;
-
             try {
-                $class = new ReflectionClass($classString);
+                $class = new ReflectionClass($class);
             } catch (ReflectionException $e) {
-                throw new NonMockClassException($classString, $e);
+                throw new NonMockClassException($class, $e);
             }
         } elseif (!$class instanceof ReflectionClass) {
             throw new InvalidMockClassException($class);
@@ -162,7 +160,11 @@ class HandleFactory
         $handleProperty = $class->getProperty('_staticHandle');
         $handleProperty->setAccessible(true);
 
-        if ($handle = $handleProperty->getValue()) {
+
+        /** @var StaticHandle|null $handle */
+        $handle = $handleProperty->getValue();
+
+        if ($handle) {
             return $handle;
         }
 

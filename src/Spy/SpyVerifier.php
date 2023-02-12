@@ -393,6 +393,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Invoke this object.
      *
+     * Does not support named arguments.
+     *
      * @param mixed ...$arguments The arguments.
      *
      * @return mixed     The result of invocation.
@@ -400,11 +402,15 @@ class SpyVerifier implements Spy, CardinalityVerifier
      */
     public function invoke(...$arguments)
     {
+        /** @var array<int,mixed> $arguments */
+
         return $this->spy->invokeWith($arguments);
     }
 
     /**
      * Invoke this object.
+     *
+     * Does not support named arguments.
      *
      * @param mixed ...$arguments The arguments.
      *
@@ -413,6 +419,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
      */
     public function __invoke(...$arguments)
     {
+        /** @var array<int,mixed> $arguments */
+
         return $this->spy->invokeWith($arguments);
     }
 
@@ -457,12 +465,16 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Checks if called with the supplied arguments.
      *
+     * Does not support named arguments.
+     *
      * @param mixed ...$arguments The arguments.
      *
      * @return ?EventCollection The result.
      */
     public function checkCalledWith(...$arguments): ?EventCollection
     {
+        /** @var array<int,mixed> $arguments */
+
         $cardinality = $this->resetCardinality();
 
         $matchers = $this->matcherFactory->adaptAll($arguments);
@@ -491,6 +503,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Throws an exception unless called with the supplied arguments.
      *
+     * Does not support named arguments.
+     *
      * @param mixed ...$arguments The arguments.
      *
      * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
@@ -498,6 +512,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
      */
     public function calledWith(...$arguments): ?EventCollection
     {
+        /** @var array<int,mixed> $arguments */
+
         $cardinality = $this->cardinality;
         $matchers = $this->matcherFactory->adaptAll($arguments);
 
@@ -672,6 +688,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
+            $value = null;
             $arguments = [];
         } else {
             $value = $this->matcherFactory->adapt($value);

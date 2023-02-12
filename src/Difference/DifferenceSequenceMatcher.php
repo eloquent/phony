@@ -74,7 +74,7 @@ class DifferenceSequenceMatcher
      *           $i1 in $a.
      * equal  -  The two strings with the specified ranges are equal.
      *
-     * @return array<int,array<int,mixed>> Array of the opcodes describing the differences between the strings.
+     * @return array<int,array{string,int,int,int,int}> Array of the opcodes describing the differences between the strings.
      */
     public function getOpCodes(): array
     {
@@ -123,6 +123,7 @@ class DifferenceSequenceMatcher
         $popularDict = [];
 
         for ($i = 0; $i < $length; ++$i) {
+            /** @var string $char */
             $char = $this->b[$i];
 
             if (isset($this->b2j[$char])) {

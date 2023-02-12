@@ -404,6 +404,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
 
         if (0 === $argumentCount) {
             $key = null;
+            $value = null;
             $arguments = [];
         } elseif (1 === $argumentCount) {
             $key = null;

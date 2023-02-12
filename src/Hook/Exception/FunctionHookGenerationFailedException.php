@@ -16,11 +16,11 @@ final class FunctionHookGenerationFailedException extends Exception implements
     /**
      * Construct a mock generation failed exception.
      *
-     * @param string               $functionName The function name.
-     * @param callable             $callback     The callback.
-     * @param string               $source       The generated source code.
-     * @param ?array<string,mixed> $error        The error details.
-     * @param ?Throwable           $cause        The cause, if available.
+     * @param string                                               $functionName The function name.
+     * @param callable                                             $callback     The callback.
+     * @param string                                               $source       The generated source code.
+     * @param ?array{type:int,message:string,file:string,line:int} $error        The error details.
+     * @param ?Throwable                                           $cause        The cause, if available.
      */
     public function __construct(
         string $functionName,

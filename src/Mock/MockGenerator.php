@@ -474,7 +474,7 @@ EOD;
 
                 if ($hasParentClass) {
                     $body .= "parent::$name(...\$arguments);";
-                } elseif ($canReturn) {
+                } else {
                     $body .= 'null;';
                 }
 

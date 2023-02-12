@@ -23,6 +23,7 @@ use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Verification\Cardinality;
 use Eloquent\Phony\Verification\CardinalityVerifier;
 use Eloquent\Phony\Verification\CardinalityVerifierTrait;
+use Eloquent\Phony\Verification\Exception\InvalidCardinalityException;
 use Eloquent\Phony\Verification\GeneratorVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifier;
@@ -481,7 +482,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the response.
      *
-     * @return array{0:?Throwable,1:mixed} A 2-tuple of thrown exception or null, and return value.
+     * @return array{?Throwable,mixed}     A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded.
      */
     public function response(): array
@@ -492,7 +493,7 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Get the response from the generator.
      *
-     * @return array{0:?Throwable,1:mixed} A 2-tuple of thrown exception or null, and return value.
+     * @return array{?Throwable,mixed}     A 2-tuple of thrown exception or null, and return value.
      * @throws UndefinedResponseException  If this call has not yet responded via generator.
      */
     public function generatorResponse(): array
@@ -575,6 +576,8 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Checks if called with the supplied arguments.
      *
+     * Does not support named arguments.
+     *
      * @param mixed ...$arguments The arguments.
      *
      * @return ?EventCollection            The result.
@@ -582,6 +585,8 @@ class CallVerifier implements Call, CardinalityVerifier
      */
     public function checkCalledWith(...$arguments): ?EventCollection
     {
+        /** @var array<int,mixed> $arguments */
+
         $cardinality = $this->resetCardinality()->assertSingular();
         $matchers = $this->matcherFactory->adaptAll($arguments);
 
@@ -601,6 +606,8 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Throws an exception unless called with the supplied arguments.
      *
+     * Does not support named arguments.
+     *
      * @param mixed ...$arguments The arguments.
      *
      * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
@@ -609,6 +616,8 @@ class CallVerifier implements Call, CardinalityVerifier
      */
     public function calledWith(...$arguments): ?EventCollection
     {
+        /** @var array<int,mixed> $arguments */
+
         $cardinality = $this->cardinality;
         $matchers = $this->matcherFactory->adaptAll($arguments);
 
@@ -771,6 +780,7 @@ class CallVerifier implements Call, CardinalityVerifier
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
+            $value = null;
             $arguments = [];
         } else {
             $value = $this->matcherFactory->adapt($value);
@@ -1021,7 +1031,7 @@ class CallVerifier implements Call, CardinalityVerifier
      * @param ?Event $event
      * @param mixed  $checkResult
      *
-     * @return array{0:int,1:array<int,Event>}
+     * @return array{int,array<int,Event>}
      */
     private function matchIf(?Event $event, $checkResult): array
     {

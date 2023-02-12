@@ -157,12 +157,16 @@ class StubData implements Stub
     /**
      * Modify the current criteria to match the supplied arguments.
      *
+     * Does not support named arguments.
+     *
      * @param mixed ...$arguments The arguments.
      *
      * @return $this This stub.
      */
     public function with(...$arguments): Stub
     {
+        /** @var array<int,mixed> $arguments */
+
         $this->closeRule();
 
         if (empty($this->rules)) {

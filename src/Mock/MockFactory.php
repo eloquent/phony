@@ -79,8 +79,9 @@ class MockFactory
         }
 
         $className = $this->generator->generateClassName($definition);
+        $isExisting = class_exists($className, false);
 
-        if (class_exists($className, false)) {
+        if ($isExisting) {
             throw new ClassExistsException($className);
         }
 
@@ -101,7 +102,9 @@ class MockFactory
             error_reporting($reporting);
         }
 
-        if (!class_exists($className, false)) {
+        $wasCreated = class_exists($className, false);
+
+        if (!$wasCreated) {
             // @codeCoverageIgnoreStart
             throw new MockGenerationFailedException(
                 $className,

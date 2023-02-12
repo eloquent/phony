@@ -42,9 +42,7 @@ class GeneratorSpyMap
      */
     public function set(Generator $spy, Generator $generator): void
     {
-        /** @var WeakMap */
-        $mapping = $this->mapping;
-        $mapping->offsetSet($spy, $generator);
+        $this->mapping->offsetSet($spy, $generator);
     }
 
     /**
@@ -56,11 +54,8 @@ class GeneratorSpyMap
      */
     public function get(Generator $spy): ?Generator
     {
-        /** @var WeakMap */
-        $mapping = $this->mapping;
-
-        if ($mapping->offsetExists($spy)) {
-            return $mapping->offsetGet($spy);
+        if ($this->mapping->offsetExists($spy)) {
+            return $this->mapping->offsetGet($spy);
         }
 
         return null;
@@ -72,7 +67,7 @@ class GeneratorSpyMap
     private static $instance;
 
     /**
-     * @var ?WeakMap
+     * @var WeakMap<Generator<mixed>,Generator<mixed>>
      */
     private $mapping;
 }

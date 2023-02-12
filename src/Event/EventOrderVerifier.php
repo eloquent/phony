@@ -127,6 +127,8 @@ class EventOrderVerifier
      */
     public function inOrder(object ...$events): ?EventCollection
     {
+        $events = array_values($events);
+
         if ($result = $this->checkInOrder(...$events)) {
             return $result;
         }
@@ -154,7 +156,7 @@ class EventOrderVerifier
         }
 
         return $this->assertionRecorder
-            ->createSuccess($this->mergeEvents($events));
+            ->createSuccess($this->mergeEvents(array_values($events)));
     }
 
     /**

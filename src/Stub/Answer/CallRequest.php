@@ -54,13 +54,13 @@ class CallRequest
     /**
      * Get the final arguments.
      *
-     * @param ?object   $self      The self value.
+     * @param mixed     $self      The self value.
      * @param Arguments $arguments The incoming arguments.
      *
      * @return Arguments The final arguments.
      */
     public function finalArguments(
-        ?object $self,
+        mixed $self,
         Arguments $arguments
     ): Arguments {
         $finalArguments = $this->arguments->all();

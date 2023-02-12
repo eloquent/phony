@@ -87,7 +87,14 @@ class GeneratorVerifier extends IterableVerifier
                 if ($event instanceof ReceivedEvent) {
                     ++$eventCount;
 
-                    if (!$checkValue || $value->matches($event->value())) {
+                    if ($checkValue) {
+                        /** @var Matcher $value */
+                        $isMatchingValue = $value->matches($event->value());
+                    } else {
+                        $isMatchingValue = true;
+                    }
+
+                    if ($isMatchingValue) {
                         $matchingEvents[] = $event;
                         $isMatchingCall = true;
 
@@ -133,6 +140,7 @@ class GeneratorVerifier extends IterableVerifier
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
+            $value = null;
             $arguments = [];
         } else {
             $value = $this->matcherFactory->adapt($value);
@@ -387,6 +395,7 @@ class GeneratorVerifier extends IterableVerifier
         $argumentCount = func_num_args();
 
         if (0 === $argumentCount) {
+            $value = null;
             $arguments = [];
         } else {
             $value = $this->matcherFactory->adapt($value);

@@ -111,12 +111,16 @@ class InstanceHandle implements Handle
     /**
      * Call the original constructor.
      *
+     * Does not support named arguments.
+     *
      * @param mixed ...$arguments The arguments.
      *
      * @return $this This handle.
      */
     public function construct(...$arguments): self
     {
+        /** @var array<int,mixed> $arguments */
+
         return $this->constructWith($arguments);
     }
 

@@ -79,11 +79,13 @@ class FunctionHookManager
                 throw new FunctionSignatureMismatchException($fullName);
             }
 
+            /** @var callable $replaced */
             $replaced = self::$hooks[$key]['callback'];
         } else {
             $replaced = null;
+            $isExisting = function_exists($fullName);
 
-            if (function_exists($fullName)) {
+            if ($isExisting) {
                 throw new FunctionExistsException($fullName);
             }
 
@@ -105,7 +107,9 @@ class FunctionHookManager
                 error_reporting($reporting);
             }
 
-            if (!function_exists($fullName)) {
+            $wasCreated = function_exists($fullName);
+
+            if (!$wasCreated) {
                 // @codeCoverageIgnoreStart
                 throw new FunctionHookGenerationFailedException(
                     $fullName,

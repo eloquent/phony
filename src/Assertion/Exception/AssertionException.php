@@ -26,12 +26,14 @@ final class AssertionException extends Exception
 
         $traceProperty = $reflector->getProperty('trace');
         $traceProperty->setAccessible(true);
+        /** @var array<int,array{class:string|null,function:string}> $trace */
+        $trace = $traceProperty->getValue($exception);
         $fileProperty = $reflector->getProperty('file');
         $fileProperty->setAccessible(true);
         $lineProperty = $reflector->getProperty('line');
         $lineProperty->setAccessible(true);
 
-        $call = static::tracePhonyCall($traceProperty->getValue($exception));
+        $call = static::tracePhonyCall($trace);
 
         if (empty($call)) {
             $traceProperty->setValue($exception, []);
@@ -47,7 +49,7 @@ final class AssertionException extends Exception
     /**
      * Find the Phony entry point call in a stack trace.
      *
-     * @param array<int,array<string,mixed>> $trace The stack trace.
+     * @param array<int,array{class:string|null,function:string}> $trace The stack trace.
      *
      * @return array<string,mixed> The call, or an empty array if unable to determine the entry point.
      */

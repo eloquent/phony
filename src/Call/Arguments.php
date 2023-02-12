@@ -23,12 +23,16 @@ class Arguments implements Countable, IteratorAggregate
     /**
      * Create a new set of call arguments from the supplied arguments.
      *
+     * Does not support named arguments.
+     *
      * @param mixed ...$arguments The arguments.
      *
      * @return Arguments The arguments object.
      */
     public static function create(...$arguments): self
     {
+        /** @var array<int,mixed> $arguments */
+
         return new self($arguments);
     }
 
@@ -90,7 +94,9 @@ class Arguments implements Countable, IteratorAggregate
     public function set($indexOrValue = null, $value = null): self
     {
         if (func_num_args() > 1) {
+            /** @var int $index */
             $index = $indexOrValue;
+            /** @var null $value */
         } else {
             $index = 0;
             $normalized = 0;
@@ -100,6 +106,8 @@ class Arguments implements Countable, IteratorAggregate
         if (!$this->normalizeIndex($this->count, $index, $normalized)) {
             throw new UndefinedArgumentException($index);
         }
+
+        /** @var int $normalized */
 
         $this->arguments[$normalized] = $value;
 

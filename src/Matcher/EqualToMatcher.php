@@ -153,6 +153,8 @@ class EqualToMatcher implements Matcher
 
             $comparisonId = $leftId . ':' . $rightId;
 
+            /** @var array<string,bool> $visitedArrays */
+
             // These two arrays have already been compared.
             if (isset($visitedArrays[$comparisonId])) {
                 goto pass;
@@ -191,8 +193,11 @@ class EqualToMatcher implements Matcher
 
             // Both keys are null, which means that both array are the same
             // length.
-            } elseif (null === $leftKey) {
-                goto pass;
+            } else {
+                /** @var int|string|null $leftKey */
+                if (null === $leftKey) {
+                    goto pass;
+                }
             }
 
             // Push the arrays we're comparing on to the stack and start
@@ -227,6 +232,8 @@ class EqualToMatcher implements Matcher
         }
 
         $comparisonId = spl_object_hash($left) . ':' . spl_object_hash($right);
+
+        /** @var array<string,bool> $visitedObjects */
 
         // These two objects have already been compared.
         if (isset($visitedObjects[$comparisonId])) {

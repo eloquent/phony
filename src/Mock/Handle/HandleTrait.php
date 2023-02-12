@@ -174,6 +174,7 @@ trait HandleTrait
     public function checkNoInteraction(): ?EventCollection
     {
         foreach (get_object_vars($this->state->stubs) as $stub) {
+            /** @var StubVerifier $stub */
             if ($stub->checkCalled()) {
                 return null;
             }
@@ -197,6 +198,7 @@ trait HandleTrait
         $calls = [];
 
         foreach (get_object_vars($this->state->stubs) as $stub) {
+            /** @var StubVerifier $stub */
             $calls = array_merge($calls, $stub->allCalls());
         }
 
@@ -213,6 +215,7 @@ trait HandleTrait
     public function stopRecording(): Handle
     {
         foreach (get_object_vars($this->state->stubs) as $stub) {
+            /** @var StubVerifier $stub */
             $stub->stopRecording();
         }
 
@@ -229,6 +232,7 @@ trait HandleTrait
     public function startRecording(): Handle
     {
         foreach (get_object_vars($this->state->stubs) as $stub) {
+            /** @var StubVerifier $stub */
             $stub->startRecording();
         }
 
@@ -406,15 +410,21 @@ trait HandleTrait
 
         $uncallableMethodsProperty = $class->getProperty('_uncallableMethods');
         $uncallableMethodsProperty->setAccessible(true);
-        $this->uncallableMethods = $uncallableMethodsProperty->getValue();
+        /** @var array<string,bool> $uncallableMethods */
+        $uncallableMethods = $uncallableMethodsProperty->getValue();
+        $this->uncallableMethods = $uncallableMethods;
 
         $traitMethodsProperty = $class->getProperty('_traitMethods');
         $traitMethodsProperty->setAccessible(true);
-        $this->traitMethods = $traitMethodsProperty->getValue();
+        /** @var array<string,class-string> $traitMethods */
+        $traitMethods = $traitMethodsProperty->getValue();
+        $this->traitMethods = $traitMethods;
 
         $customMethodsProperty = $class->getProperty('_customMethods');
         $customMethodsProperty->setAccessible(true);
-        $this->customMethods = $customMethodsProperty->getValue();
+        /** @var array<string,callable> $customMethods */
+        $customMethods = $customMethodsProperty->getValue();
+        $this->customMethods = $customMethods;
     }
 
     /**

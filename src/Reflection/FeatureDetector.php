@@ -124,7 +124,7 @@ class FeatureDetector
 
                 if (DIRECTORY_SEPARATOR === '\\') {
                     if ($isStdoutDefined && function_exists('sapi_windows_vt100_support')) {
-                        $hasVt100Support = @sapi_windows_vt100_support(constant('STDOUT'));
+                        $hasVt100Support = @sapi_windows_vt100_support(STDOUT);
 
                         if ($hasVt100Support) {
                             return true;
@@ -142,7 +142,7 @@ class FeatureDetector
                     return false;
                 }
 
-                return @posix_isatty(constant('STDOUT'));
+                return @posix_isatty(STDOUT);
             },
         ];
     }
