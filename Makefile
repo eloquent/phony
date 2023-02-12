@@ -1,7 +1,6 @@
 # Powered by https://makefiles.dev/
 
 export PHP_CS_FIXER_IGNORE_ENV=true
-export PHP_ERROR_EXCEPTION_DEPRECATIONS=1
 
 ################################################################################
 
