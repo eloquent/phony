@@ -539,7 +539,7 @@ class MockBuilderTest extends TestCase
         $this->assertSame($this->className, $definition->className());
     }
 
-    public function testNamedFailureInvalid()
+    public function testNamedFailureInvalidNumericFirstCharacter()
     {
         $this->setUpWith([]);
 
@@ -547,7 +547,7 @@ class MockBuilderTest extends TestCase
         $this->subject->named('1');
     }
 
-    public function testNamedFailureInvalidPostPhp71()
+    public function testNamedFailureInvalidAsciiDelete()
     {
         $this->setUpWith([]);
 
