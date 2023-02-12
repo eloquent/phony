@@ -1,5 +1,12 @@
 # Migration guide
 
+## Migrating from `5.x` to `6.x`
+
+The _Phony_ `6.x` release drops support for PHP 7.3 and 7.4. If you only need to
+support PHP 8.0 or later, then it is recommended that you upgrade to _Phony_
+`6.x`. If you still need to support PHP 7.3 or 7.4, then you are free to
+continue using the `5.x` version of _Phony_.
+
 ## Migrating from `4.x` to `5.x`
 
 The _Phony_ `5.x` release drops support for PHP 7.2. If you only need to support
