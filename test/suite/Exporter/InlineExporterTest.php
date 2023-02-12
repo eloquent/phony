@@ -350,9 +350,6 @@ class InlineExporterTest extends TestCase
         $this->assertSame('iterable-spy#0(#0[])', $this->subject->export($iterableSpy));
     }
 
-    /**
-     * @requires PHP >= 7.4
-     */
     public function testExportWeakReference()
     {
         $object = (object) ['a' => 'b'];

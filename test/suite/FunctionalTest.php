@@ -315,9 +315,6 @@ class FunctionalTest extends TestCase
         $this->assertSame(123, $spy());
     }
 
-    /**
-     * @requires PHP >= 7.4
-     */
     public function testSpyArrowFunction()
     {
         $spy = spy(eval('return fn($x) => $x;'));
@@ -414,9 +411,6 @@ class FunctionalTest extends TestCase
         $this->assertSame(123, $stub());
     }
 
-    /**
-     * @requires PHP >= 7.4
-     */
     public function testStubArrowFunction()
     {
         $stub = stub(eval('return fn($x) => $x;'))->forwards();
@@ -1308,9 +1302,6 @@ class FunctionalTest extends TestCase
         );
     }
 
-    /**
-     * @requires PHP >= 7.4
-     */
     public function testExporterExamplesReferenceTypes()
     {
         $array = [];
@@ -1710,9 +1701,6 @@ class FunctionalTest extends TestCase
         $mock->undefined();
     }
 
-    /**
-     * @requires PHP >= 7.4
-     */
     public function testMockWithCustomSerializationMethods()
     {
         $handle = partialMock(TestClassWithSerializeMagicMethods::class, [['a', 'b']]);
@@ -1726,9 +1714,6 @@ class FunctionalTest extends TestCase
         $this->assertSame(['c', 'd'], unserialize(serialize($mock))->values);
     }
 
-    /**
-     * @requires PHP >= 7.4
-     */
     public function testMockWithToStringExceptions()
     {
         $handle = mock(TestClassWithToStringException::class);
@@ -1740,9 +1725,6 @@ class FunctionalTest extends TestCase
         strval($mock);
     }
 
-    /**
-     * @requires PHP >= 7.4
-     */
     public function testPartialMockWithToStringExceptions()
     {
         $mock = partialMock(TestClassWithToStringException::class)->get();
