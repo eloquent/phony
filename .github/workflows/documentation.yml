@@ -24,4 +24,4 @@ jobs:
         if: success()
         run: make doc-publish
         env:
-          DOC_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOC_GITHUB_TOKEN: ${{ secrets.DOC_GITHUB_TOKEN }}
