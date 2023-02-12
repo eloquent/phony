@@ -46,6 +46,7 @@
         },
         "files": [
             "test/src/ClassA.php",
+            "test/src/ClassWithProperty.php",
             "test/src/Test/functions.php",
             "test/src/TestClass.php"
         ]

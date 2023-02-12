@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Exporter;
 
+use ClassWithProperty;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
@@ -18,12 +19,12 @@ use Eloquent\Phony\Test\Properties\TestBaseClass;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassE;
+use Eloquent\Phony\Test\TestException;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestTraitA;
 use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use RuntimeException;
 use TestClass;
 use WeakReference;
 
@@ -129,10 +130,10 @@ class InlineExporterTest extends TestCase
 
     public function testExportRecursiveObject()
     {
-        $value = new TestClass();
-        $value->inner = $value;
+        $value = new ClassWithProperty();
+        $value->c = $value;
 
-        $this->assertSame('TestClass#0{inner: &0{}}', $this->subject->export($value));
+        $this->assertSame('ClassWithProperty#0{c: &0{}}', $this->subject->export($value));
     }
 
     public function testExportRecursiveArray()
@@ -187,24 +188,27 @@ class InlineExporterTest extends TestCase
         );
     }
 
+    /**
+     * @requires PHP >= 8.1
+     */
     public function testExportExceptions()
     {
-        $exceptionA = new RuntimeException();
-        $exceptionB = new RuntimeException('message');
-        $exceptionC = new RuntimeException('message', 111);
-        $exceptionD = new RuntimeException('message', 111, $exceptionA);
-        $exceptionE = new RuntimeException('message', 111, $exceptionA);
+        $exceptionA = new TestException();
+        $exceptionB = new TestException('message');
+        $exceptionC = new TestException('message', 111);
+        $exceptionD = new TestException('message', 111, $exceptionA);
+        $exceptionE = new TestException('message', 111, $exceptionA);
         $exceptionE->arbitrary = 'yolo';
 
-        $this->assertSame('RuntimeException#0{}', $this->subject->export($exceptionA));
-        $this->assertSame('RuntimeException#1{message: "message"}', $this->subject->export($exceptionB));
-        $this->assertSame('RuntimeException#2{message: "message", code: 111}', $this->subject->export($exceptionC));
+        $this->assertSame('Eloquent\Phony\Test\TestException#0{}', $this->subject->export($exceptionA));
+        $this->assertSame('Eloquent\Phony\Test\TestException#1{message: "message"}', $this->subject->export($exceptionB));
+        $this->assertSame('Eloquent\Phony\Test\TestException#2{message: "message", code: 111}', $this->subject->export($exceptionC));
         $this->assertSame(
-            'RuntimeException#3{message: "message", code: 111, previous: RuntimeException#0{}}',
+            'Eloquent\Phony\Test\TestException#3{message: "message", code: 111, previous: Eloquent\Phony\Test\TestException#0{}}',
             $this->subject->export($exceptionD)
         );
         $this->assertSame(
-            'RuntimeException#4{message: "message", code: 111, previous: RuntimeException#0{}, arbitrary: "yolo"}',
+            'Eloquent\Phony\Test\TestException#4{message: "message", code: 111, previous: Eloquent\Phony\Test\TestException#0{}, arbitrary: "yolo"}',
             $this->subject->export($exceptionE)
         );
     }

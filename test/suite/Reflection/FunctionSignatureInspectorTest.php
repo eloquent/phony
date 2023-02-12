@@ -224,7 +224,6 @@ class FunctionSignatureInspectorTest extends TestCase
             ['callable',  function (): callable { return function () {}; }],
             ['float',  function (): float { return .0; }],
             ['int',  function (): int { return 0; }],
-            ['iterable',  function (): iterable { return []; }],
             ['object',  function (): object { return (object) []; }],
             ['string',  function (): string { return ''; }],
             ['void',  function (): void {}],
@@ -239,6 +238,16 @@ class FunctionSignatureInspectorTest extends TestCase
         list(, $actual) = $this->subject->signature(new ReflectionFunction($function));
 
         $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @requires PHP >= 8.2
+     */
+    public function testSignatureWithIterableReturnType()
+    {
+        list(, $actual) = $this->subject->signature(new ReflectionFunction(function (): iterable {}));
+
+        $this->assertEquals('\Traversable|array', $actual);
     }
 
     /**

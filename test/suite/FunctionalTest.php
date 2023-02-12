@@ -1248,7 +1248,7 @@ class FunctionalTest extends TestCase
         $inner = (object) ['a' => 1];
         $repeatedObjects = (object) ['b' => $inner, 'c' => $inner];
         $identifierCollision = [(object) [], [(object) []]];
-        $inner = new ClassA();
+        $inner = new ClassWithProperty();
         $inner->c = 'd';
         $classNameExclusion = (object) ['a' => $inner, 'b' => $inner];
 
@@ -1275,7 +1275,7 @@ class FunctionalTest extends TestCase
             'identifier collision' => [$identifierCollision, '#%d[#%d{}, #%d[#%d{}]]'],
 
             // Export reference exclusions
-            'class name exclusion' => [$classNameExclusion, '#%d{a: ClassA#%d{c: "d"}, b: &%d{}}'],
+            'class name exclusion' => [$classNameExclusion, '#%d{a: ClassWithProperty#%d{c: "d"}, b: &%d{}}'],
 
             // Exporting closures
             'closure' => [function () {}, 'Closure#%d{}[FunctionalTest.php:' . __LINE__ . ']'],
