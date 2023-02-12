@@ -13,6 +13,7 @@ class TestIteratorAggregate implements IteratorAggregate
         $this->iterator = $iterator;
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this->iterator;
