@@ -6,6 +6,7 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -13,6 +14,8 @@ use RuntimeException;
 
 class GeneratorSpyFactoryTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();

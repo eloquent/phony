@@ -8,6 +8,7 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Test\TestCallEventFactory;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Error;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -15,6 +16,8 @@ use RuntimeException;
 
 class CallFactoryTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->eventFactory = new TestCallEventFactory();

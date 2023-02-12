@@ -6,11 +6,14 @@ namespace Eloquent\Phony\Mock\Builder\Method;
 
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestInterfaceA;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
 class RealMethodDefinitionTest extends TestCase
 {
+    use WithDynamicProperties;
+
     public function testConstructorWithPublicStatic()
     {
         $this->method = new ReflectionMethod(TestClassA::class . '::testClassAStaticMethodA');

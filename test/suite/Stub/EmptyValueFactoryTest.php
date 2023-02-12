@@ -24,6 +24,7 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassC;
 use Eloquent\Phony\Test\TestInterfaceWithReturnType;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use EmptyIterator;
 use Error;
 use ErrorException;
@@ -85,6 +86,8 @@ use UnexpectedValueException;
 
 class EmptyValueFactoryTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->featureDetector = FeatureDetector::instance();

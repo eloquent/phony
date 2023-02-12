@@ -18,6 +18,7 @@ use Eloquent\Phony\Test\TestInterfaceG;
 use Eloquent\Phony\Test\TestTraitA;
 use Eloquent\Phony\Test\TestTraitB;
 use Eloquent\Phony\Test\TestTraitI;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Iterator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -26,6 +27,10 @@ use ReflectionMethod;
 
 class MockDefinitionTest extends TestCase
 {
+    use WithDynamicProperties;
+
+    private array $types;
+
     protected function setUp(): void
     {
         $this->featureDetector = new FeatureDetector();

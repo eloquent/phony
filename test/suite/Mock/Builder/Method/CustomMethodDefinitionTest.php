@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Builder\Method;
 
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionFunction;
 
 class CustomMethodDefinitionTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->isStatic = false;

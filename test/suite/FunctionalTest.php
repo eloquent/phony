@@ -1,5 +1,6 @@
 <?php
 
+use Eloquent\Phony\Test\WithDynamicProperties;
 use function Eloquent\Phony\anyOrder;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use function Eloquent\Phony\equalTo;
@@ -59,6 +60,8 @@ use PHPUnit\Framework\TestCase;
 
 class FunctionalTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->featureDetector = FeatureDetector::instance();

@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Sequencer;
 
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 class SequencerTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->subject = new Sequencer();

@@ -21,6 +21,7 @@ use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Test\StubVerifierFactory as TestNamespace;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use InvalidArgumentException;
@@ -29,6 +30,8 @@ use ReflectionClass;
 
 class StubVerifierFactoryTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();

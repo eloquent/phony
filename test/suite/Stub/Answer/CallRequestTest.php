@@ -6,10 +6,13 @@ namespace Eloquent\Phony\Stub\Answer;
 
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Phony;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 
 class CallRequestTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->callback = 'implode';

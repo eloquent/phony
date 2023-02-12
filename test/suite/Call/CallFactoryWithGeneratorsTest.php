@@ -8,6 +8,7 @@ use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Test\TestCallEventFactory;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -16,6 +17,8 @@ use RuntimeException;
  */
 class CallFactoryWithGeneratorsTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->eventFactory = new TestCallEventFactory();

@@ -6,6 +6,7 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -16,6 +17,8 @@ use RuntimeException;
  */
 class CallWithGeneratorsTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();

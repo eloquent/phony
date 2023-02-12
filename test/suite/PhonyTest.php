@@ -24,11 +24,14 @@ use Eloquent\Phony\Stub\StubVerifier;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestEvent;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionFunction;
 
 class PhonyTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->handleFactory = HandleFactory::instance();

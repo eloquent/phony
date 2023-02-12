@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Call\Event;
 
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
 class ThrewEventTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->sequenceNumber = 111;

@@ -28,6 +28,7 @@ use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Error;
 use Exception;
 use InvalidArgumentException;
@@ -36,6 +37,10 @@ use RuntimeException;
 
 class GeneratorVerifierTest extends TestCase
 {
+    use WithDynamicProperties;
+
+    private array $typicalCallsPlusGeneratorCall;
+
     protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();

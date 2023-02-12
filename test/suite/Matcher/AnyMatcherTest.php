@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Matcher;
 
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 class AnyMatcherTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->subject = new AnyMatcher();

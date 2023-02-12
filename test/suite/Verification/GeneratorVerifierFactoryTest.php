@@ -10,11 +10,14 @@ use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 class GeneratorVerifierFactoryTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->matcherFactory = MatcherFactory::instance();

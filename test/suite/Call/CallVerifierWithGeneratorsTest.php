@@ -20,6 +20,7 @@ use Eloquent\Phony\Spy\GeneratorSpyMap;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Generator;
@@ -28,6 +29,8 @@ use RuntimeException;
 
 class CallVerifierWithGeneratorsTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();

@@ -7,12 +7,15 @@ namespace Eloquent\Phony\Call\Event;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClock;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 
 class CallEventFactoryTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->sequencer = new Sequencer();

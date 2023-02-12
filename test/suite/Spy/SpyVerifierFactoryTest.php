@@ -14,6 +14,7 @@ use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\SpyVerifierFactory as TestNamespace;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use InvalidArgumentException;
@@ -22,6 +23,8 @@ use ReflectionClass;
 
 class SpyVerifierFactoryTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->spyFactory = new SpyFactory(

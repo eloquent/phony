@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Hamcrest;
 
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 
 class HamcrestMatcherTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->matcher = equalTo('value');

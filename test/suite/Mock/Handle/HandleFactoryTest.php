@@ -17,6 +17,7 @@ use Eloquent\Phony\Stub\StubData;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestClassB;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionProperty;
@@ -24,6 +25,8 @@ use stdClass;
 
 class HandleFactoryTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->stubFactory = StubFactory::instance();

@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Spy;
 use ArrayIterator;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestIteratorAggregate;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -14,6 +15,8 @@ use Traversable;
 
 class IterableSpyFactoryTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();

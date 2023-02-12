@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Clock;
 
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 class SystemClockTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $time = 0.123;

@@ -6,11 +6,14 @@ namespace Eloquent\Phony\Invocation;
 
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Test\TestInvocable;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 class InvokerTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->subject = new Invoker();

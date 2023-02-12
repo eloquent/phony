@@ -13,12 +13,29 @@ use Eloquent\Phony\Phony;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Test\TupleIterator;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class GeneratorAnswerBuilderTest extends TestCase
 {
+    use WithDynamicProperties;
+
+    private array $callsA;
+    private array $callsB;
+    private array $callsC;
+    private array $callsD;
+    private array $callsE;
+    private array $callsF;
+
+    private int $callCountA;
+    private int $callCountB;
+    private int $callCountC;
+    private int $callCountD;
+    private int $callCountE;
+    private int $callCountF;
+
     protected function setUp(): void
     {
         $this->self = (object) [];

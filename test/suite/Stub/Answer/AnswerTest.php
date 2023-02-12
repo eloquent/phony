@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Stub\Answer;
 
 use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 
 class AnswerTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->primaryRequest = new CallRequest('implode', Arguments::create(), false, false, false);

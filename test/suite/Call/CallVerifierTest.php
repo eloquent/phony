@@ -21,6 +21,7 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\GeneratorSpyMap;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\Cardinality;
 use Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
@@ -33,6 +34,8 @@ use RuntimeException;
 
 class CallVerifierTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();

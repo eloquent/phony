@@ -7,11 +7,14 @@ namespace Eloquent\Phony;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\Phony as TestPhony;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class VerificationTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->featureDetector = FeatureDetector::instance();

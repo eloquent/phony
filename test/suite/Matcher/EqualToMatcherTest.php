@@ -13,11 +13,14 @@ use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\Properties\TestDerivedClassB;
 use Eloquent\Phony\Test\Properties\TestDerivedClassWithTraitA;
 use Eloquent\Phony\Test\Properties\TestDerivedClassWithTraitB;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
 class EqualToMatcherTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp($value = '<string>'): void
     {
         $this->value = 'x';

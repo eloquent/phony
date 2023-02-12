@@ -37,6 +37,7 @@ use Eloquent\Phony\Test\TestClassH;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestTraitA;
 use Eloquent\Phony\Test\TestTraitG;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use PHPUnit\Framework\TestCase;
@@ -44,6 +45,8 @@ use ReflectionMethod;
 
 class StaticHandleTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->state = (object) [

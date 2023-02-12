@@ -9,11 +9,14 @@ use Eloquent\Phony\Spy\Exception\NonArrayAccessTraversableException;
 use Eloquent\Phony\Spy\Exception\NonCountableTraversableException;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestIteratorAggregate;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use EmptyIterator;
 use PHPUnit\Framework\TestCase;
 
 class TraversableSpyTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();

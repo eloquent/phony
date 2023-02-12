@@ -12,11 +12,28 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Generator;
 use PHPUnit\Framework\TestCase;
 
 class StubDataWithGeneratorsTest extends TestCase
 {
+    use WithDynamicProperties;
+
+    private array $callsA;
+    private array $callsB;
+    private array $callsC;
+    private array $callsD;
+    private array $callsE;
+    private array $callsF;
+
+    private int $callCountA;
+    private int $callCountB;
+    private int $callCountC;
+    private int $callCountD;
+    private int $callCountE;
+    private int $callCountF;
+
     protected function setUp(): void
     {
         $this->callback = 'implode';

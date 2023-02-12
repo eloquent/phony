@@ -15,6 +15,7 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Exception;
@@ -22,6 +23,22 @@ use PHPUnit\Framework\TestCase;
 
 class StubVerifierTest extends TestCase
 {
+    use WithDynamicProperties;
+
+    private array $callsA;
+    private array $callsB;
+    private array $callsC;
+    private array $callsD;
+    private array $callsE;
+    private array $callsF;
+
+    private int $callCountA;
+    private int $callCountB;
+    private int $callCountC;
+    private int $callCountD;
+    private int $callCountE;
+    private int $callCountF;
+
     protected function setUp(): void
     {
         $this->callback = 'implode';

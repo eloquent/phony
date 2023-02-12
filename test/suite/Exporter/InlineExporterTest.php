@@ -20,6 +20,7 @@ use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassE;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestTraitA;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
@@ -28,6 +29,8 @@ use WeakReference;
 
 class InlineExporterTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->depth = -1;

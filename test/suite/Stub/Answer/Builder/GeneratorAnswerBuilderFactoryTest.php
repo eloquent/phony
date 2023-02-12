@@ -7,11 +7,14 @@ namespace Eloquent\Phony\Stub\Answer\Builder;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Stub\StubFactory;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 class GeneratorAnswerBuilderFactoryTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->invocableInspector = new InvocableInspector();

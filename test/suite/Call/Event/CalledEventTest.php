@@ -6,10 +6,13 @@ namespace Eloquent\Phony\Call\Event;
 
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 
 class CalledEventTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->sequenceNumber = 111;

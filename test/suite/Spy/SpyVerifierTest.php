@@ -26,6 +26,7 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\Cardinality;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
@@ -37,6 +38,8 @@ use RuntimeException;
 
 class SpyVerifierTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->callback = 'implode';

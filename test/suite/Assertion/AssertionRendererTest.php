@@ -17,6 +17,7 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\GeneratorSpyMap;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\Cardinality;
 use IteratorAggregate;
 use PHPUnit\Framework\TestCase;
@@ -25,6 +26,8 @@ use RuntimeException;
 
 class AssertionRendererTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->invocableInspector = new InvocableInspector();

@@ -13,6 +13,7 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestTraitA;
 use Eloquent\Phony\Test\TestTraitB;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Iterator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -20,6 +21,8 @@ use stdClass;
 
 class MockGeneratorTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->labelSequencer = new Sequencer();

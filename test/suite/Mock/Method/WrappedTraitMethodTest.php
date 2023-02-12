@@ -7,11 +7,14 @@ namespace Eloquent\Phony\Mock\Method;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Test\TestTraitA;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
 class WrappedTraitMethodTest extends TestCase
 {
+    use WithDynamicProperties;
+
     protected function setUp(): void
     {
         $this->mockBuilderFactory = MockBuilderFactory::instance();

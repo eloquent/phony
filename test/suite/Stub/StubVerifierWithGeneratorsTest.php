@@ -12,6 +12,7 @@ use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Generator;
@@ -19,6 +20,22 @@ use PHPUnit\Framework\TestCase;
 
 class StubVerifierWithGeneratorsTest extends TestCase
 {
+    use WithDynamicProperties;
+
+    private array $callsA;
+    private array $callsB;
+    private array $callsC;
+    private array $callsD;
+    private array $callsE;
+    private array $callsF;
+
+    private int $callCountA;
+    private int $callCountB;
+    private int $callCountC;
+    private int $callCountD;
+    private int $callCountE;
+    private int $callCountF;
+
     protected function setUp(): void
     {
         $this->callback = 'implode';
