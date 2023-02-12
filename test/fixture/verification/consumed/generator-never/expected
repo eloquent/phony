@@ -7,30 +7,30 @@ Matched 2 of 3:
 %FAINT%- Call #1 - stub#0[label]("bonobo"):%RESET%
 %FAINT%    - Threw RuntimeException#1{message: "BONOBO"}%RESET%
 %FAINT%- Call #2 - stub#0[label]("chameleon"):%RESET%
-%FAINT%    - Returned #0[~1], then:%RESET%
+%FAINT%    - Returned #2[~1], then:%RESET%
 %FAINT%        - Started iterating%RESET%
 %FAINT%        - Produced 0 => "CHAMELEON"%RESET%
 %FAINT%        - Finished iterating%RESET%
 %FAINT%- Call #3 - stub#0[label]("dugong"):%RESET%
-%FAINT%    - Returned #0[~2], then:%RESET%
+%FAINT%    - Returned #2[~2], then:%RESET%
 %FAINT%        - Started iterating%RESET%
 %FAINT%        - Produced 0 => "DUGONG"%RESET%
 %FAINT%        - Never finished iterating%RESET%
 %FAINT%- Call #4 - stub#0[label]("earwig"):%RESET%
-%FAINT%    - Returned #0[~1], then:%RESET%
+%FAINT%    - Returned #2[~1], then:%RESET%
 %FAINT%        - Never started iterating%RESET%
 %RED%✗%RESET% Call #5 - stub#0[label]("ferret"):
-    %RED%✗%RESET% Returned Generator#2{}, then:
+    %RED%✗%RESET% Returned Generator#3{}, then:
         - Started iterating
         - Produced 0 => "FERRET"
         - Received null
         %RED%✗%RESET% Returned null
 %RED%✗%RESET% Call #6 - stub#0[label]("gibbon"):
-    %RED%✗%RESET% Returned Generator#4{}, then:
+    %RED%✗%RESET% Returned Generator#5{}, then:
         - Started iterating
-        %RED%✗%RESET% Threw RuntimeException#3{message: "GIBBON"}
+        %RED%✗%RESET% Threw RuntimeException#4{message: "GIBBON"}
 %GREEN%✓%RESET% Call #7 - stub#0[label]("hippopotamus"):
-    %GREEN%✓%RESET% Returned Generator#5{}, then:
+    %GREEN%✓%RESET% Returned Generator#6{}, then:
         - Started iterating
         - Produced 0 => "HIPPOPOTAMUS"
         %GREEN%✓%RESET% Never finished iterating

@@ -3,12 +3,12 @@
         %RED%✗%RESET% Received "MECHA-CHAMELEON"
 Matched 0 of 1:
 %FAINT%- Call #0 - stub#0[label]("aardvark"):%RESET%
-%FAINT%    - Returned #0[~1], then:%RESET%
+%FAINT%    - Returned #1[~1], then:%RESET%
 %FAINT%        - Started iterating%RESET%
 %FAINT%        - Produced 0 => "AARDVARK"%RESET%
 %FAINT%        - Finished iterating%RESET%
 %RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
-    %RED%✗%RESET% Returned Generator#1{}, then:
+    %RED%✗%RESET% Returned Generator#2{}, then:
         - Started iterating
         - Produced 0 => "BONOBO"
         %RED%✗%RESET% Received "MECHA-%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%CHAMELEON%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%BONOBO%RESET%%YELLOW%%FAINT%+}%RESET%"
@@ -18,4 +18,4 @@ Matched 0 of 1:
 %FAINT%- Call #2 - stub#0[label]("chameleon"):%RESET%
 %FAINT%    - Returned "CHAMELEON"%RESET%
 %FAINT%- Call #3 - stub#0[label]("dugong"):%RESET%
-%FAINT%    - Threw RuntimeException#2{message: "DUGONG"}%RESET%
+%FAINT%    - Threw RuntimeException#3{message: "DUGONG"}%RESET%

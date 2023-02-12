@@ -3,12 +3,12 @@
         %RED%✗%RESET% Produced "CHAMELEON" => "MECHA-CHAMELEON"
 Matched 0 of 2:
 %RED%✗%RESET% Call #0 - stub#0[label]("aardvark"):
-    %RED%✗%RESET% Returned #0[~1], then:
+    %RED%✗%RESET% Returned #1[~1], then:
         - Started iterating
         %RED%✗%RESET% Produced "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%CHAMELEON%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%AARDVARK%RESET%%YELLOW%%FAINT%+}%RESET%" => "MECHA-%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%CHAMELEON%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%AARDVARK%RESET%%YELLOW%%FAINT%+}%RESET%"
         - Finished iterating
 %RED%✗%RESET% Call #1 - stub#0[label]("bonobo"):
-    %RED%✗%RESET% Returned #0[~1], then:
+    %RED%✗%RESET% Returned #1[~1], then:
         - Started iterating
         %RED%✗%RESET% Produced "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%CHAMELEON%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%BONOBO%RESET%%YELLOW%%FAINT%+}%RESET%" => "MECHA-%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%CHAMELEON%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%BONOBO%RESET%%YELLOW%%FAINT%+}%RESET%"
         - Finished iterating

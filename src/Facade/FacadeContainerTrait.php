@@ -112,14 +112,12 @@ trait FacadeContainerTrait
     ): void {
         $sequences = [];
         $anyMatcher = new AnyMatcher();
-        $arrayIdSequence = Sequencer::sequence('exporter-array-id');
-        $objectIdSequence = Sequencer::sequence('exporter-object-id');
+        $idSequence = Sequencer::sequence('exporter-id');
         $invocableInspector = new InvocableInspector();
         $generatorSpyMap = new GeneratorSpyMap();
         $exporter = new InlineExporter(
             1,
-            $arrayIdSequence,
-            $objectIdSequence,
+            $idSequence,
             $generatorSpyMap,
             $invocableInspector
         );

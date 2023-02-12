@@ -1,14 +1,14 @@
 %RESET%Expected %BOLD%stub#0[label]%RESET% to complete.
 %RED%Between 3 and 4 allowed. Matched 2 of 2:%RESET%
 %GREEN%✓%RESET% Call #0 - stub#0[label]():
-    %GREEN%✓%RESET% Returned #0[~3], then:
+    %GREEN%✓%RESET% Returned #1[~3], then:
         - Started iterating
         - Produced 0 => "aardvark"
         - Produced 1 => "bonobo"
         - Produced 2 => "chameleon"
         %GREEN%✓%RESET% Finished iterating
 %GREEN%✓%RESET% Call #1 - stub#0[label]():
-    %GREEN%✓%RESET% Returned #0[~3], then:
+    %GREEN%✓%RESET% Returned #1[~3], then:
         - Started iterating
         - Produced 0 => "aardvark"
         - Produced 1 => "bonobo"

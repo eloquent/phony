@@ -44,15 +44,13 @@ class CallVerifierWithGeneratorsTest extends TestCase
         $this->returnedEvent = $this->callEventFactory->createReturned($this->returnValue);
         $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent, null, $this->returnedEvent);
 
-        $this->arraySequencer = new Sequencer();
-        $this->objectSequencer = new Sequencer();
+        $this->idSequencer = new Sequencer();
         $this->invocableInspector = new InvocableInspector();
         $this->featureDetector = FeatureDetector::instance();
         $this->generatorSpyMap = GeneratorSpyMap::instance();
         $this->exporter = new InlineExporter(
             1,
-            $this->arraySequencer,
-            $this->objectSequencer,
+            $this->idSequencer,
             $this->generatorSpyMap,
             $this->invocableInspector
         );

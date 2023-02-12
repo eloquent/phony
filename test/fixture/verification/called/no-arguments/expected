@@ -3,9 +3,9 @@
 %RED%✗%RESET% Call #0 (no arguments)
 %RED%✗%RESET% Call #1:
     %RED%✗%RESET% "aardvark"
-    %RED%✗%RESET% #0["bonobo", "capybara", "dugong"]
+    %RED%✗%RESET% #1["bonobo", "capybara", "dugong"]
 %RED%✗%RESET% Call #2 (no arguments)
 %RED%✗%RESET% Call #3:
     %RED%✗%RESET% "armadillo"
-    %RED%✗%RESET% #0["bonobo", "chameleon", "dormouse"]
+    %RED%✗%RESET% #1["bonobo", "chameleon", "dormouse"]
 %RED%✗%RESET% Call #4 (no arguments)

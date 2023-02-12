@@ -1,6 +1,6 @@
 %RESET%Expected %BOLD%stub#0[label]%RESET% call #1 not to complete.
 %RED%✗%RESET% Call #1 - stub#0[label]():
-    %RED%✗%RESET% Returned #0[~3], then:
+    %RED%✗%RESET% Returned #1[~3], then:
         - Started iterating
         - Produced 0 => "aardvark"
         - Produced 1 => "bonobo"

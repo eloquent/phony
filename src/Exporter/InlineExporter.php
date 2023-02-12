@@ -43,8 +43,7 @@ class InlineExporter implements Exporter
         if (!self::$instance) {
             self::$instance = new self(
                 1,
-                Sequencer::sequence('exporter-array-id'),
-                Sequencer::sequence('exporter-object-id'),
+                Sequencer::sequence('exporter-id'),
                 GeneratorSpyMap::instance(),
                 InvocableInspector::instance()
             );
@@ -57,21 +56,18 @@ class InlineExporter implements Exporter
      * Construct a new inline exporter.
      *
      * @param int                $depth              The depth.
-     * @param Sequencer          $arraySequencer     The array sequencer to use.
-     * @param Sequencer          $objectSequencer    The object sequencer to use.
+     * @param Sequencer          $sequencer          The sequencer to use.
      * @param GeneratorSpyMap    $generatorSpyMap    The generator spy map to use.
      * @param InvocableInspector $invocableInspector The invocable inspector to use.
      */
     public function __construct(
         int $depth,
-        Sequencer $arraySequencer,
-        Sequencer $objectSequencer,
+        Sequencer $sequencer,
         GeneratorSpyMap $generatorSpyMap,
         InvocableInspector $invocableInspector
     ) {
         $this->depth = $depth;
-        $this->arraySequencer = $arraySequencer;
-        $this->objectSequencer = $objectSequencer;
+        $this->sequencer = $sequencer;
         $this->generatorSpyMap = $generatorSpyMap;
         $this->invocableInspector = $invocableInspector;
         $this->arrayIds = [];
@@ -175,7 +171,7 @@ class InlineExporter implements Exporter
                         $id = $this->arrayIds[$referenceId];
                     } else {
                         $id = $this->arrayIds[$referenceId] =
-                            $this->arraySequencer->next();
+                            $this->sequencer->next();
                     }
 
                     if (isset($arrayResults[$id])) {
@@ -238,7 +234,7 @@ class InlineExporter implements Exporter
                         $id = $this->objectIds[$hash];
                     } else {
                         $id = $this->objectIds[$hash] =
-                            $this->objectSequencer->next();
+                            $this->sequencer->next();
                     }
 
                     if ($seenWrappers->contains($value)) {
@@ -707,10 +703,8 @@ class InlineExporter implements Exporter
     public function reset(): void
     {
         $this->arrayIds = [];
-        $this->arraySequencer->reset();
-
         $this->objectIds = [];
-        $this->objectSequencer->reset();
+        $this->sequencer->reset();
     }
 
     const ARRAY_ID_KEY = "\0__phony__\0";
@@ -729,12 +723,7 @@ class InlineExporter implements Exporter
     /**
      * @var Sequencer
      */
-    private $arraySequencer;
-
-    /**
-     * @var Sequencer
-     */
-    private $objectSequencer;
+    private $sequencer;
 
     /**
      * @var GeneratorSpyMap

@@ -32,14 +32,12 @@ class AssertionRendererTest extends TestCase
     {
         $this->invocableInspector = new InvocableInspector();
         $this->matcherVerifier = MatcherVerifier::instance();
-        $this->arraySequencer = new Sequencer();
-        $this->objectSequencer = new Sequencer();
+        $this->idSequencer = new Sequencer();
         $this->generatorSpyMap = GeneratorSpyMap::instance();
         $this->featureDetector = FeatureDetector::instance();
         $this->exporter = new InlineExporter(
             1,
-            $this->arraySequencer,
-            $this->objectSequencer,
+            $this->idSequencer,
             $this->generatorSpyMap,
             $this->invocableInspector
         );

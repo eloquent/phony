@@ -4523,44 +4523,35 @@ $value = [$inner, $inner];
 
 ##### Export identifier persistence
 
-Identifiers for objects and wrappers are persistent across invocations of the
-exporter, and share a single sequence of numbers:
-
-```php
-$a = (object) [];
-$b = (object) [];
-$c = mock();
-
-$valueA = [$a, $b, $c, $a];
-// $valueA is exported as '#0[#0{}, #1{}, handle#2(PhonyMock_0#3{}[0]), &0{}]'
-
-$valueB = [$b, $a, $b, $c];
-// $valueB is exported as '#0[#1{}, #0{}, &1{}, handle#2(PhonyMock_0#3{}[0])]'
-```
-
-As of PHP 7.4, this is also true for arrays:
+Identifiers for arrays, objects, and wrappers are persistent across invocations
+of the exporter, and share a single sequence of numbers:
 
 ```php
 $a = [];
 $b = [];
+$c = (object) [];
+$d = (object) [];
 
-$valueA = [&$a, &$b, &$a];
-// $valueA is exported as '#0[#1[], #2[], &1[]]' under PHP 7.4
+$valueA = [&$a, &$b, $c, $d, &$a, &$b, $c, $d];
+// $valueA is exported as:
+// '"#0[#1[], #2[], #3{}, #4{}, &1[], &2[], &3{}, &4{}]"'
 
-$valueB = [&$b, &$a, &$b];
-// $valueB is exported as '#3[#2[], #1[], &2[]]' under PHP 7.4
-```
+$valueB = [$d, $c, &$b, &$a];
+// $valueB is exported as:
+// '#5[#4{}, #3{}, #2[], #1[]]'
 
-But due to limitations in earlier versions of PHP, array identifiers are only
-persistent within a single exporter invocation:
+$e = mockBuilder()->named('E')->get(); // mock of class E
+$f = mockBuilder()->named('F')->get(); // mock of class F
+$g = on($e)->setLabel('g');            // handle for $e
+$h = on($f)->setLabel('h');            // handle for $f
 
-```php
-$a = [];
-$b = [];
+$valueC = [$e, $f, $g, $h, $e, $f, $g, $h];
+// $valueC is exported as:
+// '#6[handle#7(&9{}), handle#8(&10{}), PhonyMock_0#9{}[e], PhonyMock_0#10{}[f], &7(), &8(), &9{}, &10{}]'
 
-$valueA = [&$a, &$b, &$a];
-$valueB = [&$b, &$a, &$b];
-// both $valueA and $valueB are exported as '#0[#1[], #2[], &1[]]' under PHP 7.3
+$valueD = [$h, $g, $f, $e];
+// $valueD is exported as:
+// '#0[#1{}, #0{}, &1{}, handle#2(PhonyMock_0#3{}[0])]'
 ```
 
 #### Exporting recursive values

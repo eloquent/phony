@@ -4,4 +4,4 @@ Matched 1 of 2:
 %RED%✗%RESET% Call #0 - stub#0[label]("aardvark"):
     %RED%✗%RESET% Returned "AARDVARK"
 %GREEN%✓%RESET% Call #1 - stub#0[label]("bonobo"):
-    %GREEN%✓%RESET% Returned #0["BONOBO"]
+    %GREEN%✓%RESET% Returned #1["BONOBO"]

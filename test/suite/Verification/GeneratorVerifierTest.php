@@ -47,15 +47,13 @@ class GeneratorVerifierTest extends TestCase
         $this->eventFactory = $this->callFactory->eventFactory();
         $this->anyMatcher = new AnyMatcher();
         $this->wildcardAnyMatcher = WildcardMatcher::instance();
-        $this->arraySequencer = new Sequencer();
-        $this->objectSequencer = new Sequencer();
+        $this->idSequencer = new Sequencer();
         $this->invocableInspector = InvocableInspector::instance();
         $this->featureDetector = new FeatureDetector();
         $this->generatorSpyMap = GeneratorSpyMap::instance();
         $this->exporter = new InlineExporter(
             1,
-            $this->arraySequencer,
-            $this->objectSequencer,
+            $this->idSequencer,
             $this->generatorSpyMap,
             $this->invocableInspector
         );

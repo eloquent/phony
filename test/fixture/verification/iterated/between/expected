@@ -2,6 +2,6 @@
     %RED%✗%RESET% Returned <iterable>
 %RED%Between 3 and 4 allowed. Matched 2 of 2:%RESET%
 %GREEN%✓%RESET% Call #0 - stub#0[label]("aardvark"):
-    %GREEN%✓%RESET% Returned #0["AARDVARK"]
+    %GREEN%✓%RESET% Returned #1["AARDVARK"]
 %GREEN%✓%RESET% Call #1 - stub#0[label]("bonobo"):
-    %GREEN%✓%RESET% Returned #0["BONOBO"]
+    %GREEN%✓%RESET% Returned #1["BONOBO"]

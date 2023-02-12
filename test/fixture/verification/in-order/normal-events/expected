@@ -2,35 +2,35 @@
     - Called stub#0[label]("a", "b")
     - Returned "a" from stub#0[label]("a", "b")
     - Threw Exception#1{message: "C"} from stub#0[label]("c", "d")
-    - Called stub#0[label](#0["e", "f"])
-    - stub#0[label](#0["e", "f"]) started iterating
-    - Produced 0 => "e" from stub#0[label](#0["e", "f"])
-    - stub#0[label](#0["e", "f"]) finished iterating
-    - Called spy#2[first]()
+    - Called stub#0[label](#2["e", "f"])
+    - stub#0[label](#2["e", "f"]) started iterating
+    - Produced 0 => "e" from stub#0[label](#2["e", "f"])
+    - stub#0[label](#2["e", "f"]) finished iterating
+    - Called spy#3[first]()
 Actual order:
-    - Called spy#2[first]()
+    - Called spy#3[first]()
     - Called stub#0[label]("a", "b")
     - Returned "a" from stub#0[label]("a", "b")
     - Threw Exception#1{message: "C"} from stub#0[label]("c", "d")
-    - Called stub#0[label](#1["e", "f"])
-    - Returned #2["e", "f"] from stub#0[label](#1["e", "f"])
-    - stub#0[label](#1["e", "f"]) started iterating
-    - Produced 0 => "e" from stub#0[label](#1["e", "f"])
-    - Produced 1 => "f" from stub#0[label](#1["e", "f"])
-    - stub#0[label](#1["e", "f"]) finished iterating
+    - Called stub#0[label](#4["e", "f"])
+    - Returned #5["e", "f"] from stub#0[label](#4["e", "f"])
+    - stub#0[label](#4["e", "f"]) started iterating
+    - Produced 0 => "e" from stub#0[label](#4["e", "f"])
+    - Produced 1 => "f" from stub#0[label](#4["e", "f"])
+    - stub#0[label](#4["e", "f"]) finished iterating
 Difference:
-    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Called spy#2[first]()%FAINT%+}%RESET%
+    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Called spy#3[first]()%FAINT%+}%RESET%
     %GREEN%✓%RESET%   Called stub#0[label]("a", "b")
     %GREEN%✓%RESET%   Returned "a" from stub#0[label]("a", "b")
     %GREEN%✓%RESET%   Threw Exception#1{message: "C"} from stub#0[label]("c", "d")
-    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%Called stub#0[label](#0["e", "f"])%FAINT%-]%RESET%
-    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%stub#0[label](#0["e", "f"]) started iterating%FAINT%-]%RESET%
-    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%Produced 0 => "e" from stub#0[label](#0["e", "f"])%FAINT%-]%RESET%
-    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%stub#0[label](#0["e", "f"]) finished iterating%FAINT%-]%RESET%
-    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%Called spy#2[first]()%FAINT%-]%RESET%
-    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Called stub#0[label](#1["e", "f"])%FAINT%+}%RESET%
-    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Returned #2["e", "f"] from stub#0[label](#1["e", "f"])%FAINT%+}%RESET%
-    - %YELLOW%%FAINT%{+%RESET%%YELLOW%stub#0[label](#1["e", "f"]) started iterating%FAINT%+}%RESET%
-    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Produced 0 => "e" from stub#0[label](#1["e", "f"])%FAINT%+}%RESET%
-    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Produced 1 => "f" from stub#0[label](#1["e", "f"])%FAINT%+}%RESET%
-    - %YELLOW%%FAINT%{+%RESET%%YELLOW%stub#0[label](#1["e", "f"]) finished iterating%FAINT%+}%RESET%
+    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%Called stub#0[label](#2["e", "f"])%FAINT%-]%RESET%
+    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%stub#0[label](#2["e", "f"]) started iterating%FAINT%-]%RESET%
+    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%Produced 0 => "e" from stub#0[label](#2["e", "f"])%FAINT%-]%RESET%
+    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%stub#0[label](#2["e", "f"]) finished iterating%FAINT%-]%RESET%
+    %RED%✗%RESET% %CYAN%%FAINT%[-%RESET%%CYAN%Called spy#3[first]()%FAINT%-]%RESET%
+    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Called stub#0[label](#4["e", "f"])%FAINT%+}%RESET%
+    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Returned #5["e", "f"] from stub#0[label](#4["e", "f"])%FAINT%+}%RESET%
+    - %YELLOW%%FAINT%{+%RESET%%YELLOW%stub#0[label](#4["e", "f"]) started iterating%FAINT%+}%RESET%
+    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Produced 0 => "e" from stub#0[label](#4["e", "f"])%FAINT%+}%RESET%
+    - %YELLOW%%FAINT%{+%RESET%%YELLOW%Produced 1 => "f" from stub#0[label](#4["e", "f"])%FAINT%+}%RESET%
+    - %YELLOW%%FAINT%{+%RESET%%YELLOW%stub#0[label](#4["e", "f"]) finished iterating%FAINT%+}%RESET%

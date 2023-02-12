@@ -33,14 +33,12 @@ class EventOrderVerifierTest extends TestCase
         $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
         $this->invocableInspector = InvocableInspector::instance();
         $this->matcherVerifier = MatcherVerifier::instance();
-        $this->arraySequencer = new Sequencer();
-        $this->objectSequencer = new Sequencer();
+        $this->idSequencer = new Sequencer();
         $this->featureDetector = FeatureDetector::instance();
         $this->generatorSpyMap = GeneratorSpyMap::instance();
         $this->inlineExporter = new InlineExporter(
             1,
-            $this->arraySequencer,
-            $this->objectSequencer,
+            $this->idSequencer,
             $this->generatorSpyMap,
             $this->invocableInspector
         );
