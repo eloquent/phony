@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Eloquent\Phony\Test;
+namespace Eloquent\Phony\Test\Enum;
 
 enum TestZeroCaseEnum
 {

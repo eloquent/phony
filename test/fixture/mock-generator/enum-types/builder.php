@@ -1,6 +1,6 @@
 <?php
 
-use Eloquent\Phony\Test\TestInterfaceUsingEnums;
+use Eloquent\Phony\Test\Enum\TestInterfaceUsingEnums;
 
 $builder = $factory->create(TestInterfaceUsingEnums::class);
 

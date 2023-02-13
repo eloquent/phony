@@ -2,13 +2,20 @@
 
 $config = Eloquent\CodeStyle\Config::create(__DIR__);
 $config->setCacheFile(__DIR__ . '/artifacts/lint/php-cs-fixer/cache');
-$config->getFinder()->exclude([
-    'artifacts',
-    'test/fixture',
-]);
 $config->setRules(array_merge($config->getRules(), [
     'phpdoc_to_comment' => false,
     'no_blank_lines_after_phpdoc' => false,
 ]));
+
+$exclusions = [
+    'artifacts',
+    'test/fixture',
+];
+
+if (version_compare(PHP_VERSION, '8.1.x', '<')) {
+    $exclusions[] = 'test/src/Test/Enum';
+}
+
+$config->getFinder()->exclude($exclusions);
 
 return $config;
