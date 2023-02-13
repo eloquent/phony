@@ -20,9 +20,12 @@ use DivisionByZeroError;
 use DomainException;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Mock;
+use Eloquent\Phony\Test\TestBackedEnum;
+use Eloquent\Phony\Test\TestBasicEnum;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassC;
 use Eloquent\Phony\Test\TestInterfaceWithReturnType;
+use Eloquent\Phony\Test\TestZeroCaseEnum;
 use Eloquent\Phony\Test\WithDynamicProperties;
 use EmptyIterator;
 use Error;
@@ -248,6 +251,24 @@ class EmptyValueFactoryTest extends TestCase
     {
         $this->assertNull($this->subject->fromType($this->createType('?int')));
         $this->assertNull($this->subject->fromType($this->createType('?stdClass')));
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testFromTypeWithEnum()
+    {
+        $this->assertSame(
+            TestBasicEnum::A,
+            $this->subject->fromType($this->createType(TestBasicEnum::class))
+        );
+        $this->assertSame(
+            TestBackedEnum::A,
+            $this->subject->fromType($this->createType(TestBackedEnum::class))
+        );
+        $this->assertNull(
+            $this->subject->fromType($this->createType(TestZeroCaseEnum::class))
+        );
     }
 
     public function fromTypeWithIteratorTypeData()

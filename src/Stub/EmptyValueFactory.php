@@ -112,6 +112,10 @@ class EmptyValueFactory
                 return null;
         }
 
+        if (enum_exists($typeName)) {
+            return $typeName::cases()[0] ?? null;
+        }
+
         return $this->mockBuilderFactory->create($typeName)->full();
     }
 
