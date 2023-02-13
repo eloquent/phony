@@ -13,6 +13,7 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\GeneratorSpyFactory;
 use Eloquent\Phony\Spy\IterableSpyFactory;
@@ -49,7 +50,7 @@ class StubVerifierFactoryTest extends TestCase
             $this->matcherVerifier,
             Invoker::instance(),
             InvocableInspector::instance(),
-            new EmptyValueFactory(),
+            new EmptyValueFactory(FeatureDetector::instance()),
             GeneratorAnswerBuilderFactory::instance(),
             InlineExporter::instance()
         );

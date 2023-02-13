@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use ReflectionFunctionAbstract;
 use ReflectionNamedType;
 use ReflectionType;
@@ -23,10 +24,22 @@ class EmptyValueFactory
     public static function instance(): self
     {
         if (!self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self(
+                FeatureDetector::instance()
+            );
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Construct a new empty value factory engine.
+     *
+     * @param FeatureDetector $featureDetector The feature detector to use.
+     */
+    public function __construct(FeatureDetector $featureDetector)
+    {
+        $this->isEnumSupported = $featureDetector->isSupported('type.enum');
     }
 
     /**
@@ -112,7 +125,7 @@ class EmptyValueFactory
                 return null;
         }
 
-        if (enum_exists($typeName)) {
+        if ($this->isEnumSupported && enum_exists($typeName)) {
             return $typeName::cases()[0] ?? null;
         }
 
@@ -139,6 +152,11 @@ class EmptyValueFactory
      * @var ?self
      */
     private static $instance;
+
+    /**
+     * @var bool
+     */
+    private $isEnumSupported;
 
     /**
      * @var StubVerifierFactory

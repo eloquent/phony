@@ -141,7 +141,8 @@ trait FacadeContainerTrait
             $exporter
         );
         $matcherFactory->addMatcherDriver(new HamcrestMatcherDriver());
-        $emptyValueFactory = new EmptyValueFactory();
+        $featureDetector = new FeatureDetector();
+        $emptyValueFactory = new EmptyValueFactory($featureDetector);
         $generatorAnswerBuilderFactory = new GeneratorAnswerBuilderFactory(
             $invocableInspector,
             $invoker
@@ -185,7 +186,6 @@ trait FacadeContainerTrait
             $generatorSpyFactory,
             $iterableSpyFactory
         );
-        $featureDetector = new FeatureDetector();
         $differenceEngine = new DifferenceEngine(
             $featureDetector
         );
