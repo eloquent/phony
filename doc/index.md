@@ -1110,7 +1110,8 @@ echo $thought->getValue($cat); // outputs 'Meow.'
 
 Some PHP classes can be difficult, if not impossible, to mock. In particular,
 `final` classes can only be mocked via [proxy mocks], and only in certain
-circumstances.
+circumstances. [Enumerations] are internally declared `final`, so the same
+limitations apply.
 
 For up-to-date information on known issues with other problematic classes, see
 [Mocking problematic classes][wiki-mocking-problematic-classes] in the wiki.
@@ -8424,6 +8425,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [eloquent/phony-peridot]: https://packagist.org/packages/eloquent/phony-peridot
 [eloquent/phony-phpunit]: https://packagist.org/packages/eloquent/phony-phpunit
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
+[enumerations]: http://php.net/enumerations
 [error]: http://php.net/class.error
 [exception]: http://php.net/class.exception
 [fluent interfaces]: http://en.wikipedia.org/wiki/Fluent_interface
