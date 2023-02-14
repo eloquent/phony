@@ -433,14 +433,14 @@
 <li><a href="#license">License</a></li>
 </ul>
 <h2><a id="installation" class="anchor" aria-hidden="true" href="#installation"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
-<p>Available as various <a href="http://getcomposer.org/" rel="nofollow">Composer</a> packages, depending on the test framework in
+<p>Available as various <a href="https://getcomposer.org/" rel="nofollow">Composer</a> packages, depending on the test framework in
 use:</p>
 <ul>
 <li>For <a href="https://kahlan.github.io/docs/" rel="nofollow">Kahlan</a>, use <a href="https://packagist.org/packages/eloquent/phony-kahlan" rel="nofollow">eloquent/phony-kahlan</a> and import
 <code>Eloquent\Phony\Kahlan</code>.</li>
 <li>For <a href="https://phpunit.de/" rel="nofollow">PHPUnit</a>, use <a href="https://packagist.org/packages/eloquent/phony-phpunit" rel="nofollow">eloquent/phony-phpunit</a> and import
 <code>Eloquent\Phony\Phpunit</code>.</li>
-<li>For <a href="http://peridot-php.github.io/" rel="nofollow">Peridot</a>, use <a href="https://packagist.org/packages/eloquent/phony-peridot" rel="nofollow">eloquent/phony-peridot</a> and import <code>Eloquent\Phony</code>.</li>
+<li>For <a href="https://peridot-php.github.io/" rel="nofollow">Peridot</a>, use <a href="https://packagist.org/packages/eloquent/phony-peridot" rel="nofollow">eloquent/phony-peridot</a> and import <code>Eloquent\Phony</code>.</li>
 <li>For other frameworks, or standalone usage, use <a href="https://packagist.org/packages/eloquent/phony" rel="nofollow">eloquent/phony</a> and import
 <code>Eloquent\Phony</code>.</li>
 </ul>
@@ -515,7 +515,7 @@ describe(<span class="pl-s">'Phony for Kahlan'</span>, <span class="pl-k">functi
     });
 });</pre></div>
 <h3><a id="peridot-usage" class="anchor" aria-hidden="true" href="#peridot-usage"><span aria-hidden="true" class="octicon octicon-link"></span></a>
-<a href="http://peridot-php.github.io/" rel="nofollow">Peridot</a> usage</h3>
+<a href="https://peridot-php.github.io/" rel="nofollow">Peridot</a> usage</h3>
 <p>Install the <a href="https://packagist.org/packages/eloquent/phony-peridot" rel="nofollow">eloquent/phony-peridot</a> package, then:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-v">Eloquent</span>\<span class="pl-v">Phony</span>\mock;
 
@@ -563,28 +563,28 @@ describe(<span class="pl-s">'Phony for Peridot'</span>, <span class="pl-k">funct
 <h3><a id="integration-with-test-frameworks" class="anchor" aria-hidden="true" href="#integration-with-test-frameworks"><span aria-hidden="true" class="octicon octicon-link"></span></a>Integration with test frameworks</h3>
 <p>In order to provide the easiest integration with test frameworks, <em>Phony</em>
 exposes the same <a href="#api">API</a> through multiple namespaces. Integration is as simple as
-picking the correct <a href="http://getcomposer.org/" rel="nofollow">Composer</a> package for the framework in use, and importing
+picking the correct <a href="https://getcomposer.org/" rel="nofollow">Composer</a> package for the framework in use, and importing
 the relevant namespace:</p>
 <ul>
 <li>For <a href="https://kahlan.github.io/docs/" rel="nofollow">Kahlan</a>, use <a href="https://packagist.org/packages/eloquent/phony-kahlan" rel="nofollow">eloquent/phony-kahlan</a> and import
 <code>Eloquent\Phony\Kahlan</code>.</li>
 <li>For <a href="https://phpunit.de/" rel="nofollow">PHPUnit</a>, use <a href="https://packagist.org/packages/eloquent/phony-phpunit" rel="nofollow">eloquent/phony-phpunit</a> and import
 <code>Eloquent\Phony\Phpunit</code>.</li>
-<li>For <a href="http://peridot-php.github.io/" rel="nofollow">Peridot</a>, use <a href="https://packagist.org/packages/eloquent/phony-peridot" rel="nofollow">eloquent/phony-peridot</a> and import <code>Eloquent\Phony</code>.</li>
+<li>For <a href="https://peridot-php.github.io/" rel="nofollow">Peridot</a>, use <a href="https://packagist.org/packages/eloquent/phony-peridot" rel="nofollow">eloquent/phony-peridot</a> and import <code>Eloquent\Phony</code>.</li>
 <li>For other frameworks, or standalone usage, use <a href="https://packagist.org/packages/eloquent/phony" rel="nofollow">eloquent/phony</a> and import
 <code>Eloquent\Phony</code>.</li>
 </ul>
 <h3><a id="importing" class="anchor" aria-hidden="true" href="#importing"><span aria-hidden="true" class="octicon octicon-link"></span></a>Importing</h3>
 <p>There are two ways to import <em>Phony</em>'s <a href="#api">API</a>. The most appropriate choice will
 depend on the test framework in use, and the user's preferred coding style.</p>
-<h4><a id="importing-with-use-function" class="anchor" aria-hidden="true" href="#importing-with-use-function"><span aria-hidden="true" class="octicon octicon-link"></span></a>Importing with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>
+<h4><a id="importing-with-use-function" class="anchor" aria-hidden="true" href="#importing-with-use-function"><span aria-hidden="true" class="octicon octicon-link"></span></a>Importing with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>
 </h4>
-<p>If the version of PHP in use supports <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>, the top-level functions
+<p>If the version of PHP in use supports <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>, the top-level functions
 can be imported from the appropriate namespace and used directly:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-v">Eloquent</span>\<span class="pl-v">Phony</span>\mock;
 
 <span class="pl-s1"><span class="pl-c1">$</span>handle</span> = mock(<span class="pl-v">ClassA</span>::class);</pre></div>
-<h4><a id="importing-without-use-function" class="anchor" aria-hidden="true" href="#importing-without-use-function"><span aria-hidden="true" class="octicon octicon-link"></span></a>Importing without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>
+<h4><a id="importing-without-use-function" class="anchor" aria-hidden="true" href="#importing-without-use-function"><span aria-hidden="true" class="octicon octicon-link"></span></a>Importing without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>
 </h4>
 <p>A static facade implementation is also provided for those who prefer a more
 "traditional" approach:</p>
@@ -950,7 +950,7 @@ use <a href="#facade.on"><code>on()</code></a>:</p>
 <h4><a id="generating-mock-classes-from-a-builder" class="anchor" aria-hidden="true" href="#generating-mock-classes-from-a-builder"><span aria-hidden="true" class="octicon octicon-link"></span></a>Generating mock classes from a builder</h4>
 <p>The mock class can be generated without actually creating a mock instance. To
 generate and return a mock class, use <a href="#builder.build"><code>build()</code></a>, (which
-returns a <a href="http://php.net/reflectionclass" rel="nofollow">ReflectionClass</a>):</p>
+returns a <a href="https://php.net/reflectionclass" rel="nofollow">ReflectionClass</a>):</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>class</span> = <span class="pl-s1"><span class="pl-c1">$</span>builder</span>-&gt;<span class="pl-en">build</span>();</pre></div>
 <p>The <a href="#builder.build"><code>build()</code></a> method will normally return the same class for
 subsequent calls. To generate a new class each time, pass <code>true</code> as the first
@@ -1045,7 +1045,7 @@ mock class generated by <em>Phony</em> is a <em>sub-class</em> of the original t
 "overriding" a <code>private</code> method does not change the behavior of the original
 method.</p>
 <h4><a id="accessing-non-public-methods-and-properties" class="anchor" aria-hidden="true" href="#accessing-non-public-methods-and-properties"><span aria-hidden="true" class="octicon octicon-link"></span></a>Accessing non-public methods and properties</h4>
-<p>In some cases, it may be necessary to bypass the <a href="http://php.net/language.oop5.visibility" rel="nofollow">visibility</a> restrictions
+<p>In some cases, it may be necessary to bypass the <a href="https://php.net/language.oop5.visibility" rel="nofollow">visibility</a> restrictions
 imposed by the <code>protected</code> and <code>private</code> keywords in order to test a
 particularly difficult-to-reach branch of code.</p>
 <p>This should be considered a <a href="https://en.wikipedia.org/wiki/Code_smell" rel="nofollow">code smell</a>, and ideally the system under test
@@ -1081,7 +1081,8 @@ reflection:</p>
 <h3><a id="mocking-problematic-classes" class="anchor" aria-hidden="true" href="#mocking-problematic-classes"><span aria-hidden="true" class="octicon octicon-link"></span></a>Mocking problematic classes</h3>
 <p>Some PHP classes can be difficult, if not impossible, to mock. In particular,
 <code>final</code> classes can only be mocked via <a href="#proxy-mocks">proxy mocks</a>, and only in certain
-circumstances.</p>
+circumstances. <a href="https://php.net/enumerations" rel="nofollow">Enumerations</a> are internally declared <code>final</code>, so the same
+limitations apply.</p>
 <p>For up-to-date information on known issues with other problematic classes, see
 <a href="https://github.com/eloquent/phony/wiki/Mocking-problematic-classes">Mocking problematic classes</a> in the wiki.</p>
 <h3><a id="terminology" class="anchor" aria-hidden="true" href="#terminology"><span aria-hidden="true" class="octicon octicon-link"></span></a>Terminology</h3>
@@ -1101,7 +1102,7 @@ set of rules when called. In <em>Phony</em>, every stub also implements <a href=
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>stub</span> = stub(<span class="pl-s1"><span class="pl-c1">$</span>callable</span>);        <span class="pl-c">// with `use function`</span>
 <span class="pl-s1"><span class="pl-c1">$</span>stub</span> = <span class="pl-v">Phony</span>::<span class="pl-en">stub</span>(<span class="pl-s1"><span class="pl-c1">$</span>callable</span>); <span class="pl-c">// without `use function`</span></pre></div>
 <p>By default, the created stub will return "empty" values. The exact value depends
-on the <a href="http://php.net/functions.returning-values#functions.returning-values.type-declaration" rel="nofollow">return type</a> of the callable, but in many cases it will be <code>null</code>:</p>
+on the <a href="https://php.net/functions.returning-values#functions.returning-values.type-declaration" rel="nofollow">return type</a> of the callable, but in many cases it will be <code>null</code>:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>stubA</span> = stub(
     <span class="pl-k">function</span> () {
         <span class="pl-k">return</span> <span class="pl-s">'a'</span>;
@@ -1133,7 +1134,7 @@ var_dump(<span class="pl-s1"><span class="pl-c1">$</span>stub</span>(<span class
 <p>When an "unqualified" function (one with no preceding backslash) is used from
 within a namespace, PHP will attempt to find the function in the calling
 namespace first, before looking for the function in the <em>global</em> namespace. This
-behavior is known as <a href="http://php.net/language.namespaces.fallback" rel="nofollow">global function fallback</a>.</p>
+behavior is known as <a href="https://php.net/language.namespaces.fallback" rel="nofollow">global function fallback</a>.</p>
 <p>This behavior can be exploited to allow a stub to replace a global function
 during testing. To do so, two conditions must be met:</p>
 <ul>
@@ -1178,7 +1179,7 @@ functions after the test concludes.</p>
 <p>This method is suitable for use in the "tear down" phase of a test.</p>
 <h5><a id="alternatives-for-stubbing-global-functions" class="anchor" aria-hidden="true" href="#alternatives-for-stubbing-global-functions"><span aria-hidden="true" class="octicon octicon-link"></span></a>Alternatives for stubbing global functions</h5>
 <p>If the system under test is not suitable for stubbing via
-<a href="http://php.net/language.namespaces.fallback" rel="nofollow">global function fallback</a>, an alternative is to accept a callback via
+<a href="https://php.net/language.namespaces.fallback" rel="nofollow">global function fallback</a>, an alternative is to accept a callback via
 dependency injection that can take a stub during testing:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-v">Eloquent</span>\<span class="pl-v">Phony</span>\stub;
 
@@ -1401,7 +1402,7 @@ the same:</p>
 <h4><a id="default-values-for-return-types" class="anchor" aria-hidden="true" href="#default-values-for-return-types"><span aria-hidden="true" class="octicon octicon-link"></span></a>Default values for return types</h4>
 <p>When using <a href="#stub.returns"><code>returns()</code></a> without passing an explicit value,
 <em>Phony</em> will attempt to return a value that conforms to the stubbed callable's
-<a href="http://php.net/functions.returning-values#functions.returning-values.type-declaration" rel="nofollow">return type</a>:</p>
+<a href="https://php.net/functions.returning-values#functions.returning-values.type-declaration" rel="nofollow">return type</a>:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>stub</span> = stub(
     <span class="pl-k">function</span> (): <span class="pl-smi">int</span> {}
 );
@@ -1410,7 +1411,7 @@ the same:</p>
 var_dump(<span class="pl-s1"><span class="pl-c1">$</span>stubA</span>()); <span class="pl-c">// outputs 'int(0)'</span></pre></div>
 <p>See <a href="#facade.emptyValue"><code>emptyValue()</code></a> for a full list of types and associated
 "empty" values.</p>
-<p>When using a specific class name as a <a href="http://php.net/functions.returning-values#functions.returning-values.type-declaration" rel="nofollow">return type</a>, the return value will be a
+<p>When using a specific class name as a <a href="https://php.net/functions.returning-values#functions.returning-values.type-declaration" rel="nofollow">return type</a>, the return value will be a
 <a href="#mocks">mock</a> of the specified type:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>stub</span> = stub(<span class="pl-k">function</span> (): <span class="pl-smi"><span class="pl-smi">DateTime</span></span> {})-&gt;<span class="pl-en">returns</span>();
 <span class="pl-s1"><span class="pl-c1">$</span>result</span> = <span class="pl-s1"><span class="pl-c1">$</span>stub</span>();
@@ -1429,7 +1430,7 @@ var_dump(<span class="pl-s1"><span class="pl-c1">$</span>stubA</span>()); <span 
 <span class="pl-k">echo</span> <span class="pl-s1"><span class="pl-c1">$</span>stubC</span>(<span class="pl-s">'x'</span>, <span class="pl-s">'y'</span>, <span class="pl-s">'z'</span>); <span class="pl-c">// outputs 'z'</span></pre></div>
 <h3><a id="returning-the-self-value" class="anchor" aria-hidden="true" href="#returning-the-self-value"><span aria-hidden="true" class="octicon octicon-link"></span></a>Returning the "self" value</h3>
 <p>When stubs are retrieved from a mock, their <a href="#stub-self-values">self value</a> is automatically set to
-the mock itself. This allows mocking of <a href="http://en.wikipedia.org/wiki/Fluent_interface" rel="nofollow">fluent interfaces</a> with the
+the mock itself. This allows mocking of <a href="https://en.wikipedia.org/wiki/Fluent_interface" rel="nofollow">fluent interfaces</a> with the
 <a href="#stub.returnsSelf"><code>returnsSelf()</code></a> method:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-k">interface</span> <span class="pl-v">Fluent</span>
 {
@@ -1747,7 +1748,7 @@ reference:</p>
     }
 );</pre></div>
 <h3><a id="stubbing-generators" class="anchor" aria-hidden="true" href="#stubbing-generators"><span aria-hidden="true" class="octicon octicon-link"></span></a>Stubbing generators</h3>
-<p>To return a <a href="http://php.net/language.generators.overview" rel="nofollow">generator</a> from a stub, use <a href="#stub.generates"><code>generates()</code></a>:</p>
+<p>To return a <a href="https://php.net/language.generators.overview" rel="nofollow">generator</a> from a stub, use <a href="#stub.generates"><code>generates()</code></a>:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>stub</span> = stub();
 <span class="pl-s1"><span class="pl-c1">$</span>stub</span>-&gt;<span class="pl-en">generates</span>();
 
@@ -2202,7 +2203,7 @@ Value: b
 </code></pre>
 <h2><a id="spies" class="anchor" aria-hidden="true" href="#spies"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spies</h2>
 <p><em>Spies</em> record interactions with callable entities, such as functions, methods,
-closures, and objects with an <a href="http://php.net/language.oop5.magic#object.invoke" rel="nofollow"><code>__invoke()</code></a> method. They can be used to verify
+closures, and objects with an <a href="https://php.net/language.oop5.magic#object.invoke" rel="nofollow"><code>__invoke()</code></a> method. They can be used to verify
 both the <em>input</em>, and <em>output</em> of function calls.</p>
 <p>Most of the methods in <a href="#the-spy-api">the spy API</a> are mirrored in <a href="#the-call-api">the call API</a>.</p>
 <h3><a id="spying-on-an-existing-callable" class="anchor" aria-hidden="true" href="#spying-on-an-existing-callable"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spying on an existing callable</h3>
@@ -2218,7 +2219,7 @@ both the <em>input</em>, and <em>output</em> of function calls.</p>
 <p>When an "unqualified" function (one with no preceding backslash) is used from
 within a namespace, PHP will attempt to find the function in the calling
 namespace first, before looking for the function in the <em>global</em> namespace. This
-behavior is known as <a href="http://php.net/language.namespaces.fallback" rel="nofollow">global function fallback</a>.</p>
+behavior is known as <a href="https://php.net/language.namespaces.fallback" rel="nofollow">global function fallback</a>.</p>
 <p>This behavior can be exploited to allow a spy to record interactions with a
 global function during testing. To do so, two conditions must be met:</p>
 <ul>
@@ -2255,7 +2256,7 @@ functions after the test concludes.</p>
 <p>This method is suitable for use in the "tear down" phase of a test.</p>
 <h5><a id="alternatives-for-spying-on-global-functions" class="anchor" aria-hidden="true" href="#alternatives-for-spying-on-global-functions"><span aria-hidden="true" class="octicon octicon-link"></span></a>Alternatives for spying on global functions</h5>
 <p>If the system under test is not suitable for spying via
-<a href="http://php.net/language.namespaces.fallback" rel="nofollow">global function fallback</a>, an alternative is to accept a callback via
+<a href="https://php.net/language.namespaces.fallback" rel="nofollow">global function fallback</a>, an alternative is to accept a callback via
 dependency injection that can take a spy during testing:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-k">use</span> <span class="pl-k">function</span> <span class="pl-v">Eloquent</span>\<span class="pl-v">Phony</span>\spy;
 
@@ -2342,7 +2343,7 @@ on an <a href="#individual-calls">individual call</a> recorded via the spy:</p>
 <p>Example output from <a href="#spy.returned"><code>returned()</code></a>:</p>
 <p><a target="_blank" rel="noopener noreferrer" href="img/verification/returned/value-mismatch.svg"><img src="img/verification/returned/value-mismatch.svg" alt="Example output from $spy-&gt;returned()" style="max-width: 100%;"></a></p>
 <h5><a id="verifying-generators-returned-by-spies" class="anchor" aria-hidden="true" href="#verifying-generators-returned-by-spies"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying generators returned by spies</h5>
-<p>To verify that a spy returned a <a href="http://php.net/language.generators.overview" rel="nofollow">generator</a>, use
+<p>To verify that a spy returned a <a href="https://php.net/language.generators.overview" rel="nofollow">generator</a>, use
 <a href="#spy.generated"><code>generated()</code></a>:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>spy</span>-&gt;<span class="pl-en">generated</span>();</pre></div>
 <p>The result returned by <a href="#spy.generated"><code>generated()</code></a> can be used for further
@@ -2550,7 +2551,7 @@ passed to <a href="#call.calledWith"><code>calledWith()</code></a> can be litera
 <p>Example output from <a href="#call.returned"><code>returned()</code></a>:</p>
 <p><a target="_blank" rel="noopener noreferrer" href="img/verification/returned/call-value-mismatch.svg"><img src="img/verification/returned/call-value-mismatch.svg" alt="Example output from $call-&gt;returned()" style="max-width: 100%;"></a></p>
 <h5><a id="verifying-generators-returned-by-calls" class="anchor" aria-hidden="true" href="#verifying-generators-returned-by-calls"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying generators returned by calls</h5>
-<p>To verify that a call returned a <a href="http://php.net/language.generators.overview" rel="nofollow">generator</a>, use
+<p>To verify that a call returned a <a href="https://php.net/language.generators.overview" rel="nofollow">generator</a>, use
 <a href="#call.generated"><code>generated()</code></a>:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>call</span>-&gt;<span class="pl-en">generated</span>();</pre></div>
 <p>The result returned by <a href="#call.generated"><code>generated()</code></a> can be used for further
@@ -2873,7 +2874,7 @@ of the second call did not match. The third array element was expected to be
 <code>"dugong"</code>, but it was actually <code>"dormouse"</code>.</li>
 </ul>
 <h3><a id="generator-and-iterable-verification" class="anchor" aria-hidden="true" href="#generator-and-iterable-verification"><span aria-hidden="true" class="octicon octicon-link"></span></a>Generator and iterable verification</h3>
-<p>When spying on a callable that returns a <a href="http://php.net/language.generators.overview" rel="nofollow">generator</a>, additional verification
+<p>When spying on a callable that returns a <a href="https://php.net/language.generators.overview" rel="nofollow">generator</a>, additional verification
 can be performed on events that happen after the generator is returned, such as
 the yielding of values. This is accomplished via the use of "generator spies".</p>
 <p>The use of generator spies is an optional behavior that can be disabled by
@@ -2963,7 +2964,7 @@ on any <a href="#the-generator-verification-result-api">generator verification r
 <p><a target="_blank" rel="noopener noreferrer" href="img/verification/generated-threw/value-mismatch.svg"><img src="img/verification/generated-threw/value-mismatch.svg" alt="Example output from $generator-&gt;threw()" style="max-width: 100%;"></a></p>
 <h4><a id="verifying-cardinality-with-generators-and-iterables" class="anchor" aria-hidden="true" href="#verifying-cardinality-with-generators-and-iterables"><span aria-hidden="true" class="octicon octicon-link"></span></a>Verifying cardinality with generators and iterables</h4>
 <p>When used <strong>before</strong> <code>generated()</code> or <code>iterated()</code>, cardinality modifiers change
-the amount of calls that must return a <a href="http://php.net/language.generators.overview" rel="nofollow">generator</a> or iterable:</p>
+the amount of calls that must return a <a href="https://php.net/language.generators.overview" rel="nofollow">generator</a> or iterable:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>subject</span>-&gt;<span class="pl-en">twice</span>()-&gt;<span class="pl-en">generated</span>(); <span class="pl-c">// returned a generator exactly 2 times</span>
 <span class="pl-s1"><span class="pl-c1">$</span>subject</span>-&gt;<span class="pl-en">twice</span>()-&gt;<span class="pl-en">iterated</span>();  <span class="pl-c">// returned an iterable exactly 2 times</span></pre></div>
 <p>When used <strong>after</strong> <code>generated()</code> or <code>iterated()</code>, cardinality modifiers relate
@@ -3025,17 +3026,17 @@ are disabled by default.</p>
 <h5><a id="repeated-iteration-of-iterable-spies" class="anchor" aria-hidden="true" href="#repeated-iteration-of-iterable-spies"><span aria-hidden="true" class="octicon octicon-link"></span></a>Repeated iteration of iterable spies</h5>
 <p>Events are only recorded the first time an iterable spy is iterated over. If the
 underlying value is an array, or is iterated with an iterator that supports
-<a href="http://php.net/iterator.rewind" rel="nofollow"><code>rewind()</code></a>, subsequent iterations will behave as expected, but no events will
+<a href="https://php.net/iterator.rewind" rel="nofollow"><code>rewind()</code></a>, subsequent iterations will behave as expected, but no events will
 be recorded.</p>
 <p>This has no relevance for <a href="#generator-and-iterable-verification">generator spies</a>, as generators cannot be rewound.</p>
 <h5><a id="spying-on-iterables-that-implement-array-like-interfaces" class="anchor" aria-hidden="true" href="#spying-on-iterables-that-implement-array-like-interfaces"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spying on iterables that implement array-like interfaces</h5>
-<p>It's quite common for iterable objects to also implement <a href="http://php.net/arrayaccess" rel="nofollow">ArrayAccess</a> and
-<a href="http://php.net/countable" rel="nofollow">Countable</a>. Iterable spies <em>always</em> implement these interfaces, which may be
+<p>It's quite common for iterable objects to also implement <a href="https://php.net/arrayaccess" rel="nofollow">ArrayAccess</a> and
+<a href="https://php.net/countable" rel="nofollow">Countable</a>. Iterable spies <em>always</em> implement these interfaces, which may be
 incompatible with code that checks for these interfaces at run time.</p>
-<p>If the underlying iterable object implements <a href="http://php.net/arrayaccess" rel="nofollow">ArrayAccess</a> and/or <a href="http://php.net/countable" rel="nofollow">Countable</a>,
+<p>If the underlying iterable object implements <a href="https://php.net/arrayaccess" rel="nofollow">ArrayAccess</a> and/or <a href="https://php.net/countable" rel="nofollow">Countable</a>,
 <em>Phony</em> will pass relevant calls through to the underlying implementation. If
 these interfaces are <em>not</em> implemented, then the behavior of calls to
-<a href="http://php.net/arrayaccess" rel="nofollow">ArrayAccess</a> and/or <a href="http://php.net/countable" rel="nofollow">Countable</a> is undefined, but will most likely result in an
+<a href="https://php.net/arrayaccess" rel="nofollow">ArrayAccess</a> and/or <a href="https://php.net/countable" rel="nofollow">Countable</a> is undefined, but will most likely result in an
 error.</p>
 <h5><a id="nested-iterable-spies" class="anchor" aria-hidden="true" href="#nested-iterable-spies"><span aria-hidden="true" class="octicon octicon-link"></span></a>Nested iterable spies</h5>
 <p>It is possible for an iterable value to become nested in multiple iterable
@@ -3649,8 +3650,8 @@ functions or static methods depending on the method of importing:</p>
 <a name="facade.mock"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-mock-handle-api">handle</a></em> <a href="#facade.mock"><strong>mock</strong></a>($types = []) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-mock-handle-api">handle</a></em> Phony::<a href="#facade.mock"><strong>mock</strong></a>($types = []) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-mock-handle-api">handle</a></em> <a href="#facade.mock"><strong>mock</strong></a>($types = []) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em><a href="#the-mock-handle-api">handle</a></em> Phony::<a href="#facade.mock"><strong>mock</strong></a>($types = []) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new <a href="#mocking-basics">full mock</a>, and return a <a href="#mock-handles">mock handle</a>.</p>
 <p><em>Each value in <code>$types</code> can be either a class name, or an <a href="#ad-hoc-mocks">ad hoc mock</a>
@@ -3660,8 +3661,8 @@ can be passed without being wrapped in an array.</em></p>
 <a name="facade.partialMock"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-mock-handle-api">handle</a></em> <a href="#facade.partialMock"><strong>partialMock</strong></a>($types = [], $arguments = []) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-mock-handle-api">handle</a></em> Phony::<a href="#facade.partialMock"><strong>partialMock</strong></a>($types = [], $arguments = []) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-mock-handle-api">handle</a></em> <a href="#facade.partialMock"><strong>partialMock</strong></a>($types = [], $arguments = []) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em><a href="#the-mock-handle-api">handle</a></em> Phony::<a href="#facade.partialMock"><strong>partialMock</strong></a>($types = [], $arguments = []) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new <a href="#partial-mocks">partial mock</a>, and return a <a href="#mock-handles">mock handle</a>.</p>
 <p><em>Each value in <code>$types</code> can be either a class name, or an <a href="#ad-hoc-mocks">ad hoc mock</a>
@@ -3674,8 +3675,8 @@ the original constructor will not be called at all.</em></p>
 <a name="facade.mockBuilder"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-mock-builder-api">builder</a></em> <a href="#facade.mockBuilder"><strong>mockBuilder</strong></a>($types = []) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-mock-builder-api">builder</a></em> Phony::<a href="#facade.mockBuilder"><strong>mockBuilder</strong></a>($types = []) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-mock-builder-api">builder</a></em> <a href="#facade.mockBuilder"><strong>mockBuilder</strong></a>($types = []) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em><a href="#the-mock-builder-api">builder</a></em> Phony::<a href="#facade.mockBuilder"><strong>mockBuilder</strong></a>($types = []) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new <a href="#mock-builders">mock builder</a>.</p>
 <p><em>Each value in <code>$types</code> can be either a class name, or an <a href="#ad-hoc-mocks">ad hoc mock</a>
@@ -3684,39 +3685,39 @@ can be passed without being wrapped in an array.</em></p>
 <a name="facade.on"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-mock-handle-api">handle</a></em> <a href="#facade.on"><strong>on</strong></a>($mock) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-mock-handle-api">handle</a></em> Phony::<a href="#facade.on"><strong>on</strong></a>($mock) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-mock-handle-api">handle</a></em> <a href="#facade.on"><strong>on</strong></a>($mock) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em><a href="#the-mock-handle-api">handle</a></em> Phony::<a href="#facade.on"><strong>on</strong></a>($mock) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Returns a <a href="#mock-handles">mock handle</a> for <code>$mock</code>.</p>
 <a name="facade.onStatic"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-mock-handle-api">handle</a></em> <a href="#facade.onStatic"><strong>onStatic</strong></a>($class) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-mock-handle-api">handle</a></em> Phony::<a href="#facade.onStatic"><strong>onStatic</strong></a>($class) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-mock-handle-api">handle</a></em> <a href="#facade.onStatic"><strong>onStatic</strong></a>($class) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em><a href="#the-mock-handle-api">handle</a></em> Phony::<a href="#facade.onStatic"><strong>onStatic</strong></a>($class) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Returns a static <a href="#static-mocks">static handle</a> for <code>$class</code>.</p>
 <p><em>See <a href="#static-mocks">Static mocks</a>.</em></p>
 <a name="facade.stub"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-stub-api">stub</a></em> <a href="#facade.stub"><strong>stub</strong></a>($callback = null) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-stub-api">stub</a></em> Phony::<a href="#facade.stub"><strong>stub</strong></a>($callback = null) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-stub-api">stub</a></em> <a href="#facade.stub"><strong>stub</strong></a>($callback = null) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em><a href="#the-stub-api">stub</a></em> Phony::<a href="#facade.stub"><strong>stub</strong></a>($callback = null) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new <a href="#stubs">stub</a>.</p>
 <p><em>See <a href="#stubbing-an-existing-callable">Stubbing an existing callable</a>, <a href="#anonymous-stubs">Anonymous stubs</a>.</em></p>
 <a name="facade.spy"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-spy-api">spy</a></em> <a href="#facade.spy"><strong>spy</strong></a>($callback = null) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-spy-api">spy</a></em> Phony::<a href="#facade.spy"><strong>spy</strong></a>($callback = null) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-spy-api">spy</a></em> <a href="#facade.spy"><strong>spy</strong></a>($callback = null) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em><a href="#the-spy-api">spy</a></em> Phony::<a href="#facade.spy"><strong>spy</strong></a>($callback = null) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new <a href="#spies">spy</a>.</p>
 <p><em>See <a href="#spying-on-an-existing-callable">Spying on an existing callable</a>, <a href="#anonymous-spies">Anonymous spies</a>.</em></p>
 <a name="facade.stubGlobal"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-stub-api">stub</a></em> <a href="#facade.stubGlobal"><strong>stubGlobal</strong></a>($function, $namespace) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-stub-api">stub</a></em> Phony::<a href="#facade.stubGlobal"><strong>stubGlobal</strong></a>($function, $namespace) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-stub-api">stub</a></em> <a href="#facade.stubGlobal"><strong>stubGlobal</strong></a>($function, $namespace) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em><a href="#the-stub-api">stub</a></em> Phony::<a href="#facade.stubGlobal"><strong>stubGlobal</strong></a>($function, $namespace) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a stub of a function in the global namespace, and declare it as a
 function in another namespace.</p>
@@ -3726,8 +3727,8 @@ default. This differs from stubs created by other methods.</em></p>
 <a name="facade.spyGlobal"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-spy-api">spy</a></em> <a href="#facade.spyGlobal"><strong>spyGlobal</strong></a>($function, $namespace) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-spy-api">spy</a></em> Phony::<a href="#facade.spyGlobal"><strong>spyGlobal</strong></a>($function, $namespace) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-spy-api">spy</a></em> <a href="#facade.spyGlobal"><strong>spyGlobal</strong></a>($function, $namespace) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em><a href="#the-spy-api">spy</a></em> Phony::<a href="#facade.spyGlobal"><strong>spyGlobal</strong></a>($function, $namespace) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a spy of a function in the global namespace, and declare it as a function
 in another namespace.</p>
@@ -3735,7 +3736,7 @@ in another namespace.</p>
 <a name="facade.restoreGlobalFunctions"></a>
 <hr>
 <blockquote>
-<p><em>void</em> <a href="#facade.restoreGlobalFunctions"><strong>restoreGlobalFunctions</strong></a>() <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br> &gt; <em>void</em> Phony::<a href="#facade.restoreGlobalFunctions"><strong>restoreGlobalFunctions</strong></a>() <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em>void</em> <a href="#facade.restoreGlobalFunctions"><strong>restoreGlobalFunctions</strong></a>() <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br> &gt; <em>void</em> Phony::<a href="#facade.restoreGlobalFunctions"><strong>restoreGlobalFunctions</strong></a>() <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Restores the behavior of any functions in the global namespace that have been
 altered via <a href="#facade.spyGlobal"><code>spyGlobal()</code></a> or
@@ -3744,21 +3745,21 @@ altered via <a href="#facade.spyGlobal"><code>spyGlobal()</code></a> or
 <a name="facade.any"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-matcher-api">matcher</a></em> <a href="#facade.any"><strong>any</strong></a>() <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br> &gt; <em><a href="#the-matcher-api">matcher</a></em> Phony::<a href="#facade.any"><strong>any</strong></a>() <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-matcher-api">matcher</a></em> <a href="#facade.any"><strong>any</strong></a>() <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br> &gt; <em><a href="#the-matcher-api">matcher</a></em> Phony::<a href="#facade.any"><strong>any</strong></a>() <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new <a href="#the-any-matcher">"any" matcher</a>.</p>
 <a name="facade.equalTo"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-matcher-api">matcher</a></em> <a href="#facade.equalTo"><strong>equalTo</strong></a>($value) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-matcher-api">matcher</a></em> Phony::<a href="#facade.equalTo"><strong>equalTo</strong></a>($value) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-matcher-api">matcher</a></em> <a href="#facade.equalTo"><strong>equalTo</strong></a>($value) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em><a href="#the-matcher-api">matcher</a></em> Phony::<a href="#facade.equalTo"><strong>equalTo</strong></a>($value) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new <a href="#the-equal-to-matcher">"equal to" matcher</a>.</p>
 <a name="facade.anInstanceOf"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-matcher-api">matcher</a></em> <a href="#facade.anInstanceOf"><strong>anInstanceOf</strong></a>($type) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-matcher-api">matcher</a></em> Phony::<a href="#facade.anInstanceOf"><strong>anInstanceOf</strong></a>($type) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-matcher-api">matcher</a></em> <a href="#facade.anInstanceOf"><strong>anInstanceOf</strong></a>($type) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em><a href="#the-matcher-api">matcher</a></em> Phony::<a href="#facade.anInstanceOf"><strong>anInstanceOf</strong></a>($type) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new <a href="#the-instance-of-matcher">"instance of" matcher</a>.</p>
 <p><em>The <code>$type</code> parameter accepts either a class name, an interface name, or an
@@ -3766,8 +3767,8 @@ object.</em></p>
 <a name="facade.wildcard"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-wildcard-matcher-api">wildcard</a></em> <a href="#facade.wildcard"><strong>wildcard</strong></a>($value = null, $minimumArguments = 0, $maximumArguments = -1) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em><a href="#the-wildcard-matcher-api">wildcard</a></em> Phony::<a href="#facade.wildcard"><strong>wildcard</strong></a>($value = null, $minimumArguments = 0, $maximumArguments = -1) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em><a href="#the-wildcard-matcher-api">wildcard</a></em> <a href="#facade.wildcard"><strong>wildcard</strong></a>($value = null, $minimumArguments = 0, $maximumArguments = -1) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em><a href="#the-wildcard-matcher-api">wildcard</a></em> Phony::<a href="#facade.wildcard"><strong>wildcard</strong></a>($value = null, $minimumArguments = 0, $maximumArguments = -1) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new <a href="#the-wildcard-matcher">"wildcard" matcher</a>.</p>
 <p><em>The <code>$value</code> parameter accepts a value, or a <a href="#matchers">matcher</a>, to check against each
@@ -3776,12 +3777,12 @@ argument that the wildcard matches.</em></p>
 <a name="facade.emptyValue"></a>
 <hr>
 <blockquote>
-<p><em>mixed</em> <a href="#facade.emptyValue"><strong>emptyValue</strong></a>($type) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em>mixed</em> Phony::<a href="#facade.emptyValue"><strong>emptyValue</strong></a>($type) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em>mixed</em> <a href="#facade.emptyValue"><strong>emptyValue</strong></a>($type) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em>mixed</em> Phony::<a href="#facade.emptyValue"><strong>emptyValue</strong></a>($type) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new "empty" value.</p>
-<p><em>The <code>$type</code> parameter accepts a <a href="http://php.net/reflectiontype" rel="nofollow">ReflectionType</a>, which can be created via
-PHP's built-in <a href="http://php.net/reflection" rel="nofollow">reflection</a> API.</em></p>
+<p><em>The <code>$type</code> parameter accepts a <a href="https://php.net/reflectiontype" rel="nofollow">ReflectionType</a>, which can be created via
+PHP's built-in <a href="https://php.net/reflection" rel="nofollow">reflection</a> API.</em></p>
 <p><em>This table details the "empty" value that will be returned for each type:</em></p>
 <table>
 <thead>
@@ -3848,9 +3849,9 @@ PHP's built-in <a href="http://php.net/reflection" rel="nofollow">reflection</a>
 <a name="facade.inOrder"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> <a href="#facade.inOrder"><strong>inOrder</strong></a>(...$events) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em>
+<p><em><a href="#the-verification-result-api">verification</a></em> <a href="#facade.inOrder"><strong>inOrder</strong></a>(...$events) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em>
 throws <a href="#assertionexception">AssertionException</a><br>
-<em><a href="#the-verification-result-api">verification</a></em> Phony::<a href="#facade.inOrder"><strong>inOrder</strong></a>(...$events) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em>
+<em><a href="#the-verification-result-api">verification</a></em> Phony::<a href="#facade.inOrder"><strong>inOrder</strong></a>(...$events) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em>
 throws <a href="#assertionexception">AssertionException</a></p>
 </blockquote>
 <p>Throws an exception unless the supplied events happened in chronological order.</p>
@@ -3859,8 +3860,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="facade.checkInOrder"></a>
 <hr>
 <blockquote>
-<p><em>?<a href="#the-verification-result-api">verification</a></em> <a href="#facade.checkInOrder"><strong>checkInOrder</strong></a>(...$events) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em>?<a href="#the-verification-result-api">verification</a></em> Phony::<a href="#facade.checkInOrder"><strong>checkInOrder</strong></a>(...$events) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> <a href="#facade.checkInOrder"><strong>checkInOrder</strong></a>(...$events) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em>?<a href="#the-verification-result-api">verification</a></em> Phony::<a href="#facade.checkInOrder"><strong>checkInOrder</strong></a>(...$events) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Checks if the supplied events happened in chronological order.</p>
 <p><em>Each value in <code>$events</code> should be an event, or a <a href="#the-verification-result-api">verification result</a>.</em></p>
@@ -3868,9 +3869,9 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="facade.anyOrder"></a>
 <hr>
 <blockquote>
-<p><em><a href="#the-verification-result-api">verification</a></em> <a href="#facade.anyOrder"><strong>anyOrder</strong></a>(...$events) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em>
+<p><em><a href="#the-verification-result-api">verification</a></em> <a href="#facade.anyOrder"><strong>anyOrder</strong></a>(...$events) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em>
 throws <a href="#assertionexception">AssertionException</a><br>
-<em><a href="#the-verification-result-api">verification</a></em> Phony::<a href="#facade.anyOrder"><strong>anyOrder</strong></a>(...$events) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em>
+<em><a href="#the-verification-result-api">verification</a></em> Phony::<a href="#facade.anyOrder"><strong>anyOrder</strong></a>(...$events) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em>
 throws <a href="#assertionexception">AssertionException</a></p>
 </blockquote>
 <p>Throws an exception unless at least one event is supplied.</p>
@@ -3879,8 +3880,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="facade.checkAnyOrder"></a>
 <hr>
 <blockquote>
-<p><em>?<a href="#the-verification-result-api">verification</a></em> <a href="#facade.checkAnyOrder"><strong>checkAnyOrder</strong></a>(...$events) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em>?<a href="#the-verification-result-api">verification</a></em> Phony::<a href="#facade.checkAnyOrder"><strong>checkAnyOrder</strong></a>(...$events) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em>?<a href="#the-verification-result-api">verification</a></em> <a href="#facade.checkAnyOrder"><strong>checkAnyOrder</strong></a>(...$events) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em>?<a href="#the-verification-result-api">verification</a></em> Phony::<a href="#facade.checkAnyOrder"><strong>checkAnyOrder</strong></a>(...$events) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Checks that at least one event is supplied.</p>
 <p><em>Each value in <code>$events</code> should be an event, or a <a href="#the-verification-result-api">verification result</a>.</em></p>
@@ -3888,8 +3889,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="facade.setUseColor"></a>
 <hr>
 <blockquote>
-<p><em>void</em> <a href="#facade.setUseColor"><strong>setUseColor</strong></a>($useColor) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em>void</em> Phony::<a href="#facade.setUseColor"><strong>setUseColor</strong></a>($useColor) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em>void</em> <a href="#facade.setUseColor"><strong>setUseColor</strong></a>($useColor) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em>void</em> Phony::<a href="#facade.setUseColor"><strong>setUseColor</strong></a>($useColor) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Turn on or off the use of <a href="https://en.wikipedia.org/wiki/ANSI_escape_code#Colors" rel="nofollow">ANSI colored output</a>.</p>
 <p><em>Pass <code>null</code> to detect automatically.</em></p>
@@ -3897,8 +3898,8 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="facade.setExportDepth"></a>
 <hr>
 <blockquote>
-<p><em>int</em> <a href="#facade.setExportDepth"><strong>setExportDepth</strong></a>($depth) <em>(with <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em>int</em> Phony::<a href="#facade.setExportDepth"><strong>setExportDepth</strong></a>($depth) <em>(without <a href="http://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em>int</em> <a href="#facade.setExportDepth"><strong>setExportDepth</strong></a>($depth) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em>int</em> Phony::<a href="#facade.setExportDepth"><strong>setExportDepth</strong></a>($depth) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Set the default export depth, and return the previous depth.</p>
 <p><em>Negative depths are treated as infinite depth.</em></p>
@@ -3985,7 +3986,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="handle.class"></a>
 <hr>
 <blockquote>
-<p><em><a href="http://php.net/reflectionclass" rel="nofollow">ReflectionClass</a></em> $handle-&gt;<a href="#handle.class"><strong>class</strong></a>()</p>
+<p><em><a href="https://php.net/reflectionclass" rel="nofollow">ReflectionClass</a></em> $handle-&gt;<a href="#handle.class"><strong>class</strong></a>()</p>
 </blockquote>
 <p>Get the generated mock class.</p>
 <a name="handle.className"></a>
@@ -4094,7 +4095,7 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="builder.types"></a>
 <hr>
 <blockquote>
-<p><em>array&lt;string,<a href="http://php.net/reflectionclass" rel="nofollow">ReflectionClass</a>&gt;</em> $builder-&gt;<a href="#builder.types"><strong>types</strong></a>()</p>
+<p><em>array&lt;string,<a href="https://php.net/reflectionclass" rel="nofollow">ReflectionClass</a>&gt;</em> $builder-&gt;<a href="#builder.types"><strong>types</strong></a>()</p>
 </blockquote>
 <p>Get the types that will be mocked.</p>
 <p><em>Returns a map of class name to class.</em></p>
@@ -4176,7 +4177,7 @@ property</em></p>
 <a name="builder.build"></a>
 <hr>
 <blockquote>
-<p><em><a href="http://php.net/reflectionclass" rel="nofollow">ReflectionClass</a></em> $builder-&gt;<a href="#builder.build"><strong>build</strong></a>($createNew = false)</p>
+<p><em><a href="https://php.net/reflectionclass" rel="nofollow">ReflectionClass</a></em> $builder-&gt;<a href="#builder.build"><strong>build</strong></a>($createNew = false)</p>
 </blockquote>
 <p>Generate and define the mock class.</p>
 <p><em>Calling this method will finalize the mock builder.</em></p>
@@ -4609,7 +4610,7 @@ argument of <code>null</code>.</em></p>
 <blockquote>
 <p><a href="#spy.__invoke"><strong>$spy(...$arguments)</strong></a> or
 <em>mixed</em> $spy-&gt;<a href="#spy.invoke"><strong>invoke</strong></a>(...$arguments)
-throws <a href="http://php.net/class.exception" rel="nofollow">Exception</a>, <a href="http://php.net/class.error" rel="nofollow">Error</a></p>
+throws <a href="https://php.net/class.exception" rel="nofollow">Exception</a>, <a href="https://php.net/class.error" rel="nofollow">Error</a></p>
 </blockquote>
 <p>Invoke the spy, record the call, and return or throw the result.</p>
 <p><em>This method does not support reference parameters.</em></p>
@@ -4618,7 +4619,7 @@ throws <a href="http://php.net/class.exception" rel="nofollow">Exception</a>, <a
 <hr>
 <blockquote>
 <p><em>mixed</em> $spy-&gt;<a href="#spy.invokeWith"><strong>invokeWith</strong></a>($arguments)
-throws <a href="http://php.net/class.exception" rel="nofollow">Exception</a>, <a href="http://php.net/class.error" rel="nofollow">Error</a></p>
+throws <a href="https://php.net/class.exception" rel="nofollow">Exception</a>, <a href="https://php.net/class.error" rel="nofollow">Error</a></p>
 </blockquote>
 <p>Invoke the spy, record the call, and return or throw the result.</p>
 <p><em>This method supports reference parameters.</em></p>
@@ -5113,7 +5114,7 @@ iteration, or if the generator ended by throwing an exception.</em></p>
 <a name="call.exception"></a>
 <hr>
 <blockquote>
-<p><em><a href="http://php.net/class.throwable" rel="nofollow">Throwable</a></em> $call-&gt;<a href="#call.exception"><strong>exception</strong></a>()
+<p><em><a href="https://php.net/class.throwable" rel="nofollow">Throwable</a></em> $call-&gt;<a href="#call.exception"><strong>exception</strong></a>()
 throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
 </blockquote>
 <p>Get the thrown exception.</p>
@@ -5123,7 +5124,7 @@ responded, or did not throw an exception.</em></p>
 <a name="call.generatorException"></a>
 <hr>
 <blockquote>
-<p><em><a href="http://php.net/class.throwable" rel="nofollow">Throwable</a></em> $call-&gt;<a href="#call.generatorException"><strong>generatorException</strong></a>()
+<p><em><a href="https://php.net/class.throwable" rel="nofollow">Throwable</a></em> $call-&gt;<a href="#call.generatorException"><strong>generatorException</strong></a>()
 throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
 </blockquote>
 <p>Get the exception thrown by the generator.</p>
@@ -5134,7 +5135,7 @@ iteration, or if the generator ended by returning a value.</em></p>
 <a name="call.response"></a>
 <hr>
 <blockquote>
-<p><em>tuple&lt;?<a href="http://php.net/class.throwable" rel="nofollow">Throwable</a>,mixed&gt;</em> $call-&gt;<a href="#call.response"><strong>response</strong></a>()
+<p><em>tuple&lt;?<a href="https://php.net/class.throwable" rel="nofollow">Throwable</a>,mixed&gt;</em> $call-&gt;<a href="#call.response"><strong>response</strong></a>()
 throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
 </blockquote>
 <p>Get the response.</p>
@@ -5147,7 +5148,7 @@ responded.</em></p>
 <a name="call.generatorResponse"></a>
 <hr>
 <blockquote>
-<p><em>tuple&lt;?<a href="http://php.net/class.throwable" rel="nofollow">Throwable</a>,mixed&gt;</em> $call-&gt;<a href="#call.generatorResponse"><strong>generatorResponse</strong></a>()
+<p><em>tuple&lt;?<a href="https://php.net/class.throwable" rel="nofollow">Throwable</a>,mixed&gt;</em> $call-&gt;<a href="#call.generatorResponse"><strong>generatorResponse</strong></a>()
 throws <a href="#undefinedresponseexception">UndefinedResponseException</a></p>
 </blockquote>
 <p>Get the generator response.</p>
@@ -5545,7 +5546,7 @@ methods:</p>
 <blockquote>
 <p><a href="#arguments.implements.Traversable"><strong>foreach ($arguments as $index =&gt; $argument)</strong></a> { /_ ... _/ }</p>
 </blockquote>
-<p>Arguments implement the <a href="http://php.net/traversable" rel="nofollow">Traversable</a> interface, allowing them to be used in a
+<p>Arguments implement the <a href="https://php.net/traversable" rel="nofollow">Traversable</a> interface, allowing them to be used in a
 <code>foreach</code> statement.</p>
 <p><em>See <a href="#verifying-that-a-spy-was-called-with-specific-arguments">Verifying that a spy was called with specific arguments</a>,
 <a href="#verifying-that-a-call-was-made-with-specific-arguments">Verifying that a call was made with specific arguments</a>.</em></p>
@@ -6176,7 +6177,7 @@ can be used to determine event order.</em></p>
 <h4><a id="assertionexception" class="anchor" aria-hidden="true" href="#assertionexception"><span aria-hidden="true" class="octicon octicon-link"></span></a>AssertionException</h4>
 <p>Thrown when a verification fails. The exact exception class and implementation
 depends on the <a href="#integration-with-test-frameworks">testing framework</a> in use. See <a href="#standard-verification">Standard verification</a>.</p>
-<p>Other than the standard PHP <a href="http://php.net/class.exception" rel="nofollow">Exception</a> methods, assertion exceptions have no
+<p>Other than the standard PHP <a href="https://php.net/class.exception" rel="nofollow">Exception</a> methods, assertion exceptions have no
 public API methods.</p>
 <h4><a id="undefinedargumentexception" class="anchor" aria-hidden="true" href="#undefinedargumentexception"><span aria-hidden="true" class="octicon octicon-link"></span></a>UndefinedArgumentException</h4>
 <p>Thrown when an argument that was requested does not exist.</p>
@@ -6209,7 +6210,7 @@ public API methods.</p>
 <p>Thrown when the call has not yet produced a response of the requested type.</p>
 <p>This can occur when an individual call is queried for its response details
 before the call has returned a value, or thrown an exception.</p>
-<p>Other than the standard PHP <a href="http://php.net/class.exception" rel="nofollow">Exception</a> methods, undefined response exceptions
+<p>Other than the standard PHP <a href="https://php.net/class.exception" rel="nofollow">Exception</a> methods, undefined response exceptions
 have no public API methods.</p>
 <h2><a id="license" class="anchor" aria-hidden="true" href="#license"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 <p>For the full copyright and license information, please view the <a href="https://github.com/eloquent/phony/blob/HEAD/LICENSE">LICENSE file</a>.</p>
