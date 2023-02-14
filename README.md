@@ -27,8 +27,8 @@ use:
 
 See the section on [Integration with test frameworks] in the [documentation].
 
-[composer]: http://getcomposer.org/
-[integration with test frameworks]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
+[composer]: https://getcomposer.org/
+[integration with test frameworks]: https://eloquent-software.com/phony/latest/#integration-with-test-frameworks
 
 ## Documentation
 
@@ -39,7 +39,7 @@ Full [documentation] is available.
 _Phony_ is a PHP library for creating various kinds of [test doubles], including
 object [mocks], function [stubs], and function [spies].
 
-[mocks]: http://eloquent-software.com/phony/latest/#mocks
+[mocks]: https://eloquent-software.com/phony/latest/#mocks
 [test doubles]: https://en.wikipedia.org/wiki/Test_double
 
 ## Why use _Phony_?
@@ -61,12 +61,12 @@ Amongst other features, _Phony_ supports:
 - Modern [variable-length argument lists] using the `...` token
 - [Setting of passed-by-reference arguments], and reference arguments in general
 
-[generator stubbing]: http://eloquent-software.com/phony/latest/#stubbing-generators
-[generator verification]: http://eloquent-software.com/phony/latest/#generator-and-iterable-verification
-[mocking of traits]: http://eloquent-software.com/phony/latest/#mocking-basics
-[setting of passed-by-reference arguments]: http://eloquent-software.com/phony/latest/#setting-passed-by-reference-arguments
-[stubbing of functions and methods with return types]: http://eloquent-software.com/phony/latest/#default-values-for-return-types
-[variable-length argument lists]: http://php.net/functions.arguments#functions.variable-arg-list
+[generator stubbing]: https://eloquent-software.com/phony/latest/#stubbing-generators
+[generator verification]: https://eloquent-software.com/phony/latest/#generator-and-iterable-verification
+[mocking of traits]: https://eloquent-software.com/phony/latest/#mocking-basics
+[setting of passed-by-reference arguments]: https://eloquent-software.com/phony/latest/#setting-passed-by-reference-arguments
+[stubbing of functions and methods with return types]: https://eloquent-software.com/phony/latest/#default-values-for-return-types
+[variable-length argument lists]: https://php.net/functions.arguments#functions.variable-arg-list
 
 ### Zero-configuration integrations
 
@@ -85,16 +85,16 @@ integrations seamless and intuitive:
 Interested in better integration with other test frameworks? So are we! Just
 open a [GitHub issue] if there's something we can do.
 
-[can be used standalone, too]: http://eloquent-software.com/phony/latest/#standalone-usage
-[choosing the correct namespace to import]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
-[hamcrest matchers]: http://eloquent-software.com/phony/latest/#hamcrest-matchers
-[integrates seamlessly with other testing libraries and tools]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
-[kahlan integration]: http://eloquent-software.com/phony/latest/#kahlan-usage
-[kahlan matchers]: http://eloquent-software.com/phony/latest/#kahlan-argument-matchers
-[most test frameworks need no special treatment]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
-[no configuration or bootstrap code necessary]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
-[phpunit integration]: http://eloquent-software.com/phony/latest/#phpunit-usage
-[phpunit matchers]: http://eloquent-software.com/phony/latest/#phpunit-constraints
+[can be used standalone, too]: https://eloquent-software.com/phony/latest/#standalone-usage
+[choosing the correct namespace to import]: https://eloquent-software.com/phony/latest/#integration-with-test-frameworks
+[hamcrest matchers]: https://eloquent-software.com/phony/latest/#hamcrest-matchers
+[integrates seamlessly with other testing libraries and tools]: https://eloquent-software.com/phony/latest/#integration-with-test-frameworks
+[kahlan integration]: https://eloquent-software.com/phony/latest/#kahlan-usage
+[kahlan matchers]: https://eloquent-software.com/phony/latest/#kahlan-argument-matchers
+[most test frameworks need no special treatment]: https://eloquent-software.com/phony/latest/#integration-with-test-frameworks
+[no configuration or bootstrap code necessary]: https://eloquent-software.com/phony/latest/#integration-with-test-frameworks
+[phpunit integration]: https://eloquent-software.com/phony/latest/#phpunit-usage
+[phpunit matchers]: https://eloquent-software.com/phony/latest/#phpunit-constraints
 
 ### Refined verification output
 
@@ -108,9 +108,9 @@ helping you find the cause of the failure as fast as possible. Where
 appropriate, the output uses [difference comparison and color] to further
 highlight important details.
 
-[verification image]: http://eloquent-software.com/phony/latest/img/verification.svg
-[verification output]: http://eloquent-software.com/phony/latest/#understanding-verification-output
-[difference comparison and color]: http://eloquent-software.com/phony/latest/#understanding-verification-output
+[verification image]: https://eloquent-software.com/phony/latest/img/verification.svg
+[verification output]: https://eloquent-software.com/phony/latest/#understanding-verification-output
+[difference comparison and color]: https://eloquent-software.com/phony/latest/#understanding-verification-output
 
 ### First-class support for functions and callbacks
 
@@ -123,8 +123,8 @@ situations that cannot be handled by solely class-based mocking frameworks.
 Since _Phony_'s class-level support is based upon its function-level support,
 the interfaces are consistent, and require very little extra knowledge to use.
 
-[spies]: http://eloquent-software.com/phony/latest/#spies
-[stubs]: http://eloquent-software.com/phony/latest/#stubs
+[spies]: https://eloquent-software.com/phony/latest/#spies
+[stubs]: https://eloquent-software.com/phony/latest/#stubs
 
 ### Extensive feature set
 
@@ -164,41 +164,41 @@ a particular feature, select one of the following:
   - [Retrieval of call arguments]
 - And [more][documentation]...
 
-[conditional use of the original function or method]: http://eloquent-software.com/phony/latest/#forwarding-to-the-original-callable
-[constructor bypassing, and manual constructor calling]: http://eloquent-software.com/phony/latest/#calling-a-constructor-manually
-[customizable class names]: http://eloquent-software.com/phony/latest/#builder.named
-[function-level spies]: http://eloquent-software.com/phony/latest/#spies
-[function-level stubs]: http://eloquent-software.com/phony/latest/#stubs
-[individual call level verification]: http://eloquent-software.com/phony/latest/#calls
-[integrates seamlessly with other testing libraries and tools]: http://eloquent-software.com/phony/latest/#integration-with-test-frameworks
-[mock builders for advanced usage]: http://eloquent-software.com/phony/latest/#mock-builders
-[mock classes with custom methods and properties]: http://eloquent-software.com/phony/latest/#ad-hoc-mocks
-[mock objects]: http://eloquent-software.com/phony/latest/#mocks
-[mocking of classes, interfaces, and traits]: http://eloquent-software.com/phony/latest/#mocking-basics
-[mocking of fluent interfaces]: http://eloquent-software.com/phony/latest/#returning-the-self-value
-[mocking of multiple types simultaneously]: http://eloquent-software.com/phony/latest/#mocking-multiple-types
-[multiple actions can be performed in a single invocation]: http://eloquent-software.com/phony/latest/#answers-that-perform-multiple-actions
-[order verification]: http://eloquent-software.com/phony/latest/#order-verification
-[partial mocks]: http://eloquent-software.com/phony/latest/#partial-mocks
-[proxy mocks for `final` classes]: http://eloquent-software.com/phony/latest/#proxy-mocks
-[replacement of behavior with another callback]: http://eloquent-software.com/phony/latest/#using-a-callable-as-an-answer
-[retrieval of call arguments]: http://eloquent-software.com/phony/latest/#verifying-that-a-spy-was-called-with-specific-arguments
-[returning arguments]: http://eloquent-software.com/phony/latest/#returning-arguments
-[returning of generators with customizable behavior]: http://eloquent-software.com/phony/latest/#stubbing-generators
-[returning self]: http://eloquent-software.com/phony/latest/#returning-the-self-value
-[returning values]: http://eloquent-software.com/phony/latest/#returning-values
-[spying on callables]: http://eloquent-software.com/phony/latest/#spying-on-an-existing-callable
-[spying]: http://eloquent-software.com/phony/latest/#spies
-[static method mocking]: http://eloquent-software.com/phony/latest/#static-mocks
-[stubbing callables]: http://eloquent-software.com/phony/latest/#stubbing-an-existing-callable
-[stubbing]: http://eloquent-software.com/phony/latest/#stubs
-[throwing of exceptions]: http://eloquent-software.com/phony/latest/#throwing-exceptions
-[verification of other iterables]: http://eloquent-software.com/phony/latest/#generator-and-iterable-verification
-[verifying arguments]: http://eloquent-software.com/phony/latest/#verifying-that-a-spy-was-called-with-specific-arguments
-[verifying calls]: http://eloquent-software.com/phony/latest/#verifying-that-a-call-was-made
-[verifying generators]: http://eloquent-software.com/phony/latest/#generator-and-iterable-verification
-[verifying return values]: http://eloquent-software.com/phony/latest/#verifying-spy-return-values
-[verifying thrown exceptions]: http://eloquent-software.com/phony/latest/#verifying-spy-exceptions
+[conditional use of the original function or method]: https://eloquent-software.com/phony/latest/#forwarding-to-the-original-callable
+[constructor bypassing, and manual constructor calling]: https://eloquent-software.com/phony/latest/#calling-a-constructor-manually
+[customizable class names]: https://eloquent-software.com/phony/latest/#builder.named
+[function-level spies]: https://eloquent-software.com/phony/latest/#spies
+[function-level stubs]: https://eloquent-software.com/phony/latest/#stubs
+[individual call level verification]: https://eloquent-software.com/phony/latest/#calls
+[integrates seamlessly with other testing libraries and tools]: https://eloquent-software.com/phony/latest/#integration-with-test-frameworks
+[mock builders for advanced usage]: https://eloquent-software.com/phony/latest/#mock-builders
+[mock classes with custom methods and properties]: https://eloquent-software.com/phony/latest/#ad-hoc-mocks
+[mock objects]: https://eloquent-software.com/phony/latest/#mocks
+[mocking of classes, interfaces, and traits]: https://eloquent-software.com/phony/latest/#mocking-basics
+[mocking of fluent interfaces]: https://eloquent-software.com/phony/latest/#returning-the-self-value
+[mocking of multiple types simultaneously]: https://eloquent-software.com/phony/latest/#mocking-multiple-types
+[multiple actions can be performed in a single invocation]: https://eloquent-software.com/phony/latest/#answers-that-perform-multiple-actions
+[order verification]: https://eloquent-software.com/phony/latest/#order-verification
+[partial mocks]: https://eloquent-software.com/phony/latest/#partial-mocks
+[proxy mocks for `final` classes]: https://eloquent-software.com/phony/latest/#proxy-mocks
+[replacement of behavior with another callback]: https://eloquent-software.com/phony/latest/#using-a-callable-as-an-answer
+[retrieval of call arguments]: https://eloquent-software.com/phony/latest/#verifying-that-a-spy-was-called-with-specific-arguments
+[returning arguments]: https://eloquent-software.com/phony/latest/#returning-arguments
+[returning of generators with customizable behavior]: https://eloquent-software.com/phony/latest/#stubbing-generators
+[returning self]: https://eloquent-software.com/phony/latest/#returning-the-self-value
+[returning values]: https://eloquent-software.com/phony/latest/#returning-values
+[spying on callables]: https://eloquent-software.com/phony/latest/#spying-on-an-existing-callable
+[spying]: https://eloquent-software.com/phony/latest/#spies
+[static method mocking]: https://eloquent-software.com/phony/latest/#static-mocks
+[stubbing callables]: https://eloquent-software.com/phony/latest/#stubbing-an-existing-callable
+[stubbing]: https://eloquent-software.com/phony/latest/#stubs
+[throwing of exceptions]: https://eloquent-software.com/phony/latest/#throwing-exceptions
+[verification of other iterables]: https://eloquent-software.com/phony/latest/#generator-and-iterable-verification
+[verifying arguments]: https://eloquent-software.com/phony/latest/#verifying-that-a-spy-was-called-with-specific-arguments
+[verifying calls]: https://eloquent-software.com/phony/latest/#verifying-that-a-call-was-made
+[verifying generators]: https://eloquent-software.com/phony/latest/#generator-and-iterable-verification
+[verifying return values]: https://eloquent-software.com/phony/latest/#verifying-spy-return-values
+[verifying thrown exceptions]: https://eloquent-software.com/phony/latest/#verifying-spy-exceptions
 
 ## Help
 
@@ -434,7 +434,7 @@ Thanks for listening.
 
 [did not agree]: https://github.com/phpspec/prophecy/issues/130
 [expect-run-verify]: https://web.archive.org/web/20180824034235/http://monkeyisland.pl/2008/02/01/deathwish/
-[mockery]: http://docs.mockery.io/
+[mockery]: https://docs.mockery.io/
 [pr]: https://github.com/mlively/Phake/pull/133
 
 ## Thanks
@@ -470,20 +470,20 @@ For the full copyright and license information, please view the [LICENSE file].
 
 <!-- References -->
 
-[documentation]: http://eloquent-software.com/phony/latest/
+[documentation]: https://eloquent-software.com/phony/latest/
 [eloquent/phony-kahlan]: https://packagist.org/packages/eloquent/phony-kahlan
 [eloquent/phony-peridot]: https://packagist.org/packages/eloquent/phony-peridot
 [eloquent/phony-phpunit]: https://packagist.org/packages/eloquent/phony-phpunit
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
 [github issue]: https://github.com/eloquent/phony/issues
-[hhvm]: http://hhvm.com/
+[hhvm]: https://hhvm.com/
 [kahlan]: https://kahlan.github.io/docs/
-[mockito]: http://mockito.org/
-[peridot]: http://peridot-php.github.io/
-[phake]: http://phake.readthedocs.org/
-[phpspec]: http://phpspec.readthedocs.org/
+[mockito]: https://site.mockito.org/
+[peridot]: https://peridot-php.github.io/
+[phake]: https://phake.readthedocs.org/
+[phpspec]: https://phpspec.net/
 [phpunit]: https://phpunit.de/
 [prophecy]: https://github.com/phpspec/prophecy
 [simpletest]: https://github.com/simpletest/simpletest
-[sinon.js]: http://sinonjs.org/
-[traits]: http://php.net/traits
+[sinon.js]: https://sinonjs.org/
+[traits]: https://php.net/traits

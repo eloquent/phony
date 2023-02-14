@@ -799,7 +799,7 @@ Thanks for reading!
 [`called()`]: .#spy.called
 [`calledwith()`]: .#spy.calledWith
 [`expect()`]: https://kahlan.github.io/docs/dsl#expectations
-[`gethostbyname()`]: http://php.net/gethostbyname
+[`gethostbyname()`]: https://php.net/gethostbyname
 [`mock()`]: .#facade.mock
 [`never()`]: .#spy.never
 [`on()`]: .#facade.on
@@ -818,7 +818,7 @@ Thanks for reading!
 [phony documentation]: .
 [phony for kahlan]: https://github.com/eloquent/phony-kahlan
 [phony]: .
-[psr-16]: http://php-fig.org/psr/psr-16/
+[psr-16]: https://php-fig.org/psr/psr-16/
 [psr/simple-cache]: https://packagist.org/packages/psr/simple-cache
 [spies]: .#spies
 [stub]: .#stubs

@@ -48,16 +48,16 @@ undocumented default value of `null` for its only argument. This function now
 requires an explicit `null` value if you wish to set color usage based upon the
 current environment.
 
-[`setusecolor()`]: http://eloquent-software.com/phony/3.0/#facade.setUseColor
-[nullable types]: http://php.net/manual/migration71.new-features.php#migration71.new-features.nullable-types
-[void functions]: http://php.net/manual/migration71.new-features.php#migration71.new-features.void-functions
+[`setusecolor()`]: https://eloquent-software.com/phony/3.0/#facade.setUseColor
+[nullable types]: https://php.net/manual/migration71.new-features.php#migration71.new-features.nullable-types
+[void functions]: https://php.net/manual/migration71.new-features.php#migration71.new-features.void-functions
 
 ### Utilization of relaxed keywords
 
 The `handle->clazz()` method was renamed to [`handle->class()`], since PHP 7 now
 allows `class` as a method name.
 
-[`handle->class()`]: http://eloquent-software.com/phony/3.0/#handle.class
+[`handle->class()`]: https://eloquent-software.com/phony/3.0/#handle.class
 
 ## Migrating from `1.x` to `2.x`
 
@@ -84,7 +84,7 @@ Where possible, the entire _Phony_ `2.x` API has introduced scalar type hints.
 If your tests use [strict typing], and you are passing an incorrect type to
 _Phony_, an error will now be thrown.
 
-[strict typing]: http://php.net/functions.arguments#functions.arguments.type-declaration.strict
+[strict typing]: https://php.net/functions.arguments#functions.arguments.type-declaration.strict
 
 In addition; some values that were previously represented as a scalar value OR
 `null`, have been changed to use a scalar value only:
@@ -103,17 +103,17 @@ In addition; some values that were previously represented as a scalar value OR
   - [`wildcard()`]
   - [`$wildcard->maximumArguments()`]
 
-[mock labels]: http://eloquent-software.com/phony/2.0/#labeling-mocks
-[spy labels]: http://eloquent-software.com/phony/2.0/#labeling-spies
-[`$handle->setlabel()`]: http://eloquent-software.com/phony/2.0/#handle.setLabel
-[`$handle->label()`]: http://eloquent-software.com/phony/2.0/#handle.label
-[`$spy->setlabel()`]: http://eloquent-software.com/phony/2.0/#spy.setLabel
-[`$spy->label()`]: http://eloquent-software.com/phony/2.0/#spy.label
-[`$spy->between()`]: http://eloquent-software.com/phony/2.0/#spy.between
-[`$call->between()`]: http://eloquent-software.com/phony/2.0/#call.between
-[`$verification->between()`]: http://eloquent-software.com/phony/2.0/#verification.between
-[`wildcard()`]: http://eloquent-software.com/phony/2.0/#facade.wildcard
-[`$wildcard->maximumarguments()`]: http://eloquent-software.com/phony/2.0/#wildcard.maximumArguments
+[mock labels]: https://eloquent-software.com/phony/2.0/#labeling-mocks
+[spy labels]: https://eloquent-software.com/phony/2.0/#labeling-spies
+[`$handle->setlabel()`]: https://eloquent-software.com/phony/2.0/#handle.setLabel
+[`$handle->label()`]: https://eloquent-software.com/phony/2.0/#handle.label
+[`$spy->setlabel()`]: https://eloquent-software.com/phony/2.0/#spy.setLabel
+[`$spy->label()`]: https://eloquent-software.com/phony/2.0/#spy.label
+[`$spy->between()`]: https://eloquent-software.com/phony/2.0/#spy.between
+[`$call->between()`]: https://eloquent-software.com/phony/2.0/#call.between
+[`$verification->between()`]: https://eloquent-software.com/phony/2.0/#verification.between
+[`wildcard()`]: https://eloquent-software.com/phony/2.0/#facade.wildcard
+[`$wildcard->maximumarguments()`]: https://eloquent-software.com/phony/2.0/#wildcard.maximumArguments
 
 ### Dynamic order verification functions removed
 
@@ -125,10 +125,10 @@ been made redundant:
 - [`anyOrderSequence()`]
 - [`checkAnyOrderSequence()`]
 
-[`inordersequence()`]: http://eloquent-software.com/phony/1.0/#facade.inOrderSequence
-[`checkinordersequence()`]: http://eloquent-software.com/phony/1.0/#facade.checkInOrderSequence
-[`anyordersequence()`]: http://eloquent-software.com/phony/1.0/#facade.anyOrderSequence
-[`checkanyordersequence()`]: http://eloquent-software.com/phony/1.0/#facade.checkAnyOrderSequence
+[`inordersequence()`]: https://eloquent-software.com/phony/1.0/#facade.inOrderSequence
+[`checkinordersequence()`]: https://eloquent-software.com/phony/1.0/#facade.checkInOrderSequence
+[`anyordersequence()`]: https://eloquent-software.com/phony/1.0/#facade.anyOrderSequence
+[`checkanyordersequence()`]: https://eloquent-software.com/phony/1.0/#facade.checkAnyOrderSequence
 
 In order to perform dynamic order verification under _Phony_ `2.x`, simply use
 the `...` operator:
@@ -181,5 +181,5 @@ echo $factorial(5); // outputs '120'
 Stubs associated with a mock are not affected, and will continue to have their
 "self" value default to the mock instance.
 
-["self" value]: http://eloquent-software.com/phony/2.0/#stub-self-values
-[magic "self" values]: http://eloquent-software.com/phony/2.0/#magic-self-values
+["self" value]: https://eloquent-software.com/phony/2.0/#stub-self-values
+[magic "self" values]: https://eloquent-software.com/phony/2.0/#magic-self-values

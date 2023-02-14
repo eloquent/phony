@@ -35,7 +35,7 @@ namespace Eloquent\Phony\Difference;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @link http://github.com/chrisboulton/php-diff
+ * @link https://github.com/chrisboulton/php-diff
  *
  * @codeCoverageIgnore
  */

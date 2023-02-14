@@ -110,7 +110,7 @@ See the [migration guide][migration-3] for detailed upgrade information.
 
 - **[IMPROVED]** Added the [Phony and Kahlan by example] guide.
 
-[phony and kahlan by example]: http://eloquent-software.com/phony/2.0/kahlan-by-example
+[phony and kahlan by example]: https://eloquent-software.com/phony/2.0/kahlan-by-example
 
 ## 2.0.0 (2017-09-29)
 

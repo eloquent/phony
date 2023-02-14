@@ -8414,44 +8414,44 @@ For the full copyright and license information, please view the [LICENSE file].
 <!-- External references -->
 
 [@ezzatron]: https://github.com/ezzatron
-[`__invoke()`]: http://php.net/language.oop5.magic#object.invoke
-[`rewind()`]: http://php.net/iterator.rewind
+[`__invoke()`]: https://php.net/language.oop5.magic#object.invoke
+[`rewind()`]: https://php.net/iterator.rewind
 [ansi colored output]: https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
-[arrayaccess]: http://php.net/arrayaccess
+[arrayaccess]: https://php.net/arrayaccess
 [code smell]: https://en.wikipedia.org/wiki/Code_smell
-[composer]: http://getcomposer.org/
-[countable]: http://php.net/countable
+[composer]: https://getcomposer.org/
+[countable]: https://php.net/countable
 [eloquent/phony-kahlan]: https://packagist.org/packages/eloquent/phony-kahlan
 [eloquent/phony-peridot]: https://packagist.org/packages/eloquent/phony-peridot
 [eloquent/phony-phpunit]: https://packagist.org/packages/eloquent/phony-phpunit
 [eloquent/phony]: https://packagist.org/packages/eloquent/phony
-[enumerations]: http://php.net/enumerations
-[error]: http://php.net/class.error
-[exception]: http://php.net/class.exception
-[fluent interfaces]: http://en.wikipedia.org/wiki/Fluent_interface
-[generator]: http://php.net/language.generators.overview
-[generators]: http://php.net/language.generators.overview
+[enumerations]: https://php.net/enumerations
+[error]: https://php.net/class.error
+[exception]: https://php.net/class.exception
+[fluent interfaces]: https://en.wikipedia.org/wiki/Fluent_interface
+[generator]: https://php.net/language.generators.overview
+[generators]: https://php.net/language.generators.overview
 [github issue]: https://github.com/eloquent/phony/issues
-[global function fallback]: http://php.net/language.namespaces.fallback
+[global function fallback]: https://php.net/language.namespaces.fallback
 [hamcrest]: https://github.com/hamcrest/hamcrest-php
 [isolator]: https://github.com/icecave/isolator
 [kahlan argument matchers]: https://kahlan.github.io/docs/matchers.html#argument
 [kahlan]: https://kahlan.github.io/docs/
 [liberator]: https://github.com/eloquent/liberator
 [license file]: https://github.com/eloquent/phony/blob/HEAD/LICENSE
-[peridot]: http://peridot-php.github.io/
+[peridot]: https://peridot-php.github.io/
 [phony and kahlan by example]: kahlan-by-example
 [phony-examples]: https://github.com/eloquent/phony-examples
 [phpunit matchers]: https://phpunit.de/manual/current/en/appendixes.assertions.html#appendixes.assertions.assertThat
 [phpunit]: https://phpunit.de/
-[reflection]: http://php.net/reflection
-[reflectionclass]: http://php.net/reflectionclass
-[reflectiontype]: http://php.net/reflectiontype
-[return type]: http://php.net/functions.returning-values#functions.returning-values.type-declaration
-[throwable]: http://php.net/class.throwable
-[traversable]: http://php.net/traversable
+[reflection]: https://php.net/reflection
+[reflectionclass]: https://php.net/reflectionclass
+[reflectiontype]: https://php.net/reflectiontype
+[return type]: https://php.net/functions.returning-values#functions.returning-values.type-declaration
+[throwable]: https://php.net/class.throwable
+[traversable]: https://php.net/traversable
 [twitter]: https://twitter.com/ezzatron
-[use function]: http://php.net/language.namespaces.importing
-[visibility]: http://php.net/language.oop5.visibility
+[use function]: https://php.net/language.namespaces.importing
+[visibility]: https://php.net/language.oop5.visibility
 [wiki-mocking-problematic-classes]: https://github.com/eloquent/phony/wiki/Mocking-problematic-classes
-[yield]: http://php.net/language.generators.syntax#control-structures.yield
+[yield]: https://php.net/language.generators.syntax#control-structures.yield
