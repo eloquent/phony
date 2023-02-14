@@ -25,6 +25,9 @@ use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use function Eloquent\Phony\stubGlobal;
 use Eloquent\Phony\Test;
 use Eloquent\Phony\Test\AbstractTestClassWithFinalReturnType;
+use Eloquent\Phony\Test\Enum\TestBackedEnum;
+use Eloquent\Phony\Test\Enum\TestBasicEnum;
+use Eloquent\Phony\Test\Enum\TestInterfaceUsingEnums;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestClassC;
@@ -1732,5 +1735,43 @@ class FunctionalTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('You done goofed');
         strval($mock);
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testCanMockEnumReturnType()
+    {
+        $handle = mock(TestInterfaceUsingEnums::class);
+        $staticHandle = onStatic($handle);
+        $mock = $handle->get();
+        $class = $staticHandle->className();
+
+        $this->assertSame(TestBasicEnum::A, $mock->methodA());
+        $this->assertSame(TestBasicEnum::A, $mock->methodB(TestBasicEnum::B));
+        $this->assertSame(TestBackedEnum::A, $mock->methodC());
+        $this->assertSame(TestBackedEnum::A, $mock->methodD(TestBackedEnum::B));
+        $this->assertSame(TestBasicEnum::A, $class::staticMethodA());
+        $this->assertSame(TestBasicEnum::A, $class::staticMethodB(TestBasicEnum::B));
+        $this->assertSame(TestBackedEnum::A, $class::staticMethodC());
+        $this->assertSame(TestBackedEnum::A, $class::staticMethodD(TestBackedEnum::B));
+
+        $handle->methodA->returns(TestBasicEnum::B);
+        $handle->methodB->returns(TestBasicEnum::B);
+        $handle->methodC->returns(TestBackedEnum::C);
+        $handle->methodD->returns(TestBackedEnum::C);
+        $staticHandle->staticMethodA->returns(TestBasicEnum::B);
+        $staticHandle->staticMethodB->returns(TestBasicEnum::B);
+        $staticHandle->staticMethodC->returns(TestBackedEnum::C);
+        $staticHandle->staticMethodD->returns(TestBackedEnum::C);
+
+        $this->assertSame(TestBasicEnum::B, $mock->methodA());
+        $this->assertSame(TestBasicEnum::B, $mock->methodB(TestBasicEnum::A));
+        $this->assertSame(TestBackedEnum::C, $mock->methodC());
+        $this->assertSame(TestBackedEnum::C, $mock->methodD(TestBackedEnum::A));
+        $this->assertSame(TestBasicEnum::B, $class::staticMethodA());
+        $this->assertSame(TestBasicEnum::B, $class::staticMethodB(TestBasicEnum::A));
+        $this->assertSame(TestBackedEnum::C, $class::staticMethodC());
+        $this->assertSame(TestBackedEnum::C, $class::staticMethodD(TestBackedEnum::A));
     }
 }
