@@ -5,9 +5,12 @@
 - **[BC BREAK]** PHP 7.3 is no longer supported.
 - **[BC BREAK]** PHP 7.4 is no longer supported.
 - **[NEW]** Added support for PHP 8.1 ([#255], [#256] - thanks [@keksa]).
-- **[NEW]** Added support for PHP 8.2 ([#257], [#258] - thanks [@danepowell]).
 - **[NEW]** Added support for PHP 8.1 `never` return types.
 - **[NEW]** Added support for PHP 8.1 enumerations ([#261]).
+- **[NEW]** Added support for PHP 8.2 ([#257], [#258] - thanks [@danepowell]).
+- **[NEW]** Added support for PHP 8.2 `true` types ([#262]).
+- **[NEW]** Added support for PHP 8.2 `false` standalone types ([#262]).
+- **[NEW]** Added support for PHP 8.2 `null` standalone types ([#262]).
 - **[IMPROVED]** The exporter now uses a single sequence of numbers to identify
   arrays, objects, and wrappers. Previously a separate sequence of numbers was
   used for arrays, due to a limitation of older PHP versions. This means
@@ -24,6 +27,7 @@
 [#257]: https://github.com/eloquent/phony/issues/257
 [#258]: https://github.com/eloquent/phony/pull/258
 [#261]: https://github.com/eloquent/phony/issues/261
+[#262]: https://github.com/eloquent/phony/issues/262
 
 ## 5.0.2 (2021-02-17)
 
