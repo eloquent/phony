@@ -89,6 +89,9 @@ class EmptyValueFactory
         }
 
         switch (strtolower($typeName)) {
+            case 'void':
+                return null;
+
             case 'bool':
             case 'false':
                 return false;
@@ -120,9 +123,6 @@ class EmptyValueFactory
                 $fn = function () { yield from []; };
 
                 return $fn();
-
-            case 'void':
-                return null;
         }
 
         if ($this->isEnumSupported && enum_exists($typeName)) {
