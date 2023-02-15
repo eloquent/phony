@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Assertion;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Event\EventSequence;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[AllowDynamicProperties]
 class ExceptionAssertionRecorderTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->subject = new ExceptionAssertionRecorder();

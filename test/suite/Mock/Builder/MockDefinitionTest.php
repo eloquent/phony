@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Builder;
 
+use AllowDynamicProperties;
 use Countable;
 use Eloquent\Phony\Mock\Builder\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\MethodDefinitionCollection;
@@ -17,19 +18,15 @@ use Eloquent\Phony\Test\TestInterfaceG;
 use Eloquent\Phony\Test\TestTraitA;
 use Eloquent\Phony\Test\TestTraitB;
 use Eloquent\Phony\Test\TestTraitI;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Iterator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 
+#[AllowDynamicProperties]
 class MockDefinitionTest extends TestCase
 {
-    use WithDynamicProperties;
-
-    private array $types;
-
     protected function setUp(): void
     {
         $this->typeNames = [

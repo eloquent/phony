@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Call\Event;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Test\TestCallFactory;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
+#[AllowDynamicProperties]
 class ReceivedExceptionEventTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->sequenceNumber = 111;

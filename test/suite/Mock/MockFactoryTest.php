@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Exception\MockGenerationFailedException;
@@ -13,14 +14,12 @@ use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestClassI;
 use Eloquent\Phony\Test\TestMockGenerator;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[AllowDynamicProperties]
 class MockFactoryTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->labelSequencer = new Sequencer();

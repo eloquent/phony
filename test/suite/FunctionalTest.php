@@ -57,13 +57,11 @@ use Eloquent\Phony\Test\TestTraitE;
 use Eloquent\Phony\Test\TestTraitF;
 use Eloquent\Phony\Test\TestTraitH;
 use Eloquent\Phony\Test\TestTraitJ;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 
+#[AllowDynamicProperties]
 class FunctionalTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->exporter = InlineExporter::instance();

@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Method;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Test\TestClassA;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use RuntimeException;
 
+#[AllowDynamicProperties]
 class WrappedUncallableMethodTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->method = new ReflectionMethod(TestClassA::class . '::testClassAMethodA');

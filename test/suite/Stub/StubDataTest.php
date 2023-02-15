@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -19,29 +20,13 @@ use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestFinalClass;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+#[AllowDynamicProperties]
 class StubDataTest extends TestCase
 {
-    use WithDynamicProperties;
-
-    private array $callsA;
-    private array $callsB;
-    private array $callsC;
-    private array $callsD;
-    private array $callsE;
-    private array $callsF;
-
-    private int $callCountA;
-    private int $callCountB;
-    private int $callCountC;
-    private int $callCountD;
-    private int $callCountE;
-    private int $callCountF;
-
     protected function setUp(): void
     {
         $this->callback = 'implode';

@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Hook;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[AllowDynamicProperties]
 class FunctionHookGeneratorTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->subject = new FunctionHookGenerator();

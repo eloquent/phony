@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Exporter;
 
+use AllowDynamicProperties;
 use ClassWithProperty;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
@@ -22,16 +23,14 @@ use Eloquent\Phony\Test\TestClassE;
 use Eloquent\Phony\Test\TestException;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestTraitA;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use TestClass;
 use WeakReference;
 
+#[AllowDynamicProperties]
 class InlineExporterTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->depth = -1;

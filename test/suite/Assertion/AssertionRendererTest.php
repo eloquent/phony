@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Assertion;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Exporter\InlineExporter;
@@ -17,17 +18,15 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\GeneratorSpyMap;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\Cardinality;
 use IteratorAggregate;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 
+#[AllowDynamicProperties]
 class AssertionRendererTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->invocableInspector = new InvocableInspector();

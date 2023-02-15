@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Matcher;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
@@ -12,14 +13,12 @@ use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\Properties\TestDerivedClassB;
 use Eloquent\Phony\Test\Properties\TestDerivedClassWithTraitA;
 use Eloquent\Phony\Test\Properties\TestDerivedClassWithTraitB;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
+#[AllowDynamicProperties]
 class EqualToMatcherTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp($value = '<string>'): void
     {
         $this->value = 'x';

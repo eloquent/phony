@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub;
 
+use AllowDynamicProperties;
 use AppendIterator;
 use ArithmeticError;
 use ArrayAccess;
@@ -27,7 +28,6 @@ use Eloquent\Phony\Test\Enum\TestZeroCaseEnum;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassC;
 use Eloquent\Phony\Test\TestInterfaceWithReturnType;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use EmptyIterator;
 use Error;
 use ErrorException;
@@ -87,10 +87,9 @@ use TypeError;
 use UnderflowException;
 use UnexpectedValueException;
 
+#[AllowDynamicProperties]
 class EmptyValueFactoryTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->subject = new EmptyValueFactory(FeatureDetector::instance());

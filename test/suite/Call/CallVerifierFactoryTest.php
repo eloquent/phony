@@ -4,21 +4,20 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Call;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Test\TestCallFactory;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[AllowDynamicProperties]
 class CallVerifierFactoryTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->matcherFactory = MatcherFactory::instance();

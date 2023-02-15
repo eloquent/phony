@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Hamcrest;
 
-use Eloquent\Phony\Test\WithDynamicProperties;
+use AllowDynamicProperties;
 use Hamcrest\Matcher;
 use Hamcrest\Util;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[AllowDynamicProperties]
 class HamcrestMatcherDriverTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         Util::registerGlobalFunctions();

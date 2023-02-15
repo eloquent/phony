@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Hook;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Hook\Exception\FunctionExistsException;
 use Eloquent\Phony\Hook\Exception\FunctionHookGenerationFailedException;
 use Eloquent\Phony\Hook\Exception\FunctionSignatureMismatchException;
@@ -11,14 +12,12 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Test\FunctionHookManager as TestNamespace;
 use Eloquent\Phony\Test\TestFunctionHookGenerator;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[AllowDynamicProperties]
 class FunctionHookManagerTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->invocableInspector = InvocableInspector::instance();

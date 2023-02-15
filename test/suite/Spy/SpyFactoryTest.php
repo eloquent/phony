@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Spy;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[AllowDynamicProperties]
 class SpyFactoryTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->labelSequencer = new Sequencer();

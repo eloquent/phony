@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Hook\Exception;
 
-use Eloquent\Phony\Test\WithDynamicProperties;
+use AllowDynamicProperties;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
+#[AllowDynamicProperties]
 class FunctionHookGenerationFailedExceptionTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->functionName = 'functionName';

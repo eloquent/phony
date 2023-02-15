@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Spy;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
@@ -26,7 +27,6 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\Cardinality;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
@@ -36,10 +36,9 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+#[AllowDynamicProperties]
 class SpyVerifierTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->callback = 'implode';

@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Call;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Test\TestCallEventFactory;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Error;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 
+#[AllowDynamicProperties]
 class CallFactoryTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->eventFactory = new TestCallEventFactory();

@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Exception;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
+#[AllowDynamicProperties]
 class MockGenerationFailedExceptionTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->definition = new MockDefinition(

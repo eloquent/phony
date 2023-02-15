@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Exception\UndefinedAnswerException;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 
+#[AllowDynamicProperties]
 class StubRuleTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->matcherFactory = MatcherFactory::instance();

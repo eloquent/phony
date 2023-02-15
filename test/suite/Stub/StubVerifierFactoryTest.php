@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
@@ -21,17 +22,15 @@ use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Test\StubVerifierFactory as TestNamespace;
 use Eloquent\Phony\Test\TestCallFactory;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[AllowDynamicProperties]
 class StubVerifierFactoryTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();

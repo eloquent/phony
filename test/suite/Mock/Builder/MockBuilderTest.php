@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Builder;
 
+use AllowDynamicProperties;
 use ArrayIterator;
 use ArrayObject;
 use Countable;
@@ -33,7 +34,6 @@ use Eloquent\Phony\Test\TestInterfaceF;
 use Eloquent\Phony\Test\TestInterfaceH;
 use Eloquent\Phony\Test\TestTraitA;
 use Eloquent\Phony\Test\TestTraitB;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Error;
 use Exception;
 use Iterator;
@@ -47,10 +47,9 @@ use Serializable;
 use Throwable;
 use Traversable;
 
+#[AllowDynamicProperties]
 class MockBuilderTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->invocableInspector = new InvocableInspector();

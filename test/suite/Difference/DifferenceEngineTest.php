@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Difference;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[AllowDynamicProperties]
 class DifferenceEngineTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->featureDetector = FeatureDetector::instance();

@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Verification;
 
-use Eloquent\Phony\Test\WithDynamicProperties;
+use AllowDynamicProperties;
 use Eloquent\Phony\Verification\Exception\InvalidCardinalityStateException;
 use Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException;
 use PHPUnit\Framework\TestCase;
 
+#[AllowDynamicProperties]
 class CardinalityTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->minimum = 111;

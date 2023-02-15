@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Spy;
 
+use AllowDynamicProperties;
 use ArrayIterator;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestIteratorAggregate;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Traversable;
 
+#[AllowDynamicProperties]
 class IterableSpyFactoryTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();

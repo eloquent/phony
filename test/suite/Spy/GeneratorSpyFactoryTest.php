@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Spy;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RuntimeException;
 
+#[AllowDynamicProperties]
 class GeneratorSpyFactoryTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();

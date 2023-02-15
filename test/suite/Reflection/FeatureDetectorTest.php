@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Reflection;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Reflection\Exception\UndefinedFeatureException;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[AllowDynamicProperties]
 class FeatureDetectorTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->features = [

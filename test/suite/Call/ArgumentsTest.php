@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Call;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 
+#[AllowDynamicProperties]
 class ArgumentsTest extends TestCase
 {
-    use WithDynamicProperties;
-
-    private string|null $a;
-    private string|null $b;
-
     protected function setUp(): void
     {
         $this->a = 'a';

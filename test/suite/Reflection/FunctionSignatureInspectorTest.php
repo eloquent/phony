@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Reflection;
 
-use Eloquent\Phony\Test\WithDynamicProperties;
+use AllowDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 
+#[AllowDynamicProperties]
 class FunctionSignatureInspectorTest extends TestCase
 {
-    use WithDynamicProperties;
-
     const CONSTANT_A = 'a';
 
     protected function setUp(): void

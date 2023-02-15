@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Call;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestCallFactory;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
+#[AllowDynamicProperties]
 class CallDataWithGeneratorsTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->index = 111;

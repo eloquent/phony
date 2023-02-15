@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock;
 
+use AllowDynamicProperties;
 use Countable;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
@@ -12,16 +13,14 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestTraitA;
 use Eloquent\Phony\Test\TestTraitB;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Iterator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use stdClass;
 
+#[AllowDynamicProperties]
 class MockGeneratorTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->labelSequencer = new Sequencer();

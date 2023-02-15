@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Handle;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
@@ -37,16 +38,14 @@ use Eloquent\Phony\Test\TestClassH;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestTraitA;
 use Eloquent\Phony\Test\TestTraitG;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
+#[AllowDynamicProperties]
 class StaticHandleTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->state = (object) [

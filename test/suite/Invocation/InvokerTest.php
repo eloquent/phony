@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Invocation;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Test\TestInvocable;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[AllowDynamicProperties]
 class InvokerTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->subject = new Invoker();

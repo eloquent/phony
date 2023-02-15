@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Call;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
@@ -21,7 +22,6 @@ use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Spy\GeneratorSpyMap;
 use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Test\TestClassA;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\Cardinality;
 use Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
@@ -32,10 +32,9 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+#[AllowDynamicProperties]
 class CallVerifierTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->callFactory = new TestCallFactory();

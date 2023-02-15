@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Mock\Handle;
 
+use AllowDynamicProperties;
 use Countable;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
@@ -17,16 +18,14 @@ use Eloquent\Phony\Stub\StubData;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
 use Eloquent\Phony\Test\TestClassB;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionProperty;
 use stdClass;
 
+#[AllowDynamicProperties]
 class HandleFactoryTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->stubFactory = StubFactory::instance();

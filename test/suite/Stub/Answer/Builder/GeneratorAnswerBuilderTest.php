@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub\Answer\Builder;
 
+use AllowDynamicProperties;
 use ArrayIterator;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
@@ -12,29 +13,13 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Test\TupleIterator;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+#[AllowDynamicProperties]
 class GeneratorAnswerBuilderTest extends TestCase
 {
-    use WithDynamicProperties;
-
-    private array $callsA;
-    private array $callsB;
-    private array $callsC;
-    private array $callsD;
-    private array $callsE;
-    private array $callsF;
-
-    private int $callCountA;
-    private int $callCountB;
-    private int $callCountC;
-    private int $callCountD;
-    private int $callCountE;
-    private int $callCountF;
-
     protected function setUp(): void
     {
         $this->self = (object) [];

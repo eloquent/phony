@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Spy;
 
+use AllowDynamicProperties;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallFactory;
@@ -14,17 +15,15 @@ use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\SpyVerifierFactory as TestNamespace;
-use Eloquent\Phony\Test\WithDynamicProperties;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[AllowDynamicProperties]
 class SpyVerifierFactoryTest extends TestCase
 {
-    use WithDynamicProperties;
-
     protected function setUp(): void
     {
         $this->spyFactory = new SpyFactory(
