@@ -89,7 +89,6 @@ class FunctionSignatureInspectorTest extends TestCase
     }
 
     /**
-     * @requires PHP >= 8
      * @requires PHP < 8.1
      */
     public function testSignatureWithUnavailableDefaultValuePhp80()
@@ -190,9 +189,6 @@ class FunctionSignatureInspectorTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @requires PHP >= 8
-     */
     public function testSignatureWithStaticTypeHint()
     {
         eval('class TestClassWithStaticReturnType { public function methodA(): static {}}');
@@ -249,9 +245,6 @@ class FunctionSignatureInspectorTest extends TestCase
         $this->assertEquals('\Traversable|array', $actual);
     }
 
-    /**
-     * @requires PHP >= 8
-     */
     public function testSignatureWithMixedReturnType()
     {
         list(, $actual) = $this->subject->signature(new ReflectionFunction(function (): mixed {}));
@@ -269,9 +262,6 @@ class FunctionSignatureInspectorTest extends TestCase
         $this->assertEquals('never', $actual);
     }
 
-    /**
-     * @requires PHP >= 8
-     */
     public function testSignatureWithUnionType()
     {
         $actual = 'callable|object|array|string|int|float|false|null';

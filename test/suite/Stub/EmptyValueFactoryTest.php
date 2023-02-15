@@ -148,8 +148,6 @@ class EmptyValueFactoryTest extends TestCase
     }
 
     /**
-     * @requires PHP >= 8
-     *
      * @dataProvider fromTypeWithUnionTypeData
      */
     public function testFromTypeWithUnionType($type, $expected)
@@ -157,9 +155,6 @@ class EmptyValueFactoryTest extends TestCase
         $this->assertSame($expected, $this->subject->fromType($this->createType($type)));
     }
 
-    /**
-     * @requires PHP >= 8
-     */
     public function testFromTypeWithComplexUnionType()
     {
         $callableOrClosure = $this->subject->fromType($this->createType('callable|closure'));
