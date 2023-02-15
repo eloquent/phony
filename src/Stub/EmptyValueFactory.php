@@ -105,6 +105,9 @@ class EmptyValueFactory
             case 'string':
                 return '';
 
+            case 'true':
+                return true;
+
             case 'array':
             case 'iterable':
                 return [];

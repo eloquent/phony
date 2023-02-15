@@ -123,6 +123,14 @@ class EmptyValueFactoryTest extends TestCase
         $this->assertSame($expected, $this->subject->fromType($this->createType($type)));
     }
 
+    /**
+     * @requires PHP >= 8.2
+     */
+    public function testFromTypeWithTrue()
+    {
+        $this->assertTrue($this->subject->fromType($this->createType('true')));
+    }
+
     public function fromTypeWithUnionTypeData()
     {
         $types = [
