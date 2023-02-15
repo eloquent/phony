@@ -162,6 +162,7 @@ class FunctionSignatureInspector
                     case 'object':
                     case 'static':
                     case 'string':
+                    case 'true':
                     case 'void':
                         $returnType .= $subType;
 
@@ -249,6 +250,7 @@ class FunctionSignatureInspector
                         case 'null':
                         case 'object':
                         case 'string':
+                        case 'true':
                             $type .= $subType;
 
                             break;

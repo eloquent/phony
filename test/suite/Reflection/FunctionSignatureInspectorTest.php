@@ -262,6 +262,16 @@ class FunctionSignatureInspectorTest extends TestCase
         $this->assertEquals('never', $actual);
     }
 
+    /**
+     * @requires PHP >= 8.2
+     */
+    public function testSignatureWithTrueReturnType()
+    {
+        $actual = $this->subject->signature(new ReflectionFunction(eval('return function (true $a): true {};')));
+
+        $this->assertEquals([['a' => ['true ', '', '', '']], 'true'], $actual);
+    }
+
     public function testSignatureWithUnionType()
     {
         $actual = 'callable|object|array|string|int|float|false|null';
