@@ -28,6 +28,7 @@ use Eloquent\Phony\Test\AbstractTestClassWithFinalReturnType;
 use Eloquent\Phony\Test\Enum\TestBackedEnum;
 use Eloquent\Phony\Test\Enum\TestBasicEnum;
 use Eloquent\Phony\Test\Enum\TestInterfaceUsingEnums;
+use Eloquent\Phony\Test\Php82\TestInterfaceWithPhp82StandaloneTypes;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestClassC;
@@ -1771,5 +1772,37 @@ class FunctionalTest extends TestCase
         $this->assertSame(TestBasicEnum::B, $class::staticMethodB(TestBasicEnum::A));
         $this->assertSame(TestBackedEnum::C, $class::staticMethodC());
         $this->assertSame(TestBackedEnum::C, $class::staticMethodD(TestBackedEnum::A));
+    }
+
+    /**
+     * @requires PHP >= 8.2
+     */
+    public function testCanMockPhp82StandaloneTypes()
+    {
+        $handle = mock(TestInterfaceWithPhp82StandaloneTypes::class);
+        $staticHandle = onStatic($handle);
+        $mock = $handle->get();
+        $class = $staticHandle->className();
+
+        $this->assertTrue($mock->methodA(true));
+        $this->assertFalse($mock->methodB(false));
+        $this->assertNull($mock->methodC(null));
+        $this->assertTrue($class::staticMethodA(true));
+        $this->assertFalse($class::staticMethodB(false));
+        $this->assertNull($class::staticMethodC(null));
+
+        $handle->methodA->returns(true);
+        $handle->methodB->returns(false);
+        $handle->methodC->returns(null);
+        $staticHandle->staticMethodA->returns(true);
+        $staticHandle->staticMethodB->returns(false);
+        $staticHandle->staticMethodC->returns(null);
+
+        $this->assertTrue($mock->methodA(true));
+        $this->assertFalse($mock->methodB(false));
+        $this->assertNull($mock->methodC(null));
+        $this->assertTrue($class::staticMethodA(true));
+        $this->assertFalse($class::staticMethodB(false));
+        $this->assertNull($class::staticMethodC(null));
     }
 }

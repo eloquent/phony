@@ -14,6 +14,7 @@ $exclusions = [
 
 if (version_compare(PHP_VERSION, '8.1.x', '<')) {
     $exclusions[] = 'test/src/Test/Enum';
+    $exclusions[] = 'test/src/Test/Php82';
 }
 
 $config->getFinder()->exclude($exclusions);
