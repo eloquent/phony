@@ -35,6 +35,7 @@ use Eloquent\Phony\Test\TestClassC;
 use Eloquent\Phony\Test\TestClassD;
 use Eloquent\Phony\Test\TestClassG;
 use Eloquent\Phony\Test\TestClassI;
+use Eloquent\Phony\Test\TestClassWithConstructorProperties;
 use Eloquent\Phony\Test\TestClassWithFinalReturnType;
 use Eloquent\Phony\Test\TestClassWithReadonlyProperties;
 use Eloquent\Phony\Test\TestClassWithSerializeMagicMethods;
@@ -1773,6 +1774,16 @@ class FunctionalTest extends TestCase
         $this->assertSame(TestBasicEnum::B, $class::staticMethodB(TestBasicEnum::A));
         $this->assertSame(TestBackedEnum::C, $class::staticMethodC());
         $this->assertSame(TestBackedEnum::C, $class::staticMethodD(TestBackedEnum::A));
+    }
+
+    public function testCanMockConstructorProperties()
+    {
+        $handle = partialMock(TestClassWithConstructorProperties::class, [111, 222, 333]);
+        $mock = $handle->get();
+
+        $this->assertSame(111, $mock->publicConstructor);
+        $this->assertSame(222, $mock->protectedConstructor);
+        $this->assertSame(333, $mock->privateConstructor);
     }
 
     /**
