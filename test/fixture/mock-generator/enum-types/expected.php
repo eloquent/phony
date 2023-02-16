@@ -2,9 +2,9 @@
 
 class MockGeneratorEnumTypes
 implements \Eloquent\Phony\Mock\Mock,
-           \Eloquent\Phony\Test\Enum\TestInterfaceUsingEnums
+           \Eloquent\Phony\Test\Php81\TestInterfaceUsingEnums
 {
-    public static function staticMethodA() : \Eloquent\Phony\Test\Enum\TestBasicEnum
+    public static function staticMethodA() : \Eloquent\Phony\Test\Php81\TestBasicEnum
     {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -27,8 +27,8 @@ implements \Eloquent\Phony\Mock\Mock,
     }
 
     public static function staticMethodB(
-        \Eloquent\Phony\Test\Enum\TestBasicEnum $a0
-    ) : \Eloquent\Phony\Test\Enum\TestBasicEnum {
+        \Eloquent\Phony\Test\Php81\TestBasicEnum $a0
+    ) : \Eloquent\Phony\Test\Php81\TestBasicEnum {
         $argumentCount = \func_num_args();
         $arguments = [];
 
@@ -53,7 +53,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
     }
 
-    public static function staticMethodC() : \Eloquent\Phony\Test\Enum\TestBackedEnum
+    public static function staticMethodC() : \Eloquent\Phony\Test\Php81\TestBackedEnum
     {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -76,8 +76,8 @@ implements \Eloquent\Phony\Mock\Mock,
     }
 
     public static function staticMethodD(
-        \Eloquent\Phony\Test\Enum\TestBackedEnum $a0
-    ) : \Eloquent\Phony\Test\Enum\TestBackedEnum {
+        \Eloquent\Phony\Test\Php81\TestBackedEnum $a0
+    ) : \Eloquent\Phony\Test\Php81\TestBackedEnum {
         $argumentCount = \func_num_args();
         $arguments = [];
 
@@ -102,7 +102,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
     }
 
-    public function methodA() : \Eloquent\Phony\Test\Enum\TestBasicEnum
+    public function methodA() : \Eloquent\Phony\Test\Php81\TestBasicEnum
     {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -125,8 +125,8 @@ implements \Eloquent\Phony\Mock\Mock,
     }
 
     public function methodB(
-        \Eloquent\Phony\Test\Enum\TestBasicEnum $a0
-    ) : \Eloquent\Phony\Test\Enum\TestBasicEnum {
+        \Eloquent\Phony\Test\Php81\TestBasicEnum $a0
+    ) : \Eloquent\Phony\Test\Php81\TestBasicEnum {
         $argumentCount = \func_num_args();
         $arguments = [];
 
@@ -151,7 +151,7 @@ implements \Eloquent\Phony\Mock\Mock,
         }
     }
 
-    public function methodC() : \Eloquent\Phony\Test\Enum\TestBackedEnum
+    public function methodC() : \Eloquent\Phony\Test\Php81\TestBackedEnum
     {
         $argumentCount = \func_num_args();
         $arguments = [];
@@ -174,8 +174,8 @@ implements \Eloquent\Phony\Mock\Mock,
     }
 
     public function methodD(
-        \Eloquent\Phony\Test\Enum\TestBackedEnum $a0
-    ) : \Eloquent\Phony\Test\Enum\TestBackedEnum {
+        \Eloquent\Phony\Test\Php81\TestBackedEnum $a0
+    ) : \Eloquent\Phony\Test\Php81\TestBackedEnum {
         $argumentCount = \func_num_args();
         $arguments = [];
 

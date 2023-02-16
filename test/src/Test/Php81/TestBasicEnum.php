@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Eloquent\Phony\Test\Enum;
+namespace Eloquent\Phony\Test\Php81;
 
 enum TestBasicEnum
 {
