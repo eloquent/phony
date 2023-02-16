@@ -216,8 +216,8 @@ on particular topics related to _Phony_:
 ## Help
 
 For help with a difficult testing scenario, questions regarding how to use
-_Phony_, or to report issues with _Phony_ itself, please open a [GitHub issue]
-so that others may benefit from the outcome.
+_Phony_, or to report issues with _Phony_ itself, please start a
+[GitHub discussion] so that others may benefit from the outcome.
 
 Alternatively, [@ezzatron] may be contacted directly via [Twitter].
 
@@ -8433,7 +8433,7 @@ For the full copyright and license information, please view the [LICENSE file].
 [fluent interfaces]: https://en.wikipedia.org/wiki/Fluent_interface
 [generator]: https://php.net/language.generators.overview
 [generators]: https://php.net/language.generators.overview
-[github issue]: https://github.com/eloquent/phony/issues
+[github discussion]: https://github.com/eloquent/phony/discussions/new/choose
 [global function fallback]: https://php.net/language.namespaces.fallback
 [hamcrest]: https://github.com/hamcrest/hamcrest-php
 [isolator]: https://github.com/icecave/isolator
