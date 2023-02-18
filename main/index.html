@@ -747,7 +747,7 @@ where it's desirable to:</p>
 
         <span class="pl-s">'readonly string f'</span> =&gt; <span class="pl-c1">null</span>,
         <span class="pl-s">'initalizeF'</span> =&gt; <span class="pl-k">function</span> (<span class="pl-s1"><span class="pl-c1">$</span>phonySelf</span>) {
-            <span class="pl-c">// this scope not the same as the declaration scope</span>
+            <span class="pl-c">// this scope is not the same as the declaration scope</span>
             <span class="pl-c">// therefore reflection must be used to initialize the property</span>
             <span class="pl-s1"><span class="pl-c1">$</span>f</span> = <span class="pl-k">new</span> <span class="pl-v">ReflectionProperty</span>(<span class="pl-s1"><span class="pl-c1">$</span>phonySelf</span>, <span class="pl-s">'f'</span>);
             <span class="pl-s1"><span class="pl-c1">$</span>f</span>-&gt;<span class="pl-en">setValue</span>(<span class="pl-s1"><span class="pl-c1">$</span>phonySelf</span>, <span class="pl-s">'F is for final.'</span>);
