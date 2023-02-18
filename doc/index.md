@@ -587,6 +587,7 @@ where it's desirable to:
 - Define static methods or properties
 - Define class constants
 - Define typed properties
+- Define `readonly` properties
 
 ```php
 $handle = partialMock(
@@ -596,8 +597,17 @@ $handle = partialMock(
             return 'B is for banana.';
         },
         'static c' => 'C is for cat.',
-        'string d' => 'D is for dog.'
+        'string d' => 'D is for dog.',
+
         'function e' => 'implode',
+
+        'readonly string f' => null,
+        'initalizeF' => function ($phonySelf) {
+            // this scope not the same as the declaration scope
+            // therefore reflection must be used to initialize the property
+            $f = new ReflectionProperty($phonySelf, 'f');
+            $f->setValue($phonySelf, 'F is for final.');
+        },
     ]
 );
 
@@ -606,10 +616,14 @@ $class = get_class($mock);
 
 echo $class::A;   // outputs 'A is for apple.'
 echo $class::b(); // outputs 'B is for banana.'
-echo $class::c;   // outputs 'C is for cat.'
+echo $class::$c;  // outputs 'C is for cat.'
 echo $mock->d;    // outputs 'D is for dog.'
 
 echo $mock->e(', ', ['a', 'b']); // outputs 'a, b'
+
+$mock->initalizeF();
+echo $mock->f;                      // outputs 'F is for final.'
+$mock->f = 'F is for foolishness.'; // throws 'Cannot modify readonly property ...'
 ```
 
 #### Ad hoc definition magic "self" values
@@ -5281,12 +5295,18 @@ _See [Customizing the mock class]._
 
 ---
 
-> _fluent_ $builder->[**addProperty**](#builder.addProperty)($name, $value = null, $type = null)
+> _fluent_ $builder->[**addProperty**](#builder.addProperty)($name, $value = null, $type = null, $isReadOnly = false)
 
 Add a custom property.
 
 _If supplied, `$type` will be used literally as the type declaration for the
 property_
+
+_If `$isReadOnly` is `true`, `$type` should also be specified, as `readonly`
+properties must be typed_
+
+_If `$isReadOnly` is `true`, `$value` is ignored, as `readonly` properties
+cannot have initial values_
 
 _See [Customizing the mock class]._
 

@@ -384,8 +384,8 @@ class MockBuilderTest extends TestCase
         );
         $this->assertSame(
             [
-                'propertyC' => [null, 'valueC'],
-                'propertyD' => [null, $this->callbackE],
+                'propertyC' => [false, null, 'valueC'],
+                'propertyD' => [false, null, $this->callbackE],
             ],
             $definition->customProperties()
         );
@@ -458,16 +458,22 @@ class MockBuilderTest extends TestCase
     public function testAddProperty()
     {
         $this->setUpWith([]);
-        $value = 'value';
+        $valueA = 111;
+        $valueB = 'value';
+        $valueC = 'value';
 
-        $this->assertSame($this->subject, $this->subject->addProperty('propertyA', $value));
-        $this->assertSame($this->subject, $this->subject->addProperty('propertyB'));
+        $this->assertSame($this->subject, $this->subject->addProperty('propertyA', $valueA, 'int', true));
+        $this->assertSame($this->subject, $this->subject->addProperty('propertyB', $valueB, 'string'));
+        $this->assertSame($this->subject, $this->subject->addProperty('propertyC', $valueC));
+        $this->assertSame($this->subject, $this->subject->addProperty('propertyD'));
 
         $definition = $this->subject->definition();
 
         $this->assertSame([
-            'propertyA' => [null, $value],
-            'propertyB' => [null, null],
+            'propertyA' => [true, 'int', $valueA],
+            'propertyB' => [false, 'string', $valueB],
+            'propertyC' => [false, null, $valueC],
+            'propertyD' => [false, null, null],
         ], $definition->customProperties());
     }
 

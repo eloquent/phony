@@ -6,6 +6,8 @@
 - **[BC BREAK]** PHP 7.4 is no longer supported.
 - **[NEW]** Added support for PHP 8.1 ([#255], [#256] - thanks [@keksa]).
 - **[NEW]** Added support for PHP 8.1 `never` return types.
+- **[NEW]** Added support for PHP 8.1 `readonly` properties in ad hoc mocks
+  ([#260]).
 - **[NEW]** Added support for PHP 8.1 enumerations ([#261]).
 - **[NEW]** Added support for PHP 8.2 ([#257], [#258] - thanks [@danepowell]).
 - **[NEW]** Added support for PHP 8.2 `true` types ([#262]).
@@ -26,6 +28,7 @@
 [#256]: https://github.com/eloquent/phony/pull/256
 [#257]: https://github.com/eloquent/phony/issues/257
 [#258]: https://github.com/eloquent/phony/pull/258
+[#260]: https://github.com/eloquent/phony/issues/260
 [#261]: https://github.com/eloquent/phony/issues/261
 [#262]: https://github.com/eloquent/phony/issues/262
 

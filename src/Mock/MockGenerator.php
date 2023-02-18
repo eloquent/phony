@@ -865,15 +865,19 @@ EOD;
         }
 
         foreach ($properties as $name => $tuple) {
-            list($type, $value) = $tuple;
+            list($isReadOnly, $type, $value) = $tuple;
+
+            $initializer = $isReadOnly
+                ? ''
+                : ' = ' . (null === $value ? 'null' : var_export($value, true));
 
             $source .=
                 "\n    public " .
+                ($isReadOnly ? 'readonly ' : '') .
                 ($type ? $type . ' ' : '') .
                 '$' .
                 $name .
-                ' = ' .
-                (null === $value ? 'null' : var_export($value, true)) .
+                $initializer .
                 ';';
         }
 

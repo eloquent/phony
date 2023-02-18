@@ -21,7 +21,7 @@ class MockDefinition
      *
      * @param array<string,ReflectionClass<object>> $types The types.
      * @param array<string,array{callable,ReflectionFunctionAbstract}> $customMethods          The custom methods.
-     * @param array<string,array{string|null,mixed}>                   $customProperties       The custom properties.
+     * @param array<string,array{bool,string|null,mixed}>              $customProperties       The custom properties.
      * @param array<string,array{callable,ReflectionFunctionAbstract}> $customStaticMethods    The custom static methods.
      * @param array<string,array{string|null,mixed}>                   $customStaticProperties The custom static properties.
      * @param array<string,mixed> $customConstants The custom constants.
@@ -101,7 +101,7 @@ class MockDefinition
     /**
      * Get the custom properties.
      *
-     * @return array<string,array{string|null,mixed}> The custom properties.
+     * @return array<string,array{bool,string|null,mixed}> The custom properties.
      */
     public function customProperties(): array
     {
@@ -364,7 +364,7 @@ class MockDefinition
     private $customMethods;
 
     /**
-     * @var array<string,array{string|null,mixed}>
+     * @var array<string,array{bool,string|null,mixed}>
      */
     private $customProperties;
 

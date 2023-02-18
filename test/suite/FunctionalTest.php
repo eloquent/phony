@@ -1096,6 +1096,72 @@ class FunctionalTest extends TestCase
         $this->assertSame('a, b', $mock->test(', ', ['a', 'b']));
     }
 
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testAdHocMocksWithReadonlyProperties()
+    {
+        $mock = partialMock([
+            'readonly string propertyA' => null,
+            'readonly ?int propertyB' => null,
+            'init' => function ($phonySelf) {
+                $reflectorA = new ReflectionProperty($phonySelf, 'propertyA');
+                $reflectorA->setValue($phonySelf, 'a');
+                $reflectorB = new ReflectionProperty($phonySelf, 'propertyB');
+                $reflectorB->setValue($phonySelf, null);
+            },
+        ])->get();
+        $mock->init();
+
+        $this->assertSame('a', $mock->propertyA);
+        $this->assertNull($mock->propertyB);
+
+        $this->expectExceptionMessage('Cannot modify readonly property');
+        $mock->propertyB = 111;
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testAdHocMocksDocExample()
+    {
+        $handle = partialMock(
+            [
+                'const A' => 'A is for apple.',
+                'static b' => function () {
+                    return 'B is for banana.';
+                },
+                'static c' => 'C is for cat.',
+                'string d' => 'D is for dog.',
+
+                'function e' => 'implode',
+
+                'readonly string f' => null,
+                'initalizeF' => function ($phonySelf) {
+                    // this scope not the same as the declaration scope
+                    // therefore reflection must be used to initialize the property
+                    $f = new ReflectionProperty($phonySelf, 'f');
+                    $f->setValue($phonySelf, 'F is for final.');
+                },
+            ]
+        );
+
+        $mock = $handle->get();
+        $class = get_class($mock);
+
+        $this->assertSame('A is for apple.', $class::A);
+        $this->assertSame('B is for banana.', $class::b());
+        $this->assertSame('C is for cat.', $class::$c);
+        $this->assertSame('D is for dog.', $mock->d);
+
+        $this->assertSame('a, b', $mock->e(', ', ['a', 'b']));
+
+        $mock->initalizeF();
+        $this->assertSame('F is for final.', $mock->f);
+        $this->expectExceptionMessage('Cannot modify readonly property');
+        $mock->f = 'F is for foolishness.';
+    }
+
     public function testBasicGeneratorStubbing()
     {
         $stub = stub()

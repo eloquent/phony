@@ -261,9 +261,10 @@ class MockBuilder
     /**
      * Add a custom property.
      *
-     * @param string  $name  The name.
-     * @param mixed   $value The value.
-     * @param ?string $type  The type.
+     * @param string  $name       The name.
+     * @param mixed   $value      The value.
+     * @param ?string $type       The type.
+     * @param bool    $isReadOnly True if the property is read only.
      *
      * @return $this         This builder.
      * @throws MockException If this builder is already finalized.
@@ -271,13 +272,14 @@ class MockBuilder
     public function addProperty(
         string $name,
         $value = null,
-        string $type = null
+        string $type = null,
+        bool $isReadOnly = false
     ): self {
         if ($this->isFinalized) {
             throw new FinalizedMockException();
         }
 
-        $this->customProperties[$name] = [$type, $value];
+        $this->customProperties[$name] = [$isReadOnly, $type, $value];
 
         return $this;
     }
@@ -658,6 +660,7 @@ class MockBuilder
             $isFunction = in_array('function', $nameParts);
             $isProperty = in_array('var', $nameParts);
             $isConstant = in_array('const', $nameParts);
+            $isReadOnly = in_array('readonly', $nameParts);
 
             if (!$isFunction && !$isProperty && !$isConstant) {
                 if (is_object($value) && is_callable($value)) {
@@ -684,7 +687,7 @@ class MockBuilder
                 if ($isStatic) {
                     $this->addStaticProperty($name, $value, $type);
                 } else {
-                    $this->addProperty($name, $value, $type);
+                    $this->addProperty($name, $value, $type, $isReadOnly);
                 }
             }
         }
@@ -723,7 +726,7 @@ class MockBuilder
     private $customMethods;
 
     /**
-     * @var array<string,array{string|null,mixed}>
+     * @var array<string,array{bool,string|null,mixed}>
      */
     private $customProperties;
 
