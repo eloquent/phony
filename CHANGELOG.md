@@ -72,7 +72,7 @@
 ## 4.0.0 (2019-12-31)
 
 - **[BC BREAK]** PHP 7.1 is no longer supported.
-- **[NEW]** Added support for specifying ad-hoc mock property types ([#247]).
+- **[NEW]** Added support for specifying ad hoc mock property types ([#247]).
 - **[IMPROVED]** Improved exporter output for array references ([#244]).
 - **[IMPROVED]** Improved exporter output for weak references ([#245]).
 - **[IMPROVED]** Improved type hints and type declarations for better
@@ -349,7 +349,7 @@ and version constraint will need to be updated:
 
 ## 0.10.1 (2016-06-07)
 
-- **[FIXED]** Fixed magic self parameters in ad-hoc mock definitions ([#158]).
+- **[FIXED]** Fixed magic self parameters in ad hoc mock definitions ([#158]).
 - **[FIXED]** Fixed mocking of internal classes that implement `Traversable`
   and other unimplementable interfaces directly ([#159]).
 
@@ -447,7 +447,7 @@ and version constraint will need to be updated:
 - **[FIXED]** Fixed bug when mocking traits with magic call methods ([#127]).
 - **[FIXED]** Mocking, and calling of return-by-reference methods no longer
   causes errors to be emitted ([#105]).
-- **[FIXED]** Ad-hoc mocks that differ only by function body no longer result in
+- **[FIXED]** Ad hoc mocks that differ only by function body no longer result in
   re-use of the same mock class ([#131]).
 
 [#39]: https://github.com/eloquent/phony/issues/39
