@@ -732,6 +732,7 @@ where it's desirable to:</p>
 <li>Define static methods or properties</li>
 <li>Define class constants</li>
 <li>Define typed properties</li>
+<li>Define <code>readonly</code> properties</li>
 </ul>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>handle</span> = partialMock(
     [
@@ -740,8 +741,17 @@ where it's desirable to:</p>
             <span class="pl-k">return</span> <span class="pl-s">'B is for banana.'</span>;
         },
         <span class="pl-s">'static c'</span> =&gt; <span class="pl-s">'C is for cat.'</span>,
-        <span class="pl-s">'string d'</span> =&gt; <span class="pl-s">'D is for dog.'</span>
-<span class="pl-s">        '<span class="pl-k">function</span> e' =&gt; 'implode'</span>,
+        <span class="pl-s">'string d'</span> =&gt; <span class="pl-s">'D is for dog.'</span>,
+
+        <span class="pl-s">'function e'</span> =&gt; <span class="pl-s">'implode'</span>,
+
+        <span class="pl-s">'readonly string f'</span> =&gt; <span class="pl-c1">null</span>,
+        <span class="pl-s">'initalizeF'</span> =&gt; <span class="pl-k">function</span> (<span class="pl-s1"><span class="pl-c1">$</span>phonySelf</span>) {
+            <span class="pl-c">// this scope not the same as the declaration scope</span>
+            <span class="pl-c">// therefore reflection must be used to initialize the property</span>
+            <span class="pl-s1"><span class="pl-c1">$</span>f</span> = <span class="pl-k">new</span> <span class="pl-v">ReflectionProperty</span>(<span class="pl-s1"><span class="pl-c1">$</span>phonySelf</span>, <span class="pl-s">'f'</span>);
+            <span class="pl-s1"><span class="pl-c1">$</span>f</span>-&gt;<span class="pl-en">setValue</span>(<span class="pl-s1"><span class="pl-c1">$</span>phonySelf</span>, <span class="pl-s">'F is for final.'</span>);
+        },
     ]
 );
 
@@ -750,10 +760,14 @@ where it's desirable to:</p>
 
 <span class="pl-k">echo</span> <span class="pl-s1"><span class="pl-c1">$</span>class</span>::<span class="pl-v">A</span>;   <span class="pl-c">// outputs 'A is for apple.'</span>
 <span class="pl-k">echo</span> <span class="pl-s1"><span class="pl-c1">$</span>class</span>::<span class="pl-en">b</span>(); <span class="pl-c">// outputs 'B is for banana.'</span>
-<span class="pl-k">echo</span> <span class="pl-s1"><span class="pl-c1">$</span>class</span>::c;   <span class="pl-c">// outputs 'C is for cat.'</span>
+<span class="pl-k">echo</span> <span class="pl-s1"><span class="pl-c1">$</span>class</span>::<span class="pl-s1"><span class="pl-c1">$</span>c</span>;  <span class="pl-c">// outputs 'C is for cat.'</span>
 <span class="pl-k">echo</span> <span class="pl-s1"><span class="pl-c1">$</span>mock</span>-&gt;<span class="pl-c1">d</span>;    <span class="pl-c">// outputs 'D is for dog.'</span>
 
-<span class="pl-k">echo</span> <span class="pl-s1"><span class="pl-c1">$</span>mock</span>-&gt;<span class="pl-en">e</span>(<span class="pl-s">', '</span>, [<span class="pl-s">'a'</span>, <span class="pl-s">'b'</span>]); <span class="pl-c">// outputs 'a, b'</span></pre></div>
+<span class="pl-k">echo</span> <span class="pl-s1"><span class="pl-c1">$</span>mock</span>-&gt;<span class="pl-en">e</span>(<span class="pl-s">', '</span>, [<span class="pl-s">'a'</span>, <span class="pl-s">'b'</span>]); <span class="pl-c">// outputs 'a, b'</span>
+
+<span class="pl-s1"><span class="pl-c1">$</span>mock</span>-&gt;<span class="pl-en">initalizeF</span>();
+<span class="pl-k">echo</span> <span class="pl-s1"><span class="pl-c1">$</span>mock</span>-&gt;<span class="pl-c1">f</span>;                      <span class="pl-c">// outputs 'F is for final.'</span>
+<span class="pl-s1"><span class="pl-c1">$</span>mock</span>-&gt;<span class="pl-c1">f</span> = <span class="pl-s">'F is for foolishness.'</span>; <span class="pl-c">// throws 'Cannot modify readonly property ...'</span></pre></div>
 <h4><a id="ad-hoc-definition-magic-self-values" class="anchor" aria-hidden="true" href="#ad-hoc-definition-magic-self-values"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ad hoc definition magic "self" values</h4>
 <p>Methods defined in an <a href="#ad-hoc-mocks">ad hoc mock</a> definition can take advantage of
 <a href="#magic-self-values">magic "self" values</a>. When stubs are retrieved from a mock, their <a href="#stub-self-values">self value</a>
@@ -4119,11 +4133,15 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <a name="builder.addProperty"></a>
 <hr>
 <blockquote>
-<p><em>fluent</em> $builder-&gt;<a href="#builder.addProperty"><strong>addProperty</strong></a>($name, $value = null, $type = null)</p>
+<p><em>fluent</em> $builder-&gt;<a href="#builder.addProperty"><strong>addProperty</strong></a>($name, $value = null, $type = null, $isReadOnly = false)</p>
 </blockquote>
 <p>Add a custom property.</p>
 <p><em>If supplied, <code>$type</code> will be used literally as the type declaration for the
 property</em></p>
+<p><em>If <code>$isReadOnly</code> is <code>true</code>, <code>$type</code> should also be specified, as <code>readonly</code>
+properties must be typed</em></p>
+<p><em>If <code>$isReadOnly</code> is <code>true</code>, <code>$value</code> is ignored, as <code>readonly</code> properties
+cannot have initial values</em></p>
 <p><em>See <a href="#customizing-the-mock-class">Customizing the mock class</a>.</em></p>
 <a name="builder.addStaticMethod"></a>
 <hr>
