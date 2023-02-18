@@ -1138,7 +1138,7 @@ class FunctionalTest extends TestCase
 
                 'readonly string f' => null,
                 'initalizeF' => function ($phonySelf) {
-                    // this scope not the same as the declaration scope
+                    // this scope is not the same as the declaration scope
                     // therefore reflection must be used to initialize the property
                     $f = new ReflectionProperty($phonySelf, 'f');
                     $f->setValue($phonySelf, 'F is for final.');
