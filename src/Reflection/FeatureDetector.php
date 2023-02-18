@@ -95,6 +95,12 @@ class FeatureDetector
     public function standardFeatures(): array
     {
         return [
+            'object.property.readonly' => function () {
+                $reflectionProperty = new ReflectionClass('ReflectionProperty');
+
+                return $reflectionProperty->hasMethod('isReadOnly');
+            },
+
             'type.enum' => function () {
                 if (interface_exists('UnitEnum', false)) {
                     $interface = new ReflectionClass('UnitEnum');

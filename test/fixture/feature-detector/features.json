@@ -1,4 +1,5 @@
 {
+  "Can use readonly properties":           ["object.property.readonly", "8.1.x", "999", []],
   "Can use enums":                         ["type.enum", "8.1.x", "999", []],
   "Can use ANSI escape codes with STDOUT": ["stdout.ansi", "0.x", "999", []]
 }
