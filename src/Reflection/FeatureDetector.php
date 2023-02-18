@@ -96,14 +96,14 @@ class FeatureDetector
     {
         return [
             'type.enum' => function () {
-               if (interface_exists('UnitEnum', false)) {
-                   $interface = new ReflectionClass('UnitEnum');
+                if (interface_exists('UnitEnum', false)) {
+                    $interface = new ReflectionClass('UnitEnum');
 
-                   return $interface->isInternal();
-               }
+                    return $interface->isInternal();
+                }
 
                return false;
-           },
+            },
 
             'stdout.ansi' => function () {
                 // @codeCoverageIgnoreStart
