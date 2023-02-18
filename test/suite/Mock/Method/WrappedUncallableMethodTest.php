@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Mock\Method;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
-use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
@@ -17,10 +16,12 @@ class WrappedUncallableMethodTest extends TestCase
 {
     protected function setUp(): void
     {
+        $container = new FacadeContainer();
+        $this->mockBuilder = $container->mockBuilderFactory->create();
+        $this->handleFactory = $container->handleFactory;
+
         $this->method = new ReflectionMethod(TestClassA::class . '::testClassAMethodA');
-        $this->mockBuilder = MockBuilderFactory::instance()->create();
         $this->mock = $this->mockBuilder->partial();
-        $this->handleFactory = HandleFactory::instance();
         $this->handle = $this->handleFactory->instanceHandle($this->mock);
         $this->subject = new WrappedUncallableMethod($this->method, $this->handle, null, 'return-value');
     }

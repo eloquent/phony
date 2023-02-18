@@ -5,13 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Call;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
-use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Test\TestCallFactory;
-use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\IterableVerifierFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -20,36 +14,24 @@ class CallVerifierFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->matcherFactory = MatcherFactory::instance();
-        $this->matcherVerifier = new MatcherVerifier();
-        $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
-        $this->iterableVerifierFactory = IterableVerifierFactory::instance();
-        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->assertionRenderer = AssertionRenderer::instance();
-        $this->subject = new CallVerifierFactory(
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer
-        );
+        $this->container = FacadeContainer::withTestCallFactory();
+        $callFactory = $this->container->callFactory;
+        $this->subject = $this->container->callVerifierFactory;
 
-        $this->callFactory = new TestCallFactory();
-        $this->callA = $this->callFactory->create();
-        $this->callB = $this->callFactory->create();
+        $this->callA = $callFactory->create();
+        $this->callB = $callFactory->create();
     }
 
     public function testFromCall()
     {
         $verifier = new CallVerifier(
             $this->callA,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer
         );
         $adaptedCall = $this->subject->fromCall($this->callA);
 
@@ -63,21 +45,21 @@ class CallVerifierFactoryTest extends TestCase
         $expected = [
             new CallVerifier(
                 $this->callA,
-                $this->matcherFactory,
-                $this->matcherVerifier,
-                $this->generatorVerifierFactory,
-                $this->iterableVerifierFactory,
-                $this->assertionRecorder,
-                $this->assertionRenderer
+                $this->container->matcherFactory,
+                $this->container->matcherVerifier,
+                $this->container->generatorVerifierFactory,
+                $this->container->iterableVerifierFactory,
+                $this->container->assertionRecorder,
+                $this->container->assertionRenderer
             ),
             new CallVerifier(
                 $this->callB,
-                $this->matcherFactory,
-                $this->matcherVerifier,
-                $this->generatorVerifierFactory,
-                $this->iterableVerifierFactory,
-                $this->assertionRecorder,
-                $this->assertionRenderer
+                $this->container->matcherFactory,
+                $this->container->matcherVerifier,
+                $this->container->generatorVerifierFactory,
+                $this->container->iterableVerifierFactory,
+                $this->container->assertionRecorder,
+                $this->container->assertionRenderer
             ),
         ];
 

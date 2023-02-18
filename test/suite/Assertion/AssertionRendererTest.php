@@ -6,17 +6,7 @@ namespace Eloquent\Phony\Assertion;
 
 use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Difference\DifferenceEngine;
-use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
-use Eloquent\Phony\Mock\Handle\HandleFactory;
-use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Spy\GeneratorSpyMap;
-use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\Cardinality;
 use IteratorAggregate;
@@ -29,77 +19,60 @@ class AssertionRendererTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->invocableInspector = new InvocableInspector();
-        $this->matcherVerifier = MatcherVerifier::instance();
-        $this->idSequencer = new Sequencer();
-        $this->generatorSpyMap = GeneratorSpyMap::instance();
-        $this->featureDetector = FeatureDetector::instance();
-        $this->exporter = new InlineExporter(
-            1,
-            $this->idSequencer,
-            $this->generatorSpyMap,
-            $this->invocableInspector
-        );
-        $this->differenceEngine = DifferenceEngine::instance();
-        $this->differenceEngine->setUseColor(false);
-        $this->subject = new AssertionRenderer(
-            $this->matcherVerifier,
-            $this->exporter,
-            $this->differenceEngine,
-            $this->featureDetector
-        );
+        $container = FacadeContainer::withTestCallFactory();
+        $callFactory = $container->callFactory;
+        $container->differenceEngine->setUseColor(false);
+        $this->subject = $container->assertionRenderer;
         $this->subject->setUseColor(false);
-        $this->handleFactory = HandleFactory::instance();
 
         $this->thisObjectA = new TestClassA();
 
-        $mockBuilderFactory = MockBuilderFactory::instance();
+        $handleFactory = $container->handleFactory;
+        $mockBuilderFactory = $container->mockBuilderFactory;
 
         $mockBuilder = $mockBuilderFactory->create(TestClassA::class);
         $this->thisObjectB = $mockBuilder->get();
-        $this->thisObjectBHandle = $this->handleFactory->instanceHandle($this->thisObjectB, 'label');
+        $this->thisObjectBHandle = $handleFactory->instanceHandle($this->thisObjectB, 'label');
         $this->thisObjectB->testClassAMethodA();
 
         $mockBuilder = $mockBuilderFactory->create(IteratorAggregate::class);
-        $mockBuilder->named('PhonyMockAssertionRendererTestIteratorAggregate');
         $this->thisObjectC = $mockBuilder->get();
-        $this->thisObjectCHandle = $this->handleFactory->instanceHandle($this->thisObjectC, 'label');
+        $this->thisObjectCHandle = $handleFactory->instanceHandle($this->thisObjectC, 'label');
 
-        $this->callFactory = new TestCallFactory();
-        $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->callA = $this->callFactory->create(
-            $this->callEventFactory
+        $eventFactory = $callFactory->eventFactory();
+        $this->callA = $callFactory->create(
+            $eventFactory
                 ->createCalled([$this->thisObjectA, 'testClassAMethodA'], Arguments::create('a', 'b')),
-            $this->callEventFactory->createReturned('x'),
+            $eventFactory->createReturned('x'),
             null,
-            $this->callEventFactory->createReturned('x')
+            $eventFactory->createReturned('x')
         );
-        $this->callB = $this->callFactory->create(
-            $this->callEventFactory->createCalled('implode'),
-            $this->callEventFactory->createThrew(new RuntimeException('You done goofed.')),
+        $this->callB = $callFactory->create(
+            $eventFactory->createCalled('implode'),
+            $eventFactory->createThrew(new RuntimeException('You done goofed.')),
             null,
-            $this->callEventFactory->createThrew(new RuntimeException('You done goofed.'))
+            $eventFactory->createThrew(new RuntimeException('You done goofed.'))
         );
-        $this->callC = $this->callFactory->create(
-            $this->callEventFactory->createCalled('implode')
+        $this->callC = $callFactory->create(
+            $eventFactory->createCalled('implode')
         );
-        $this->callD = $this->callFactory->create(
-            $this->callEventFactory->createCalled([$this->thisObjectB, 'testClassAMethodA'])
+        $this->callD = $callFactory->create(
+            $eventFactory->createCalled([$this->thisObjectB, 'testClassAMethodA'])
         );
-        $this->callE = $this->callFactory->create(
-            $this->callEventFactory->createCalled([$this->thisObjectC, 'getIterator'])
+        $this->callE = $callFactory->create(
+            $eventFactory->createCalled([$this->thisObjectC, 'getIterator'])
         );
-        $this->callF = $this->callFactory->create(
-            $this->callEventFactory
+        $this->callF = $callFactory->create(
+            $eventFactory
                 ->createCalled($this->thisObjectBHandle->testClassAMethodA, Arguments::create()),
-            $this->callEventFactory->createReturned(null),
+            $eventFactory->createReturned(null),
             null,
-            $this->callEventFactory->createReturned(null)
+            $eventFactory->createReturned(null)
         );
 
         $this->cardinality = new Cardinality(0, 1);
 
-        $this->matcherFactory = MatcherFactory::instance();
+        $this->matcherFactory = $container->matcherFactory;
     }
 
     public function testRenderValue()

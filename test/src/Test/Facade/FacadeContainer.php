@@ -21,6 +21,7 @@ use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\AnyMatcher;
+use Eloquent\Phony\Matcher\MatcherDriver;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
@@ -40,11 +41,22 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
+use Eloquent\Phony\Test\TestCallFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 
 class FacadeContainer
 {
+    public static function withTestCallFactory(): self {
+        $callFactory = new TestCallFactory();
+        $eventFactory = $callFactory->eventFactory();
+
+        return new self(
+            callFactory: $callFactory,
+            eventFactory: $eventFactory,
+        );
+    }
+
     public function __construct(
         public ?AnyMatcher $anyMatcher = null,
         public ?array $sequences = null,
@@ -71,6 +83,7 @@ class FacadeContainer
         public ?Invoker $invoker = null,
         public ?IterableSpyFactory $iterableSpyFactory = null,
         public ?IterableVerifierFactory $iterableVerifierFactory = null,
+        public ?MatcherDriver $hamcrestMatcherDriver = null,
         public ?MatcherFactory $matcherFactory = null,
         public ?MatcherVerifier $matcherVerifier = null,
         public ?MockBuilderFactory $mockBuilderFactory = null,
@@ -118,7 +131,8 @@ class FacadeContainer
             $this->wildcardMatcher,
             $this->exporter
         );
-        $this->matcherFactory->addMatcherDriver(new HamcrestMatcherDriver());
+        $this->hamcrestMatcherDriver ??= new HamcrestMatcherDriver();
+        $this->matcherFactory->addMatcherDriver($this->hamcrestMatcherDriver);
         $this->featureDetector ??= new FeatureDetector();
         $this->emptyValueFactory ??= new EmptyValueFactory($this->featureDetector);
         $this->generatorAnswerBuilderFactory ??= new GeneratorAnswerBuilderFactory(

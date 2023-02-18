@@ -8,9 +8,9 @@ use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
-use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Exception;
+use Generator;
 use PHPUnit\Framework\TestCase;
 
 #[AllowDynamicProperties]
@@ -18,21 +18,25 @@ class SpyDataTest extends TestCase
 {
     protected function setUp(): void
     {
+        $this->container = FacadeContainer::withTestCallFactory();
+        $this->callFactory = $this->container->callFactory;
+        $this->eventFactory = $this->container->eventFactory;
+
         $this->callback = 'implode';
         $this->label = 'label';
-        $this->callFactory = new TestCallFactory();
-        $this->invoker = new Invoker();
-        $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->generatorSpyFactory = new GeneratorSpyFactory($this->callEventFactory, GeneratorSpyMap::instance());
-        $this->iterableSpyFactory = new IterableSpyFactory($this->callEventFactory);
+
         $this->subject = new SpyData(
             $this->callback,
             $this->label,
-            $this->callFactory,
-            $this->invoker,
-            $this->generatorSpyFactory,
-            $this->iterableSpyFactory
+            $this->container->callFactory,
+            $this->container->invoker,
+            $this->container->generatorSpyFactory,
+            $this->container->iterableSpyFactory
         );
+
+        $this->generatorSpyFactory = $this->container->generatorSpyFactory;
+        $this->iterableSpyFactory = $this->container->iterableSpyFactory;
+        $this->invoker = $this->container->invoker;
 
         $this->callA = $this->callFactory->create();
         $this->callB = $this->callFactory->create();
@@ -247,20 +251,20 @@ class SpyDataTest extends TestCase
         $this->callFactory->reset();
         $expected = [
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create(['a'])),
-                ($responseEvent = $this->callEventFactory->createReturned('a')),
+                $this->eventFactory->createCalled($spy, Arguments::create(['a'])),
+                ($responseEvent = $this->eventFactory->createReturned('a')),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create(['b', 'c'])),
-                ($responseEvent = $this->callEventFactory->createReturned('bc')),
+                $this->eventFactory->createCalled($spy, Arguments::create(['b', 'c'])),
+                ($responseEvent = $this->eventFactory->createReturned('bc')),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create(['d'])),
-                ($responseEvent = $this->callEventFactory->createReturned('d')),
+                $this->eventFactory->createCalled($spy, Arguments::create(['d'])),
+                ($responseEvent = $this->eventFactory->createReturned('d')),
                 null,
                 $responseEvent
             ),
@@ -285,20 +289,20 @@ class SpyDataTest extends TestCase
         $this->callFactory->reset();
         $expected = [
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('a')),
-                ($responseEvent = $this->callEventFactory->createReturned(null)),
+                $this->eventFactory->createCalled($spy, Arguments::create('a')),
+                ($responseEvent = $this->eventFactory->createReturned(null)),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('b', 'c')),
-                ($responseEvent = $this->callEventFactory->createReturned(null)),
+                $this->eventFactory->createCalled($spy, Arguments::create('b', 'c')),
+                ($responseEvent = $this->eventFactory->createReturned(null)),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('d')),
-                ($responseEvent = $this->callEventFactory->createReturned(null)),
+                $this->eventFactory->createCalled($spy, Arguments::create('d')),
+                ($responseEvent = $this->eventFactory->createReturned(null)),
                 null,
                 $responseEvent
             ),
@@ -338,20 +342,20 @@ class SpyDataTest extends TestCase
         $this->callFactory->reset();
         $expected = [
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('a')),
-                ($responseEvent = $this->callEventFactory->createThrew($exceptions[0])),
+                $this->eventFactory->createCalled($spy, Arguments::create('a')),
+                ($responseEvent = $this->eventFactory->createThrew($exceptions[0])),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('b', 'c')),
-                ($responseEvent = $this->callEventFactory->createThrew($exceptions[1])),
+                $this->eventFactory->createCalled($spy, Arguments::create('b', 'c')),
+                ($responseEvent = $this->eventFactory->createThrew($exceptions[1])),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('d')),
-                ($responseEvent = $this->callEventFactory->createThrew($exceptions[2])),
+                $this->eventFactory->createCalled($spy, Arguments::create('d')),
+                ($responseEvent = $this->eventFactory->createThrew($exceptions[2])),
                 null,
                 $responseEvent
             ),
@@ -377,8 +381,8 @@ class SpyDataTest extends TestCase
         $this->callFactory->reset();
         $expected = [
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy),
-                ($responseEvent = $this->callEventFactory->createReturned('x')),
+                $this->eventFactory->createCalled($spy),
+                ($responseEvent = $this->eventFactory->createReturned('x')),
                 null,
                 $responseEvent
             ),
@@ -427,14 +431,14 @@ class SpyDataTest extends TestCase
         }
         $this->callFactory->reset();
         $expectedCallA =
-            $this->callFactory->create($this->callEventFactory->createCalled($spy, Arguments::create('a', 'b')));
+            $this->callFactory->create($this->eventFactory->createCalled($spy, Arguments::create('a', 'b')));
         $iterableSpyA = $this->iterableSpyFactory->create($expectedCallA, ['A', 'B']);
-        $expectedCallA->setResponseEvent($this->callEventFactory->createReturned(['A', 'B']));
+        $expectedCallA->setResponseEvent($this->eventFactory->createReturned(['A', 'B']));
         iterator_to_array($iterableSpyA);
         $expectedCallB =
-            $this->callFactory->create($this->callEventFactory->createCalled($spy, Arguments::create('c')));
+            $this->callFactory->create($this->eventFactory->createCalled($spy, Arguments::create('c')));
         $iterableSpyB = $this->iterableSpyFactory->create($expectedCallB, ['C']);
-        $expectedCallB->setResponseEvent($this->callEventFactory->createReturned(['C']));
+        $expectedCallB->setResponseEvent($this->eventFactory->createReturned(['C']));
         iterator_to_array($iterableSpyB);
         $expected = [$expectedCallA, $expectedCallB];
 
@@ -500,13 +504,76 @@ class SpyDataTest extends TestCase
         $this->callFactory->reset();
         $expected = [
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('b')),
-                ($responseEvent = $this->callEventFactory->createReturned('x')),
+                $this->eventFactory->createCalled($spy, Arguments::create('b')),
+                ($responseEvent = $this->eventFactory->createReturned('x')),
                 null,
                 $responseEvent
             ),
         ];
 
         $this->assertEquals($expected, $spy->allCalls());
+    }
+
+    public function testInvokeWithWithGeneratorSpy()
+    {
+        $this->callback = function () {
+            foreach (func_get_args() as $argument) {
+                yield strtoupper($argument);
+            }
+        };
+        $spy = new SpyData(
+            $this->callback,
+            '',
+            $this->callFactory,
+            $this->invoker,
+            $this->generatorSpyFactory,
+            $this->iterableSpyFactory
+        );
+        foreach ($spy->invoke('a', 'b') as $value) {
+        }
+        foreach ($spy->invoke('c') as $value) {
+        }
+        $this->callFactory->reset();
+        $generatorA = call_user_func($this->callback, 'a', 'b');
+        $generatorB = call_user_func($this->callback, 'c');
+        $expectedCallA =
+            $this->callFactory->create($this->eventFactory->createCalled($spy, Arguments::create('a', 'b')));
+        $generatorSpyA = $this->generatorSpyFactory->create($expectedCallA, $generatorA);
+        $expectedCallA->setResponseEvent($this->eventFactory->createReturned($generatorA));
+        iterator_to_array($generatorSpyA);
+        $expectedCallB =
+            $this->callFactory->create($this->eventFactory->createCalled($spy, Arguments::create('c')));
+        $generatorSpyB = $this->generatorSpyFactory->create($expectedCallB, $generatorB);
+        $expectedCallB->setResponseEvent($this->eventFactory->createReturned($generatorB));
+        iterator_to_array($generatorSpyB);
+        $expected = [$expectedCallA, $expectedCallB];
+
+        $this->assertEquals($expected, $spy->allCalls());
+    }
+
+    public function testInvokeWithGeneratorSpyDoubleWrap()
+    {
+        $this->callback = function ($a) {
+            return $a;
+        };
+        $spy = new SpyData(
+            $this->callback,
+            '',
+            $this->callFactory,
+            $this->invoker,
+            $this->generatorSpyFactory,
+            $this->iterableSpyFactory
+        );
+        $function = function () {
+            return;
+            yield;
+        };
+        $generator = $function();
+        $generatorSpyA = $spy->invoke($generator);
+        $generatorSpyB = $spy->invoke($generatorSpyA);
+
+        $this->assertInstanceOf(Generator::class, $generatorSpyA);
+        $this->assertInstanceOf(Generator::class, $generatorSpyB);
+        $this->assertNotSame($generatorSpyA, $generatorSpyB);
     }
 }

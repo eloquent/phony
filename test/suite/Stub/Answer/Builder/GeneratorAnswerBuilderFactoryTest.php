@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Stub\Answer\Builder;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Stub\StubFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -16,18 +14,17 @@ class GeneratorAnswerBuilderFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->invocableInspector = new InvocableInspector();
-        $this->invoker = new Invoker();
-        $this->subject = new GeneratorAnswerBuilderFactory($this->invocableInspector, $this->invoker);
+        $this->container = new FacadeContainer();
+        $this->subject = $this->container->generatorAnswerBuilderFactory;
     }
 
     public function testCreate()
     {
-        $stub = StubFactory::instance()->create(null, null);
+        $stub = $this->container->stubFactory->create(null, null);
         $expected = new GeneratorAnswerBuilder(
             $stub,
-            $this->invocableInspector,
-            $this->invoker
+            $this->container->invocableInspector,
+            $this->container->invoker
         );
         $actual = $this->subject->create($stub);
 

@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Mock\Method;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
-use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestTraitA;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
@@ -16,14 +15,15 @@ class WrappedTraitMethodTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->mockBuilderFactory = MockBuilderFactory::instance();
+        $container = new FacadeContainer();
+        $this->mockBuilderFactory = $container->mockBuilderFactory;
+        $this->mockBuilder = $this->mockBuilderFactory->create();
+        $this->handleFactory = $container->handleFactory;
 
         $this->callTraitMethod = new ReflectionMethod($this, 'setUp');
         $this->traitName = TestTraitA::class;
         $this->method = new ReflectionMethod(TestTraitA::class . '::testClassAMethodB');
-        $this->mockBuilder = $this->mockBuilderFactory->create();
         $this->mock = $this->mockBuilder->partial();
-        $this->handleFactory = HandleFactory::instance();
         $this->handle = $this->handleFactory->instanceHandle($this->mock);
         $this->subject = new WrappedTraitMethod(
             $this->callTraitMethod,

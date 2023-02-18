@@ -6,10 +6,9 @@ namespace Eloquent\Phony\Event;
 
 use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
-use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
 
 #[AllowDynamicProperties]
@@ -17,16 +16,18 @@ class EventSequenceTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->callFactory = new TestCallFactory();
-        $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->eventA = $this->callEventFactory->createReturned(null);
+        $container = FacadeContainer::withTestCallFactory();
+        $this->callFactory = $container->callFactory;
+        $this->eventFactory = $container->eventFactory;
+        $this->callVerifierFactory = $container->callVerifierFactory;
+
+        $this->eventA = $this->eventFactory->createReturned(null);
         $this->eventB =
-            $this->callFactory->create($this->callEventFactory->createCalled(null, Arguments::create('a', 'b')));
-        $this->eventC = $this->callEventFactory->createCalled(null, Arguments::create('c', 'd'));
+            $this->callFactory->create($this->eventFactory->createCalled(null, Arguments::create('a', 'b')));
+        $this->eventC = $this->eventFactory->createCalled(null, Arguments::create('c', 'd'));
         $this->eventD =
-            $this->callFactory->create($this->callEventFactory->createCalled(null, Arguments::create('e', 'f')));
+            $this->callFactory->create($this->eventFactory->createCalled(null, Arguments::create('e', 'f')));
         $this->events = [$this->eventA, $this->eventB, $this->eventC, $this->eventD];
-        $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->subject = new EventSequence($this->events, $this->callVerifierFactory);
 
         $this->wrappedCallB = $this->callVerifierFactory->fromCall($this->eventB);

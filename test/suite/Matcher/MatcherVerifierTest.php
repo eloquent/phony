@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Matcher;
 
 use AllowDynamicProperties;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -13,9 +14,10 @@ class MatcherVerifierTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->subject = new MatcherVerifier();
+        $container = new FacadeContainer();
+        $this->subject = $container->matcherVerifier;
 
-        $this->matcherFactory = MatcherFactory::instance();
+        $this->matcherFactory = $container->matcherFactory;
         $this->arguments = ['a', 'b', 'c'];
     }
 

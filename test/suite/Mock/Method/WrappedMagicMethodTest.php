@@ -6,8 +6,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use AllowDynamicProperties;
 use DateTime;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
-use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassB;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
@@ -18,15 +17,16 @@ class WrappedMagicMethodTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->mockBuilderFactory = MockBuilderFactory::instance();
+        $container = new FacadeContainer();
+        $this->mockBuilderFactory = $container->mockBuilderFactory;
+        $this->mockBuilder = $this->mockBuilderFactory->create();
+        $this->handleFactory = $container->handleFactory;
 
         $this->name = 'nonexistent';
         $this->callMagicMethod = new ReflectionMethod(DateTime::class, 'add');
         $this->method = new ReflectionMethod(DateTime::class, 'sub');
         $this->isUncallable = false;
-        $this->mockBuilder = $this->mockBuilderFactory->create();
         $this->mock = $this->mockBuilder->partial();
-        $this->handleFactory = HandleFactory::instance();
         $this->handle = $this->handleFactory->instanceHandle($this->mock);
         $this->subject = new WrappedMagicMethod(
             $this->callMagicMethod,

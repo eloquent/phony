@@ -5,32 +5,14 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Mock\Handle;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
-use Eloquent\Phony\Call\CallVerifierFactory;
-use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventSequence;
-use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Hook\FunctionHookManager;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Exception\FinalMethodStubException;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
-use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Spy\GeneratorSpyMap;
 use Eloquent\Phony\Spy\SpyData;
-use Eloquent\Phony\Spy\SpyFactory;
-use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
-use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubData;
-use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifier;
-use Eloquent\Phony\Stub\StubVerifierFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestClassF;
@@ -39,8 +21,6 @@ use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestInterfaceWithReturnType;
 use Eloquent\Phony\Test\TestTraitA;
 use Eloquent\Phony\Test\TestTraitG;
-use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\IterableVerifierFactory;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
@@ -49,56 +29,19 @@ class InstanceHandleTest extends TestCase
 {
     protected function setUp(): void
     {
+        $this->container = new FacadeContainer();
+        $this->container->differenceEngine->setUseColor(false);
+        $this->container->assertionRenderer->setUseColor(false);
+
+        $this->callVerifierFactory = $this->container->callVerifierFactory;
+        $this->mockBuilderFactory = $this->container->mockBuilderFactory;
+
         $this->state = (object) [
             'stubs' => (object) [],
             'defaultAnswerCallback' => [StubData::class, 'returnsEmptyAnswerCallback'],
             'isRecording' => true,
             'label' => 'label',
         ];
-        $this->stubFactory = StubFactory::instance();
-        $this->idSequencer = new Sequencer();
-        $this->invocableInspector = new InvocableInspector();
-        $this->featureDetector = FeatureDetector::instance();
-        $this->generatorSpyMap = GeneratorSpyMap::instance();
-        $this->exporter = new InlineExporter(
-            1,
-            $this->idSequencer,
-            $this->generatorSpyMap,
-            $this->invocableInspector
-        );
-        $this->matcherVerifier = new MatcherVerifier();
-        $this->differenceEngine = new DifferenceEngine($this->featureDetector);
-        $this->differenceEngine->setUseColor(false);
-        $this->assertionRenderer = new AssertionRenderer(
-            $this->matcherVerifier,
-            $this->exporter,
-            $this->differenceEngine,
-            $this->featureDetector
-        );
-        $this->assertionRenderer->setUseColor(false);
-        $this->callVerifierFactory = CallVerifierFactory::instance();
-        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
-        $this->stubVerifierFactory = new StubVerifierFactory(
-            $this->stubFactory,
-            SpyFactory::instance(),
-            MatcherFactory::instance(),
-            $this->matcherVerifier,
-            GeneratorVerifierFactory::instance(),
-            IterableVerifierFactory::instance(),
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer,
-            GeneratorAnswerBuilderFactory::instance(),
-            FunctionHookManager::instance()
-        );
-        $this->emptyValueFactory = EmptyValueFactory::instance();
-        $this->mockBuilderFactory = MockBuilderFactory::instance();
-        $this->emptyValueFactory->setStubVerifierFactory($this->stubVerifierFactory);
-        $this->emptyValueFactory->setMockBuilderFactory($this->mockBuilderFactory);
-        $this->invoker = new Invoker();
-
-        $this->featureDetector = FeatureDetector::instance();
     }
 
     protected function setUpWith($className, $mockClassName = '')
@@ -112,12 +55,12 @@ class InstanceHandleTest extends TestCase
         $this->subject = new InstanceHandle(
             $this->mock,
             $this->state,
-            $this->stubFactory,
-            $this->stubVerifierFactory,
-            $this->emptyValueFactory,
-            $this->assertionRenderer,
-            $this->assertionRecorder,
-            $this->invoker
+            $this->container->stubFactory,
+            $this->container->stubVerifierFactory,
+            $this->container->emptyValueFactory,
+            $this->container->assertionRenderer,
+            $this->container->assertionRecorder,
+            $this->container->invoker
         );
 
         $this->className = $this->class->getName();
@@ -275,12 +218,12 @@ class InstanceHandleTest extends TestCase
         $this->subject = new InstanceHandle(
             $this->mock,
             $this->state,
-            $this->stubFactory,
-            $this->stubVerifierFactory,
-            $this->emptyValueFactory,
-            $this->assertionRenderer,
-            $this->assertionRecorder,
-            $this->invoker
+            $this->container->stubFactory,
+            $this->container->stubVerifierFactory,
+            $this->container->emptyValueFactory,
+            $this->container->assertionRenderer,
+            $this->container->assertionRecorder,
+            $this->container->invoker
         );
 
         $this->assertNull($this->mock->constructorArguments);
@@ -296,12 +239,12 @@ class InstanceHandleTest extends TestCase
         $this->subject = new InstanceHandle(
             $this->mock,
             $this->state,
-            $this->stubFactory,
-            $this->stubVerifierFactory,
-            $this->emptyValueFactory,
-            $this->assertionRenderer,
-            $this->assertionRecorder,
-            $this->invoker
+            $this->container->stubFactory,
+            $this->container->stubVerifierFactory,
+            $this->container->emptyValueFactory,
+            $this->container->assertionRenderer,
+            $this->container->assertionRecorder,
+            $this->container->invoker
         );
 
         $this->assertNull($this->mock->constructorArguments);
@@ -317,12 +260,12 @@ class InstanceHandleTest extends TestCase
         $this->subject = new InstanceHandle(
             $this->mock,
             $this->state,
-            $this->stubFactory,
-            $this->stubVerifierFactory,
-            $this->emptyValueFactory,
-            $this->assertionRenderer,
-            $this->assertionRecorder,
-            $this->invoker
+            $this->container->stubFactory,
+            $this->container->stubVerifierFactory,
+            $this->container->emptyValueFactory,
+            $this->container->assertionRenderer,
+            $this->container->assertionRecorder,
+            $this->container->invoker
         );
         $a = 'a';
         $b = 'b';
@@ -406,12 +349,12 @@ class InstanceHandleTest extends TestCase
         $this->subject = new InstanceHandle(
             $this->mock,
             $this->state,
-            $this->stubFactory,
-            $this->stubVerifierFactory,
-            $this->emptyValueFactory,
-            $this->assertionRenderer,
-            $this->assertionRecorder,
-            $this->invoker
+            $this->container->stubFactory,
+            $this->container->stubVerifierFactory,
+            $this->container->emptyValueFactory,
+            $this->container->assertionRenderer,
+            $this->container->assertionRecorder,
+            $this->container->invoker
         );
         $handleProperty = $this->class->getProperty('_handle');
         $handleProperty->setAccessible(true);

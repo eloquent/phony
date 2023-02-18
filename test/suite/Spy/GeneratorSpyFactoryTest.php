@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Spy;
 
 use AllowDynamicProperties;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\GeneratorFactory;
-use Eloquent\Phony\Test\TestCallFactory;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -17,14 +17,16 @@ class GeneratorSpyFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->callFactory = new TestCallFactory();
-        $this->callEventFactory = $this->callFactory->eventFactory();
-        $this->generatorSpyMap = GeneratorSpyMap::instance();
-        $this->subject = new GeneratorSpyFactory($this->callEventFactory, $this->generatorSpyMap);
+        $this->container = FacadeContainer::withTestCallFactory();
+        $this->callFactory = $this->container->callFactory;
+        $this->eventFactory = $this->container->eventFactory;
+
+        $this->subject = $this->container->generatorSpyFactory;
+        $this->generatorSpyMap = $this->container->generatorSpyMap;
 
         $this->call = $this->callFactory->create(
-            $this->callEventFactory->createCalled(),
-            $this->callEventFactory->createReturned(GeneratorFactory::createEmpty())
+            $this->eventFactory->createCalled(),
+            $this->eventFactory->createReturned(GeneratorFactory::createEmpty())
         );
         $this->callFactory->reset();
     }
@@ -44,18 +46,18 @@ class GeneratorSpyFactoryTest extends TestCase
         }
         $this->callFactory->reset();
         $generatorEvents = [
-            $this->callEventFactory->createUsed(),
-            $this->callEventFactory->createProduced(0, 'a'),
-            $this->callEventFactory->createReceived('A'),
-            $this->callEventFactory->createProduced(1, 'b'),
-            $this->callEventFactory->createReceived('B'),
-            $this->callEventFactory->createProduced(2, 'c'),
-            $this->callEventFactory->createReceived('C'),
+            $this->eventFactory->createUsed(),
+            $this->eventFactory->createProduced(0, 'a'),
+            $this->eventFactory->createReceived('A'),
+            $this->eventFactory->createProduced(1, 'b'),
+            $this->eventFactory->createReceived('B'),
+            $this->eventFactory->createProduced(2, 'c'),
+            $this->eventFactory->createReceived('C'),
         ];
         foreach ($generatorEvents as $generatorEvent) {
             $generatorEvent->setCall($this->call);
         }
-        $endEvent = $this->callEventFactory->createReturned(null);
+        $endEvent = $this->eventFactory->createReturned(null);
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf(Generator::class, $spy);
@@ -86,18 +88,18 @@ class GeneratorSpyFactoryTest extends TestCase
         }
         $this->callFactory->reset();
         $generatorEvents = [
-            $this->callEventFactory->createUsed(),
-            $this->callEventFactory->createProduced(0, 'a'),
-            $this->callEventFactory->createReceived('A'),
-            $this->callEventFactory->createProduced(1, 'b'),
-            $this->callEventFactory->createReceived('B'),
-            $this->callEventFactory->createProduced(2, 'c'),
-            $this->callEventFactory->createReceived('C'),
+            $this->eventFactory->createUsed(),
+            $this->eventFactory->createProduced(0, 'a'),
+            $this->eventFactory->createReceived('A'),
+            $this->eventFactory->createProduced(1, 'b'),
+            $this->eventFactory->createReceived('B'),
+            $this->eventFactory->createProduced(2, 'c'),
+            $this->eventFactory->createReceived('C'),
         ];
         foreach ($generatorEvents as $generatorEvent) {
             $generatorEvent->setCall($this->call);
         }
-        $endEvent = $this->callEventFactory->createThrew($exception);
+        $endEvent = $this->eventFactory->createThrew($exception);
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf(Generator::class, $spy);
@@ -132,18 +134,18 @@ class GeneratorSpyFactoryTest extends TestCase
         }
         $this->callFactory->reset();
         $generatorEvents = [
-            $this->callEventFactory->createUsed(),
-            $this->callEventFactory->createProduced(0, 'a'),
-            $this->callEventFactory->createReceived('A'),
-            $this->callEventFactory->createProduced(1, 'b'),
-            $this->callEventFactory->createReceivedException($receivedException),
-            $this->callEventFactory->createProduced(2, 'c'),
-            $this->callEventFactory->createReceived('C'),
+            $this->eventFactory->createUsed(),
+            $this->eventFactory->createProduced(0, 'a'),
+            $this->eventFactory->createReceived('A'),
+            $this->eventFactory->createProduced(1, 'b'),
+            $this->eventFactory->createReceivedException($receivedException),
+            $this->eventFactory->createProduced(2, 'c'),
+            $this->eventFactory->createReceived('C'),
         ];
         foreach ($generatorEvents as $generatorEvent) {
             $generatorEvent->setCall($this->call);
         }
-        $endEvent = $this->callEventFactory->createReturned(null);
+        $endEvent = $this->eventFactory->createReturned(null);
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf(Generator::class, $spy);
@@ -164,11 +166,11 @@ class GeneratorSpyFactoryTest extends TestCase
         foreach ($spy as $value) {
         }
         $this->callFactory->reset();
-        $generatorEvents = [$this->callEventFactory->createUsed()];
+        $generatorEvents = [$this->eventFactory->createUsed()];
         foreach ($generatorEvents as $generatorEvent) {
             $generatorEvent->setCall($this->call);
         }
-        $endEvent = $this->callEventFactory->createReturned(null);
+        $endEvent = $this->eventFactory->createReturned(null);
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf(Generator::class, $spy);
@@ -194,11 +196,11 @@ class GeneratorSpyFactoryTest extends TestCase
         } catch (RuntimeException $caughtException) {
         }
         $this->callFactory->reset();
-        $generatorEvents = [$this->callEventFactory->createUsed()];
+        $generatorEvents = [$this->eventFactory->createUsed()];
         foreach ($generatorEvents as $generatorEvent) {
             $generatorEvent->setCall($this->call);
         }
-        $endEvent = $this->callEventFactory->createThrew($exception);
+        $endEvent = $this->eventFactory->createThrew($exception);
         $endEvent->setCall($this->call);
 
         $this->assertInstanceOf(Generator::class, $spy);

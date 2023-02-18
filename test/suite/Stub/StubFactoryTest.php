@@ -5,14 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Stub;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -21,24 +14,8 @@ class StubFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->labelSequencer = new Sequencer();
-        $this->matcherFactory = MatcherFactory::instance();
-        $this->matcherVerifier = new MatcherVerifier();
-        $this->invoker = new Invoker();
-        $this->invocableInspector = new InvocableInspector();
-        $this->emptyValueFactory = new EmptyValueFactory(FeatureDetector::instance());
-        $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
-        $this->exporter = InlineExporter::instance();
-        $this->subject = new StubFactory(
-            $this->labelSequencer,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->exporter
-        );
+        $this->container = new FacadeContainer();
+        $this->subject = $this->container->stubFactory;
     }
 
     public function testCreate()
@@ -49,13 +26,13 @@ class StubFactoryTest extends TestCase
             $callback,
             '0',
             $defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->invoker,
+            $this->container->invocableInspector,
+            $this->container->emptyValueFactory,
+            $this->container->generatorAnswerBuilderFactory,
+            $this->container->exporter
         );
         $actual = $this->subject->create($callback, $defaultAnswerCallback);
 

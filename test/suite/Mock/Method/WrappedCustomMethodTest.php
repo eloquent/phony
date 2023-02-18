@@ -6,8 +6,7 @@ namespace Eloquent\Phony\Mock\Method;
 
 use AllowDynamicProperties;
 use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
-use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassB;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
@@ -17,13 +16,15 @@ class WrappedCustomMethodTest extends TestCase
 {
     protected function setUp(): void
     {
+        $container = new FacadeContainer();
+        $this->mockBuilder = $container->mockBuilderFactory->create();
+        $this->handleFactory = $container->handleFactory;
+
         $this->customCallback = function () {
             return 'custom ' . implode(func_get_args());
         };
         $this->method = new ReflectionMethod($this, 'setUp');
-        $this->mockBuilder = MockBuilderFactory::instance()->create();
         $this->mock = $this->mockBuilder->partial();
-        $this->handleFactory = HandleFactory::instance();
         $this->handle = $this->handleFactory->instanceHandle($this->mock);
         $this->invoker = new Invoker();
         $this->subject = new WrappedCustomMethod($this->customCallback, $this->method, $this->handle, $this->invoker);

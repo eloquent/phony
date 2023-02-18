@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Hook;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -15,10 +14,11 @@ class FunctionHookGeneratorTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->subject = new FunctionHookGenerator();
+        $this->container = new FacadeContainer();
+        $this->subject = $this->container->functionHookGenerator;
 
-        $this->invocableInspector = InvocableInspector::instance();
-        $this->signatureInspector = FunctionSignatureInspector::instance();
+        $this->invocableInspector = $this->container->invocableInspector;
+        $this->signatureInspector = $this->container->functionSignatureInspector;
     }
 
     public function generateData()

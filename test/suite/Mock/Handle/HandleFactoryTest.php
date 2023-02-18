@@ -6,17 +6,11 @@ namespace Eloquent\Phony\Mock\Handle;
 
 use AllowDynamicProperties;
 use Countable;
-use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
-use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Exception\InvalidMockClassException;
 use Eloquent\Phony\Mock\Exception\InvalidMockException;
 use Eloquent\Phony\Mock\Exception\NonMockClassException;
-use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubData;
-use Eloquent\Phony\Stub\StubFactory;
-use Eloquent\Phony\Stub\StubVerifierFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassB;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -28,22 +22,9 @@ class HandleFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->stubFactory = StubFactory::instance();
-        $this->stubVerifierFactory = StubVerifierFactory::instance();
-        $this->emptyValueFactory = EmptyValueFactory::instance();
-        $this->assertionRenderer = AssertionRenderer::instance();
-        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->invoker = new Invoker();
-        $this->subject = new HandleFactory(
-            $this->stubFactory,
-            $this->stubVerifierFactory,
-            $this->emptyValueFactory,
-            $this->assertionRenderer,
-            $this->assertionRecorder,
-            $this->invoker
-        );
-
-        $this->mockBuilderFactory = MockBuilderFactory::instance();
+        $this->container = new FacadeContainer();
+        $this->subject = $this->container->handleFactory;
+        $this->mockBuilderFactory = $this->container->mockBuilderFactory;
     }
 
     public function testInstanceHandleNew()
@@ -61,12 +42,12 @@ class HandleFactoryTest extends TestCase
                 'isRecording' => true,
                 'label' => 'label',
             ],
-            $this->stubFactory,
-            $this->stubVerifierFactory,
-            $this->emptyValueFactory,
-            $this->assertionRenderer,
-            $this->assertionRecorder,
-            $this->invoker
+            $this->container->stubFactory,
+            $this->container->stubVerifierFactory,
+            $this->container->emptyValueFactory,
+            $this->container->assertionRenderer,
+            $this->container->assertionRecorder,
+            $this->container->invoker
         );
         $actual = $this->subject->instanceHandle($mock, 'label');
 
@@ -106,12 +87,12 @@ class HandleFactoryTest extends TestCase
                 'stubs' => (object) [],
                 'isRecording' => true,
             ],
-            $this->stubFactory,
-            $this->stubVerifierFactory,
-            $this->emptyValueFactory,
-            $this->assertionRenderer,
-            $this->assertionRecorder,
-            $this->invoker
+            $this->container->stubFactory,
+            $this->container->stubVerifierFactory,
+            $this->container->emptyValueFactory,
+            $this->container->assertionRenderer,
+            $this->container->assertionRecorder,
+            $this->container->invoker
         );
         $actual = $this->subject->staticHandle($class);
 

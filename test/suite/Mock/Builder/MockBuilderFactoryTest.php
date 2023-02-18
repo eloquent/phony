@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Mock\Builder;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Mock\Handle\HandleFactory;
-use Eloquent\Phony\Mock\MockFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestInterfaceB;
 use PHPUnit\Framework\TestCase;
@@ -18,14 +16,8 @@ class MockBuilderFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->mockFactory = MockFactory::instance();
-        $this->handleFactory = HandleFactory::instance();
-        $this->invocableInspector = InvocableInspector::instance();
-        $this->subject = new MockBuilderFactory(
-            $this->mockFactory,
-            $this->handleFactory,
-            $this->invocableInspector
-        );
+        $this->container = new FacadeContainer();
+        $this->subject = $this->container->mockBuilderFactory;
     }
 
     public function testCreate()
@@ -34,14 +26,14 @@ class MockBuilderFactoryTest extends TestCase
         $actual = $this->subject->create($types);
         $expected = new MockBuilder(
             $types,
-            $this->mockFactory,
-            $this->handleFactory,
-            $this->invocableInspector
+            $this->container->mockFactory,
+            $this->container->handleFactory,
+            $this->container->invocableInspector
         );
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame($this->mockFactory, $actual->factory());
-        $this->assertSame($this->handleFactory, $actual->handleFactory());
+        $this->assertSame($this->container->mockFactory, $actual->factory());
+        $this->assertSame($this->container->handleFactory, $actual->handleFactory());
     }
 
     public function testInstance()

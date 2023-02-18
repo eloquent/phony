@@ -6,7 +6,7 @@ namespace Eloquent\Phony\Call\Event;
 
 use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClock;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -17,9 +17,8 @@ class CallEventFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->sequencer = new Sequencer();
-        $this->clock = new TestClock();
-        $this->subject = new CallEventFactory($this->sequencer, $this->clock);
+        $container = new FacadeContainer(clock: new TestClock());
+        $this->subject = $container->eventFactory;
 
         $this->exception = new RuntimeException('You done goofed.');
     }

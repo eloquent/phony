@@ -8,10 +8,8 @@ use AllowDynamicProperties;
 use ArrayIterator;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Phony;
-use Eloquent\Phony\Stub\StubFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TupleIterator;
 use Exception;
 use PHPUnit\Framework\TestCase;
@@ -22,14 +20,14 @@ class GeneratorAnswerBuilderTest extends TestCase
 {
     protected function setUp(): void
     {
+        $this->container = new FacadeContainer();
+
         $this->self = (object) [];
-        $this->stub = StubFactory::instance()->create(null, null)->setSelf($this->self);
-        $this->invocableInspector = new InvocableInspector();
-        $this->invoker = new Invoker();
+        $this->stub = $this->container->stubFactory->create(null, null)->setSelf($this->self);
         $this->subject = new GeneratorAnswerBuilder(
             $this->stub,
-            $this->invocableInspector,
-            $this->invoker
+            $this->container->invocableInspector,
+            $this->container->invoker
         );
 
         $this->answer = $this->subject->answer();

@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Mock;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Exception\MockGenerationFailedException;
-use Eloquent\Phony\Mock\Handle\HandleFactory;
-use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestClassI;
@@ -22,12 +20,11 @@ class MockFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->labelSequencer = new Sequencer();
-        $this->generator = MockGenerator::instance();
-        $this->handleFactory = HandleFactory::instance();
-        $this->subject = new MockFactory($this->labelSequencer, $this->generator, $this->handleFactory);
+        $this->container = new FacadeContainer();
+        $this->subject = $this->container->mockFactory;
 
-        $this->builderFactory = MockBuilderFactory::instance();
+        $this->builderFactory = $this->container->mockBuilderFactory;
+        $this->handleFactory = $this->container->handleFactory;
     }
 
     public function testCreateMockClass()
@@ -79,8 +76,8 @@ class MockFactoryTest extends TestCase
     public function testCreateMockClassFailureSyntax()
     {
         $this->subject = new MockFactory(
-            $this->labelSequencer,
-            new TestMockGenerator('{'),
+            $this->container->mockLabelSequence,
+            new TestMockGenerator('{', $this->container->functionSignatureInspector),
             $this->handleFactory
         );
         $builder = $this->builderFactory->create();

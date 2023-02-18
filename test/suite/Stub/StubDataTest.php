@@ -6,21 +6,16 @@ namespace Eloquent\Phony\Stub;
 
 use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
-use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Exception\FinalReturnTypeException;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestFinalClass;
 use Exception;
+use Generator;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -29,36 +24,29 @@ class StubDataTest extends TestCase
 {
     protected function setUp(): void
     {
+        $this->container = new FacadeContainer();
+
         $this->callback = 'implode';
         $this->label = 'label';
         $this->defaultAnswerCallback = function ($stub) {
             $stub->returns('default answer');
         };
-        $this->matcherFactory = MatcherFactory::instance();
-        $this->matcherVerifier = new MatcherVerifier();
-        $this->invoker = new Invoker();
-        $this->invocableInspector = new InvocableInspector();
-        $this->emptyValueFactory = new EmptyValueFactory(FeatureDetector::instance());
-        $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
-        $this->exporter = InlineExporter::instance();
+
         $this->subject = new StubData(
             $this->callback,
             $this->label,
             $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->invoker,
+            $this->container->invocableInspector,
+            $this->container->emptyValueFactory,
+            $this->container->generatorAnswerBuilderFactory,
+            $this->container->exporter
         );
 
         $this->self = (object) [];
         $this->subject->setSelf($this->self);
-
-        $this->emptyValueFactory->setStubVerifierFactory(StubVerifierFactory::instance());
-        $this->emptyValueFactory->setMockBuilderFactory(MockBuilderFactory::instance());
 
         $this->callsA = [];
         $callsA = &$this->callsA;
@@ -158,13 +146,13 @@ class StubDataTest extends TestCase
             $this->callback,
             $this->label,
             $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->invoker,
+            $this->container->invocableInspector,
+            $this->container->emptyValueFactory,
+            $this->container->generatorAnswerBuilderFactory,
+            $this->container->exporter
         );
 
         $this->assertFalse($this->subject->isAnonymous());
@@ -209,7 +197,7 @@ class StubDataTest extends TestCase
             $this->subject,
             $this->subject
                 ->returns()
-                ->with('a', $this->matcherFactory->equalTo('b'))
+                ->with('a', $this->container->matcherFactory->equalTo('b'))
                 ->returns('x')
         );
         $this->assertSame('x', call_user_func($this->subject, 'a', 'b'));
@@ -405,13 +393,13 @@ class StubDataTest extends TestCase
             null,
             $this->label,
             $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->invoker,
+            $this->container->invocableInspector,
+            $this->container->emptyValueFactory,
+            $this->container->generatorAnswerBuilderFactory,
+            $this->container->exporter
         );
         $self = (object) [];
         $subject->setSelf($self);
@@ -732,13 +720,13 @@ class StubDataTest extends TestCase
             null,
             $this->label,
             $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->invoker,
+            $this->container->invocableInspector,
+            $this->container->emptyValueFactory,
+            $this->container->generatorAnswerBuilderFactory,
+            $this->container->exporter
         );
         $self = (object) [];
         $subject->setSelf($self);
@@ -774,13 +762,13 @@ class StubDataTest extends TestCase
             $this->callbackA,
             $this->label,
             $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->invoker,
+            $this->container->invocableInspector,
+            $this->container->emptyValueFactory,
+            $this->container->generatorAnswerBuilderFactory,
+            $this->container->exporter
         );
         $this->subject->setSelf($this->self);
 
@@ -863,13 +851,13 @@ class StubDataTest extends TestCase
             $callback,
             $this->label,
             $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->invoker,
+            $this->container->invocableInspector,
+            $this->container->emptyValueFactory,
+            $this->container->generatorAnswerBuilderFactory,
+            $this->container->exporter
         );
         $subject->setSelf($self);
         $subject->forwards();
@@ -883,13 +871,13 @@ class StubDataTest extends TestCase
             $this->referenceCallback,
             $this->label,
             $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->invoker,
+            $this->container->invocableInspector,
+            $this->container->emptyValueFactory,
+            $this->container->generatorAnswerBuilderFactory,
+            $this->container->exporter
         );
         $a = null;
         $b = null;
@@ -934,13 +922,13 @@ class StubDataTest extends TestCase
             eval("return function (): $type {};"),
             $this->label,
             $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->invoker,
+            $this->container->invocableInspector,
+            $this->container->emptyValueFactory,
+            $this->container->generatorAnswerBuilderFactory,
+            $this->container->exporter
         );
         $this->subject->returns();
 
@@ -958,18 +946,18 @@ class StubDataTest extends TestCase
     public function testReturnsWithDefaultValueAndFinalClassTypeHint()
     {
         $callback = function (): TestFinalClass {};
-        $callbackString = $this->exporter->exportCallable($callback);
+        $callbackString = $this->container->exporter->exportCallable($callback);
         $subject = new StubData(
             $callback,
             $this->label,
             $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->invoker,
+            $this->container->invocableInspector,
+            $this->container->emptyValueFactory,
+            $this->container->generatorAnswerBuilderFactory,
+            $this->container->exporter
         );
         $subject->returns();
 
@@ -1215,15 +1203,47 @@ class StubDataTest extends TestCase
             null,
             '',
             $this->defaultAnswerCallback,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->invoker,
-            $this->invocableInspector,
-            $this->emptyValueFactory,
-            $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->invoker,
+            $this->container->invocableInspector,
+            $this->container->emptyValueFactory,
+            $this->container->generatorAnswerBuilderFactory,
+            $this->container->exporter
         );
 
         $this->assertSame('default answer', $stub());
+    }
+
+    public function testGenerates()
+    {
+        $builder = $this->subject->generates(['a' => 'b', 'c']);
+        $generator = call_user_func($this->subject);
+        $actual = iterator_to_array($generator);
+
+        $this->assertInstanceOf(GeneratorAnswerBuilder::class, $builder);
+        $this->assertInstanceOf(Generator::class, $generator);
+        $this->assertSame($this->subject, $builder->returns());
+        $this->assertSame(['a' => 'b', 0 => 'c'], $actual);
+
+        $generator = call_user_func($this->subject);
+        $actual = iterator_to_array($generator);
+
+        $this->assertInstanceOf(Generator::class, $generator);
+        $this->assertSame($this->subject, $builder->returns());
+        $this->assertSame(['a' => 'b', 0 => 'c'], $actual);
+    }
+
+    public function testGeneratesWithMultipleArguments()
+    {
+        $builder = $this->subject->generates(['a'], ['b']);
+        $actualA = iterator_to_array(call_user_func($this->subject));
+        $actualB = iterator_to_array(call_user_func($this->subject));
+        $actualC = iterator_to_array(call_user_func($this->subject));
+
+        $this->assertInstanceOf(GeneratorAnswerBuilder::class, $builder);
+        $this->assertSame(['a'], $actualA);
+        $this->assertSame(['b'], $actualB);
+        $this->assertSame(['b'], $actualC);
     }
 }

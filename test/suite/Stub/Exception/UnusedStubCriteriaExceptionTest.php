@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub\Exception;
 
-use Eloquent\Phony\Matcher\MatcherFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
 
 class UnusedStubCriteriaExceptionTest extends TestCase
 {
     public function testException()
     {
-        $matcherFactory = MatcherFactory::instance();
+        $container = new FacadeContainer();
+        $matcherFactory = $container->matcherFactory;
         $criteria = [$matcherFactory->equalTo('a'), $matcherFactory->equalTo('b')];
         $exception = new UnusedStubCriteriaException($criteria);
 

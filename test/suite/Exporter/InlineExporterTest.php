@@ -6,16 +6,8 @@ namespace Eloquent\Phony\Exporter;
 
 use AllowDynamicProperties;
 use ClassWithProperty;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
-use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Spy\GeneratorSpyMap;
-use Eloquent\Phony\Spy\SpyFactory;
-use Eloquent\Phony\Spy\SpyVerifierFactory;
-use Eloquent\Phony\Stub\StubFactory;
-use Eloquent\Phony\Stub\StubVerifierFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\Properties\TestBaseClass;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\TestClassA;
@@ -33,23 +25,21 @@ class InlineExporterTest extends TestCase
 {
     protected function setUp(): void
     {
+        $this->container = new FacadeContainer();
+
         $this->depth = -1;
-        $this->idSequencer = new Sequencer();
-        $this->generatorSpyMap = GeneratorSpyMap::instance();
-        $this->invocableInspector = InvocableInspector::instance();
-        $this->featureDetector = FeatureDetector::instance();
         $this->subject = new InlineExporter(
             $this->depth,
-            $this->idSequencer,
-            $this->generatorSpyMap,
-            $this->invocableInspector
+            $this->container->idSequence,
+            $this->container->generatorSpyMap,
+            $this->container->invocableInspector
         );
 
-        $this->mockBuilderFactory = MockBuilderFactory::instance();
-        $this->spyFactory = SpyFactory::instance();
-        $this->stubFactory = StubFactory::instance();
-        $this->spyVerifierFactory = SpyVerifierFactory::instance();
-        $this->stubVerifierFactory = StubVerifierFactory::instance();
+        $this->mockBuilderFactory = $this->container->mockBuilderFactory;
+        $this->spyFactory = $this->container->spyFactory;
+        $this->stubFactory = $this->container->stubFactory;
+        $this->spyVerifierFactory = $this->container->spyVerifierFactory;
+        $this->stubVerifierFactory = $this->container->stubVerifierFactory;
     }
 
     public function testSetDepth()

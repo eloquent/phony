@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Spy;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Call\CallFactory;
-use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -16,18 +14,8 @@ class SpyFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->labelSequencer = new Sequencer();
-        $this->callFactory = CallFactory::instance();
-        $this->invoker = new Invoker();
-        $this->generatorSpyFactory = GeneratorSpyFactory::instance();
-        $this->iterableSpyFactory = IterableSpyFactory::instance();
-        $this->subject = new SpyFactory(
-            $this->labelSequencer,
-            $this->callFactory,
-            $this->invoker,
-            $this->generatorSpyFactory,
-            $this->iterableSpyFactory
-        );
+        $this->container = new FacadeContainer();
+        $this->subject = $this->container->spyFactory;
     }
 
     public function testCreate()
@@ -36,10 +24,10 @@ class SpyFactoryTest extends TestCase
         $expected = new SpyData(
             $callback,
             '0',
-            $this->callFactory,
-            $this->invoker,
-            $this->generatorSpyFactory,
-            $this->iterableSpyFactory
+            $this->container->callFactory,
+            $this->container->invoker,
+            $this->container->generatorSpyFactory,
+            $this->container->iterableSpyFactory
         );
         $actual = $this->subject->create($callback);
 

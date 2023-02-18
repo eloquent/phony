@@ -20,7 +20,7 @@ class TestCallFactory extends CallFactory
 
         parent::__construct(
             $this->eventFactory,
-            Invoker::instance()
+            new Invoker()
         );
     }
 

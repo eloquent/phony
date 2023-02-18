@@ -19,9 +19,8 @@ use Countable;
 use DirectoryIterator;
 use DivisionByZeroError;
 use DomainException;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Mock;
-use Eloquent\Phony\Reflection\FeatureDetector;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\Php81\TestBackedEnum;
 use Eloquent\Phony\Test\Php81\TestBasicEnum;
 use Eloquent\Phony\Test\Php81\TestZeroCaseEnum;
@@ -92,9 +91,8 @@ class EmptyValueFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->subject = new EmptyValueFactory(FeatureDetector::instance());
-        $this->subject->setStubVerifierFactory(StubVerifierFactory::instance());
-        $this->subject->setMockBuilderFactory(MockBuilderFactory::instance());
+        $container = new FacadeContainer();
+        $this->subject = $container->emptyValueFactory;
     }
 
     private function createType($type)

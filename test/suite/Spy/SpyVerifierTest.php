@@ -5,31 +5,16 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Spy;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
-use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
-use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\AnyMatcher;
-use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Matcher\WildcardMatcher;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
-use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
+use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\Cardinality;
-use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Error;
 use Exception;
 use InvalidArgumentException;
@@ -41,57 +26,37 @@ class SpyVerifierTest extends TestCase
 {
     protected function setUp(): void
     {
+        $this->container = FacadeContainer::withTestCallFactory();
+        $this->callFactory = $this->container->callFactory;
+        $this->eventFactory = $this->container->eventFactory;
+        $this->container->differenceEngine->setUseColor(false);
+        $this->container->assertionRenderer->setUseColor(false);
+
+        $this->callVerifierFactory = $this->container->callVerifierFactory;
+        $this->generatorVerifierFactory = $this->container->generatorVerifierFactory;
+        $this->iterableVerifierFactory = $this->container->iterableVerifierFactory;
+        $this->matcherFactory = $this->container->matcherFactory;
+
         $this->callback = 'implode';
-        $this->callFactory = new TestCallFactory();
-        $this->invoker = Invoker::instance();
-        $this->generatorSpyFactory = GeneratorSpyFactory::instance();
-        $this->iterableSpyFactory = IterableSpyFactory::instance();
         $this->label = 'label';
         $this->spy = new SpyData(
             $this->callback,
             $this->label,
-            $this->callFactory,
-            $this->invoker,
-            $this->generatorSpyFactory,
-            $this->iterableSpyFactory
+            $this->container->callFactory,
+            $this->container->invoker,
+            $this->container->generatorSpyFactory,
+            $this->container->iterableSpyFactory
         );
 
-        $this->idSequencer = new Sequencer();
-        $this->invocableInspector = new InvocableInspector();
-        $this->featureDetector = FeatureDetector::instance();
-        $this->generatorSpyMap = GeneratorSpyMap::instance();
-        $this->exporter = new InlineExporter(
-            1,
-            $this->idSequencer,
-            $this->generatorSpyMap,
-            $this->invocableInspector
-        );
-        $this->matcherFactory =
-            new MatcherFactory(AnyMatcher::instance(), WildcardMatcher::instance(), $this->exporter);
-        $this->matcherVerifier = new MatcherVerifier();
-        $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
-        $this->iterableVerifierFactory = IterableVerifierFactory::instance();
-        $this->callVerifierFactory = CallVerifierFactory::instance();
-        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
-        $this->differenceEngine = new DifferenceEngine($this->featureDetector);
-        $this->differenceEngine->setUseColor(false);
-        $this->assertionRenderer = new AssertionRenderer(
-            $this->matcherVerifier,
-            $this->exporter,
-            $this->differenceEngine,
-            $this->featureDetector
-        );
-        $this->assertionRenderer->setUseColor(false);
         $this->subject = new SpyVerifier(
             $this->spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer
         );
 
         $this->generatorVerifierFactory->setCallVerifierFactory($this->callVerifierFactory);
@@ -179,7 +144,37 @@ class SpyVerifierTest extends TestCase
 
         $this->callFactory->reset();
 
-        $this->featureDetector = new FeatureDetector();
+        $this->receivedExceptionA = new RuntimeException('Consequences will never be the same.');
+        $this->receivedExceptionB = new RuntimeException('Because I backtraced it.');
+        $this->generatorCalledEvent = $this->eventFactory->createCalled();
+        $this->generatedEvent = $this->eventFactory->createReturned(GeneratorFactory::createEmpty());
+        $this->generatorEventA = $this->eventFactory->createProduced('m', 'n');
+        $this->generatorEventB = $this->eventFactory->createReceived('o');
+        $this->generatorEventC = $this->eventFactory->createProduced('p', 'q');
+        $this->generatorEventD = $this->eventFactory->createReceivedException($this->receivedExceptionA);
+        $this->generatorEventE = $this->eventFactory->createProduced('r', 's');
+        $this->generatorEventF = $this->eventFactory->createReceived('t');
+        $this->generatorEventG = $this->eventFactory->createProduced('u', 'v');
+        $this->generatorEventH = $this->eventFactory->createReceivedException($this->receivedExceptionB);
+        $this->generatorEvents = [
+            $this->generatorEventA,
+            $this->generatorEventB,
+            $this->generatorEventC,
+            $this->generatorEventD,
+            $this->generatorEventE,
+            $this->generatorEventF,
+            $this->generatorEventG,
+            $this->generatorEventH,
+        ];
+        $this->generatorEndEvent = $this->eventFactory->createReturned(null);
+        $this->generatorCall = $this->callFactory->create(
+            $this->generatorCalledEvent,
+            $this->generatedEvent,
+            $this->generatorEvents,
+            $this->generatorEndEvent
+        );
+
+        $this->callFactory->reset();
     }
 
     public function testConstructor()
@@ -418,20 +413,20 @@ class SpyVerifierTest extends TestCase
         $spy = new SpyData(
             null,
             '111',
-            $this->callFactory,
-            $this->invoker,
-            $this->generatorSpyFactory,
-            $this->iterableSpyFactory
+            $this->container->callFactory,
+            $this->container->invoker,
+            $this->container->generatorSpyFactory,
+            $this->container->iterableSpyFactory
         );
         $verifier = new SpyVerifier(
             $spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer
         );
         $verifier->invokeWith(['a']);
         $verifier->invoke('b', 'c');
@@ -472,20 +467,20 @@ class SpyVerifierTest extends TestCase
         $spy = new SpyData(
             $callback,
             '111',
-            $this->callFactory,
-            $this->invoker,
-            $this->generatorSpyFactory,
-            $this->iterableSpyFactory
+            $this->container->callFactory,
+            $this->container->invoker,
+            $this->container->generatorSpyFactory,
+            $this->container->iterableSpyFactory
         );
         $verifier = new SpyVerifier(
             $spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer
         );
         try {
             $verifier->invokeWith(['a']);
@@ -532,20 +527,20 @@ class SpyVerifierTest extends TestCase
         $spy = new SpyData(
             $callback,
             '111',
-            $this->callFactory,
-            $this->invoker,
-            $this->generatorSpyFactory,
-            $this->iterableSpyFactory
+            $this->container->callFactory,
+            $this->container->invoker,
+            $this->container->generatorSpyFactory,
+            $this->container->iterableSpyFactory
         );
         $verifier = new SpyVerifier(
             $spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer
         );
         $value = null;
         $arguments = [&$value];
@@ -562,20 +557,20 @@ class SpyVerifierTest extends TestCase
         $spy = new SpyData(
             $callback,
             '111',
-            $this->callFactory,
-            $this->invoker,
-            $this->generatorSpyFactory,
-            $this->iterableSpyFactory
+            $this->container->callFactory,
+            $this->container->invoker,
+            $this->container->generatorSpyFactory,
+            $this->container->iterableSpyFactory
         );
         $verifier = new SpyVerifier(
             $spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer
         );
         $verifier->stopRecording()->invokeWith();
         $this->callFactory->reset();
@@ -591,20 +586,20 @@ class SpyVerifierTest extends TestCase
         $spy = new SpyData(
             $callback,
             '111',
-            $this->callFactory,
-            $this->invoker,
-            $this->generatorSpyFactory,
-            $this->iterableSpyFactory
+            $this->container->callFactory,
+            $this->container->invoker,
+            $this->container->generatorSpyFactory,
+            $this->container->iterableSpyFactory
         );
         $verifier = new SpyVerifier(
             $spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer
         );
         $verifier->stopRecording()->invoke('a');
         $verifier->startRecording()->invoke('b');
@@ -1570,7 +1565,7 @@ class SpyVerifierTest extends TestCase
 
     public function testThrewWithInstanceHandle()
     {
-        $builder = MockBuilderFactory::instance()->create(RuntimeException::class);
+        $builder = $this->container->mockBuilderFactory->create(RuntimeException::class);
         $exception = $builder->get();
         $threwEvent = $this->callEventFactory->createThrew($exception);
         $call = $this->callFactory->create(
@@ -1926,5 +1921,114 @@ class SpyVerifierTest extends TestCase
         $this->assertEquals(new Cardinality(0, 4), $this->subject->atMost(4)->cardinality());
         $this->assertEquals(new Cardinality(5, 6), $this->subject->between(5, 6)->cardinality());
         $this->assertEquals(new Cardinality(5, 6, true), $this->subject->between(5, 6)->always()->cardinality());
+    }
+
+    public function testReturnedFailureWithGenerator()
+    {
+        $this->subject->addCall($this->generatorCall);
+
+        $this->expectException(AssertionException::class);
+        $this->subject->returned(null);
+    }
+
+    public function testThrewFailureWithGenerator()
+    {
+        $this->generatorEndEvent = $this->eventFactory->createReturned(null);
+        $this->generatorCall = $this->callFactory->create(
+            $this->generatorCalledEvent,
+            $this->generatedEvent,
+            $this->generatorEvents,
+            $this->eventFactory->createThrew($this->exceptionA)
+        );
+        $this->subject->addCall($this->generatorCall);
+
+        $this->expectException(AssertionException::class);
+        $this->subject->threw();
+    }
+
+    public function testCheckGenerated()
+    {
+        $this->assertFalse((bool) $this->subject->checkGenerated());
+        $this->assertTrue((bool) $this->subject->never()->checkGenerated());
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertFalse((bool) $this->subject->checkGenerated());
+        $this->assertTrue((bool) $this->subject->never()->checkGenerated());
+
+        $this->subject->addCall($this->generatorCall);
+
+        $this->assertTrue((bool) $this->subject->checkGenerated());
+        $this->assertTrue((bool) $this->subject->once()->checkGenerated());
+    }
+
+    public function testGenerated()
+    {
+        $this->assertEquals(
+            $this->generatorVerifierFactory->create($this->spy, []),
+            $this->subject->never()->generated()
+        );
+
+        $this->subject->addCall($this->generatorCall);
+
+        $this->assertEquals(
+            $this->generatorVerifierFactory->create($this->spy, [$this->generatorCall]),
+            $this->subject->generated()
+        );
+    }
+
+    public function testGeneratedFailure()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->expectException(AssertionException::class);
+        $this->subject->generated();
+    }
+
+    public function testGeneratedFailureWithNoCalls()
+    {
+        $this->expectException(AssertionException::class);
+        $this->subject->generated();
+    }
+
+    public function testCheckAlwaysGenerated()
+    {
+        $this->assertFalse((bool) $this->subject->always()->checkGenerated());
+
+        $this->subject->setCalls($this->calls);
+
+        $this->assertFalse((bool) $this->subject->always()->checkGenerated());
+
+        $this->subject->setCalls([$this->generatorCall, $this->generatorCall]);
+
+        $this->assertTrue((bool) $this->subject->always()->checkGenerated());
+    }
+
+    public function testAlwaysGenerated()
+    {
+        $this->subject->setCalls([$this->generatorCall, $this->generatorCall]);
+        $expected =
+            $this->generatorVerifierFactory->create($this->spy, [$this->generatorCall, $this->generatorCall]);
+
+        $this->assertEquals($expected, $this->subject->always()->generated());
+    }
+
+    public function testAlwaysGeneratedFailure()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->expectException(AssertionException::class);
+        $this->subject->always()->generated();
+    }
+
+    public function testAlwaysGeneratedFailureWithNoMatcher()
+    {
+        $this->subject->setCalls($this->calls);
+        $this->expectException(AssertionException::class);
+        $this->subject->always()->generated();
+    }
+
+    public function testAlwaysGeneratedFailureWithNoCalls()
+    {
+        $this->expectException(AssertionException::class);
+        $this->subject->always()->generated();
     }
 }

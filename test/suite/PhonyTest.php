@@ -13,10 +13,8 @@ use Eloquent\Phony\Facade as TestNamespace;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\InstanceOfMatcher;
-use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilder;
-use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Handle\StaticHandle;
 use Eloquent\Phony\Mock\Mock;
@@ -33,9 +31,6 @@ class PhonyTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->handleFactory = HandleFactory::instance();
-        $this->matcherFactory = MatcherFactory::instance();
-
         $this->eventA = new TestEvent(0, 0.0);
         $this->eventB = new TestEvent(1, 1.0);
     }

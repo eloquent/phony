@@ -3,7 +3,6 @@
 use function Eloquent\Phony\anyOrder;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use function Eloquent\Phony\equalTo;
-use Eloquent\Phony\Exporter\InlineExporter;
 use function Eloquent\Phony\inOrder;
 use function Eloquent\Phony\mock;
 use Eloquent\Phony\Mock\Exception\AnonymousClassException;
@@ -25,6 +24,7 @@ use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use function Eloquent\Phony\stubGlobal;
 use Eloquent\Phony\Test;
 use Eloquent\Phony\Test\AbstractTestClassWithFinalReturnType;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\Php81\TestBackedEnum;
 use Eloquent\Phony\Test\Php81\TestBasicEnum;
 use Eloquent\Phony\Test\Php81\TestClassWithReadonlyProperties;
@@ -67,7 +67,8 @@ class FunctionalTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->exporter = InlineExporter::instance();
+        $container = new FacadeContainer();
+        $this->exporter = $container->exporter;
 
         setUseColor(false);
     }

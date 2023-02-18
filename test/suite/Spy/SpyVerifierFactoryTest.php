@@ -5,18 +5,8 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Spy;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
-use Eloquent\Phony\Call\CallFactory;
-use Eloquent\Phony\Call\CallVerifierFactory;
-use Eloquent\Phony\Hook\FunctionHookManager;
-use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\SpyVerifierFactory as TestNamespace;
-use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\IterableVerifierFactory;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -26,47 +16,22 @@ class SpyVerifierFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->spyFactory = new SpyFactory(
-            new Sequencer(),
-            CallFactory::instance(),
-            Invoker::instance(),
-            GeneratorSpyFactory::instance(),
-            IterableSpyFactory::instance()
-        );
-        $this->matcherFactory = MatcherFactory::instance();
-        $this->matcherVerifier = new MatcherVerifier();
-        $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
-        $this->iterableVerifierFactory = IterableVerifierFactory::instance();
-        $this->callVerifierFactory = CallVerifierFactory::instance();
-        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
-        $this->assertionRenderer = AssertionRenderer::instance();
-        $this->functionHookManager = FunctionHookManager::instance();
-        $this->subject = new SpyVerifierFactory(
-            $this->spyFactory,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->functionHookManager
-        );
+        $this->container = new FacadeContainer();
+        $this->subject = $this->container->spyVerifierFactory;
     }
 
     public function testCreate()
     {
-        $spy = $this->spyFactory->create(null)->setLabel('0');
+        $spy = $this->container->spyFactory->create(null)->setLabel('0');
         $expected = new SpyVerifier(
             $spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer
         );
         $actual = $this->subject->create($spy);
 
@@ -77,16 +42,16 @@ class SpyVerifierFactoryTest extends TestCase
     public function testCreateFromCallback()
     {
         $callback = function () {};
-        $spy = $this->spyFactory->create($callback)->setLabel('1');
+        $spy = $this->container->spyFactory->create($callback)->setLabel('1');
         $expected = new SpyVerifier(
             $spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer
         );
         $actual = $this->subject->createFromCallback($callback);
 

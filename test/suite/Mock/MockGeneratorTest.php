@@ -6,10 +6,9 @@ namespace Eloquent\Phony\Mock;
 
 use AllowDynamicProperties;
 use Countable;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
-use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestTraitA;
 use Eloquent\Phony\Test\TestTraitB;
@@ -23,9 +22,8 @@ class MockGeneratorTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->labelSequencer = new Sequencer();
-        $this->signatureInspector = FunctionSignatureInspector::instance();
-        $this->subject = new MockGenerator($this->labelSequencer, $this->signatureInspector);
+        $this->container = new FacadeContainer(mockClassLabelSequence: new Sequencer());
+        $this->subject = $this->container->mockGenerator;
     }
 
     public function classNameData()
@@ -108,7 +106,7 @@ class MockGeneratorTest extends TestCase
             }
         }
 
-        $factory = MockBuilderFactory::instance();
+        $factory = $this->container->mockBuilderFactory;
         $builder = require $fixturePath . '/' . $testName . '/builder.php';
         $expected = file_get_contents($fixturePath . '/' . $testName . '/expected.php');
         $expected = str_replace("\n", PHP_EOL, $expected);

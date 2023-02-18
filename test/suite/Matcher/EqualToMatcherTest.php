@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Matcher;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Phony;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\Properties\TestBaseClass;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
 use Eloquent\Phony\Test\Properties\TestDerivedClassB;
@@ -21,8 +20,10 @@ class EqualToMatcherTest extends TestCase
 {
     protected function setUp($value = '<string>'): void
     {
+        $this->container = new FacadeContainer();
+        $this->exporter = $this->container->exporter;
+
         $this->value = 'x';
-        $this->exporter = InlineExporter::instance();
         $this->subject = new EqualToMatcher($this->value, true, $this->exporter);
     }
 
@@ -450,7 +451,7 @@ class EqualToMatcherTest extends TestCase
     public function testMockMatching()
     {
         $className = 'PhonyMockEqualToMatcherMatchesMocks';
-        $builder = MockBuilderFactory::instance()->create(TestBaseClass::class)
+        $builder = $this->container->mockBuilderFactory->create(TestBaseClass::class)
             ->named($className);
         $mockA1 = $builder->full();
         Phony::on($mockA1)->setLabel('a');

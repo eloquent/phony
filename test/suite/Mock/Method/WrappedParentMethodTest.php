@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Mock\Method;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
-use Eloquent\Phony\Mock\Handle\HandleFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
@@ -16,13 +15,14 @@ class WrappedParentMethodTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->mockBuilderFactory = MockBuilderFactory::instance();
+        $container = new FacadeContainer();
+        $this->mockBuilderFactory = $container->mockBuilderFactory;
+        $this->mockBuilder = $this->mockBuilderFactory->create();
+        $this->handleFactory = $container->handleFactory;
 
         $this->callParentMethod = new ReflectionMethod($this, 'setUp');
         $this->method = new ReflectionMethod(TestClassA::class . '::testClassAMethodE');
-        $this->mockBuilder = $this->mockBuilderFactory->create();
         $this->mock = $this->mockBuilder->partial();
-        $this->handleFactory = HandleFactory::instance();
         $this->handle = $this->handleFactory->instanceHandle($this->mock);
         $this->subject = new WrappedParentMethod($this->callParentMethod, $this->method, $this->handle);
     }

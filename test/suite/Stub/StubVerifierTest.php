@@ -5,20 +5,14 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Stub;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Call\CallVerifierFactory;
-use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Spy\SpyFactory;
-use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
-use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Exception;
+use Generator;
 use PHPUnit\Framework\TestCase;
 
 #[AllowDynamicProperties]
@@ -26,31 +20,24 @@ class StubVerifierTest extends TestCase
 {
     protected function setUp(): void
     {
+        $this->container = new FacadeContainer();
+
         $this->callback = 'implode';
         $this->label = 'label';
-        $this->stubFactory = StubFactory::instance();
-        $this->stub = $this->stubFactory->create($this->callback, null)->setLabel($this->label);
-        $this->spyFactory = SpyFactory::instance();
-        $this->spy = $this->spyFactory->create($this->stub);
-        $this->matcherFactory = MatcherFactory::instance();
-        $this->matcherVerifier = new MatcherVerifier();
-        $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
-        $this->iterableVerifierFactory = IterableVerifierFactory::instance();
-        $this->callVerifierFactory = CallVerifierFactory::instance();
-        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->assertionRenderer = AssertionRenderer::instance();
-        $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
+        $this->stub = $this->container->stubFactory->create($this->callback, null)->setLabel($this->label);
+        $this->spy = $this->container->spyFactory->create($this->stub);
+
         $this->subject = new StubVerifier(
             $this->stub,
             $this->spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->generatorAnswerBuilderFactory
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer,
+            $this->container->generatorAnswerBuilderFactory
         );
 
         $this->self = (object) [];
@@ -195,7 +182,7 @@ class StubVerifierTest extends TestCase
             $this->subject,
             $this->subject
                 ->returns()
-                ->with('a', $this->matcherFactory->equalTo('b'))
+                ->with('a', $this->container->matcherFactory->equalTo('b'))
                 ->returns('x')
         );
         $this->assertSame('x', call_user_func($this->subject, 'a', 'b'));
@@ -680,19 +667,19 @@ class StubVerifierTest extends TestCase
 
     public function testForwards()
     {
-        $this->stub = $this->stubFactory->create($this->callbackA, null);
-        $this->spy = $this->spyFactory->create($this->stub);
+        $this->stub = $this->container->stubFactory->create($this->callbackA, null);
+        $this->spy = $this->container->spyFactory->create($this->stub);
         $this->subject = new StubVerifier(
             $this->stub,
             $this->spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->generatorAnswerBuilderFactory
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer,
+            $this->container->generatorAnswerBuilderFactory
         );
         $this->subject->setSelf($this->self);
 
@@ -771,20 +758,20 @@ class StubVerifierTest extends TestCase
      */
     public function testForwardsSelfParameterAutoDetection($callback, $self, $arguments, $expected)
     {
-        $stub = $this->stubFactory->create($callback, null);
+        $stub = $this->container->stubFactory->create($callback, null);
         $stub->forwards();
-        $spy = $this->spyFactory->create($stub);
+        $spy = $this->container->spyFactory->create($stub);
         $subject = new StubVerifier(
             $stub,
             $spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->generatorAnswerBuilderFactory
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer,
+            $this->container->generatorAnswerBuilderFactory
         );
         $subject->setSelf($self);
 
@@ -793,19 +780,19 @@ class StubVerifierTest extends TestCase
 
     public function testForwardsWithReferenceParameters()
     {
-        $this->stub = $this->stubFactory->create($this->referenceCallback, null);
-        $this->spy = $this->spyFactory->create($this->stub);
+        $this->stub = $this->container->stubFactory->create($this->referenceCallback, null);
+        $this->spy = $this->container->spyFactory->create($this->stub);
         $this->subject = new StubVerifier(
             $this->stub,
             $this->spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->generatorAnswerBuilderFactory
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer,
+            $this->container->generatorAnswerBuilderFactory
         );
         $this->subject->setSelf($this->self);
         $a = null;
@@ -1031,5 +1018,28 @@ class StubVerifierTest extends TestCase
         $this->assertSame('b', $b);
         $this->assertSame('c', $c);
         $this->assertSame('d', $d);
+    }
+
+    public function testGenerates()
+    {
+        $builder = $this->subject->generates(['a' => 'b', 'c']);
+        $generator = call_user_func($this->subject);
+        $actual = iterator_to_array($generator);
+
+        $this->assertInstanceOf(GeneratorAnswerBuilder::class, $builder);
+        $this->assertInstanceOf(Generator::class, $generator);
+        $this->assertSame($this->subject, $builder->returns());
+        $this->assertSame(['a' => 'b', 0 => 'c'], $actual);
+    }
+
+    public function testGeneratesWithMultipleArguments()
+    {
+        $builder = $this->subject->generates(['a'], ['b']);
+        $actualA = iterator_to_array(call_user_func($this->subject));
+        $actualB = iterator_to_array(call_user_func($this->subject));
+
+        $this->assertInstanceOf(GeneratorAnswerBuilder::class, $builder);
+        $this->assertSame(['a'], $actualA);
+        $this->assertSame(['b'], $actualB);
     }
 }

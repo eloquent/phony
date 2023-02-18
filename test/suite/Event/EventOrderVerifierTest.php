@@ -5,19 +5,9 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Event;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Call\CallVerifierFactory;
-use Eloquent\Phony\Difference\DifferenceEngine;
-use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Spy\GeneratorSpyMap;
-use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -27,39 +17,22 @@ class EventOrderVerifierTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->callVerifierFactory = CallVerifierFactory::instance();
-        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
-        $this->invocableInspector = InvocableInspector::instance();
-        $this->matcherVerifier = MatcherVerifier::instance();
-        $this->idSequencer = new Sequencer();
-        $this->featureDetector = FeatureDetector::instance();
-        $this->generatorSpyMap = GeneratorSpyMap::instance();
-        $this->inlineExporter = new InlineExporter(
-            1,
-            $this->idSequencer,
-            $this->generatorSpyMap,
-            $this->invocableInspector
-        );
-        $this->differenceEngine = DifferenceEngine::instance();
-        $this->assertionRenderer = new AssertionRenderer(
-            $this->matcherVerifier,
-            $this->inlineExporter,
-            $this->differenceEngine,
-            $this->featureDetector
-        );
-        $this->assertionRenderer->setUseColor(false);
-        $this->subject = new EventOrderVerifier($this->assertionRecorder, $this->assertionRenderer);
+        $this->container = FacadeContainer::withTestCallFactory();
+        $this->callFactory = $this->container->callFactory;
+        $this->eventFactory = $this->container->eventFactory;
+        $this->container->assertionRenderer->setUseColor(false);
+        $this->container->differenceEngine->setUseColor(false);
 
-        $this->callFactory = new TestCallFactory();
-        $this->callEventFactory = $this->callFactory->eventFactory();
+        $this->subject = $this->container->eventOrderVerifier;
 
-        $this->callACalled = $this->callEventFactory->createCalled('implode', Arguments::create('a'));
-        $this->callAResponse = $this->callEventFactory->createReturned(null);
-        $this->callBCalled = $this->callEventFactory->createCalled('implode', Arguments::create('b'));
-        $this->callCCalled = $this->callEventFactory->createCalled('implode', Arguments::create('c'));
-        $this->callCResponse = $this->callEventFactory->createReturned(null);
-        $this->callBResponse = $this->callEventFactory->createReturned(null);
+        $this->callVerifierFactory = $this->container->callVerifierFactory;
+
+        $this->callACalled = $this->eventFactory->createCalled('implode', Arguments::create('a'));
+        $this->callAResponse = $this->eventFactory->createReturned(null);
+        $this->callBCalled = $this->eventFactory->createCalled('implode', Arguments::create('b'));
+        $this->callCCalled = $this->eventFactory->createCalled('implode', Arguments::create('c'));
+        $this->callCResponse = $this->eventFactory->createReturned(null);
+        $this->callBResponse = $this->eventFactory->createReturned(null);
         $this->callA = $this->callFactory->create($this->callACalled, $this->callAResponse);
         $this->callB = $this->callFactory->create($this->callBCalled, $this->callBResponse);
         $this->callC = $this->callFactory->create($this->callCCalled, $this->callCResponse);

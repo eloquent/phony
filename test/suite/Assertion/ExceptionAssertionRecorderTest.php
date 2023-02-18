@@ -6,9 +6,9 @@ namespace Eloquent\Phony\Assertion;
 
 use AllowDynamicProperties;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Event\EventSequence;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -17,10 +17,9 @@ class ExceptionAssertionRecorderTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->subject = new ExceptionAssertionRecorder();
-
-        $this->callVerifierFactory = CallVerifierFactory::instance();
-        $this->subject->setCallVerifierFactory($this->callVerifierFactory);
+        $container = new FacadeContainer();
+        $this->subject = $container->assertionRecorder;
+        $this->callVerifierFactory = $container->callVerifierFactory;
     }
 
     public function testCreateSuccess()

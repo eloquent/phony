@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Matcher;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Hamcrest\HamcrestMatcherDriver;
 use Eloquent\Phony\Phony;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestMatcherA;
 use Eloquent\Phony\Test\TestMatcherB;
@@ -21,26 +21,27 @@ class MatcherFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->anyMatcher = new AnyMatcher();
-        $this->wildcardAnyMatcher = WildcardMatcher::instance();
-        $this->exporter = InlineExporter::instance();
-        $this->subject = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher, $this->exporter);
+        $this->container = new FacadeContainer();
+        $this->anyMatcher = $this->container->anyMatcher;
+        $this->wildcardMatcher = $this->container->wildcardMatcher;
+        $this->exporter = $this->container->exporter;
 
-        $this->driverA = new TestMatcherDriverA();
-        $this->driverB = new TestMatcherDriverB();
-        $this->drivers = [$this->driverA, $this->driverB];
+        $this->subject = $this->container->matcherFactory;
+
+        $this->hamcrestDriver = $this->container->hamcrestMatcherDriver;
+        $this->driverA = new TestMatcherDriverA($this->exporter);
+        $this->driverB = new TestMatcherDriverB($this->exporter);
     }
 
     public function testAddMatcherDriver()
     {
-        $this->subject = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher, $this->exporter);
         $this->subject->addMatcherDriver($this->driverA);
 
-        $this->assertSame([$this->driverA], $this->subject->drivers());
+        $this->assertSame([$this->hamcrestDriver, $this->driverA], $this->subject->drivers());
 
         $this->subject->addMatcherDriver($this->driverB);
 
-        $this->assertSame($this->drivers, $this->subject->drivers());
+        $this->assertSame([$this->hamcrestDriver, $this->driverA, $this->driverB], $this->subject->drivers());
     }
 
     public function testIsMatcher()
@@ -114,7 +115,7 @@ class MatcherFactoryTest extends TestCase
             new EqualToMatcher($valueC, true, $this->exporter),
             new EqualToMatcher($valueD, true, $this->exporter),
             new EqualToMatcher('a', false, $this->exporter),
-            WildcardMatcher::instance(),
+            $this->wildcardMatcher,
             $this->anyMatcher,
         ];
 
@@ -161,11 +162,7 @@ class MatcherFactoryTest extends TestCase
 
         $this->assertInstanceOf($class, $instance);
         $this->assertSame($instance, $class::instance());
-        $this->assertSame(
-            [
-                HamcrestMatcherDriver::instance(),
-            ],
-            $instance->drivers()
-        );
+        $this->assertArrayHasKey(0, $instance->drivers());
+        $this->assertInstanceOf(HamcrestMatcherDriver::class, $instance->drivers()[0]);
     }
 }

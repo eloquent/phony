@@ -5,25 +5,8 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Stub;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
-use Eloquent\Phony\Call\CallVerifierFactory;
-use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Hook\FunctionHookManager;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Invocation\Invoker;
-use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Spy\GeneratorSpyFactory;
-use Eloquent\Phony\Spy\IterableSpyFactory;
-use Eloquent\Phony\Spy\SpyFactory;
-use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\StubVerifierFactory as TestNamespace;
-use Eloquent\Phony\Test\TestCallFactory;
-use Eloquent\Phony\Verification\GeneratorVerifierFactory;
-use Eloquent\Phony\Verification\IterableVerifierFactory;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -33,63 +16,28 @@ class StubVerifierFactoryTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->callFactory = new TestCallFactory();
-        $this->spyFactory = new SpyFactory(
-            new Sequencer(),
-            $this->callFactory,
-            Invoker::instance(),
-            GeneratorSpyFactory::instance(),
-            IterableSpyFactory::instance()
-        );
-        $this->matcherFactory = MatcherFactory::instance();
-        $this->matcherVerifier = new MatcherVerifier();
-        $this->stubFactory = new StubFactory(
-            new Sequencer(),
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            Invoker::instance(),
-            InvocableInspector::instance(),
-            new EmptyValueFactory(FeatureDetector::instance()),
-            GeneratorAnswerBuilderFactory::instance(),
-            InlineExporter::instance()
-        );
-        $this->generatorVerifierFactory = GeneratorVerifierFactory::instance();
-        $this->iterableVerifierFactory = IterableVerifierFactory::instance();
-        $this->callVerifierFactory = CallVerifierFactory::instance();
-        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->assertionRenderer = AssertionRenderer::instance();
-        $this->generatorAnswerBuilderFactory = GeneratorAnswerBuilderFactory::instance();
-        $this->functionHookManager = FunctionHookManager::instance();
-        $this->subject = new StubVerifierFactory(
-            $this->stubFactory,
-            $this->spyFactory,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->generatorAnswerBuilderFactory,
-            $this->functionHookManager
-        );
+        $this->container = FacadeContainer::withTestCallFactory();
+        $this->callFactory = $this->container->callFactory;
+        $this->eventFactory = $this->container->eventFactory;
+
+        $this->subject = $this->container->stubVerifierFactory;
     }
 
     public function testCreate()
     {
-        $stub = $this->stubFactory->create(null, null);
-        $spy = $this->spyFactory->create($stub)->setLabel('1');
+        $stub = $this->container->stubFactory->create(null, null);
+        $spy = $this->container->spyFactory->create($stub)->setLabel('1');
         $expected = new StubVerifier(
             $stub,
             $spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->generatorAnswerBuilderFactory
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer,
+            $this->container->generatorAnswerBuilderFactory
         );
         $expected->setSelf($expected);
         $actual = $this->subject->create($stub);
@@ -101,19 +49,19 @@ class StubVerifierFactoryTest extends TestCase
     public function testCreateFromCallback()
     {
         $callback = function () {};
-        $stub = $this->stubFactory->create($callback, null)->setLabel('1');
-        $spy = $this->spyFactory->create($stub)->setLabel('1');
+        $stub = $this->container->stubFactory->create($callback, null)->setLabel('1');
+        $spy = $this->container->spyFactory->create($stub)->setLabel('1');
         $expected = new StubVerifier(
             $stub,
             $spy,
-            $this->matcherFactory,
-            $this->matcherVerifier,
-            $this->generatorVerifierFactory,
-            $this->iterableVerifierFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer,
-            $this->generatorAnswerBuilderFactory
+            $this->container->matcherFactory,
+            $this->container->matcherVerifier,
+            $this->container->generatorVerifierFactory,
+            $this->container->iterableVerifierFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer,
+            $this->container->generatorAnswerBuilderFactory
         );
         $expected->setSelf($expected);
         $actual = $this->subject->createFromCallback($callback);

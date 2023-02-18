@@ -6,10 +6,10 @@ namespace Eloquent\Phony\Stub;
 
 use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Exception\UndefinedAnswerException;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
 
 #[AllowDynamicProperties]
@@ -17,8 +17,8 @@ class StubRuleTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->matcherFactory = MatcherFactory::instance();
-        $this->criteria = [$this->matcherFactory->equalTo('a'), $this->matcherFactory->equalTo('b')];
+        $container = new FacadeContainer();
+        $this->criteria = [$container->matcherFactory->equalTo('a'), $container->matcherFactory->equalTo('b')];
         $this->answerA = new Answer(new CallRequest('implode', Arguments::create(), false, false, false), []);
         $this->answerB = new Answer(new CallRequest('implode', Arguments::create(), false, false, false), []);
         $this->answers = [$this->answerA, $this->answerB];

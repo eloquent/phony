@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Matcher;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Exporter\InlineExporter;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -14,7 +14,9 @@ class WildcardMatcherTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->exporter = InlineExporter::instance();
+        $container = new FacadeContainer();
+        $this->exporter = $container->exporter;
+
         $this->matcher = new EqualToMatcher('x', true, $this->exporter);
         $this->minimumArguments = 1;
         $this->maximumArguments = 2;
@@ -30,17 +32,18 @@ class WildcardMatcherTest extends TestCase
 
     public function describeData()
     {
-        $this->exporter = InlineExporter::instance();
-        $this->matcher = new EqualToMatcher('x', true, $this->exporter);
+        $container = new FacadeContainer();
+        $anyMatcher = $container->anyMatcher;
+        $equalToMatcher = new EqualToMatcher('x', true, $container->exporter);
 
-        //                                   matcher                 minimum maximum expected
+        //                                   matcher          minimum maximum expected
         return [
-            'Any amount of anything'     => [AnyMatcher::instance(), 0,      -1,     '<any>*'],
-            'Any amount of equal to'     => [$this->matcher,         0,      -1,     '"x"*'],
-            'Minimum amount of anything' => [AnyMatcher::instance(), 111,    -1,     '<any>{111,}'],
-            'Maximum amount of anything' => [AnyMatcher::instance(), 0,      111,    '<any>{,111}'],
-            'Range of anything'          => [AnyMatcher::instance(), 111,    222,    '<any>{111,222}'],
-            'Exact amount of anything'   => [AnyMatcher::instance(), 111,    111,    '<any>{111}'],
+            'Any amount of anything'     => [$anyMatcher,     0,      -1,     '<any>*'],
+            'Any amount of equal to'     => [$equalToMatcher, 0,      -1,     '"x"*'],
+            'Minimum amount of anything' => [$anyMatcher,     111,    -1,     '<any>{111,}'],
+            'Maximum amount of anything' => [$anyMatcher,     0,      111,    '<any>{,111}'],
+            'Range of anything'          => [$anyMatcher,     111,    222,    '<any>{111,222}'],
+            'Exact amount of anything'   => [$anyMatcher,     111,    111,    '<any>{111}'],
         ];
     }
 

@@ -5,26 +5,12 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Verification;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
-use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
-use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Matcher\AnyMatcher;
-use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Matcher\WildcardMatcher;
-use Eloquent\Phony\Reflection\FeatureDetector;
-use Eloquent\Phony\Sequencer\Sequencer;
-use Eloquent\Phony\Spy\GeneratorSpyMap;
-use Eloquent\Phony\Spy\SpyFactory;
-use Eloquent\Phony\Test\TestCallFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -34,21 +20,14 @@ class IterableVerifierTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->callFactory = new TestCallFactory();
-        $this->eventFactory = $this->callFactory->eventFactory();
-        $this->anyMatcher = new AnyMatcher();
-        $this->wildcardAnyMatcher = WildcardMatcher::instance();
-        $this->idSequencer = new Sequencer();
-        $this->invocableInspector = new InvocableInspector();
-        $this->featureDetector = FeatureDetector::instance();
-        $this->generatorSpyMap = GeneratorSpyMap::instance();
-        $this->exporter = new InlineExporter(
-            1,
-            $this->idSequencer,
-            $this->generatorSpyMap,
-            $this->invocableInspector
-        );
-        $this->matcherFactory = new MatcherFactory($this->anyMatcher, $this->wildcardAnyMatcher, $this->exporter);
+        $this->container = FacadeContainer::withTestCallFactory();
+        $this->callFactory = $this->container->callFactory;
+        $this->eventFactory = $this->container->eventFactory;
+
+        $this->callVerifierFactory = $this->container->callVerifierFactory;
+        $this->matcherFactory = $this->container->matcherFactory;
+        $this->featureDetector = $this->container->featureDetector;
+        $this->exporter = $this->container->exporter;
 
         $this->iterableCalledEvent = $this->eventFactory->createCalled();
         $this->returnedIterableEvent =
@@ -88,7 +67,6 @@ class IterableVerifierTest extends TestCase
             $this->callFactory->create(),
         ];
 
-        $this->callVerifierFactory = CallVerifierFactory::instance();
         $this->wrappedCalls = [
             $this->callVerifierFactory->fromCall($this->calls[0]),
             $this->callVerifierFactory->fromCall($this->calls[1]),
@@ -136,29 +114,15 @@ class IterableVerifierTest extends TestCase
 
     private function setUpWith($calls)
     {
-        $this->spyFactory = SpyFactory::instance();
-        $this->spy = $this->spyFactory->create('implode')->setLabel('label');
+        $this->spy = $this->container->spyFactory->create('implode')->setLabel('label');
         $this->spy->setCalls($calls);
-        $this->callVerifierFactory = CallVerifierFactory::instance();
-        $this->assertionRecorder = ExceptionAssertionRecorder::instance();
-        $this->assertionRecorder->setCallVerifierFactory($this->callVerifierFactory);
-        $this->matcherVerifier = new MatcherVerifier();
-        $this->differenceEngine = new DifferenceEngine($this->featureDetector);
-        $this->differenceEngine->setUseColor(false);
-        $this->assertionRenderer = new AssertionRenderer(
-            $this->matcherVerifier,
-            $this->exporter,
-            $this->differenceEngine,
-            $this->featureDetector
-        );
-        $this->assertionRenderer->setUseColor(false);
         $this->subject = new IterableVerifier(
             $this->spy,
             $calls,
-            $this->matcherFactory,
-            $this->callVerifierFactory,
-            $this->assertionRecorder,
-            $this->assertionRenderer
+            $this->container->matcherFactory,
+            $this->container->callVerifierFactory,
+            $this->container->assertionRecorder,
+            $this->container->assertionRenderer
         );
     }
 

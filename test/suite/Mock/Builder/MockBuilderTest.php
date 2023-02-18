@@ -11,7 +11,6 @@ use Countable;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
-use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Exception\ClassExistsException;
 use Eloquent\Phony\Mock\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Exception\FinalizedMockException;
@@ -19,11 +18,8 @@ use Eloquent\Phony\Mock\Exception\InvalidClassNameException;
 use Eloquent\Phony\Mock\Exception\InvalidDefinitionException;
 use Eloquent\Phony\Mock\Exception\InvalidTypeException;
 use Eloquent\Phony\Mock\Exception\MultipleInheritanceException;
-use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\Mock;
-use Eloquent\Phony\Mock\MockFactory;
-use Eloquent\Phony\Mock\MockGenerator;
-use Eloquent\Phony\Sequencer\Sequencer;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestClassI;
@@ -52,7 +48,7 @@ class MockBuilderTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->invocableInspector = new InvocableInspector();
+        $this->container = new FacadeContainer();
 
         $this->typeNames = [
             TestClassB::class,
@@ -97,18 +93,11 @@ class MockBuilderTest extends TestCase
 
     protected function setUpWith($typeNames)
     {
-        $this->handleFactory = HandleFactory::instance();
-        $this->factory = new MockFactory(
-            new Sequencer(),
-            MockGenerator::instance(),
-            $this->handleFactory,
-        );
-
         return $this->subject = new MockBuilder(
             $typeNames,
-            $this->factory,
-            $this->handleFactory,
-            $this->invocableInspector
+            $this->container->mockFactory,
+            $this->container->handleFactory,
+            $this->container->invocableInspector
         );
     }
 
@@ -178,9 +167,9 @@ class MockBuilderTest extends TestCase
         $this->setUpWith($this->typeNames);
 
         $this->assertEquals($this->typesFor($this->typeNames), $this->subject->types());
-        $this->assertSame($this->factory, $this->subject->factory());
-        $this->assertSame($this->handleFactory, $this->subject->handleFactory());
-        $this->assertSame($this->invocableInspector, $this->subject->invocableInspector());
+        $this->assertSame($this->container->mockFactory, $this->subject->factory());
+        $this->assertSame($this->container->handleFactory, $this->subject->handleFactory());
+        $this->assertSame($this->container->invocableInspector, $this->subject->invocableInspector());
         $this->assertFalse($this->subject->isFinalized());
         $this->assertFalse($this->subject->isBuilt());
     }
@@ -222,8 +211,8 @@ class MockBuilderTest extends TestCase
         );
 
         $this->assertEquals($this->typesFor($this->typeNamesTraits), $this->subject->types());
-        $this->assertSame($this->factory, $this->subject->factory());
-        $this->assertSame($this->handleFactory, $this->subject->handleFactory());
+        $this->assertSame($this->container->mockFactory, $this->subject->factory());
+        $this->assertSame($this->container->handleFactory, $this->subject->handleFactory());
         $this->assertFalse($this->subject->isFinalized());
         $this->assertFalse($this->subject->isBuilt());
     }

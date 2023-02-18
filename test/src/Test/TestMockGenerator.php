@@ -11,13 +11,13 @@ use Eloquent\Phony\Sequencer\Sequencer;
 
 class TestMockGenerator extends MockGenerator
 {
-    public function __construct($source)
+    public function __construct($source, FunctionSignatureInspector $functionSignatureInspector)
     {
         $this->source = $source;
 
         parent::__construct(
             Sequencer::sequence('mock-class-label'),
-            FunctionSignatureInspector::instance()
+            $functionSignatureInspector
         );
     }
 
