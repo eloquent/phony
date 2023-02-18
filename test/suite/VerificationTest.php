@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony;
 
 use Eloquent\Phony\Assertion\Exception\AssertionException;
-use Eloquent\Phony\Test\Phony as TestPhony;
+use Eloquent\Phony\Test\Facade\Phony;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -13,7 +13,7 @@ class VerificationTest extends TestCase
 {
     protected function setUp(): void
     {
-        TestPhony::setUseColor(true);
+        Phony::setUseColor(true);
     }
 
     public function generateData()
@@ -59,7 +59,7 @@ class VerificationTest extends TestCase
         }
 
         $expected = str_replace("\n", PHP_EOL, rtrim(file_get_contents($path . '/expected'), "\n"));
-        TestPhony::reset();
+        Phony::reset();
 
         try {
             require $path . '/verification.php';

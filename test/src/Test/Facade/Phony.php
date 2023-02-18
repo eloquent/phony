@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Eloquent\Phony\Test;
+namespace Eloquent\Phony\Test\Facade;
 
 use Eloquent\Phony\Facade\FacadeTrait;
-use Eloquent\Phony\Facade\Globals;
 
 /**
  * A facade for Phony integration tests.

@@ -1,6 +1,6 @@
 <?php
 
-use Eloquent\Phony\Test\Phony;
+use Eloquent\Phony\Test\Facade\Phony;
 
 // setup
 $spy = Phony::spy()->setLabel('label');
