@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -13,7 +13,8 @@ if (!($inputPath && $outputPath)) {
     exit(1);
 }
 
-$factory = MockBuilderFactory::instance();
+$container = new FacadeContainer;
+$factory = $container->mockBuilderFactory;
 
 require $inputPath;
 

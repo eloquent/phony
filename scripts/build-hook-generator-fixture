@@ -1,9 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-use Eloquent\Phony\Hook\FunctionHookGenerator;
-use Eloquent\Phony\Invocation\InvocableInspector;
-use Eloquent\Phony\Reflection\FunctionSignatureInspector;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -15,9 +13,10 @@ if (!($inputPath && $outputPath)) {
     exit(1);
 }
 
-$invocableInspector = InvocableInspector::instance();
-$signatureInspector = FunctionSignatureInspector::instance();
-$hookGenerator = FunctionHookGenerator::instance();
+$container = new FacadeContainer;
+$invocableInspector = $container->invocableInspector;
+$signatureInspector = $container->functionSignatureInspector;
+$hookGenerator = $container->functionHookGenerator;
 
 require $inputPath;
 
