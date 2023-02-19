@@ -119,9 +119,11 @@ class FacadeContainer
         $this->functionSignatureInspector ??= new FunctionSignatureInspector();
         $this->mockClassLabelSequence ??= Sequencer::sequence('mock-class-label');
         $this->sequences[] = $this->mockClassLabelSequence;
+        $this->featureDetector ??= new FeatureDetector();
         $this->mockGenerator ??= new MockGenerator(
             $this->mockClassLabelSequence,
-            $this->functionSignatureInspector
+            $this->functionSignatureInspector,
+            $this->featureDetector
         );
         $this->wildcardMatcher ??= new WildcardMatcher(
             $this->anyMatcher,
@@ -135,7 +137,6 @@ class FacadeContainer
         );
         $this->hamcrestMatcherDriver ??= new HamcrestMatcherDriver();
         $this->matcherFactory->addMatcherDriver($this->hamcrestMatcherDriver);
-        $this->featureDetector ??= new FeatureDetector();
         $this->emptyValueFactory ??= new EmptyValueFactory($this->featureDetector);
         $this->generatorAnswerBuilderFactory ??= new GeneratorAnswerBuilderFactory(
             $this->invocableInspector,

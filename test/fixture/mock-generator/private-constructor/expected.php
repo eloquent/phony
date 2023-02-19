@@ -34,5 +34,5 @@ implements \Eloquent\Phony\Mock\Mock
     private static $_traitMethods = [];
     private static $_customMethods = [];
     private static $_staticHandle;
-    private $_handle;
+    private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
 }

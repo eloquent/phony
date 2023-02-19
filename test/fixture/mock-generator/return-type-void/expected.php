@@ -13,7 +13,7 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (self::$_staticHandle) {
+        if (isset(self::$_staticHandle)) {
             self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
                 new \Eloquent\Phony\Call\Arguments($arguments)
             );
@@ -37,7 +37,7 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if ($this->_handle) {
+        if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
                 new \Eloquent\Phony\Call\Arguments($arguments)
             );
@@ -53,7 +53,7 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if ($this->_handle) {
+        if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
                 new \Eloquent\Phony\Call\Arguments($arguments)
             );
@@ -87,5 +87,5 @@ implements \Eloquent\Phony\Mock\Mock,
     private static $_traitMethods = [];
     private static $_customMethods = [];
     private static $_staticHandle;
-    private $_handle;
+    private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
 }

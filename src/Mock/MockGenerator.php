@@ -7,6 +7,8 @@ namespace Eloquent\Phony\Mock;
 use Eloquent\Phony\Mock\Builder\Method\MethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\TraitMethodDefinition;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use ReflectionMethod;
@@ -21,13 +23,18 @@ class MockGenerator
      *
      * @param Sequencer                  $labelSequencer     The label sequencer to use.
      * @param FunctionSignatureInspector $signatureInspector The function signature inspector to use.
+     * @param FeatureDetector            $featureDetector    The feature detector to use.
      */
     public function __construct(
         Sequencer $labelSequencer,
-        FunctionSignatureInspector $signatureInspector
+        FunctionSignatureInspector $signatureInspector,
+        FeatureDetector $featureDetector
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->signatureInspector = $signatureInspector;
+
+        $this->isReadOnlyPropertySupported =
+            $featureDetector->isSupported('object.property.readonly');
     }
 
     /**
@@ -316,7 +323,7 @@ EOD;
 
     public function __destruct()
     {
-        if (!\$this->_handle) {
+        if (!isset(\$this->_handle)) {
             {$parentDestruct}return;
         }
 
@@ -427,7 +434,7 @@ EOD;
             }
 
             $body .=
-                "        }\n\n        if ({$handle}) {\n";
+                "        }\n\n        if (isset({$handle})) {\n";
 
             if ($canReturn) {
                 $body .=
@@ -897,8 +904,14 @@ EOD;
 
         $source .= ";\n" .
             "    private static \$_customMethods = [];\n" .
-            "    private static \$_staticHandle;\n" .
-            '    private $_handle;';
+            "    private static \$_staticHandle;\n";
+
+        if ($this->isReadOnlyPropertySupported) {
+            $handleType = '\\' . InstanceHandle::class;
+            $source .=  "    private readonly $handleType \$_handle;";
+        } else {
+            $source .=  '    private $_handle;';
+        }
 
         return $source;
     }
@@ -915,4 +928,9 @@ EOD;
      * @var FunctionSignatureInspector
      */
     private $signatureInspector;
+
+    /**
+     * @var bool
+     */
+    private $isReadOnlyPropertySupported;
 }

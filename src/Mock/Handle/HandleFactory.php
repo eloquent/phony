@@ -74,11 +74,13 @@ class HandleFactory
         $handleProperty = $class->getProperty('_handle');
         $handleProperty->setAccessible(true);
 
-        /** @var InstanceHandle|null $handle */
-        $handle = @$handleProperty->getValue($mock);
+        if ($handleProperty->isInitialized($mock)) {
+            /** @var InstanceHandle|null $handle */
+            $handle = $handleProperty->getValue($mock);
 
-        if ($handle) {
-            return $handle;
+            if ($handle) {
+                return $handle;
+            }
         }
 
         $handle = new InstanceHandle(
@@ -98,7 +100,7 @@ class HandleFactory
             $this->invoker
         );
 
-        @$handleProperty->setValue($mock, $handle);
+        $handleProperty->setValue($mock, $handle);
 
         return $handle;
     }

@@ -77,7 +77,11 @@ class MockFactoryTest extends TestCase
     {
         $this->subject = new MockFactory(
             $this->container->mockLabelSequence,
-            new TestMockGenerator('{', $this->container->functionSignatureInspector),
+            new TestMockGenerator(
+                '{',
+                $this->container->functionSignatureInspector,
+                $this->container->featureDetector
+            ),
             $this->handleFactory
         );
         $builder = $this->builderFactory->create();

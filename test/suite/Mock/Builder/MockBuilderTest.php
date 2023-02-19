@@ -881,6 +881,9 @@ class MockBuilderTest extends TestCase
         $this->assertSame($second, $this->subject->get());
     }
 
+    /**
+     * @requires PHP >= 8.1
+     */
     public function testSource()
     {
         $this->setUpWith([]);
@@ -893,7 +896,7 @@ implements \Eloquent\Phony\Mock\Mock
     private static $_traitMethods = [];
     private static $_customMethods = [];
     private static $_staticHandle;
-    private $_handle;
+    private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
 }
 
 EOD;

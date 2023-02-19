@@ -290,7 +290,7 @@ class EqualToMatcher implements Matcher
         if ($rightIsMock) {
             $handleProperty = "\0" . $rightClass . "\0_handle";
 
-            if ($right[$handleProperty]) {
+            if (isset($right[$handleProperty])) {
                 $right['phony.label'] = $right[$handleProperty]->label();
             }
 

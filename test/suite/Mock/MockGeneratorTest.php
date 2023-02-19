@@ -92,6 +92,7 @@ class MockGeneratorTest extends TestCase
     }
 
     /**
+     * @requires PHP >= 8.1
      * @dataProvider generateData
      */
     public function testGenerate($testName)

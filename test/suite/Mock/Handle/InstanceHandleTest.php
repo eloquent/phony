@@ -44,30 +44,13 @@ class InstanceHandleTest extends TestCase
         ];
     }
 
-    protected function setUpWith($className, $mockClassName = '')
+    protected function setUpWith($className)
     {
         $this->mockBuilder = $this->mockBuilderFactory->create($className);
-        if ($mockClassName) {
-            $this->mockBuilder->named($mockClassName);
-        }
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partial();
-        $this->subject = new InstanceHandle(
-            $this->mock,
-            $this->state,
-            $this->container->stubFactory,
-            $this->container->stubVerifierFactory,
-            $this->container->emptyValueFactory,
-            $this->container->assertionRenderer,
-            $this->container->assertionRecorder,
-            $this->container->invoker
-        );
-
+        $this->subject = $this->container->handleFactory->instanceHandle($this->mock);
         $this->className = $this->class->getName();
-
-        $handleProperty = $this->class->getProperty('_handle');
-        $handleProperty->setAccessible(true);
-        $handleProperty->setValue($this->mock, $this->subject);
     }
 
     public function testSetLabel()
@@ -201,7 +184,7 @@ class InstanceHandleTest extends TestCase
 
     public function testNoInteractionFailure()
     {
-        $this->setUpWith(TestClassA::class, 'PhonyMockStubbingNoInteraction');
+        $this->setUpWith(TestClassA::class);
         $this->mock->testClassAMethodA('a', 'b');
         $this->mock->testClassAMethodB('c', 'd');
         $this->mock->testClassAMethodA('e', 'f');
@@ -346,19 +329,7 @@ class InstanceHandleTest extends TestCase
         );
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partial();
-        $this->subject = new InstanceHandle(
-            $this->mock,
-            $this->state,
-            $this->container->stubFactory,
-            $this->container->stubVerifierFactory,
-            $this->container->emptyValueFactory,
-            $this->container->assertionRenderer,
-            $this->container->assertionRecorder,
-            $this->container->invoker
-        );
-        $handleProperty = $this->class->getProperty('_handle');
-        $handleProperty->setAccessible(true);
-        $handleProperty->setValue($this->mock, $this->subject);
+        $this->subject = $this->container->handleFactory->instanceHandle($this->mock);
         $this->subject->partial();
         $this->subject->methodA->with('a', 'b')->returns('x');
 

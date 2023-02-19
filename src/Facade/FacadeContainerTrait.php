@@ -126,9 +126,11 @@ trait FacadeContainerTrait
         $functionSignatureInspector = new FunctionSignatureInspector();
         $mockClassLabelSequence = Sequencer::sequence('mock-class-label');
         $sequences[] = $mockClassLabelSequence;
+        $featureDetector = new FeatureDetector();
         $mockGenerator = new MockGenerator(
             $mockClassLabelSequence,
-            $functionSignatureInspector
+            $functionSignatureInspector,
+            $featureDetector
         );
         $wildcardMatcher = new WildcardMatcher(
             $anyMatcher,
@@ -141,7 +143,6 @@ trait FacadeContainerTrait
             $exporter
         );
         $matcherFactory->addMatcherDriver(new HamcrestMatcherDriver());
-        $featureDetector = new FeatureDetector();
         $emptyValueFactory = new EmptyValueFactory($featureDetector);
         $generatorAnswerBuilderFactory = new GeneratorAnswerBuilderFactory(
             $invocableInspector,

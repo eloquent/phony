@@ -30,10 +30,8 @@ class HandleFactoryTest extends TestCase
     public function testInstanceHandleNew()
     {
         $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
-        $mock = $mockBuilder->full();
-        $handleProperty = new ReflectionProperty($mock, '_handle');
-        $handleProperty->setAccessible(true);
-        $handleProperty->setValue($mock, null);
+        $class = $mockBuilder->build(true);
+        $mock = $class->newInstanceWithoutConstructor();
         $expected = new InstanceHandle(
             $mock,
             (object) [
