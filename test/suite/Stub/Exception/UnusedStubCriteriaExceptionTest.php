@@ -12,9 +12,10 @@ class UnusedStubCriteriaExceptionTest extends TestCase
     public function testException()
     {
         $container = new FacadeContainer();
+        $assertionRenderer = $container->assertionRenderer;
         $matcherFactory = $container->matcherFactory;
         $criteria = [$matcherFactory->equalTo('a'), $matcherFactory->equalTo('b')];
-        $exception = new UnusedStubCriteriaException($criteria);
+        $exception = new UnusedStubCriteriaException($criteria, $assertionRenderer);
 
         $this->assertSame($criteria, $exception->criteria());
         $this->assertSame(

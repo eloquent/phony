@@ -10,20 +10,6 @@ namespace Eloquent\Phony\Clock;
 class SystemClock implements Clock
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self('microtime');
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new system clock.
      *
      * @param callable $microtime The implementation of microtime() to use.
@@ -44,11 +30,6 @@ class SystemClock implements Clock
 
         return $microtime(true);
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var callable

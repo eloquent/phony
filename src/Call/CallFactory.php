@@ -15,23 +15,6 @@ use Throwable;
 class CallFactory
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                CallEventFactory::instance(),
-                Invoker::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new call factory.
      *
      * @param CallEventFactory $eventFactory The call event factory to use.
@@ -86,11 +69,6 @@ class CallFactory
 
         return $call;
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var CallEventFactory

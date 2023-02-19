@@ -7,7 +7,6 @@ namespace Eloquent\Phony\Matcher;
 use AllowDynamicProperties;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[AllowDynamicProperties]
 class MatcherVerifierTest extends TestCase
@@ -387,18 +386,5 @@ class MatcherVerifierTest extends TestCase
             new MatcherResult(false, [true, true], [true, false, false]),
             $this->subject->explain($matchers, ['a', 'x', 'x'])
         );
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

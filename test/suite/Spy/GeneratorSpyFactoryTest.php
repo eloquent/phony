@@ -9,7 +9,6 @@ use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Generator;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use RuntimeException;
 
 #[AllowDynamicProperties]
@@ -220,18 +219,5 @@ class GeneratorSpyFactoryTest extends TestCase
         }
 
         $this->assertSame(123, $spy->getReturn());
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

@@ -34,25 +34,6 @@ use WeakReference;
 class InlineExporter implements Exporter
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                1,
-                Sequencer::sequence('exporter-id'),
-                GeneratorSpyMap::instance(),
-                InvocableInspector::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new inline exporter.
      *
      * @param int                $depth              The depth.
@@ -715,11 +696,6 @@ class InlineExporter implements Exporter
 
     const ARRAY_ID_KEY = "\0__phony__\0";
     const JSON_FLAGS = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var int

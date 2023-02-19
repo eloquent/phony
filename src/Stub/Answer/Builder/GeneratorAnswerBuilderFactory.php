@@ -14,23 +14,6 @@ use Eloquent\Phony\Stub\Stub;
 class GeneratorAnswerBuilderFactory
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                InvocableInspector::instance(),
-                Invoker::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new generator answer builder factory.
      *
      * @param InvocableInspector $invocableInspector The invocable inspector to use.
@@ -59,11 +42,6 @@ class GeneratorAnswerBuilderFactory
             $this->invoker
         );
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var InvocableInspector

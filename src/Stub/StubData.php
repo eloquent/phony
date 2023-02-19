@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub;
 
+use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
@@ -66,6 +67,7 @@ class StubData implements Stub
      * @param EmptyValueFactory             $emptyValueFactory             The empty value factory to use.
      * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
      * @param Exporter                      $exporter                      The exporter to use.
+     * @param AssertionRenderer             $assertionRenderer             The assertion renderer to use.
      */
     public function __construct(
         ?callable $callback,
@@ -77,7 +79,8 @@ class StubData implements Stub
         InvocableInspector $invocableInspector,
         EmptyValueFactory $emptyValueFactory,
         GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory,
-        Exporter $exporter
+        Exporter $exporter,
+        AssertionRenderer $assertionRenderer
     ) {
         if (!$callback) {
             $this->isAnonymous = true;
@@ -97,6 +100,7 @@ class StubData implements Stub
         $this->emptyValueFactory = $emptyValueFactory;
         $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
         $this->exporter = $exporter;
+        $this->assertionRenderer = $assertionRenderer;
 
         $this->secondaryRequests = [];
         $this->answers = [];
@@ -738,7 +742,7 @@ class StubData implements Stub
             $criteria = $this->criteria;
             $this->criteria = null;
 
-            throw new UnusedStubCriteriaException($criteria);
+            throw new UnusedStubCriteriaException($criteria, $this->assertionRenderer);
         }
 
         return $this;
@@ -854,6 +858,11 @@ class StubData implements Stub
      * @var Exporter
      */
     private $exporter;
+
+    /**
+     * @var AssertionRenderer
+     */
+    private $assertionRenderer;
 
     /**
      * @var ?array<int,Matcher>

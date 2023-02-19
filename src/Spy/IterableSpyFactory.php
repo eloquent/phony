@@ -15,20 +15,6 @@ use Traversable;
 class IterableSpyFactory
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(CallEventFactory::instance());
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new iterable spy factory.
      *
      * @param CallEventFactory $callEventFactory The call event factory to use.
@@ -71,11 +57,6 @@ class IterableSpyFactory
             sprintf('Unsupported iterable of type %s.', $type)
         );
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var CallEventFactory

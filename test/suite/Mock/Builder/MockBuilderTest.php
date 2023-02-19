@@ -95,6 +95,7 @@ class MockBuilderTest extends TestCase
     {
         return $this->subject = new MockBuilder(
             $typeNames,
+            $this->container->mockGenerator,
             $this->container->mockFactory,
             $this->container->handleFactory,
             $this->container->invocableInspector

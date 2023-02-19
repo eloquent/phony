@@ -10,7 +10,6 @@ use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[AllowDynamicProperties]
 class ExceptionAssertionRecorderTest extends TestCase
@@ -51,18 +50,5 @@ class ExceptionAssertionRecorderTest extends TestCase
         $this->expectException(AssertionException::class);
         $this->expectExceptionMessage($description);
         $this->subject->createFailure($description);
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

@@ -16,7 +16,6 @@ use Eloquent\Phony\Test\TestException;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestTraitA;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use TestClass;
 use WeakReference;
 
@@ -521,18 +520,5 @@ class InlineExporterTest extends TestCase
 
         $this->assertSame('#0{}', $this->subject->export($objectB));
         $this->assertSame('#1{}', $this->subject->export($objectA));
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

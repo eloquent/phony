@@ -149,6 +149,15 @@ trait FacadeContainerTrait
         );
         $stubLabelSequence = Sequencer::sequence('stub-label');
         $sequences[] = $stubLabelSequence;
+        $differenceEngine = new DifferenceEngine(
+            $featureDetector
+        );
+        $assertionRenderer = new AssertionRenderer(
+            $matcherVerifier,
+            $exporter,
+            $differenceEngine,
+            $featureDetector
+        );
         $stubFactory = new StubFactory(
             $stubLabelSequence,
             $matcherFactory,
@@ -157,7 +166,8 @@ trait FacadeContainerTrait
             $invocableInspector,
             $emptyValueFactory,
             $generatorAnswerBuilderFactory,
-            $exporter
+            $exporter,
+            $assertionRenderer
         );
         $clock = new SystemClock('microtime');
         $eventSequence = Sequencer::sequence('event-sequence-number');
@@ -185,15 +195,6 @@ trait FacadeContainerTrait
             $invoker,
             $generatorSpyFactory,
             $iterableSpyFactory
-        );
-        $differenceEngine = new DifferenceEngine(
-            $featureDetector
-        );
-        $assertionRenderer = new AssertionRenderer(
-            $matcherVerifier,
-            $exporter,
-            $differenceEngine,
-            $featureDetector
         );
         $generatorVerifierFactory = new GeneratorVerifierFactory(
             $matcherFactory,
@@ -249,6 +250,7 @@ trait FacadeContainerTrait
             $handleFactory
         );
         $mockBuilderFactory = new MockBuilderFactory(
+            $mockGenerator,
             $mockFactory,
             $handleFactory,
             $invocableInspector

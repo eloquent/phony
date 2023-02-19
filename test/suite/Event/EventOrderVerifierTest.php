@@ -10,7 +10,6 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[AllowDynamicProperties]
 class EventOrderVerifierTest extends TestCase
@@ -229,18 +228,5 @@ class EventOrderVerifierTest extends TestCase
         $this->expectException(AssertionException::class);
         $this->expectExceptionMessage('Expected events. No events recorded.');
         $this->subject->anyOrder();
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

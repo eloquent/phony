@@ -11,7 +11,6 @@ use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Verification\Cardinality;
 use IteratorAggregate;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use RuntimeException;
 
 #[AllowDynamicProperties]
@@ -94,18 +93,5 @@ class AssertionRendererTest extends TestCase
         $this->assertSame('<none>', $this->subject->renderMatchers([]));
         $this->assertSame('"a"', $this->subject->renderMatchers([$matcherA]));
         $this->assertSame('"a", 111', $this->subject->renderMatchers([$matcherA, $matcherB]));
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

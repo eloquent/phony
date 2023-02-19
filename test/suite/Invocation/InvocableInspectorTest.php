@@ -10,7 +10,6 @@ use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestInvocable;
 use Eloquent\Phony\Test\TestWrappedInvocable;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 
@@ -63,18 +62,5 @@ class InvocableInspectorTest extends TestCase
             new ReflectionMethod($handle->className() . '::testClassAMethodA'),
             $this->subject->callbackReflector($handle->testClassAMethodA)
         );
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

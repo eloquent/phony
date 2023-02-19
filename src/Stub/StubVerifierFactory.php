@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -23,32 +22,6 @@ use InvalidArgumentException;
  */
 class StubVerifierFactory
 {
-    /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                StubFactory::instance(),
-                SpyFactory::instance(),
-                MatcherFactory::instance(),
-                MatcherVerifier::instance(),
-                GeneratorVerifierFactory::instance(),
-                IterableVerifierFactory::instance(),
-                CallVerifierFactory::instance(),
-                ExceptionAssertionRecorder::instance(),
-                AssertionRenderer::instance(),
-                GeneratorAnswerBuilderFactory::instance(),
-                FunctionHookManager::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
     /**
      * Construct a new stub verifier factory.
      *
@@ -204,11 +177,6 @@ class StubVerifierFactory
 
         return $verifier;
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var StubFactory

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub;
 
+use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Exporter\Exporter;
-use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -19,29 +19,6 @@ use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 class StubFactory
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                Sequencer::sequence('stub-label'),
-                MatcherFactory::instance(),
-                MatcherVerifier::instance(),
-                Invoker::instance(),
-                InvocableInspector::instance(),
-                EmptyValueFactory::instance(),
-                GeneratorAnswerBuilderFactory::instance(),
-                InlineExporter::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new stub factory.
      *
      * @param Sequencer                     $labelSequencer                The label sequencer to use.
@@ -52,6 +29,7 @@ class StubFactory
      * @param EmptyValueFactory             $emptyValueFactory             The empty value factory to use.
      * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
      * @param Exporter                      $exporter                      The exporter to use.
+     * @param AssertionRenderer             $assertionRenderer             The assertion renderer to use.
      */
     public function __construct(
         Sequencer $labelSequencer,
@@ -61,7 +39,8 @@ class StubFactory
         InvocableInspector $invocableInspector,
         EmptyValueFactory $emptyValueFactory,
         GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory,
-        Exporter $exporter
+        Exporter $exporter,
+        AssertionRenderer $assertionRenderer
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->matcherFactory = $matcherFactory;
@@ -71,6 +50,7 @@ class StubFactory
         $this->emptyValueFactory = $emptyValueFactory;
         $this->generatorAnswerBuilderFactory = $generatorAnswerBuilderFactory;
         $this->exporter = $exporter;
+        $this->assertionRenderer = $assertionRenderer;
     }
 
     /**
@@ -100,14 +80,10 @@ class StubFactory
             $this->invocableInspector,
             $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->exporter,
+            $this->assertionRenderer
         );
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var Sequencer
@@ -148,4 +124,9 @@ class StubFactory
      * @var Exporter
      */
     private $exporter;
+
+    /**
+     * @var AssertionRenderer
+     */
+    private $assertionRenderer;
 }

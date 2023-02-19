@@ -7,7 +7,6 @@ namespace Eloquent\Phony\Reflection;
 use AllowDynamicProperties;
 use Eloquent\Phony\Reflection\Exception\UndefinedFeatureException;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[AllowDynamicProperties]
 class FeatureDetectorTest extends TestCase
@@ -110,19 +109,6 @@ class FeatureDetectorTest extends TestCase
         }
 
         $this->assertSame($expected, $this->subject->isSupported($feature));
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 
     // end of feature detector tests

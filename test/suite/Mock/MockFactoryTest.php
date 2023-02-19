@@ -191,17 +191,4 @@ class MockFactoryTest extends TestCase
 
         $this->assertSame(['a', 'b'], $actual->constructorArguments);
     }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
-    }
 }

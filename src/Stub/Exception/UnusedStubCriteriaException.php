@@ -16,9 +16,10 @@ final class UnusedStubCriteriaException extends Exception
     /**
      * Construct a new unused stub criteria exception.
      *
-     * @param array<int,Matcher> $criteria The criteria.
+     * @param array<int,Matcher> $criteria          The criteria.
+     * @param AssertionRenderer  $assertionRenderer The assertion renderer to use.
      */
-    public function __construct(array $criteria)
+    public function __construct(array $criteria, AssertionRenderer $assertionRenderer)
     {
         $this->criteria = $criteria;
 
@@ -27,7 +28,7 @@ final class UnusedStubCriteriaException extends Exception
                 'Stub criteria %s were never used. ' .
                     'Check for incomplete stub rules.',
                 var_export(
-                    AssertionRenderer::instance()->renderMatchers($criteria),
+                    $assertionRenderer->renderMatchers($criteria),
                     true
                 )
             )

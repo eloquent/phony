@@ -19,20 +19,6 @@ use ReflectionMethod;
 class FunctionSignatureInspector
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Matches the parameter information in the result of casting a
      * ReflectionFunctionAbstract to a string.
      *
@@ -332,9 +318,4 @@ class FunctionSignatureInspector
     const DEFAULT_NULL = ' = null';
     const NS = '\\';
     const UNION = '|';
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 }

@@ -16,20 +16,6 @@ use Eloquent\Phony\Event\EventSequence;
 class ExceptionAssertionRecorder implements AssertionRecorder
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Set the call verifier factory.
      *
      * @param CallVerifierFactory $callVerifierFactory The call verifier factory to use.
@@ -77,11 +63,6 @@ class ExceptionAssertionRecorder implements AssertionRecorder
     {
         throw new AssertionException($description);
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var CallVerifierFactory

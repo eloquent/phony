@@ -40,6 +40,7 @@ class MockBuilder
      * definition can be passed without being wrapped in an array.
      *
      * @param mixed              $types              The types to mock.
+     * @param MockGenerator      $generator          The generator to use.
      * @param MockFactory        $factory            The factory to use.
      * @param HandleFactory      $handleFactory      The handle factory to use.
      * @param InvocableInspector $invocableInspector The invocable inspector.
@@ -48,11 +49,13 @@ class MockBuilder
      */
     public function __construct(
         $types,
+        MockGenerator $generator,
         MockFactory $factory,
         HandleFactory $handleFactory,
         InvocableInspector $invocableInspector
     ) {
         $this->factory = $factory;
+        $this->generator = $generator;
         $this->handleFactory = $handleFactory;
         $this->invocableInspector = $invocableInspector;
 
@@ -572,18 +575,12 @@ class MockBuilder
      *
      * Calling this method will finalize the mock builder.
      *
-     * @param ?MockGenerator $generator The mock generator to use.
-     *
      * @return string        The source code.
      * @throws MockException If the mock generation fails.
      */
-    public function source(MockGenerator $generator = null): string
+    public function source(): string
     {
-        if (!$generator) {
-            $generator = MockGenerator::instance();
-        }
-
-        return $generator->generate($this->definition());
+        return $this->generator->generate($this->definition());
     }
 
     private function normalizeDefinition(): void
@@ -694,6 +691,11 @@ class MockBuilder
 
         return $this;
     }
+
+    /**
+     * @var MockGenerator
+     */
+    private $generator;
 
     /**
      * @var MockFactory

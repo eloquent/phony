@@ -19,7 +19,6 @@ use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Difference\DifferenceSequenceMatcher;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Exporter\Exporter;
-use Eloquent\Phony\Exporter\InlineExporter;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Matcher;
@@ -39,25 +38,6 @@ use Traversable;
  */
 class AssertionRenderer
 {
-    /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                MatcherVerifier::instance(),
-                InlineExporter::instance(),
-                DifferenceEngine::instance(),
-                FeatureDetector::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
     /**
      * Construct a new call renderer.
      *
@@ -3973,11 +3953,6 @@ class AssertionRenderer
 
     const PASS = "\u{2713}";
     const FAIL = "\u{2717}";
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var MatcherVerifier

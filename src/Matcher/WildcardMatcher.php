@@ -12,20 +12,6 @@ use Eloquent\Phony\Exporter\Exporter;
 class WildcardMatcher implements Matcher
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(AnyMatcher::instance(), 0, -1);
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new wildcard matcher.
      *
      * Negative values for $maximumArguments are treated as "no maximum".
@@ -138,11 +124,6 @@ class WildcardMatcher implements Matcher
     {
         return false;
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var Matcher

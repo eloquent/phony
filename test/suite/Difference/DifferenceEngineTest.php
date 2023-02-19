@@ -7,7 +7,6 @@ namespace Eloquent\Phony\Difference;
 use AllowDynamicProperties;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[AllowDynamicProperties]
 class DifferenceEngineTest extends TestCase
@@ -37,18 +36,5 @@ class DifferenceEngineTest extends TestCase
     public function testDifference($from, $to, $expected)
     {
         $this->assertSame($expected, $this->subject->difference($from, $to));
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

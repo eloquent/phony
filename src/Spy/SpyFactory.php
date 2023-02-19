@@ -14,26 +14,6 @@ use Eloquent\Phony\Sequencer\Sequencer;
 class SpyFactory
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                Sequencer::sequence('spy-label'),
-                CallFactory::instance(),
-                Invoker::instance(),
-                GeneratorSpyFactory::instance(),
-                IterableSpyFactory::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new spy factory.
      *
      * @param Sequencer           $labelSequencer      The label sequencer to use.
@@ -74,11 +54,6 @@ class SpyFactory
             $this->iterableSpyFactory
         );
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var Sequencer

@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Verification;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -17,24 +16,6 @@ use Eloquent\Phony\Spy\Spy;
  */
 class GeneratorVerifierFactory
 {
-    /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                MatcherFactory::instance(),
-                ExceptionAssertionRecorder::instance(),
-                AssertionRenderer::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
     /**
      * Construct a new event order verifier factory.
      *
@@ -82,11 +63,6 @@ class GeneratorVerifierFactory
             $this->assertionRenderer
         );
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var MatcherFactory

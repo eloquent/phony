@@ -13,20 +13,6 @@ use Throwable;
 class Invoker
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Calls a callback, maintaining reference parameters.
      *
      * @param callable  $callback  The callback.
@@ -45,9 +31,4 @@ class Invoker
 
         return $callback(...$arguments);
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 }

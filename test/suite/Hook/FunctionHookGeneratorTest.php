@@ -7,7 +7,6 @@ namespace Eloquent\Phony\Hook;
 use AllowDynamicProperties;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[AllowDynamicProperties]
 class FunctionHookGeneratorTest extends TestCase
@@ -61,18 +60,5 @@ class FunctionHookGeneratorTest extends TestCase
         $actual = $this->subject->generateHook($functionName, $namespace, $signature);
 
         $this->assertSame($expected, '<?php' . PHP_EOL . PHP_EOL . $actual);
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

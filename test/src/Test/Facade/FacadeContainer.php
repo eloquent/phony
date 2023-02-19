@@ -101,6 +101,8 @@ class FacadeContainer
         public ?StubVerifierFactory $stubVerifierFactory = null,
         public ?WildcardMatcher $wildcardMatcher = null,
     ) {
+        $this->assertionRecorder ??= new ExceptionAssertionRecorder();
+
         $this->sequences ??= [];
         $this->anyMatcher ??= new AnyMatcher();
         $this->idSequence ??= new Sequencer();
@@ -141,6 +143,15 @@ class FacadeContainer
         );
         $this->stubLabelSequence ??= new Sequencer();
         $this->sequences[] = $this->stubLabelSequence;
+        $this->differenceEngine ??= new DifferenceEngine(
+            $this->featureDetector
+        );
+        $this->assertionRenderer ??= new AssertionRenderer(
+            $this->matcherVerifier,
+            $this->exporter,
+            $this->differenceEngine,
+            $this->featureDetector
+        );
         $this->stubFactory ??= new StubFactory(
             $this->stubLabelSequence,
             $this->matcherFactory,
@@ -149,7 +160,8 @@ class FacadeContainer
             $this->invocableInspector,
             $this->emptyValueFactory,
             $this->generatorAnswerBuilderFactory,
-            $this->exporter
+            $this->exporter,
+            $this->assertionRenderer
         );
         $this->clock ??= new SystemClock('microtime');
         $this->eventSequence ??= new Sequencer();
@@ -177,16 +189,6 @@ class FacadeContainer
             $this->invoker,
             $this->generatorSpyFactory,
             $this->iterableSpyFactory
-        );
-        $this->differenceEngine ??= new DifferenceEngine(
-            $this->featureDetector
-        );
-        $this->assertionRecorder ??= new ExceptionAssertionRecorder();
-        $this->assertionRenderer ??= new AssertionRenderer(
-            $this->matcherVerifier,
-            $this->exporter,
-            $this->differenceEngine,
-            $this->featureDetector
         );
         $this->generatorVerifierFactory ??= new GeneratorVerifierFactory(
             $this->matcherFactory,
@@ -242,6 +244,7 @@ class FacadeContainer
             $this->handleFactory
         );
         $this->mockBuilderFactory ??= new MockBuilderFactory(
+            $this->mockGenerator,
             $this->mockFactory,
             $this->handleFactory,
             $this->invocableInspector

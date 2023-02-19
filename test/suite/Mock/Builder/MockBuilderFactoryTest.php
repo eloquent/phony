@@ -9,7 +9,6 @@ use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestInterfaceB;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[AllowDynamicProperties]
 class MockBuilderFactoryTest extends TestCase
@@ -26,6 +25,7 @@ class MockBuilderFactoryTest extends TestCase
         $actual = $this->subject->create($types);
         $expected = new MockBuilder(
             $types,
+            $this->container->mockGenerator,
             $this->container->mockFactory,
             $this->container->handleFactory,
             $this->container->invocableInspector
@@ -34,18 +34,5 @@ class MockBuilderFactoryTest extends TestCase
         $this->assertEquals($expected, $actual);
         $this->assertSame($this->container->mockFactory, $actual->factory());
         $this->assertSame($this->container->handleFactory, $actual->handleFactory());
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

@@ -8,7 +8,6 @@ use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Test\TestInvocable;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[AllowDynamicProperties]
 class InvokerTest extends TestCase
@@ -28,18 +27,5 @@ class InvokerTest extends TestCase
             ['invokeWith', ['a', 'b']],
             $this->subject->callWith($this->invocable, Arguments::create('a', 'b'))
         );
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

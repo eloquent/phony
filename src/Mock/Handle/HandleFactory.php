@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Mock\Handle;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Exception\InvalidMockClassException;
 use Eloquent\Phony\Mock\Exception\InvalidMockException;
@@ -25,27 +24,6 @@ use ReflectionException;
  */
 class HandleFactory
 {
-    /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                StubFactory::instance(),
-                StubVerifierFactory::instance(),
-                EmptyValueFactory::instance(),
-                AssertionRenderer::instance(),
-                ExceptionAssertionRecorder::instance(),
-                Invoker::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
     /**
      * Construct a new handle factory.
      *
@@ -187,11 +165,6 @@ class HandleFactory
 
         return $handle;
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var StubFactory

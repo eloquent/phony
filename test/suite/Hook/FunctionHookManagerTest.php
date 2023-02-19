@@ -12,7 +12,6 @@ use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\FunctionHookManager as TestNamespace;
 use Eloquent\Phony\Test\TestFunctionHookGenerator;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[AllowDynamicProperties]
 class FunctionHookManagerTest extends TestCase
@@ -116,18 +115,5 @@ class FunctionHookManagerTest extends TestCase
 
         $this->assertSame('a', call_user_func($this->namespace . '\\sprintf', '%s', 'a'));
         $this->assertSame('b', call_user_func($this->namespace . '\\vsprintf', '%s', ['b']));
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

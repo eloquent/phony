@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Clock;
 
 use AllowDynamicProperties;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[AllowDynamicProperties]
 class SystemClockTest extends TestCase
@@ -39,18 +38,5 @@ class SystemClockTest extends TestCase
         $this->subject = new SystemClock('microtime');
 
         $this->assertIsFloat($this->subject->time());
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

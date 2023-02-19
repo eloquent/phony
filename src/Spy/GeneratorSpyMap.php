@@ -13,20 +13,6 @@ use WeakMap;
 class GeneratorSpyMap
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new generator spy map.
      */
     public function __construct()
@@ -60,11 +46,6 @@ class GeneratorSpyMap
 
         return null;
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var WeakMap<Generator<mixed>,Generator<mixed>>

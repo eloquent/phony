@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Call;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
@@ -17,27 +16,6 @@ use Eloquent\Phony\Verification\IterableVerifierFactory;
  */
 class CallVerifierFactory
 {
-    /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                MatcherFactory::instance(),
-                MatcherVerifier::instance(),
-                GeneratorVerifierFactory::instance(),
-                IterableVerifierFactory::instance(),
-                ExceptionAssertionRecorder::instance(),
-                AssertionRenderer::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
     /**
      * Construct a new call verifier factory.
      *
@@ -109,11 +87,6 @@ class CallVerifierFactory
 
         return $verifiers;
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var MatcherFactory

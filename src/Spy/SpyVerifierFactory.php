@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Matcher\MatcherFactory;
@@ -20,30 +19,6 @@ use InvalidArgumentException;
  */
 class SpyVerifierFactory
 {
-    /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                SpyFactory::instance(),
-                MatcherFactory::instance(),
-                MatcherVerifier::instance(),
-                GeneratorVerifierFactory::instance(),
-                IterableVerifierFactory::instance(),
-                CallVerifierFactory::instance(),
-                ExceptionAssertionRecorder::instance(),
-                AssertionRenderer::instance(),
-                FunctionHookManager::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
     /**
      * Construct a new spy verifier factory.
      *
@@ -167,11 +142,6 @@ class SpyVerifierFactory
             $this->assertionRenderer
         );
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var SpyFactory

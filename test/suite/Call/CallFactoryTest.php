@@ -10,7 +10,6 @@ use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestCallEventFactory;
 use Error;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use RuntimeException;
 
 #[AllowDynamicProperties]
@@ -98,18 +97,5 @@ class CallFactoryTest extends TestCase
         $actual = $this->eventFactory->createReturned($generator);
 
         $this->assertEquals($expected, $actual);
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

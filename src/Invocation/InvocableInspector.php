@@ -17,20 +17,6 @@ use ReflectionMethod;
 class InvocableInspector
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Get the appropriate reflector for the supplied callback.
      *
      * @param callable $callback The callback.
@@ -67,9 +53,4 @@ class InvocableInspector
 
         return new ReflectionFunction($callback);
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 }

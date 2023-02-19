@@ -10,20 +10,6 @@ namespace Eloquent\Phony\Matcher;
 class MatcherVerifier
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Verify that the supplied arguments match the supplied matchers.
      *
      * @param array<int,Matcher> $matchers  The matchers.
@@ -165,9 +151,4 @@ class MatcherVerifier
 
         return new MatcherResult($isMatch, $matcherMatches, $argumentMatches);
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 }

@@ -13,20 +13,6 @@ use ReflectionClass;
 class FeatureDetector
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new feature detector.
      *
      * @param ?array<string,callable> $features  The features.
@@ -157,11 +143,6 @@ class FeatureDetector
             },
         ];
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var array<string,callable>

@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Event;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
-use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
 use InvalidArgumentException;
 use Throwable;
 
@@ -15,23 +14,6 @@ use Throwable;
  */
 class EventOrderVerifier
 {
-    /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                ExceptionAssertionRecorder::instance(),
-                AssertionRenderer::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
     /**
      * Construct a new event order verifier.
      *
@@ -244,11 +226,6 @@ class EventOrderVerifier
 
         return array_values($merged);
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var AssertionRecorder

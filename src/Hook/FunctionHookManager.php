@@ -18,24 +18,6 @@ use ParseError;
 class FunctionHookManager
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                InvocableInspector::instance(),
-                FunctionSignatureInspector::instance(),
-                FunctionHookGenerator::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new function hook manager.
      *
      * @param InvocableInspector         $invocableInspector The invocable inspector to use.
@@ -142,11 +124,6 @@ class FunctionHookManager
      * @var array<string,array<string,mixed>>
      */
     public static $hooks = [];
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var InvocableInspector

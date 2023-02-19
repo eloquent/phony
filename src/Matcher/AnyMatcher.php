@@ -12,20 +12,6 @@ use Eloquent\Phony\Exporter\Exporter;
 class AnyMatcher implements Matcher
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Returns `true` if `$value` matches this matcher's criteria.
      *
      * @param mixed $value The value to check.
@@ -58,9 +44,4 @@ class AnyMatcher implements Matcher
     {
         return '<any>';
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 }

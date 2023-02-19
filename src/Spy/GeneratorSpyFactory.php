@@ -15,23 +15,6 @@ use Throwable;
 class GeneratorSpyFactory
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                CallEventFactory::instance(),
-                GeneratorSpyMap::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new generator spy factory.
      *
      * @param CallEventFactory $callEventFactory The call event factory to use.
@@ -128,11 +111,6 @@ class GeneratorSpyFactory
             unset($value);
         }
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var CallEventFactory

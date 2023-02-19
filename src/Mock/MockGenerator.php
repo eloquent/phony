@@ -17,23 +17,6 @@ use ReflectionMethod;
 class MockGenerator
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                Sequencer::sequence('mock-class-label'),
-                FunctionSignatureInspector::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new mock generator.
      *
      * @param Sequencer                  $labelSequencer     The label sequencer to use.
@@ -922,11 +905,6 @@ EOD;
 
     const NS_SEPARATOR = "\u{a6}";
     const METHOD_SEPARATOR = "\u{bb}";
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var Sequencer

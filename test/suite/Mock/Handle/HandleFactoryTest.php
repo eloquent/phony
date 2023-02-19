@@ -159,17 +159,4 @@ class HandleFactoryTest extends TestCase
         $this->expectException(InvalidMockClassException::class);
         $this->subject->staticHandle(null);
     }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $stubsProperty = $reflector->getProperty('instance');
-        $stubsProperty->setAccessible(true);
-        $stubsProperty->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
-    }
 }

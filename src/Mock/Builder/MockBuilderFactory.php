@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Mock\Builder;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\MockFactory;
+use Eloquent\Phony\Mock\MockGenerator;
 
 /**
  * Creates mock builders.
@@ -14,35 +15,20 @@ use Eloquent\Phony\Mock\MockFactory;
 class MockBuilderFactory
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                MockFactory::instance(),
-                HandleFactory::instance(),
-                InvocableInspector::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new mock builder factory.
      *
+     * @param MockGenerator      $mockGenerator      The mock generator to use.
      * @param MockFactory        $mockFactory        The mock factory to use.
      * @param HandleFactory      $handleFactory      The handle factory to use.
      * @param InvocableInspector $invocableInspector The invocable inspector.
      */
     public function __construct(
+        MockGenerator $mockGenerator,
         MockFactory $mockFactory,
         HandleFactory $handleFactory,
         InvocableInspector $invocableInspector
     ) {
+        $this->mockGenerator = $mockGenerator;
         $this->mockFactory = $mockFactory;
         $this->handleFactory = $handleFactory;
         $this->invocableInspector = $invocableInspector;
@@ -63,6 +49,7 @@ class MockBuilderFactory
     {
         return new MockBuilder(
             $types,
+            $this->mockGenerator,
             $this->mockFactory,
             $this->handleFactory,
             $this->invocableInspector
@@ -70,9 +57,9 @@ class MockBuilderFactory
     }
 
     /**
-     * @var ?self
+     * @var MockGenerator
      */
-    private static $instance;
+    private $mockGenerator;
 
     /**
      * @var MockFactory

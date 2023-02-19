@@ -42,7 +42,8 @@ class StubDataTest extends TestCase
             $this->container->invocableInspector,
             $this->container->emptyValueFactory,
             $this->container->generatorAnswerBuilderFactory,
-            $this->container->exporter
+            $this->container->exporter,
+            $this->container->assertionRenderer
         );
 
         $this->self = (object) [];
@@ -152,7 +153,8 @@ class StubDataTest extends TestCase
             $this->container->invocableInspector,
             $this->container->emptyValueFactory,
             $this->container->generatorAnswerBuilderFactory,
-            $this->container->exporter
+            $this->container->exporter,
+            $this->container->assertionRenderer
         );
 
         $this->assertFalse($this->subject->isAnonymous());
@@ -399,7 +401,8 @@ class StubDataTest extends TestCase
             $this->container->invocableInspector,
             $this->container->emptyValueFactory,
             $this->container->generatorAnswerBuilderFactory,
-            $this->container->exporter
+            $this->container->exporter,
+            $this->container->assertionRenderer
         );
         $self = (object) [];
         $subject->setSelf($self);
@@ -726,7 +729,8 @@ class StubDataTest extends TestCase
             $this->container->invocableInspector,
             $this->container->emptyValueFactory,
             $this->container->generatorAnswerBuilderFactory,
-            $this->container->exporter
+            $this->container->exporter,
+            $this->container->assertionRenderer
         );
         $self = (object) [];
         $subject->setSelf($self);
@@ -768,7 +772,8 @@ class StubDataTest extends TestCase
             $this->container->invocableInspector,
             $this->container->emptyValueFactory,
             $this->container->generatorAnswerBuilderFactory,
-            $this->container->exporter
+            $this->container->exporter,
+            $this->container->assertionRenderer
         );
         $this->subject->setSelf($this->self);
 
@@ -857,7 +862,8 @@ class StubDataTest extends TestCase
             $this->container->invocableInspector,
             $this->container->emptyValueFactory,
             $this->container->generatorAnswerBuilderFactory,
-            $this->container->exporter
+            $this->container->exporter,
+            $this->container->assertionRenderer
         );
         $subject->setSelf($self);
         $subject->forwards();
@@ -877,7 +883,8 @@ class StubDataTest extends TestCase
             $this->container->invocableInspector,
             $this->container->emptyValueFactory,
             $this->container->generatorAnswerBuilderFactory,
-            $this->container->exporter
+            $this->container->exporter,
+            $this->container->assertionRenderer
         );
         $a = null;
         $b = null;
@@ -928,7 +935,8 @@ class StubDataTest extends TestCase
             $this->container->invocableInspector,
             $this->container->emptyValueFactory,
             $this->container->generatorAnswerBuilderFactory,
-            $this->container->exporter
+            $this->container->exporter,
+            $this->container->assertionRenderer
         );
         $this->subject->returns();
 
@@ -957,7 +965,8 @@ class StubDataTest extends TestCase
             $this->container->invocableInspector,
             $this->container->emptyValueFactory,
             $this->container->generatorAnswerBuilderFactory,
-            $this->container->exporter
+            $this->container->exporter,
+            $this->container->assertionRenderer
         );
         $subject->returns();
 
@@ -1209,7 +1218,8 @@ class StubDataTest extends TestCase
             $this->container->invocableInspector,
             $this->container->emptyValueFactory,
             $this->container->generatorAnswerBuilderFactory,
-            $this->container->exporter
+            $this->container->exporter,
+            $this->container->assertionRenderer
         );
 
         $this->assertSame('default answer', $stub());

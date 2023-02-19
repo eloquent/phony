@@ -9,7 +9,6 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClock;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use RuntimeException;
 
 #[AllowDynamicProperties]
@@ -91,18 +90,5 @@ class CallEventFactoryTest extends TestCase
         $actual = $this->subject->createConsumed();
 
         $this->assertEquals($expected, $actual);
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

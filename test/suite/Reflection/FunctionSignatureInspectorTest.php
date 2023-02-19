@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Reflection;
 
 use AllowDynamicProperties;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 
@@ -322,19 +321,6 @@ class FunctionSignatureInspectorTest extends TestCase
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 
     protected function methodA($a = ReflectionMethod::IS_FINAL, $b = self::CONSTANT_A)

@@ -14,20 +14,6 @@ use Hamcrest\Matcher as ExternalMatcher;
 class HamcrestMatcherDriver implements MatcherDriver
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Returns true if this matcher driver's classes or interfaces exist.
      *
      * @return bool True if available.
@@ -58,9 +44,4 @@ class HamcrestMatcherDriver implements MatcherDriver
     {
         return new HamcrestMatcher($matcher);
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 }

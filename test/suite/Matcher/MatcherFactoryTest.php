@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Matcher;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Hamcrest\HamcrestMatcherDriver;
 use Eloquent\Phony\Phony;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
@@ -14,7 +13,6 @@ use Eloquent\Phony\Test\TestMatcherB;
 use Eloquent\Phony\Test\TestMatcherDriverA;
 use Eloquent\Phony\Test\TestMatcherDriverB;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[AllowDynamicProperties]
 class MatcherFactoryTest extends TestCase
@@ -149,20 +147,5 @@ class MatcherFactoryTest extends TestCase
         $expected = new WildcardMatcher($this->anyMatcher, 111, 222);
 
         $this->assertEquals($expected, $this->subject->wildcard(null, 111, 222));
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
-        $this->assertArrayHasKey(0, $instance->drivers());
-        $this->assertInstanceOf(HamcrestMatcherDriver::class, $instance->drivers()[0]);
     }
 }

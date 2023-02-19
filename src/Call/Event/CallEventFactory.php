@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Call\Event;
 
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Clock\Clock;
-use Eloquent\Phony\Clock\SystemClock;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Throwable;
 
@@ -15,23 +14,6 @@ use Throwable;
  */
 class CallEventFactory
 {
-    /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                Sequencer::sequence('event-sequence-number'),
-                SystemClock::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
     /**
      * Construct a new call event factory.
      *
@@ -169,11 +151,6 @@ class CallEventFactory
             $this->clock->time()
         );
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var Sequencer

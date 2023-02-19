@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Matcher;
 
 use AllowDynamicProperties;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[AllowDynamicProperties]
 class AnyMatcherTest extends TestCase
@@ -26,18 +25,5 @@ class AnyMatcherTest extends TestCase
     {
         $this->assertTrue($this->subject->matches('x'));
         $this->assertTrue($this->subject->matches('y'));
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }

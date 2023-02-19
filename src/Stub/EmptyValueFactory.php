@@ -17,22 +17,6 @@ use ReflectionUnionType;
 class EmptyValueFactory
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(
-                FeatureDetector::instance()
-            );
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new empty value factory engine.
      *
      * @param FeatureDetector $featureDetector The feature detector to use.
@@ -150,11 +134,6 @@ class EmptyValueFactory
 
         return null;
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var bool

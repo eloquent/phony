@@ -5,35 +5,12 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\Exporter;
-use Eloquent\Phony\Exporter\InlineExporter;
-use Eloquent\Phony\Hamcrest\HamcrestMatcherDriver;
 
 /**
  * Creates matchers.
  */
 class MatcherFactory
 {
-    /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            $instance = new self(
-                AnyMatcher::instance(),
-                WildcardMatcher::instance(),
-                InlineExporter::instance()
-            );
-            $instance->addMatcherDriver(HamcrestMatcherDriver::instance());
-
-            self::$instance = $instance;
-        }
-
-        return self::$instance;
-    }
-
     /**
      * Construct a new matcher factory.
      *
@@ -241,11 +218,6 @@ class MatcherFactory
         return
             new WildcardMatcher($value, $minimumArguments, $maximumArguments);
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var array<int,MatcherDriver>

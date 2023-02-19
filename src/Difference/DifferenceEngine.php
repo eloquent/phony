@@ -12,20 +12,6 @@ use Eloquent\Phony\Reflection\FeatureDetector;
 class DifferenceEngine
 {
     /**
-     * Get the static instance of this class.
-     *
-     * @return self The static instance.
-     */
-    public static function instance(): self
-    {
-        if (!self::$instance) {
-            self::$instance = new self(FeatureDetector::instance());
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Construct a new difference engine.
      *
      * @param FeatureDetector $featureDetector The feature detector to use.
@@ -108,11 +94,6 @@ class DifferenceEngine
 
         return $diff;
     }
-
-    /**
-     * @var ?self
-     */
-    private static $instance;
 
     /**
      * @var FeatureDetector

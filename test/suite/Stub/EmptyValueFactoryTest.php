@@ -63,7 +63,6 @@ use RecursiveIterator;
 use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
 use RecursiveTreeIterator;
-use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -491,18 +490,5 @@ class EmptyValueFactoryTest extends TestCase
         $function = new ReflectionMethod(TestInterfaceWithReturnType::class, 'scalarType');
 
         $this->assertSame(0, $this->subject->fromFunction($function));
-    }
-
-    public function testInstance()
-    {
-        $class = get_class($this->subject);
-        $reflector = new ReflectionClass($class);
-        $property = $reflector->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null, null);
-        $instance = $class::instance();
-
-        $this->assertInstanceOf($class, $instance);
-        $this->assertSame($instance, $class::instance());
     }
 }
