@@ -10,13 +10,11 @@ implements \Eloquent\Phony\Mock\Mock
 
     public function __destruct()
     {
-        if (!isset($this->_handle)) {
+        if (isset($this->_handle)) {
+            $this->_handle->spy('__destruct')->invokeWith([]);
+        } else {
             parent::__destruct();
-
-            return;
         }
-
-        $this->_handle->spy('__destruct')->invokeWith([]);
     }
 
     public function addEmptyDir(

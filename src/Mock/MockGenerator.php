@@ -316,18 +316,18 @@ EOD;
 
         if ($destructor) {
             $parentDestruct = $hasParentClass
-                ? "parent::__destruct();\n\n            "
+                ? 'parent::__destruct();'
                 : '';
 
             $source .= <<<EOD
 
     public function __destruct()
     {
-        if (!isset(\$this->_handle)) {
-            {$parentDestruct}return;
+        if (isset(\$this->_handle)) {
+            \$this->_handle->spy('__destruct')->invokeWith([]);
+        } else {
+            {$parentDestruct}
         }
-
-        \$this->_handle->spy('__destruct')->invokeWith([]);
     }
 
 EOD;
