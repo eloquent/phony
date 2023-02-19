@@ -10,6 +10,7 @@ use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Exception\FinalMethodStubException;
+use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Exception\UndefinedMethodStubException;
 use Eloquent\Phony\Mock\Method\WrappedCustomMethod;
 use Eloquent\Phony\Mock\Method\WrappedMagicMethod;
