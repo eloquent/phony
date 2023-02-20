@@ -10,7 +10,7 @@ namespace Eloquent\Phony\Mock\Builder\Method;
 class MethodDefinitionCollection
 {
     /**
-     * Construct a new custom method definition.
+     * Construct a new method definition collection.
      *
      * @param array<string,MethodDefinition>   $methods      The methods.
      * @param array<int,TraitMethodDefinition> $traitMethods The trait methods.
