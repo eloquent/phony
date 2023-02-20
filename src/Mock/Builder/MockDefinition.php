@@ -45,6 +45,7 @@ class MockDefinition
         $this->className = $className;
         $this->parentClassName = '';
 
+        $this->customMethodFnsByName = [];
         $this->signature = [
             'types' => array_keys($types),
             'customMethods' => [],
@@ -58,6 +59,7 @@ class MockDefinition
         foreach ($customMethods as $name => $method) {
             list(, $reflector) = $method;
 
+            $this->customMethodFnsByName[strtolower($name)] = $method[0];
             $this->signature['customMethods'][$name] = [
                 'custom',
                 $reflector->getFileName(),
@@ -69,6 +71,7 @@ class MockDefinition
         foreach ($customStaticMethods as $name => $method) {
             list(, $reflector) = $method;
 
+            $this->customMethodFnsByName[strtolower($name)] = $method[0];
             $this->signature['customStaticMethods'][$name] = [
                 'custom',
                 $reflector->getFileName(),
@@ -146,6 +149,18 @@ class MockDefinition
     public function className(): string
     {
         return $this->className;
+    }
+
+    /**
+     * Get all custom method functions by method name.
+     *
+     * The method name keys are all normalized to lowercase.
+     *
+     * @return array<string,callable> An array containing all custom method functions by name.
+     */
+    public function customMethodFnsByName()
+    {
+        return $this->customMethodFnsByName;
     }
 
     /**
@@ -385,6 +400,11 @@ class MockDefinition
      * @var string
      */
     private $className;
+
+    /**
+     * @var array<string,callable>
+     */
+    private $customMethodFnsByName;
 
     /**
      * @var mixed

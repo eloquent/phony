@@ -98,18 +98,10 @@ class MockFactory
         }
 
         $class = new ReflectionClass($className);
-        $customMethods = [];
-
-        foreach ($definition->customStaticMethods() as $methodName => $method) {
-            $customMethods[strtolower($methodName)] = $method[0];
-        }
-        foreach ($definition->customMethods() as $methodName => $method) {
-            $customMethods[strtolower($methodName)] = $method[0];
-        }
 
         $customMethodsProperty = $class->getProperty('_customMethods');
         $customMethodsProperty->setAccessible(true);
-        $customMethodsProperty->setValue(null, $customMethods);
+        $customMethodsProperty->setValue(null, $definition->customMethodFnsByName());
 
         $this->handleFactory->staticHandle($class);
 
