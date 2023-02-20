@@ -212,8 +212,6 @@ class MockDefinition
     /**
      * Get the method definitions.
      *
-     * Calling this method will finalize the mock builder.
-     *
      * @return MethodDefinitionCollection The method definitions.
      */
     public function methods(): MethodDefinitionCollection
