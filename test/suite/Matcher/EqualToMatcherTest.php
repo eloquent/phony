@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Matcher;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Phony;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\Properties\TestBaseClass;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
@@ -454,11 +453,11 @@ class EqualToMatcherTest extends TestCase
         $builder = $this->container->mockBuilderFactory->create(TestBaseClass::class)
             ->named($className);
         $mockA1 = $builder->full();
-        Phony::on($mockA1)->setLabel('a');
+        $this->container->handleFactory->instanceHandle($mockA1)->setLabel('a');
         $mockA2 = $builder->full();
-        Phony::on($mockA2)->setLabel('a');
+        $this->container->handleFactory->instanceHandle($mockA2)->setLabel('a');
         $mockB1 = $builder->full();
-        Phony::on($mockB1)->setLabel('b');
+        $this->container->handleFactory->instanceHandle($mockB1)->setLabel('b');
         $mockX1 = new $className();
 
         $matcher = new EqualToMatcher($mockA1, true, $this->exporter);
@@ -495,7 +494,9 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesIterableSpySubstitution()
     {
-        $stub = Phony::stub()->setUseIterableSpies(true)->returnsArgument();
+        $stub = $this->container->stubVerifierFactory->createFromCallback(null)
+            ->setUseIterableSpies(true)
+            ->returnsArgument();
         $iterableSpyA = $stub(['a', 'b']);
         $iterableSpyB = $stub(['a', 'b']);
         $iterableSpyC = $stub(['b', 'c']);
@@ -531,8 +532,8 @@ class EqualToMatcherTest extends TestCase
 
     public function testMatchesInstanceHandleSubstitution()
     {
-        $handle = Phony::mock();
-        $mock = $handle->get();
+        $mock = $this->container->mockBuilderFactory->create()->full();
+        $handle = $this->container->handleFactory->instanceHandle($mock);
 
         $matcher = new EqualToMatcher($handle, true, $this->exporter);
 

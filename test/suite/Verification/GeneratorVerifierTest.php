@@ -10,7 +10,6 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
-use Eloquent\Phony\Phony;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestClassA;
@@ -759,7 +758,7 @@ class GeneratorVerifierTest extends TestCase
             $this->generatorEndEvent
         );
         $this->setUpWith([$call]);
-        $handle = Phony::on($exception);
+        $handle = $this->container->handleFactory->instanceHandle($exception);
 
         $this->assertTrue((bool) $this->subject->receivedException($handle));
         $this->assertTrue((bool) $this->subject->checkReceivedException($handle));
@@ -1189,7 +1188,7 @@ class GeneratorVerifierTest extends TestCase
             $this->generatorThrowCall,
         ];
         $this->setUpWith($this->callsWithThrow);
-        $handle = Phony::on($exception);
+        $handle = $this->container->handleFactory->instanceHandle($exception);
 
         $this->assertTrue((bool) $this->subject->threw($handle));
         $this->assertTrue((bool) $this->subject->checkThrew($handle));

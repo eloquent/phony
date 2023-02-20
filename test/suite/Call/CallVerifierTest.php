@@ -8,7 +8,6 @@ use AllowDynamicProperties;
 use Eloquent\Phony\Assertion\Exception\AssertionException;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
 use Eloquent\Phony\Event\EventSequence;
-use Eloquent\Phony\Phony;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestClassA;
@@ -628,7 +627,7 @@ class CallVerifierTest extends TestCase
         $threwEvent = $this->eventFactory->createThrew($exception);
         $call = $this->callFactory->create($this->calledEvent, $threwEvent, null, $threwEvent);
         $subject = call_user_func($this->createCallVerifier, $call);
-        $handle = Phony::on($exception);
+        $handle = $this->container->handleFactory->instanceHandle($exception);
 
         $this->assertTrue((bool) $subject->threw($handle));
         $this->assertTrue((bool) $subject->checkThrew($handle));

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Invocation;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Phony;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestInvocable;
 use Eloquent\Phony\Test\TestWrappedInvocable;
@@ -18,7 +18,8 @@ class InvocableInspectorTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->subject = new InvocableInspector();
+        $this->container = new FacadeContainer();
+        $this->subject = $this->container->invocableInspector;
 
         $this->callback = function () {};
         $this->invocable = new TestInvocable();
@@ -56,7 +57,9 @@ class InvocableInspectorTest extends TestCase
 
     public function testCallbackReflectorWithWrappedMethod()
     {
-        $handle = Phony::mock(TestClassA::class);
+        $handle = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create(TestClassA::class)->full()
+        );
 
         $this->assertEquals(
             new ReflectionMethod($handle->className() . '::testClassAMethodA'),

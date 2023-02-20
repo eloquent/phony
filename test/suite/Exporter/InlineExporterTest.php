@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Exporter;
 
 use AllowDynamicProperties;
 use ClassWithProperty;
-use Eloquent\Phony\Phony;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\Properties\TestBaseClass;
 use Eloquent\Phony\Test\Properties\TestDerivedClassA;
@@ -34,6 +33,7 @@ class InlineExporterTest extends TestCase
             $this->container->invocableInspector
         );
 
+        $this->handleFactory = $this->container->handleFactory;
         $this->mockBuilderFactory = $this->container->mockBuilderFactory;
         $this->spyFactory = $this->container->spyFactory;
         $this->stubFactory = $this->container->stubFactory;
@@ -215,8 +215,8 @@ class InlineExporterTest extends TestCase
         $builder = $this->mockBuilderFactory->create(TestBaseClass::class)
             ->named('PhonyMockInlineExporterExportMocks');
         $mock = $builder->get();
-        $handle = Phony::on($mock)->setLabel('label');
-        $staticHandle = Phony::onStatic($mock);
+        $handle = $this->handleFactory->instanceHandle($mock)->setLabel('label');
+        $staticHandle = $this->handleFactory->staticHandle($mock);
 
         $this->assertSame(
             'PhonyMockInlineExporterExportMocks#0{basePublic: "<base-public>", basePrivate: "<base-private>", ' .
@@ -263,25 +263,25 @@ class InlineExporterTest extends TestCase
         $builderA = $this->mockBuilderFactory->create(TestClassA::class)
             ->named('PhonyMockInlineExporterExportSpiesA');
         $mockA = $builderA->get();
-        $handleA = Phony::on($mockA)->setLabel('label');
+        $handleA = $this->handleFactory->instanceHandle($mockA)->setLabel('label');
         $handleA->testClassAMethodA->setLabel('method');
-        $staticHandleA = Phony::onStatic($mockA);
+        $staticHandleA = $this->handleFactory->staticHandle($mockA);
         $staticHandleA->testClassAStaticMethodA->setLabel('static-method');
         $builderB = $this->mockBuilderFactory->create(TestInterfaceA::class)
             ->named('PhonyMockInlineExporterExportSpiesB');
         $mockB = $builderB->get();
-        $handleB = Phony::on($mockB)->setLabel('label');
+        $handleB = $this->handleFactory->instanceHandle($mockB)->setLabel('label');
         $handleB->testClassAMethodA->setLabel('interface-method');
-        $staticHandleB = Phony::onStatic($mockB);
+        $staticHandleB = $this->handleFactory->staticHandle($mockB);
         $staticHandleB->testClassAStaticMethodA->setLabel('interface-static-method');
         $builderC = $this->mockBuilderFactory->create()
             ->named('PhonyMockInlineExporterExportSpiesC')
             ->addMethod('method', function () {})
             ->addStaticMethod('staticMethod', function () {});
         $mockC = $builderC->get();
-        $handleC = Phony::on($mockC)->setLabel('label');
+        $handleC = $this->handleFactory->instanceHandle($mockC)->setLabel('label');
         $handleC->method->setLabel('custom-method');
-        $staticHandleC = Phony::onStatic($mockC);
+        $staticHandleC = $this->handleFactory->staticHandle($mockC);
         $staticHandleC->staticMethod->setLabel('custom-static-method');
 
         $this->assertSame('stub#0(implode)[label]', $this->subject->export($stub));
@@ -365,8 +365,8 @@ class InlineExporterTest extends TestCase
 
         $e = $this->mockBuilderFactory->create()->named('E')->get();
         $f = $this->mockBuilderFactory->create()->named('F')->get();
-        $g = Phony::on($e)->setLabel('g');
-        $h = Phony::on($f)->setLabel('h');
+        $g = $this->handleFactory->instanceHandle($e)->setLabel('g');
+        $h = $this->handleFactory->instanceHandle($f)->setLabel('h');
         $valueC = [$e, $f, $g, $h, $e, $f, $g, $h];
         $valueD = [$h, $g, $f, $e];
 
@@ -383,7 +383,7 @@ class InlineExporterTest extends TestCase
     public function testExportFalsyLabel()
     {
         $a = $this->mockBuilderFactory->create()->named('PhonyMockInlineExporterFalsyLabel')->get();
-        Phony::on($a)->setLabel('0');
+        $this->handleFactory->instanceHandle($a)->setLabel('0');
 
         $this->assertSame('PhonyMockInlineExporterFalsyLabel#0{}[0]', $this->subject->export($a));
     }
@@ -405,13 +405,13 @@ class InlineExporterTest extends TestCase
             ->addMethod('method')
             ->addStaticMethod('staticMethod');
         $mockA = $builderA->get();
-        $handleA = Phony::on($mockA)->setLabel('parent-class');
-        $staticHandleA = Phony::onStatic($handleA);
+        $handleA = $this->handleFactory->instanceHandle($mockA)->setLabel('parent-class');
+        $staticHandleA = $this->handleFactory->staticHandle($handleA);
         $builderB = $this->mockBuilderFactory->create(TestInterfaceA::class)
             ->named('PhonyMockInlineExporterExportCallableB');
         $mockB = $builderB->get();
-        $handleB = Phony::on($mockB)->setLabel('interface');
-        $staticHandleB = Phony::onStatic($handleB);
+        $handleB = $this->handleFactory->instanceHandle($mockB)->setLabel('interface');
+        $staticHandleB = $this->handleFactory->staticHandle($handleB);
 
         $this->assertSame('implode', $this->subject->exportCallable('implode'));
         $this->assertSame(
@@ -487,8 +487,8 @@ class InlineExporterTest extends TestCase
         $builderA = $this->mockBuilderFactory->create(TestTraitA::class)
             ->named('PhonyMockInlineExporterExportCallableWithTraitsA');
         $mockA = $builderA->get();
-        $handleA = Phony::on($mockA)->setLabel('trait');
-        $staticHandleA = Phony::onStatic($handleA);
+        $handleA = $this->handleFactory->instanceHandle($mockA)->setLabel('trait');
+        $staticHandleA = $this->handleFactory->staticHandle($mockA);
 
         $this->assertSame(
             'PhonyMockInlineExporterExportCallableWithTraitsA->testClassAMethodB',

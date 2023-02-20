@@ -8,7 +8,6 @@ use AllowDynamicProperties;
 use ArrayIterator;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
-use Eloquent\Phony\Phony;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TupleIterator;
 use Exception;
@@ -275,7 +274,9 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testSetsArgumentWithInstanceHandles()
     {
-        $handle = Phony::mock();
+        $handle = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create()->full()
+        );
         $this->subject->setsArgument(0, $handle);
 
         $a = null;
@@ -306,7 +307,9 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testYieldsWithInstanceHandles()
     {
-        $handle = Phony::mock();
+        $handle = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create()->full()
+        );
         $this->subject->yields($handle);
 
         $this->assertSame(
@@ -317,7 +320,9 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testYieldsWithInstanceHandleKeys()
     {
-        $handle = Phony::mock();
+        $handle = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create()->full()
+        );
         $this->subject->yields($handle, 'a');
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 
@@ -352,7 +357,9 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testYieldsFromWithInstanceHandles()
     {
-        $handle = Phony::mock();
+        $handle = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create()->full()
+        );
         $this->subject->yieldsFrom([$handle]);
 
         $this->assertSame(
@@ -363,7 +370,9 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testYieldsFromWithInstanceHandleKeys()
     {
-        $handle = Phony::mock();
+        $handle = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create()->full()
+        );
         $this->subject->yieldsFrom(
             new TupleIterator(
                 [
@@ -402,7 +411,9 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testReturnsWithInstanceHandleValue()
     {
-        $handle = Phony::mock();
+        $handle = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create()->full()
+        );
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returns($handle));
 
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
@@ -506,7 +517,9 @@ class GeneratorAnswerBuilderTest extends TestCase
 
     public function testThrowsWithInstanceHandles()
     {
-        $handle = Phony::mock(RuntimeException::class);
+        $handle = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create(RuntimeException::class)->full()
+        );
         $this->subject->throws($handle);
         $generator = call_user_func($this->answer, $this->self, $this->arguments);
 

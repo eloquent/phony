@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Matcher;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Phony;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestMatcherA;
@@ -96,7 +95,9 @@ class MatcherFactoryTest extends TestCase
 
         $valueB = new EqualToMatcher('b', true, $this->exporter);
         $valueC = (object) [];
-        $valueD = Phony::mock();
+        $valueD = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create()->full()
+        );
         $values = [
             'a',
             $valueB,

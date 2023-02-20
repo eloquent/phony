@@ -6,7 +6,7 @@ namespace Eloquent\Phony\Stub\Answer;
 
 use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Phony;
+use Eloquent\Phony\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
 
 #[AllowDynamicProperties]
@@ -14,6 +14,8 @@ class CallRequestTest extends TestCase
 {
     protected function setUp(): void
     {
+        $this->container = new FacadeContainer();
+
         $this->callback = 'implode';
         $this->arguments = new Arguments(['a', 'b']);
         $this->prefixSelf = true;
@@ -39,7 +41,9 @@ class CallRequestTest extends TestCase
 
     public function testConstructorWithInstanceHandles()
     {
-        $handle = Phony::mock();
+        $handle = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create()->full()
+        );
         $this->arguments = new Arguments([$handle]);
         $this->subject = new CallRequest($this->callback, $this->arguments, false, false, false);
 

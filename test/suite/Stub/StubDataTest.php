@@ -6,7 +6,6 @@ namespace Eloquent\Phony\Stub;
 
 use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Phony;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Eloquent\Phony\Stub\Exception\FinalReturnTypeException;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
@@ -645,7 +644,9 @@ class StubDataTest extends TestCase
 
     public function testSetsArgumentWithInstanceHandles()
     {
-        $handle = Phony::mock();
+        $handle = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create()->full()
+        );
         $this->subject->setsArgument(0, $handle);
 
         $a = null;
@@ -945,7 +946,9 @@ class StubDataTest extends TestCase
 
     public function testReturnsWithInstanceHandles()
     {
-        $handle = Phony::mock();
+        $handle = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create()->full()
+        );
         $this->subject->returns($handle);
 
         $this->assertSame($handle->get(), call_user_func($this->subject));
@@ -1021,7 +1024,9 @@ class StubDataTest extends TestCase
 
     public function testThrowsWithInstanceHandles()
     {
-        $adaptable = Phony::mock(RuntimeException::class);
+        $adaptable = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create(RuntimeException::class)->full()
+        );
         $this->subject->throws($adaptable);
 
         $this->expectException(RuntimeException::class);
