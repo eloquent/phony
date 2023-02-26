@@ -44,7 +44,7 @@ use Eloquent\Phony\Test\TestClassWithFinalReturnType;
 use Eloquent\Phony\Test\TestClassWithSerializeMagicMethods;
 use Eloquent\Phony\Test\TestClassWithToStringException;
 use Eloquent\Phony\Test\TestCountableIterator;
-use Eloquent\Phony\Test\TestFinalClass;
+use Eloquent\Phony\Test\TestFinalClassA;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestInterfaceC;
 use Eloquent\Phony\Test\TestInterfaceD;
@@ -52,6 +52,7 @@ use Eloquent\Phony\Test\TestInterfaceE;
 use Eloquent\Phony\Test\TestInterfaceWithFinalReturnType;
 use Eloquent\Phony\Test\TestInterfaceWithReturnType;
 use Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint;
+use Eloquent\Phony\Test\TestInterfaceWithUnionFinalReturnType;
 use Eloquent\Phony\Test\TestInterfaceWithUnionTypes;
 use Eloquent\Phony\Test\TestInterfaceWithVariadicParameter;
 use Eloquent\Phony\Test\TestInterfaceWithVariadicParameterByReference;
@@ -1598,7 +1599,7 @@ class FunctionalTest extends TestCase
 
     public function testFinalReturnValueWithStub()
     {
-        $expected = new TestFinalClass();
+        $expected = new TestFinalClassA();
         $stub = stub(Test::class . '\testFunctionWithFinalReturnType');
         $stub->returns($expected);
 
@@ -1613,14 +1614,14 @@ class FunctionalTest extends TestCase
         $this->expectExceptionMessage(
             'Unable to create a default return value for ' .
                 "'Eloquent\\\\Phony\\\\Test\\\\testFunctionWithFinalReturnType', which has a final return type of " .
-                "'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+                "'Eloquent\\\\Phony\\\\Test\\\\TestFinalClassA'."
         );
         $stub();
     }
 
     public function testFinalReturnValueWithMock()
     {
-        $expected = new TestFinalClass();
+        $expected = new TestFinalClassA();
         $handle = mock(TestClassWithFinalReturnType::class);
         $handle->finalReturnType->returns($expected);
         $handle->undefined->returns($expected);
@@ -1637,8 +1638,8 @@ class FunctionalTest extends TestCase
         $handle->undefined->forwards();
         $mock = $handle->get();
 
-        $this->assertInstanceOf(TestFinalClass::class, $mock->finalReturnType());
-        $this->assertInstanceOf(TestFinalClass::class, $mock->undefined());
+        $this->assertInstanceOf(TestFinalClassA::class, $mock->finalReturnType());
+        $this->assertInstanceOf(TestFinalClassA::class, $mock->undefined());
     }
 
     public function testFinalReturnValueWithPartialMock()
@@ -1646,8 +1647,8 @@ class FunctionalTest extends TestCase
         $handle = partialMock(TestClassWithFinalReturnType::class);
         $mock = $handle->get();
 
-        $this->assertInstanceOf(TestFinalClass::class, $mock->finalReturnType());
-        $this->assertInstanceOf(TestFinalClass::class, $mock->undefined());
+        $this->assertInstanceOf(TestFinalClassA::class, $mock->finalReturnType());
+        $this->assertInstanceOf(TestFinalClassA::class, $mock->undefined());
     }
 
     public function testFinalDefaultReturnValueWithMock()
@@ -1660,7 +1661,7 @@ class FunctionalTest extends TestCase
             preg_quote("Unable to create a default return value for 'TestClassWithFinalReturnType[", '/') .
             '\d+' .
             preg_quote(
-                "]->finalReturnType', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+                "]->finalReturnType', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClassA'."
             ) .
             '$/'
         );
@@ -1677,7 +1678,7 @@ class FunctionalTest extends TestCase
             preg_quote("Unable to create a default return value for 'TestClassWithFinalReturnType[", '/') .
             '\d+' .
             preg_quote(
-                "]->undefined', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+                "]->undefined', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClassA'."
             ) .
             '$/'
         );
@@ -1686,7 +1687,7 @@ class FunctionalTest extends TestCase
 
     public function testFinalReturnValueWithAbstractMock()
     {
-        $expected = new TestFinalClass();
+        $expected = new TestFinalClassA();
         $handle = mock(AbstractTestClassWithFinalReturnType::class);
         $handle->finalReturnType->returns($expected);
         $handle->undefined->returns($expected);
@@ -1706,7 +1707,7 @@ class FunctionalTest extends TestCase
             preg_quote("Unable to create a default return value for 'AbstractTestClassWithFinalReturnType[", '/') .
             '\d+' .
             preg_quote(
-                "]->finalReturnType', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+                "]->finalReturnType', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClassA'."
             ) .
             '$/'
         );
@@ -1723,7 +1724,7 @@ class FunctionalTest extends TestCase
             preg_quote("Unable to create a default return value for 'AbstractTestClassWithFinalReturnType[", '/') .
             '\d+' .
             preg_quote(
-                "]->undefined', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+                "]->undefined', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClassA'."
             ) .
             '$/'
         );
@@ -1732,7 +1733,7 @@ class FunctionalTest extends TestCase
 
     public function testFinalReturnValueWithInterfaceMock()
     {
-        $expected = new TestFinalClass();
+        $expected = new TestFinalClassA();
         $handle = mock(TestInterfaceWithFinalReturnType::class);
         $handle->finalReturnType->returns($expected);
         $handle->undefined->returns($expected);
@@ -1752,7 +1753,7 @@ class FunctionalTest extends TestCase
             preg_quote("Unable to create a default return value for 'TestInterfaceWithFinalReturnType[", '/') .
             '\d+' .
             preg_quote(
-                "]->finalReturnType', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+                "]->finalReturnType', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClassA'."
             ) .
             '$/'
         );
@@ -1769,11 +1770,28 @@ class FunctionalTest extends TestCase
             preg_quote("Unable to create a default return value for 'TestInterfaceWithFinalReturnType[", '/') .
             '\d+' .
             preg_quote(
-                "]->undefined', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+                "]->undefined', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClassA'."
             ) .
             '$/'
         );
         $mock->undefined();
+    }
+
+    public function testFinalUnionDefaultReturnValue()
+    {
+        $mock = mock(TestInterfaceWithUnionFinalReturnType::class)->get();
+
+        $this->expectException(FinalReturnTypeException::class);
+        $this->expectExceptionMessageMatches(
+            '/^' .
+            preg_quote("Unable to create a default return value for 'TestInterfaceWithUnionFinalReturnType[", '/') .
+            '\d+' .
+            preg_quote(
+                "]->finalReturnType', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClassA|Eloquent\\\\Phony\\\\Test\\\\TestFinalClassB'."
+            ) .
+            '$/'
+        );
+        $mock->finalReturnType();
     }
 
     public function testMockWithCustomSerializationMethods()

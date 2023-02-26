@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Test;
 
-function testFunctionWithFinalReturnType(): TestFinalClass
+function testFunctionWithFinalReturnType(): TestFinalClassA
 {
-    return new TestFinalClass();
+    return new TestFinalClassA();
 }

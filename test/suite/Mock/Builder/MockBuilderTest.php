@@ -23,7 +23,7 @@ use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestClassI;
-use Eloquent\Phony\Test\TestFinalClass;
+use Eloquent\Phony\Test\TestFinalClassA;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestInterfaceC;
 use Eloquent\Phony\Test\TestInterfaceF;
@@ -228,7 +228,7 @@ class MockBuilderTest extends TestCase
     public function testConstructorFailureFinalClass()
     {
         $this->expectException(FinalClassException::class);
-        $this->setUpWith([TestFinalClass::class]);
+        $this->setUpWith([TestFinalClassA::class]);
     }
 
     public function testConstructorFailureMultipleInheritance()
@@ -288,7 +288,7 @@ class MockBuilderTest extends TestCase
         $this->setUpWith([]);
 
         $this->expectException(FinalClassException::class);
-        $this->subject->like(TestFinalClass::class);
+        $this->subject->like(TestFinalClassA::class);
     }
 
     public function testLikeFailureMultipleInheritance()

@@ -6,7 +6,7 @@ namespace Eloquent\Phony\Test;
 
 interface TestInterfaceWithFinalReturnType
 {
-    public function finalReturnType(): TestFinalClass;
+    public function finalReturnType(): TestFinalClassA;
 
-    public function __call(string $name, array $arguments): TestFinalClass;
+    public function __call(string $name, array $arguments): TestFinalClassA;
 }

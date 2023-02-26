@@ -12,7 +12,7 @@ use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
-use Eloquent\Phony\Test\TestFinalClass;
+use Eloquent\Phony\Test\TestFinalClassA;
 use Exception;
 use Generator;
 use PHPUnit\Framework\TestCase;
@@ -956,7 +956,7 @@ class StubDataTest extends TestCase
 
     public function testReturnsWithDefaultValueAndFinalClassTypeHint()
     {
-        $callback = function (): TestFinalClass {};
+        $callback = function (): TestFinalClassA {};
         $callbackString = $this->container->exporter->exportCallable($callback);
         $subject = new StubData(
             $callback,
@@ -976,7 +976,7 @@ class StubDataTest extends TestCase
         $this->expectException(FinalReturnTypeException::class);
         $this->expectExceptionMessage(
             "Unable to create a default return value for '$callbackString', which has a final return type of " .
-                "'Eloquent\\\\Phony\\\\Test\\\\TestFinalClass'."
+                "'Eloquent\\\\Phony\\\\Test\\\\TestFinalClassA'."
         );
         $subject();
     }

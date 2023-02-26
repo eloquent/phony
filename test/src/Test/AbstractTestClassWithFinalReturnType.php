@@ -6,7 +6,7 @@ namespace Eloquent\Phony\Test;
 
 abstract class AbstractTestClassWithFinalReturnType
 {
-    abstract public function finalReturnType(): TestFinalClass;
+    abstract public function finalReturnType(): TestFinalClassA;
 
-    abstract public function __call(string $name, array $arguments): TestFinalClass;
+    abstract public function __call(string $name, array $arguments): TestFinalClassA;
 }

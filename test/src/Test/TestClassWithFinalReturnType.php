@@ -6,13 +6,13 @@ namespace Eloquent\Phony\Test;
 
 class TestClassWithFinalReturnType
 {
-    public function finalReturnType(): TestFinalClass
+    public function finalReturnType(): TestFinalClassA
     {
-        return new TestFinalClass();
+        return new TestFinalClassA();
     }
 
-    public function __call(string $name, array $arguments): TestFinalClass
+    public function __call(string $name, array $arguments): TestFinalClassA
     {
-        return new TestFinalClass();
+        return new TestFinalClassA();
     }
 }

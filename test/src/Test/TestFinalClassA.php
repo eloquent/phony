@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Test;
 
-final class TestFinalClass
+final class TestFinalClassA
 {
 }
