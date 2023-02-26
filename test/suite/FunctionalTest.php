@@ -29,6 +29,7 @@ use Eloquent\Phony\Test\Php81\TestBackedEnum;
 use Eloquent\Phony\Test\Php81\TestBasicEnum;
 use Eloquent\Phony\Test\Php81\TestClassWithReadonlyProperties;
 use Eloquent\Phony\Test\Php81\TestInterfaceUsingEnums;
+use Eloquent\Phony\Test\Php81\TestInterfaceWithIntersectionTypes;
 use Eloquent\Phony\Test\Php82\TestClassReadonly;
 use Eloquent\Phony\Test\Php82\TestClassReadonlySubclass;
 use Eloquent\Phony\Test\Php82\TestInterfaceWithPhp82StandaloneTypes;
@@ -38,11 +39,11 @@ use Eloquent\Phony\Test\TestClassC;
 use Eloquent\Phony\Test\TestClassD;
 use Eloquent\Phony\Test\TestClassG;
 use Eloquent\Phony\Test\TestClassI;
-use Eloquent\Phony\Test\TestInterfaceWithUnionTypes;
 use Eloquent\Phony\Test\TestClassWithConstructorProperties;
 use Eloquent\Phony\Test\TestClassWithFinalReturnType;
 use Eloquent\Phony\Test\TestClassWithSerializeMagicMethods;
 use Eloquent\Phony\Test\TestClassWithToStringException;
+use Eloquent\Phony\Test\TestCountableIterator;
 use Eloquent\Phony\Test\TestFinalClass;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestInterfaceC;
@@ -51,6 +52,7 @@ use Eloquent\Phony\Test\TestInterfaceE;
 use Eloquent\Phony\Test\TestInterfaceWithFinalReturnType;
 use Eloquent\Phony\Test\TestInterfaceWithReturnType;
 use Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint;
+use Eloquent\Phony\Test\TestInterfaceWithUnionTypes;
 use Eloquent\Phony\Test\TestInterfaceWithVariadicParameter;
 use Eloquent\Phony\Test\TestInterfaceWithVariadicParameterByReference;
 use Eloquent\Phony\Test\TestInterfaceWithVariadicParameterWithNullableType;
@@ -1945,5 +1947,33 @@ class FunctionalTest extends TestCase
 
         $this->assertSame('x', $mock->methodA(111));
         $this->assertSame('y', $class::staticMethodA(111));
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testCanMockIntersectionTypes()
+    {
+        $handle = mock(TestInterfaceWithIntersectionTypes::class);
+        $staticHandle = onStatic($handle);
+        $mock = $handle->get();
+        $class = $staticHandle->className();
+
+        $countableIteratorA = new TestCountableIterator();
+        $returnValueA = $mock->methodA($countableIteratorA);
+        $returnValueB = $class::staticMethodA($countableIteratorA);
+
+        $this->assertInstanceOf(Countable::class, $returnValueA);
+        $this->assertInstanceOf(Iterator::class, $returnValueA);
+        $this->assertInstanceOf(Countable::class, $returnValueB);
+        $this->assertInstanceOf(Iterator::class, $returnValueB);
+
+        $countableIteratorB = new TestCountableIterator();
+        $countableIteratorC = new TestCountableIterator();
+        $handle->methodA->returns($countableIteratorB);
+        $staticHandle->staticMethodA->returns($countableIteratorC);
+
+        $this->assertSame($countableIteratorB, $mock->methodA($countableIteratorA));
+        $this->assertSame($countableIteratorC, $class::staticMethodA($countableIteratorA));
     }
 }
