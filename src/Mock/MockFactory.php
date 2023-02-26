@@ -20,7 +20,7 @@ use ReflectionClass;
 class MockFactory
 {
     /**
-     * Cosntruct a new mock factory.
+     * Construct a new mock factory.
      *
      * @param Sequencer     $labelSequencer The label sequencer to use.
      * @param MockGenerator $generator      The generator to use.
