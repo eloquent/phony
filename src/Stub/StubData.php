@@ -23,6 +23,7 @@ use Eloquent\Phony\Stub\Answer\CallRequest;
 use Eloquent\Phony\Stub\Exception\FinalReturnTypeException;
 use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Exception;
+use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionUnionType;
 use Throwable;
@@ -544,6 +545,17 @@ class StubData implements Stub
                                     foreach ($type->getTypes() as $subType) {
                                         if ($typeString) {
                                             $typeString .= '|';
+                                        }
+
+                                        $typeString .= $subType->getName();
+                                    }
+                                } elseif ($type instanceof ReflectionIntersectionType) {
+                                    $typeString = '';
+
+                                    /** @var ReflectionNamedType $subType  */
+                                    foreach ($type->getTypes() as $subType) {
+                                        if ($typeString) {
+                                            $typeString .= '&';
                                         }
 
                                         $typeString .= $subType->getName();

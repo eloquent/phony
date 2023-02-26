@@ -29,6 +29,7 @@ use Eloquent\Phony\Test\Php81\TestBackedEnum;
 use Eloquent\Phony\Test\Php81\TestBasicEnum;
 use Eloquent\Phony\Test\Php81\TestClassWithReadonlyProperties;
 use Eloquent\Phony\Test\Php81\TestInterfaceUsingEnums;
+use Eloquent\Phony\Test\Php81\TestInterfaceWithIntersectionFinalReturnType;
 use Eloquent\Phony\Test\Php81\TestInterfaceWithIntersectionTypes;
 use Eloquent\Phony\Test\Php82\TestClassReadonly;
 use Eloquent\Phony\Test\Php82\TestClassReadonlySubclass;
@@ -1788,6 +1789,26 @@ class FunctionalTest extends TestCase
             '\d+' .
             preg_quote(
                 "]->finalReturnType', which has a final return type of 'Eloquent\\\\Phony\\\\Test\\\\TestFinalClassA|Eloquent\\\\Phony\\\\Test\\\\TestFinalClassB'."
+            ) .
+            '$/'
+        );
+        $mock->finalReturnType();
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testFinalIntersectionDefaultReturnValue()
+    {
+        $mock = mock(TestInterfaceWithIntersectionFinalReturnType::class)->get();
+
+        $this->expectException(FinalReturnTypeException::class);
+        $this->expectExceptionMessageMatches(
+            '/^' .
+            preg_quote("Unable to create a default return value for 'TestInterfaceWithIntersectionFinalReturnType[", '/') .
+            '\d+' .
+            preg_quote(
+                "]->finalReturnType', which has a final return type of 'Countable&Eloquent\\\\Phony\\\\Test\\\\TestFinalClassA'."
             ) .
             '$/'
         );
