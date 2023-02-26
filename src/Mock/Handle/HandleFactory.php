@@ -87,8 +87,10 @@ class HandleFactory
             }
         }
 
+        $className = strtolower($class->getName());
+
         $handle = new InstanceHandle(
-            $this->mockRegistry->definitions[$class->getName()],
+            $this->mockRegistry->definitions[$className],
             $mock,
             (object) [
                 'defaultAnswerCallback' =>
@@ -142,18 +144,16 @@ class HandleFactory
             throw new NonMockClassException($class->getName());
         }
 
-        $handleProperty = $class->getProperty('_staticHandle');
-        $handleProperty->setAccessible(true);
+        $className = strtolower($class->getName());
 
-        /** @var StaticHandle|null $handle */
-        $handle = $handleProperty->getValue();
-
-        if ($handle) {
-            return $handle;
+        if (isset(StaticHandleRegistry::$handles[$className])) {
+            return StaticHandleRegistry::$handles[$className];
         }
 
+        /** @var class-string $className */
+        $className = strtolower($class->getName());
         $handle = new StaticHandle(
-            $this->mockRegistry->definitions[$class->getName()],
+            $this->mockRegistry->definitions[$className],
             $class,
             (object) [
                 'defaultAnswerCallback' =>
@@ -169,7 +169,7 @@ class HandleFactory
             $this->invoker
         );
 
-        $handleProperty->setValue(null, $handle);
+        StaticHandleRegistry::$handles[$className] = $handle;
 
         return $handle;
     }

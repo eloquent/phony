@@ -98,21 +98,25 @@ class MockGenerator
         $source = $this->generateHeader($definition, $className) .
             $this->generateConstants($definition) .
             $this->generateMethods(
+                $className,
                 $definition->methods()->publicStaticMethods(),
                 $hasParentClass
             ) .
-            $this->generateMagicCallStatic($definition) .
+            $this->generateMagicCallStatic($definition, $className) .
             $this->generateStructors($definition, $hasParentClass) .
             $this->generateMethods(
+                $className,
                 $definition->methods()->publicMethods(),
                 $hasParentClass
             ) .
             $this->generateMagicCall($definition) .
             $this->generateMethods(
+                $className,
                 $definition->methods()->protectedStaticMethods(),
                 $hasParentClass
             ) .
             $this->generateMethods(
+                $className,
                 $definition->methods()->protectedMethods(),
                 $hasParentClass
             ) .
@@ -216,8 +220,10 @@ class MockGenerator
         return $source;
     }
 
-    private function generateMagicCallStatic(MockDefinition $definition): string
-    {
+    private function generateMagicCallStatic(
+        MockDefinition $definition,
+        string $className
+    ): string {
         $methods = $definition->methods();
         $callStaticName = $methods->methodName('__callstatic');
         $methods = $methods->publicStaticMethods();
@@ -260,19 +266,24 @@ EOD;
             $canReturn = true;
         }
 
-        if ($canReturn) {
-            $source .= <<<'EOD'
-        $result = self::$_staticHandle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+        $staticHandle = sprintf(
+            self::STATIC_HANDLE,
+            var_export(strtolower($className), true)
+        );
 
-        return $result;
+        if ($canReturn) {
+            $source .= <<<EOD
+        \$result = {$staticHandle}->spy(\$a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Arguments(\$a1));
+
+        return \$result;
     }
 
 EOD;
         } else {
-            $source .= <<<'EOD'
-        self::$_staticHandle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+            $source .= <<<EOD
+        {$staticHandle}->spy(\$a0)
+            ->invokeWith(new \Eloquent\Phony\Call\Arguments(\$a1));
     }
 
 EOD;
@@ -340,9 +351,15 @@ EOD;
      * @param array<string,MethodDefinition> $methods
      */
     private function generateMethods(
+        string $className,
         array $methods,
         bool $hasParentClass
     ): string {
+        $staticHandle = sprintf(
+            self::STATIC_HANDLE,
+            var_export(strtolower($className), true)
+        );
+
         $source = '';
 
         foreach ($methods as $method) {
@@ -413,7 +430,7 @@ EOD;
             $isStatic = $method->isStatic() ? 'static ' : '';
 
             if ($isStatic) {
-                $handle = 'self::$_staticHandle';
+                $handle = $staticHandle;
             } else {
                 $handle = '$this->_handle';
             }
@@ -871,8 +888,7 @@ EOD;
                 ';';
         }
 
-        $source .= "\n" .
-            "    private static \$_staticHandle;\n";
+        $source .= "\n";
 
         if ($this->isReadOnlyPropertySupported) {
             $handleType = '\\' . InstanceHandle::class;
@@ -886,6 +902,8 @@ EOD;
 
     const NS_SEPARATOR = "\u{a6}";
     const METHOD_SEPARATOR = "\u{bb}";
+    const STATIC_HANDLE =
+        '\\Eloquent\\Phony\\Mock\\Handle\\StaticHandleRegistry::$handles[%s]';
 
     /**
      * @var Sequencer

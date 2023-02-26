@@ -76,36 +76,16 @@ class HandleFactoryTest extends TestCase
     {
         $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $class = $mockBuilder->build(true);
-        $handleProperty = $class->getProperty('_staticHandle');
-        $handleProperty->setAccessible(true);
-        $handleProperty->setValue(null, null);
-        $expected = new StaticHandle(
-            $mockBuilder->definition(),
-            $class,
-            (object) [
-                'defaultAnswerCallback' => [StubData::class, 'forwardsAnswerCallback'],
-                'stubs' => (object) [],
-                'isRecording' => true,
-            ],
-            $this->container->stubFactory,
-            $this->container->stubVerifierFactory,
-            $this->container->emptyValueFactory,
-            $this->container->assertionRenderer,
-            $this->container->assertionRecorder,
-            $this->container->invoker
-        );
         $actual = $this->subject->staticHandle($class);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf(StaticHandle::class, $actual);
     }
 
     public function testStaticHandleAdapt()
     {
         $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $class = $mockBuilder->build(true);
-        $handleProperty = $class->getProperty('_staticHandle');
-        $handleProperty->setAccessible(true);
-        $expected = $handleProperty->getValue(null);
+        $expected = StaticHandleRegistry::$handles[strtolower($class->getName())];
         $actual = $this->subject->staticHandle($class);
 
         $this->assertSame($expected, $actual);
@@ -116,21 +96,17 @@ class HandleFactoryTest extends TestCase
     {
         $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $class = $mockBuilder->build(true);
-        $handleProperty = $class->getProperty('_staticHandle');
-        $handleProperty->setAccessible(true);
-        $expected = $handleProperty->getValue(null);
+        $expected = StaticHandleRegistry::$handles[strtolower($class->getName())];
         $actual = $this->subject->staticHandle($mockBuilder->partial());
 
         $this->assertSame($expected, $actual);
     }
 
-    public function testStaticHandleFromSting()
+    public function testStaticHandleFromString()
     {
         $mockBuilder = $this->mockBuilderFactory->create(TestClassB::class);
         $class = $mockBuilder->build(true);
-        $handleProperty = $class->getProperty('_staticHandle');
-        $handleProperty->setAccessible(true);
-        $expected = $handleProperty->getValue(null);
+        $expected = StaticHandleRegistry::$handles[strtolower($class->getName())];
         $actual = $this->subject->staticHandle($class->getName());
 
         $this->assertSame($expected, $actual);

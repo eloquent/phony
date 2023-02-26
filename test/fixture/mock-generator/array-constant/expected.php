@@ -14,6 +14,5 @@ implements \Eloquent\Phony\Mock\Mock
   'c' => 'd',
 );
 
-    private static $_staticHandle;
     private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
 }

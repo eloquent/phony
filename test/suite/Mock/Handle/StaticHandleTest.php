@@ -42,12 +42,9 @@ class StaticHandleTest extends TestCase
         ];
     }
 
-    protected function setUpWith($className, $mockClassName = '')
+    protected function setUpWith($className)
     {
         $this->mockBuilder = $this->mockBuilderFactory->create($className);
-        if ($mockClassName) {
-            $this->mockBuilder->named($mockClassName);
-        }
         $this->class = $this->mockBuilder->build(true);
         $this->subject = new StaticHandle(
             $this->mockBuilder->definition(),
@@ -60,12 +57,9 @@ class StaticHandleTest extends TestCase
             $this->container->assertionRecorder,
             $this->container->invoker
         );
+        $this->className = strtolower($this->class->getName());
+        StaticHandleRegistry::$handles[$this->className] = $this->subject;
 
-        $this->className = $this->class->getName();
-
-        $handleProperty = $this->class->getProperty('_staticHandle');
-        $handleProperty->setAccessible(true);
-        $handleProperty->setValue(null, $this->subject);
     }
 
     public function testFull()
@@ -193,7 +187,7 @@ class StaticHandleTest extends TestCase
 
     public function testNoInteractionFailure()
     {
-        $this->setUpWith(TestClassA::class, 'PhonyMockStaticStubbingNoInteraction');
+        $this->setUpWith(TestClassA::class);
         $className = $this->subject->className();
         $className::testClassAStaticMethodA('a', 'b');
         $className::testClassAStaticMethodB('c', 'd');
@@ -279,7 +273,7 @@ class StaticHandleTest extends TestCase
             ]
         );
         $this->class = $this->mockBuilder->build(true);
-        $className = $this->class->getName();
+        $className = strtolower($this->class->getName());
         $this->subject = new StaticHandle(
             $this->mockBuilder->definition(),
             $this->class,
@@ -291,10 +285,8 @@ class StaticHandleTest extends TestCase
             $this->container->assertionRecorder,
             $this->container->invoker
         );
+        StaticHandleRegistry::$handles[$className] = $this->subject;
         $this->subject->partial();
-        $handleProperty = $this->class->getProperty('_staticHandle');
-        $handleProperty->setAccessible(true);
-        $handleProperty->setValue(null, $this->subject);
         $this->subject->methodA->with('a', 'b')->returns('x');
 
         $this->assertSame('x', $className::methodA('a', 'b'));

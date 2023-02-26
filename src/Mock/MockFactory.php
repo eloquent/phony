@@ -100,7 +100,9 @@ class MockFactory
             // @codeCoverageIgnoreEnd
         }
 
-        $this->registry->definitions[$className] = $definition;
+        /** @var class-string $normalizedClassName */
+        $normalizedClassName = strtolower($className);
+        $this->registry->definitions[$normalizedClassName] = $definition;
         $class = new ReflectionClass($className);
         $this->handleFactory->staticHandle($class);
         $this->definitions[] = [$signature, $class];

@@ -13,8 +13,8 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (isset(self::$_staticHandle)) {
-            self::$_staticHandle->spy(__FUNCTION__)->invokeWith(
+        if (isset(\Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['mockgeneratorvoidreturntype'])) {
+            \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['mockgeneratorvoidreturntype']->spy(__FUNCTION__)->invokeWith(
                 new \Eloquent\Phony\Call\Arguments($arguments)
             );
         }
@@ -24,7 +24,7 @@ implements \Eloquent\Phony\Mock\Mock,
         $a0,
         array $a1
     ) : void {
-        self::$_staticHandle->spy($a0)
+        \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['mockgeneratorvoidreturntype']->spy($a0)
             ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
     }
 
@@ -78,6 +78,5 @@ implements \Eloquent\Phony\Mock\Mock,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {}
 
-    private static $_staticHandle;
     private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
 }
