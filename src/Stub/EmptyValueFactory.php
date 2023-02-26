@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Stub;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use ReflectionFunctionAbstract;
+use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionType;
 use ReflectionUnionType;
@@ -68,6 +69,14 @@ class EmptyValueFactory
             /** @var ReflectionNamedType */
             $lastSubType = end($subTypes);
             $typeName = $lastSubType->getName();
+        } elseif ($type instanceof ReflectionIntersectionType) {
+            $types = [];
+
+            foreach ($type->getTypes() as $type) {
+                $types[] = $type->getName();
+            }
+
+            return $this->mockBuilderFactory->create($types)->full();
         } else {
             return null;
         }

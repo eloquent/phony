@@ -221,6 +221,17 @@ class EmptyValueFactoryTest extends TestCase
         $this->assertSame([], $objectOrIterable);
     }
 
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testFromTypeWithIntersectionType()
+    {
+        $countableIterator = $this->subject->fromType($this->createType('Countable&Iterator'));
+
+        $this->assertInstanceOf(Countable::class, $countableIterator);
+        $this->assertInstanceOf(Iterator::class, $countableIterator);
+    }
+
     public function testFromTypeWithStdClass()
     {
         $actual = $this->subject->fromType($this->createType(stdClass::class));
