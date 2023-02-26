@@ -33,6 +33,7 @@ use Eloquent\Phony\Test\Php81\TestInterfaceWithIntersectionFinalReturnType;
 use Eloquent\Phony\Test\Php81\TestInterfaceWithIntersectionTypes;
 use Eloquent\Phony\Test\Php82\TestClassReadonly;
 use Eloquent\Phony\Test\Php82\TestClassReadonlySubclass;
+use Eloquent\Phony\Test\Php82\TestInterfaceWithDnfTypes;
 use Eloquent\Phony\Test\Php82\TestInterfaceWithPhp82StandaloneTypes;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
@@ -2006,6 +2007,34 @@ class FunctionalTest extends TestCase
         $this->assertInstanceOf(Iterator::class, $returnValueA);
         $this->assertInstanceOf(Countable::class, $returnValueB);
         $this->assertInstanceOf(Iterator::class, $returnValueB);
+
+        $countableIteratorB = new TestCountableIterator();
+        $countableIteratorC = new TestCountableIterator();
+        $handle->methodA->returns($countableIteratorB);
+        $staticHandle->staticMethodA->returns($countableIteratorC);
+
+        $this->assertSame($countableIteratorB, $mock->methodA($countableIteratorA));
+        $this->assertSame($countableIteratorC, $class::staticMethodA($countableIteratorA));
+    }
+
+    /**
+     * @requires PHP >= 8.2
+     */
+    public function testCanMockDnfTypes()
+    {
+        $handle = mock(TestInterfaceWithDnfTypes::class);
+        $staticHandle = onStatic($handle);
+        $mock = $handle->get();
+        $class = $staticHandle->className();
+
+        $countableIteratorA = new TestCountableIterator();
+        $returnValueA = $mock->methodA($countableIteratorA);
+        $returnValueB = $class::staticMethodA($countableIteratorA);
+
+        $this->assertInstanceOf(Countable::class, $returnValueA);
+        $this->assertInstanceOf(IteratorAggregate::class, $returnValueA);
+        $this->assertInstanceOf(Countable::class, $returnValueB);
+        $this->assertInstanceOf(IteratorAggregate::class, $returnValueB);
 
         $countableIteratorB = new TestCountableIterator();
         $countableIteratorC = new TestCountableIterator();
