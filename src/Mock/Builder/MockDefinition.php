@@ -8,6 +8,7 @@ use Eloquent\Phony\Mock\Builder\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\TraitMethodDefinition;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use ReflectionClass;
 use ReflectionFunctionAbstract;
 
@@ -26,6 +27,7 @@ class MockDefinition
      * @param array<string,array{string|null,mixed}>                   $customStaticProperties The custom static properties.
      * @param array<string,mixed> $customConstants The custom constants.
      * @param string              $className       The class name.
+     * @param FeatureDetector     $featureDetector The feature detector to use.
      */
     public function __construct(
         array $types,
@@ -34,7 +36,8 @@ class MockDefinition
         array $customStaticMethods,
         array $customStaticProperties,
         array $customConstants,
-        string $className
+        string $className,
+        FeatureDetector $featureDetector
     ) {
         $this->types = $types;
         $this->customMethods = $customMethods;
@@ -44,6 +47,9 @@ class MockDefinition
         $this->customConstants = $customConstants;
         $this->className = $className;
         $this->parentClassName = '';
+
+        $this->isReadOnlyClassSupported =
+            $featureDetector->isSupported('class.readonly');
 
         $this->uncallableMethodNames = [];
         $this->traitMethodNames = [];
@@ -230,6 +236,18 @@ class MockDefinition
         return $this->parentClassName;
     }
 
+   /**
+    * Returns true if this definition is read-only.
+    *
+    * @return bool True if this definition is read-only.
+    */
+   public function isReadOnly(): bool
+   {
+       $this->inspectTypes();
+
+       return $this->isReadOnly;
+   }
+
     /**
      * Get the interface names.
      *
@@ -285,6 +303,7 @@ class MockDefinition
         $this->typeNames = [];
         $this->interfaceNames = [];
         $this->traitNames = [];
+        $this->isReadOnly = false;
 
         foreach ($this->types as $type) {
             $this->typeNames[] = $typeName = $type->getName();
@@ -295,6 +314,13 @@ class MockDefinition
                 $this->traitNames[] = $typeName;
             } else {
                 $this->parentClassName = $typeName;
+
+                if ($this->isReadOnlyClassSupported) {
+                    /** @var callable $isReadOnly */
+                    $isReadOnly = [$type, 'isReadOnly'];
+
+                    $this->isReadOnly = $isReadOnly();
+                }
             }
         }
     }
@@ -443,6 +469,11 @@ class MockDefinition
     private $className;
 
     /**
+     * @var bool
+     */
+    private $isReadOnlyClassSupported;
+
+    /**
      * @var array<string,true>
      */
     private $uncallableMethodNames;
@@ -471,6 +502,11 @@ class MockDefinition
      * @var string
      */
     private $parentClassName;
+
+    /**
+     * @var bool
+     */
+    private $isReadOnly;
 
     /**
      * @var array<int,string>

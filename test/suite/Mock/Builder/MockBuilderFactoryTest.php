@@ -28,7 +28,8 @@ class MockBuilderFactoryTest extends TestCase
             $this->container->mockGenerator,
             $this->container->mockFactory,
             $this->container->handleFactory,
-            $this->container->invocableInspector
+            $this->container->invocableInspector,
+            $this->container->featureDetector
         );
 
         $this->assertEquals($expected, $actual);

@@ -6,6 +6,7 @@ namespace Eloquent\Phony\Mock\Exception;
 
 use AllowDynamicProperties;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +22,8 @@ class MockGenerationFailedExceptionTest extends TestCase
             [],
             [],
             [],
-            'ClassName'
+            'ClassName',
+            new FeatureDetector()
         );
         $this->cause = new Exception();
     }

@@ -98,7 +98,8 @@ class MockBuilderTest extends TestCase
             $this->container->mockGenerator,
             $this->container->mockFactory,
             $this->container->handleFactory,
-            $this->container->invocableInspector
+            $this->container->invocableInspector,
+            $this->container->featureDetector
         );
     }
 

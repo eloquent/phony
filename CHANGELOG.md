@@ -13,6 +13,7 @@
 - **[NEW]** Added support for PHP 8.2 `true` types ([#262]).
 - **[NEW]** Added support for PHP 8.2 `false` standalone types ([#262]).
 - **[NEW]** Added support for PHP 8.2 `null` standalone types ([#262]).
+- **[NEW]** Added support for PHP 8.2 `readonly` classes ([#264]).
 - **[IMPROVED]** The exporter now uses a single sequence of numbers to identify
   arrays, objects, and wrappers. Previously a separate sequence of numbers was
   used for arrays, due to a limitation of older PHP versions. This means
@@ -31,6 +32,7 @@
 [#260]: https://github.com/eloquent/phony/issues/260
 [#261]: https://github.com/eloquent/phony/issues/261
 [#262]: https://github.com/eloquent/phony/issues/262
+[#264]: https://github.com/eloquent/phony/issues/264
 
 ## 5.0.2 (2021-02-17)
 

@@ -10,6 +10,7 @@ use Eloquent\Phony\Mock\Builder\Method\CustomMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\MethodDefinitionCollection;
 use Eloquent\Phony\Mock\Builder\Method\RealMethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\TraitMethodDefinition;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Test\TestClassB;
 use Eloquent\Phony\Test\TestClassF;
 use Eloquent\Phony\Test\TestInterfaceA;
@@ -29,6 +30,8 @@ class MockDefinitionTest extends TestCase
 {
     protected function setUp(): void
     {
+        $this->featureDetector = new FeatureDetector();
+
         $this->typeNames = [
             Countable::class,
             TestClassB::class,
@@ -101,7 +104,8 @@ class MockDefinitionTest extends TestCase
             $this->customStaticMethods,
             $this->customStaticProperties,
             $this->customConstants,
-            $this->className
+            $this->className,
+            $this->featureDetector
         );
     }
 
@@ -520,7 +524,8 @@ class MockDefinitionTest extends TestCase
             [],
             [],
             [],
-            ''
+            '',
+            $this->featureDetector
         );
 
         $this->assertTrue($definitionA->isEqualTo($definitionA));
@@ -545,7 +550,8 @@ class MockDefinitionTest extends TestCase
             [],
             [],
             [],
-            ''
+            '',
+            $this->featureDetector
         );
         $definitionB = new MockDefinition(
             [],
@@ -557,7 +563,8 @@ class MockDefinitionTest extends TestCase
             [],
             [],
             [],
-            ''
+            '',
+            $this->featureDetector
         );
 
         $this->assertFalse($definitionA->isEqualTo($definitionB));
@@ -574,7 +581,8 @@ class MockDefinitionTest extends TestCase
             ],
             [],
             [],
-            ''
+            '',
+            $this->featureDetector
         );
         $definitionB = new MockDefinition(
             [],
@@ -586,7 +594,8 @@ class MockDefinitionTest extends TestCase
             ],
             [],
             [],
-            ''
+            '',
+            $this->featureDetector
         );
 
         $this->assertFalse($definitionA->isEqualTo($definitionB));

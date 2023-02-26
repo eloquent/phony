@@ -258,7 +258,8 @@ trait FacadeContainerTrait
             $mockGenerator,
             $mockFactory,
             $handleFactory,
-            $invocableInspector
+            $invocableInspector,
+            $featureDetector
         );
         $spyVerifierFactory = new SpyVerifierFactory(
             $spyFactory,

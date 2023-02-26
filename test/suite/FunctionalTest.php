@@ -29,6 +29,8 @@ use Eloquent\Phony\Test\Php81\TestBackedEnum;
 use Eloquent\Phony\Test\Php81\TestBasicEnum;
 use Eloquent\Phony\Test\Php81\TestClassWithReadonlyProperties;
 use Eloquent\Phony\Test\Php81\TestInterfaceUsingEnums;
+use Eloquent\Phony\Test\Php82\TestClassReadonly;
+use Eloquent\Phony\Test\Php82\TestClassReadonlySubclass;
 use Eloquent\Phony\Test\Php82\TestInterfaceWithPhp82StandaloneTypes;
 use Eloquent\Phony\Test\TestClassA;
 use Eloquent\Phony\Test\TestClassB;
@@ -1866,6 +1868,31 @@ class FunctionalTest extends TestCase
         $this->assertSame(111, $mock->publicConstructor);
         $this->assertSame(222, $mock->protectedConstructor);
         $this->assertSame(333, $mock->privateConstructor);
+    }
+
+    /**
+     * @requires PHP >= 8.2
+     */
+    public function testCanMockReadonlyClass()
+    {
+        $handle = partialMock(TestClassReadonly::class);
+        $mock = $handle->get();
+
+        $this->assertSame('a', $mock->propertyA);
+        $this->assertSame(111, $mock->propertyB);
+    }
+
+    /**
+     * @requires PHP >= 8.2
+     */
+    public function testCanMockReadonlySubclass()
+    {
+        $handle = partialMock(TestClassReadonlySubclass::class);
+        $mock = $handle->get();
+
+        $this->assertSame('a', $mock->propertyA);
+        $this->assertSame(111, $mock->propertyB);
+        $this->assertTrue($mock->propertyC);
     }
 
     /**

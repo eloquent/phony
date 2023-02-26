@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Mock;
 use AllowDynamicProperties;
 use Countable;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Sequencer\Sequencer;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClassB;
@@ -50,7 +51,8 @@ class MockGeneratorTest extends TestCase
             [],
             [],
             [],
-            ''
+            '',
+            new FeatureDetector()
         );
 
         $this->assertSame($expected, $this->subject->generateClassName($definition));
@@ -69,7 +71,8 @@ class MockGeneratorTest extends TestCase
             [],
             [],
             [],
-            ''
+            '',
+            new FeatureDetector()
         );
 
         $this->assertSame('PhonyMock_TestTraitA_0', $this->subject->generateClassName($definition));

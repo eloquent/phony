@@ -159,7 +159,8 @@ use Eloquent\Phony\Mock\Mock;
 
 EOD;
 
-        $source = $namespace . $imports . 'class ' . $className;
+        $readonly = $definition->isReadOnly() ? 'readonly ' : '';
+        $source = $namespace . $imports . $readonly . 'class ' . $className;
 
         $parentClassName = $definition->parentClassName();
         $interfaceNames = $definition->interfaceNames();

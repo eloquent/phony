@@ -253,7 +253,8 @@ class FacadeContainer
             $this->mockGenerator,
             $this->mockFactory,
             $this->handleFactory,
-            $this->invocableInspector
+            $this->invocableInspector,
+            $this->featureDetector
         );
         $this->spyVerifierFactory ??= new SpyVerifierFactory(
             $this->spyFactory,

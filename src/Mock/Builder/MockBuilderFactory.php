@@ -8,6 +8,7 @@ use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Mock\MockGenerator;
+use Eloquent\Phony\Reflection\FeatureDetector;
 
 /**
  * Creates mock builders.
@@ -21,17 +22,20 @@ class MockBuilderFactory
      * @param MockFactory        $mockFactory        The mock factory to use.
      * @param HandleFactory      $handleFactory      The handle factory to use.
      * @param InvocableInspector $invocableInspector The invocable inspector.
+     * @param FeatureDetector    $featureDetector    The feature detector to use.
      */
     public function __construct(
         MockGenerator $mockGenerator,
         MockFactory $mockFactory,
         HandleFactory $handleFactory,
-        InvocableInspector $invocableInspector
+        InvocableInspector $invocableInspector,
+        FeatureDetector $featureDetector
     ) {
         $this->mockGenerator = $mockGenerator;
         $this->mockFactory = $mockFactory;
         $this->handleFactory = $handleFactory;
         $this->invocableInspector = $invocableInspector;
+        $this->featureDetector = $featureDetector;
     }
 
     /**
@@ -52,7 +56,8 @@ class MockBuilderFactory
             $this->mockGenerator,
             $this->mockFactory,
             $this->handleFactory,
-            $this->invocableInspector
+            $this->invocableInspector,
+            $this->featureDetector
         );
     }
 
@@ -75,4 +80,9 @@ class MockBuilderFactory
      * @var InvocableInspector
      */
     private $invocableInspector;
+
+    /**
+     * @var FeatureDetector
+     */
+    private $featureDetector;
 }

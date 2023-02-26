@@ -18,6 +18,7 @@ use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Mock\MockGenerator;
+use Eloquent\Phony\Reflection\FeatureDetector;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunctionAbstract;
@@ -44,6 +45,7 @@ class MockBuilder
      * @param MockFactory        $factory            The factory to use.
      * @param HandleFactory      $handleFactory      The handle factory to use.
      * @param InvocableInspector $invocableInspector The invocable inspector.
+     * @param FeatureDetector    $featureDetector    The feature detector to use.
      *
      * @throws MockException If invalid input is supplied.
      */
@@ -52,12 +54,14 @@ class MockBuilder
         MockGenerator $generator,
         MockFactory $factory,
         HandleFactory $handleFactory,
-        InvocableInspector $invocableInspector
+        InvocableInspector $invocableInspector,
+        FeatureDetector $featureDetector
     ) {
         $this->factory = $factory;
         $this->generator = $generator;
         $this->handleFactory = $handleFactory;
         $this->invocableInspector = $invocableInspector;
+        $this->featureDetector = $featureDetector;
 
         $this->types = [];
         $this->parentClassName = '';
@@ -413,7 +417,8 @@ class MockBuilder
                 $this->customStaticMethods,
                 $this->customStaticProperties,
                 $this->customConstants,
-                $this->className
+                $this->className,
+                $this->featureDetector
             );
         }
 
@@ -711,6 +716,11 @@ class MockBuilder
      * @var InvocableInspector
      */
     private $invocableInspector;
+
+    /**
+     * @var FeatureDetector
+     */
+    private $featureDetector;
 
     /**
      * @var array<string,ReflectionClass<object>>
