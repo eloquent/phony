@@ -4744,9 +4744,9 @@ functions or static methods depending on the method of importing:
 
 Create a new [full mock], and return a [mock handle].
 
-_Each value in `$types` can be either a class name, or an [ad hoc mock]
-definition. If only a single type is being mocked, the class name or definition
-can be passed without being wrapped in an array._
+_Each value in `$types` can be either a string of class names delimited with `&`
+symbols, or an [ad hoc mock] definition. Alternatively, a single string of class
+names can be passed without being wrapped in an array._
 
 _See [Mocking basics]._
 
@@ -4759,9 +4759,9 @@ _See [Mocking basics]._
 
 Create a new [partial mock], and return a [mock handle].
 
-_Each value in `$types` can be either a class name, or an [ad hoc mock]
-definition. If only a single type is being mocked, the class name or definition
-can be passed without being wrapped in an array._
+_Each value in `$types` can be either a string of class names delimited with `&`
+symbols, or an [ad hoc mock] definition. Alternatively, a single string of class
+names can be passed without being wrapped in an array._
 
 _Omitting `$arguments` will cause the original constructor to be called with an
 empty argument list. However, if a `null` value is supplied for `$arguments`,
@@ -4778,9 +4778,9 @@ _See [Partial mocks], [Calling a constructor manually]._
 
 Create a new [mock builder].
 
-_Each value in `$types` can be either a class name, or an [ad hoc mock]
-definition. If only a single type is being mocked, the class name or definition
-can be passed without being wrapped in an array._
+_Each value in `$types` can be either a string of class names delimited with `&`
+symbols, or an [ad hoc mock] definition. Alternatively, a single string of class
+names can be passed without being wrapped in an array._
 
 <a name="facade.on" />
 
@@ -5284,7 +5284,9 @@ _Returns a map of class name to class._
 
 Add classes, interfaces, or traits.
 
-_Each type value can be either a class name, or an [ad hoc mock] definition._
+_Each value in `$types` can be either a string of class names delimited with `&`
+symbols, or an [ad hoc mock] definition, or an array containing either of the
+former._
 
 _See [Customizing the mock class]._
 
