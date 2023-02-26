@@ -1,7 +1,12 @@
 <?php
 
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandleRegistry;
+use Eloquent\Phony\Mock\Mock;
+
 class MockGeneratorTraitMagicCall
-implements \Eloquent\Phony\Mock\Mock
+implements Mock
 {
     use \Eloquent\Phony\Test\TestTraitJ
     {
@@ -15,8 +20,8 @@ implements \Eloquent\Phony\Mock\Mock
         $a0,
         array $a1
     ) {
-        $result = \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['mockgeneratortraitmagiccall']->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+        $result = StaticHandleRegistry::$handles['mockgeneratortraitmagiccall']->spy($a0)
+            ->invokeWith(new Arguments($a1));
 
         return $result;
     }
@@ -26,7 +31,7 @@ implements \Eloquent\Phony\Mock\Mock
         array $a1
     ) {
         $result = $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+            ->invokeWith(new Arguments($a1));
 
         return $result;
     }
@@ -34,7 +39,7 @@ implements \Eloquent\Phony\Mock\Mock
     private static function _callTraitStatic(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         $name = '_callTrait_' .
             \str_replace('\\', "\u{a6}", $traitName) .
@@ -46,7 +51,7 @@ implements \Eloquent\Phony\Mock\Mock
 
     private static function _callMagicStatic(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         $methodName = '_callTrait_Eloquent¦Phony¦Test¦TestTraitJ»__callStatic';
 
@@ -56,7 +61,7 @@ implements \Eloquent\Phony\Mock\Mock
     private function _callTrait(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         $name = '_callTrait_' .
             \str_replace('\\', "\u{a6}", $traitName) .
@@ -68,12 +73,12 @@ implements \Eloquent\Phony\Mock\Mock
 
     private function _callMagic(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         $methodName = '_callTrait_Eloquent¦Phony¦Test¦TestTraitJ»__call';
 
         return $this->$methodName($name, $arguments->all());
     }
 
-    private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
+    private readonly InstanceHandle $_handle;
 }

@@ -1,7 +1,12 @@
 <?php
 
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandleRegistry;
+use Eloquent\Phony\Mock\Mock;
+
 class MockGeneratorVoidReturnType
-implements \Eloquent\Phony\Mock\Mock,
+implements Mock,
            \Eloquent\Phony\Test\TestInterfaceWithVoidReturnType
 {
     public static function staticMethod() : void
@@ -13,9 +18,9 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (isset(\Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['mockgeneratorvoidreturntype'])) {
-            \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['mockgeneratorvoidreturntype']->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+        if (isset(StaticHandleRegistry::$handles['mockgeneratorvoidreturntype'])) {
+            StaticHandleRegistry::$handles['mockgeneratorvoidreturntype']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($arguments)
             );
         }
     }
@@ -24,8 +29,8 @@ implements \Eloquent\Phony\Mock\Mock,
         $a0,
         array $a1
     ) : void {
-        \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['mockgeneratorvoidreturntype']->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+        StaticHandleRegistry::$handles['mockgeneratorvoidreturntype']->spy($a0)
+            ->invokeWith(new Arguments($a1));
     }
 
     public function method() : void
@@ -39,7 +44,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
         }
     }
@@ -55,7 +60,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
         }
     }
@@ -65,18 +70,18 @@ implements \Eloquent\Phony\Mock\Mock,
         array $a1
     ) : void {
         $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+            ->invokeWith(new Arguments($a1));
     }
 
     private static function _callMagicStatic(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {}
 
     private function _callMagic(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {}
 
-    private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
+    private readonly InstanceHandle $_handle;
 }

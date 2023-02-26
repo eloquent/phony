@@ -1,15 +1,20 @@
 <?php
 
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandleRegistry;
+use Eloquent\Phony\Mock\Mock;
+
 class MockGeneratorInterfaceMagicCall
-implements \Eloquent\Phony\Mock\Mock,
+implements Mock,
            \Eloquent\Phony\Test\TestInterfaceD
 {
     public static function __callStatic(
         $a0,
         array $a1
     ) {
-        $result = \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['mockgeneratorinterfacemagiccall']->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+        $result = StaticHandleRegistry::$handles['mockgeneratorinterfacemagiccall']->spy($a0)
+            ->invokeWith(new Arguments($a1));
 
         return $result;
     }
@@ -19,20 +24,20 @@ implements \Eloquent\Phony\Mock\Mock,
         array $a1
     ) {
         $result = $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+            ->invokeWith(new Arguments($a1));
 
         return $result;
     }
 
     private static function _callMagicStatic(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {}
 
     private function _callMagic(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {}
 
-    private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
+    private readonly InstanceHandle $_handle;
 }

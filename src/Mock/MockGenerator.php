@@ -7,7 +7,6 @@ namespace Eloquent\Phony\Mock;
 use Eloquent\Phony\Mock\Builder\Method\MethodDefinition;
 use Eloquent\Phony\Mock\Builder\Method\TraitMethodDefinition;
 use Eloquent\Phony\Mock\Builder\MockDefinition;
-use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
@@ -151,7 +150,16 @@ class MockGenerator
             $namespace = '';
         }
 
-        $source = $namespace . 'class ' . $className;
+        $imports = <<<'EOD'
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandleRegistry;
+use Eloquent\Phony\Mock\Mock;
+
+
+EOD;
+
+        $source = $namespace . $imports . 'class ' . $className;
 
         $parentClassName = $definition->parentClassName();
         $interfaceNames = $definition->interfaceNames();
@@ -161,9 +169,15 @@ class MockGenerator
             $source .= "\nextends \\" . $parentClassName;
         }
 
-        array_unshift($interfaceNames, Mock::class);
-        $source .= "\nimplements \\" .
-            implode(",\n           \\", $interfaceNames);
+        $qualifiedInterfaceNames = [];
+
+        foreach ($interfaceNames as $interfaceName) {
+            $qualifiedInterfaceNames[] = "\\$interfaceName";
+        }
+
+        array_unshift($qualifiedInterfaceNames, 'Mock');
+        $source .= "\nimplements " .
+            implode(",\n           ", $qualifiedInterfaceNames);
 
         $source .= "\n{";
 
@@ -274,7 +288,7 @@ EOD;
         if ($canReturn) {
             $source .= <<<EOD
         \$result = {$staticHandle}->spy(\$a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments(\$a1));
+            ->invokeWith(new Arguments(\$a1));
 
         return \$result;
     }
@@ -283,7 +297,7 @@ EOD;
         } else {
             $source .= <<<EOD
         {$staticHandle}->spy(\$a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments(\$a1));
+            ->invokeWith(new Arguments(\$a1));
     }
 
 EOD;
@@ -457,14 +471,14 @@ EOD;
                 $body .=
                     "            \$result = {$handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
-                    '                new \Eloquent\Phony\Call\Arguments' .
+                    '                new Arguments' .
                     "(\$arguments)\n            );\n\n" .
                     '            return $result;';
             } else {
                 $body .=
                     "            {$handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
-                    '                new \Eloquent\Phony\Call\Arguments' .
+                    '                new Arguments' .
                     "(\$arguments)\n            );";
             }
 
@@ -579,7 +593,7 @@ EOD;
         if ($canReturn) {
             $source .= <<<'EOD'
         $result = $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+            ->invokeWith(new Arguments($a1));
 
         return $result;
     }
@@ -588,7 +602,7 @@ EOD;
         } else {
             $source .= <<<'EOD'
         $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+            ->invokeWith(new Arguments($a1));
     }
 
 EOD;
@@ -614,7 +628,7 @@ EOD;
 
     private static function _callParentStatic(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         return parent::$name(...$arguments->all());
     }
@@ -628,7 +642,7 @@ EOD;
     private static function _callTraitStatic(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         $name = '_callTrait_' .
             \str_replace('\\', "\u{a6}", $traitName) .
@@ -675,7 +689,7 @@ EOD;
 
     private static function _callMagicStatic(
         \$name,
-        \Eloquent\Phony\Call\Arguments \$arguments
+        Arguments \$arguments
     ) {{$parentCall}}
 
 EOD;
@@ -684,7 +698,7 @@ EOD;
 
     private static function _callMagicStatic(
         \$name,
-        \Eloquent\Phony\Call\Arguments \$arguments
+        Arguments \$arguments
     ) {
         \$methodName = $methodName;
 
@@ -700,7 +714,7 @@ EOD;
 
     private function _callParent(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         return parent::$name(...$arguments->all());
     }
@@ -717,7 +731,7 @@ EOD;
                     $source .= <<<EOD
 
     private function _callParentConstructor(
-        \Eloquent\Phony\Call\Arguments \$arguments
+        Arguments \$arguments
     ) {
         \$constructor = new ReflectionMethod($parentClassNameQuoted, "__construct");
         \$constructor->setAccessible(true);
@@ -729,7 +743,7 @@ EOD;
                     $source .= <<<EOD
 
     private function _callParentConstructor(
-        \Eloquent\Phony\Call\Arguments \$arguments
+        Arguments \$arguments
     ) {
         parent::$constructorName(...\$arguments->all());
     }
@@ -768,7 +782,7 @@ EOD;
                     $source .= <<<EOD
 
     private function _callParentConstructor(
-        \Eloquent\Phony\Call\Arguments \$arguments
+        Arguments \$arguments
     ) {
         \$this->$constructorName(...\$arguments->all());
     }
@@ -782,7 +796,7 @@ EOD;
     private function _callTrait(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         $name = '_callTrait_' .
             \str_replace('\\', "\u{a6}", $traitName) .
@@ -829,7 +843,7 @@ EOD;
 
     private function _callMagic(
         \$name,
-        \Eloquent\Phony\Call\Arguments \$arguments
+        Arguments \$arguments
     ) {{$parentCall}}
 
 EOD;
@@ -838,7 +852,7 @@ EOD;
 
     private function _callMagic(
         \$name,
-        \Eloquent\Phony\Call\Arguments \$arguments
+        Arguments \$arguments
     ) {
         \$methodName = $methodName;
 
@@ -891,8 +905,7 @@ EOD;
         $source .= "\n";
 
         if ($this->isReadOnlyPropertySupported) {
-            $handleType = '\\' . InstanceHandle::class;
-            $source .=  "    private readonly $handleType \$_handle;";
+            $source .=  '    private readonly InstanceHandle $_handle;';
         } else {
             $source .=  '    private $_handle;';
         }
@@ -902,8 +915,7 @@ EOD;
 
     const NS_SEPARATOR = "\u{a6}";
     const METHOD_SEPARATOR = "\u{bb}";
-    const STATIC_HANDLE =
-        '\\Eloquent\\Phony\\Mock\\Handle\\StaticHandleRegistry::$handles[%s]';
+    const STATIC_HANDLE = 'StaticHandleRegistry::$handles[%s]';
 
     /**
      * @var Sequencer

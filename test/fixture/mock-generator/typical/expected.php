@@ -2,9 +2,14 @@
 
 namespace Phony\Test;
 
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandleRegistry;
+use Eloquent\Phony\Mock\Mock;
+
 class MockGeneratorTypical
 extends \Eloquent\Phony\Test\TestClassB
-implements \Eloquent\Phony\Mock\Mock,
+implements Mock,
            \Iterator,
            \Countable,
            \ArrayAccess
@@ -35,9 +40,9 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (isset(\Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
-            $result = \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+        if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
+            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($arguments)
             );
 
             return $result;
@@ -57,9 +62,9 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (isset(\Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
-            $result = \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+        if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
+            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($arguments)
             );
 
             return $result;
@@ -88,9 +93,9 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (isset(\Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
-            $result = \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+        if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
+            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($arguments)
             );
 
             return $result;
@@ -110,9 +115,9 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (isset(\Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
-            $result = \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+        if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
+            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($arguments)
             );
 
             return $result;
@@ -141,9 +146,9 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (isset(\Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
-            $result = \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+        if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
+            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($arguments)
             );
 
             return $result;
@@ -191,9 +196,9 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (isset(\Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
-            $result = \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+        if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
+            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($arguments)
             );
 
             return $result;
@@ -208,8 +213,8 @@ implements \Eloquent\Phony\Mock\Mock,
         $a0,
         array $a1
     ) {
-        $result = \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+        $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy($a0)
+            ->invokeWith(new Arguments($a1));
 
         return $result;
     }
@@ -242,7 +247,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -264,7 +269,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -295,7 +300,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -317,7 +322,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -339,7 +344,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -361,7 +366,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
         } else {
             parent::next(...$arguments);
@@ -379,7 +384,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -401,7 +406,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -423,7 +428,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
         } else {
             parent::rewind(...$arguments);
@@ -441,7 +446,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -468,7 +473,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -495,7 +500,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -526,7 +531,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
         } else {
             parent::offsetSet(...$arguments);
@@ -549,7 +554,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
         } else {
             parent::offsetUnset(...$arguments);
@@ -585,7 +590,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -607,7 +612,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -623,7 +628,7 @@ implements \Eloquent\Phony\Mock\Mock,
         array $a1
     ) {
         $result = $this->_handle->spy($a0)
-            ->invokeWith(new \Eloquent\Phony\Call\Arguments($a1));
+            ->invokeWith(new Arguments($a1));
 
         return $result;
     }
@@ -637,9 +642,9 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (isset(\Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
-            $result = \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+        if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
+            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($arguments)
             );
 
             return $result;
@@ -668,9 +673,9 @@ implements \Eloquent\Phony\Mock\Mock,
             $arguments[] = \func_get_arg($i);
         }
 
-        if (isset(\Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
-            $result = \Eloquent\Phony\Mock\Handle\StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+        if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical'])) {
+            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypical']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($arguments)
             );
 
             return $result;
@@ -692,7 +697,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -723,7 +728,7 @@ implements \Eloquent\Phony\Mock\Mock,
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -736,34 +741,34 @@ implements \Eloquent\Phony\Mock\Mock,
 
     private static function _callParentStatic(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         return parent::$name(...$arguments->all());
     }
 
     private static function _callMagicStatic(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         return parent::__callStatic($name, $arguments->all());
     }
 
     private function _callParent(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         return parent::$name(...$arguments->all());
     }
 
     private function _callParentConstructor(
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         parent::__construct(...$arguments->all());
     }
 
     private function _callMagic(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         return parent::__call($name, $arguments->all());
     }
@@ -772,5 +777,5 @@ implements \Eloquent\Phony\Mock\Mock,
     public static $propertyB = 222;
     public $propertyC = 'valueC';
     public $propertyD = 333;
-    private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
+    private readonly InstanceHandle $_handle;
 }

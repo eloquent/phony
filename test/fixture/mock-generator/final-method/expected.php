@@ -2,23 +2,28 @@
 
 namespace Phony\Test;
 
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandleRegistry;
+use Eloquent\Phony\Mock\Mock;
+
 class MockGeneratorFinalMethod
 extends \Eloquent\Phony\Test\TestClassF
-implements \Eloquent\Phony\Mock\Mock
+implements Mock
 {
     private static function _callParentStatic(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         return parent::$name(...$arguments->all());
     }
 
     private function _callParent(
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         return parent::$name(...$arguments->all());
     }
 
-    private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
+    private readonly InstanceHandle $_handle;
 }

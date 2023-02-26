@@ -1,7 +1,12 @@
 <?php
 
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandleRegistry;
+use Eloquent\Phony\Mock\Mock;
+
 class MockGeneratorTraitConstructor
-implements \Eloquent\Phony\Mock\Mock
+implements Mock
 {
     use \Eloquent\Phony\Test\TestTraitD
     {
@@ -16,7 +21,7 @@ implements \Eloquent\Phony\Mock\Mock
     private static function _callTraitStatic(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         $name = '_callTrait_' .
             \str_replace('\\', "\u{a6}", $traitName) .
@@ -27,7 +32,7 @@ implements \Eloquent\Phony\Mock\Mock
     }
 
     private function _callParentConstructor(
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         $this->_callTrait_Eloquent¦Phony¦Test¦TestTraitD»__construct(...$arguments->all());
     }
@@ -35,7 +40,7 @@ implements \Eloquent\Phony\Mock\Mock
     private function _callTrait(
         $traitName,
         $name,
-        \Eloquent\Phony\Call\Arguments $arguments
+        Arguments $arguments
     ) {
         $name = '_callTrait_' .
             \str_replace('\\', "\u{a6}", $traitName) .
@@ -45,5 +50,5 @@ implements \Eloquent\Phony\Mock\Mock
         return $this->$name(...$arguments->all());
     }
 
-    private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
+    private readonly InstanceHandle $_handle;
 }

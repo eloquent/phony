@@ -1,7 +1,12 @@
 <?php
 
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandleRegistry;
+use Eloquent\Phony\Mock\Mock;
+
 class MockGeneratorArrayConstant
-implements \Eloquent\Phony\Mock\Mock
+implements Mock
 {
     const CONSTANT_A = array (
 );
@@ -14,5 +19,5 @@ implements \Eloquent\Phony\Mock\Mock
   'c' => 'd',
 );
 
-    private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
+    private readonly InstanceHandle $_handle;
 }

@@ -2,8 +2,13 @@
 
 namespace Phony\Test;
 
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandleRegistry;
+use Eloquent\Phony\Mock\Mock;
+
 class MockGeneratorVariadics
-implements \Eloquent\Phony\Mock\Mock
+implements Mock
 {
     public function methodA(
         $a0,
@@ -26,7 +31,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -58,7 +63,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -90,7 +95,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -122,7 +127,7 @@ implements \Eloquent\Phony\Mock\Mock
 
         if (isset($this->_handle)) {
             $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new \Eloquent\Phony\Call\Arguments($arguments)
+                new Arguments($arguments)
             );
 
             return $result;
@@ -133,5 +138,5 @@ implements \Eloquent\Phony\Mock\Mock
         }
     }
 
-    private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
+    private readonly InstanceHandle $_handle;
 }

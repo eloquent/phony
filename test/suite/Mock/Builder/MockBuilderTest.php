@@ -889,10 +889,15 @@ class MockBuilderTest extends TestCase
         $this->setUpWith([]);
         $this->subject->named('PhonyMockBuilderTestSourceMethod');
         $expected = <<<'EOD'
+use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Mock\Handle\InstanceHandle;
+use Eloquent\Phony\Mock\Handle\StaticHandleRegistry;
+use Eloquent\Phony\Mock\Mock;
+
 class PhonyMockBuilderTestSourceMethod
-implements \Eloquent\Phony\Mock\Mock
+implements Mock
 {
-    private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
+    private readonly InstanceHandle $_handle;
 }
 
 EOD;
