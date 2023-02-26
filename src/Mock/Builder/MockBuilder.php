@@ -154,11 +154,23 @@ class MockBuilder
             if (is_array($type)) {
                 if (!empty($type)) {
                     if (array_values($type) === $type) {
-                        $final = array_merge($final, $type);
+                        foreach ($type as $subType) {
+                            if (is_string($subType)) {
+                                $final = array_merge(
+                                    $final,
+                                    explode(self::INTERSECTION, $subType)
+                                );
+                            } else {
+                                $final[] = $subType;
+                            }
+                        }
                     } else {
                         $final[] = $type;
                     }
                 }
+            } elseif (is_string($type)) {
+                $final =
+                    array_merge($final, explode(self::INTERSECTION, $type));
             } else {
                 $final[] = $type;
             }
@@ -696,6 +708,8 @@ class MockBuilder
 
         return $this;
     }
+
+    const INTERSECTION = '&';
 
     /**
      * @var MockGenerator

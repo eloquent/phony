@@ -2015,4 +2015,13 @@ class FunctionalTest extends TestCase
         $this->assertSame($countableIteratorB, $mock->methodA($countableIteratorA));
         $this->assertSame($countableIteratorC, $class::staticMethodA($countableIteratorA));
     }
+
+    public function testCanMockWithIntersectionTypeNotation()
+    {
+        $handle = mock('Countable&Iterator');
+        $mock = $handle->get();
+
+        $this->assertInstanceOf(Countable::class, $mock);
+        $this->assertInstanceOf(Iterator::class, $mock);
+    }
 }

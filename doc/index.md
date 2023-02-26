@@ -504,6 +504,13 @@ $handle = mock([ClassA::class, InterfaceA::class, TraitA::class]);        // wit
 $handle = Phony::mock([ClassA::class, InterfaceA::class, TraitA::class]); // without `use function`
 ```
 
+It's also possible to use intersection type notation with the `&` symbol:
+
+```php
+$handle = mock('InterfaceA&InterfaceB&TraitA');        // with `use function`
+$handle = Phony::mock('InterfaceA&InterfaceB&TraitA'); // without `use function`
+```
+
 ### Ad hoc mocks
 
 _Phony_ supports the creation of mock objects with methods and/or properties

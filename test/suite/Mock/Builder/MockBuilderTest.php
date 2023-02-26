@@ -275,6 +275,24 @@ class MockBuilderTest extends TestCase
         $this->assertEquals($this->typesFor($typeNames), $builder->types());
     }
 
+    public function testLikeWithIntersectionString()
+    {
+        $builder = $this->setUpWith([]);
+        $typeNames = [Iterator::class, Countable::class, Serializable::class];
+
+        $this->assertSame($builder, $builder->like(join('&', $typeNames)));
+        $this->assertEquals($this->typesFor($typeNames), $builder->types());
+    }
+
+    public function testLikeWithIntersectionStringInArray()
+    {
+        $builder = $this->setUpWith([]);
+        $typeNames = [Iterator::class, Countable::class, Serializable::class];
+
+        $this->assertSame($builder, $builder->like([join('&', $typeNames)]));
+        $this->assertEquals($this->typesFor($typeNames), $builder->types());
+    }
+
     public function testLikeFailureUndefinedClass()
     {
         $this->setUpWith([]);
