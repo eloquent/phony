@@ -8,6 +8,7 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Mock\Mock;
 use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
@@ -27,6 +28,7 @@ class InstanceHandle implements Handle
     /**
      * Construct a new instance handle.
      *
+     * @param MockDefinition      $mockDefinition      The mock definition.
      * @param Mock                $mock                The mock.
      * @param stdClass            $state               The state.
      * @param StubFactory         $stubFactory         The stub factory to use.
@@ -37,6 +39,7 @@ class InstanceHandle implements Handle
      * @param Invoker             $invoker             The invoker to use.
      */
     public function __construct(
+        MockDefinition $mockDefinition,
         Mock $mock,
         stdClass $state,
         StubFactory $stubFactory,
@@ -80,6 +83,7 @@ class InstanceHandle implements Handle
         $this->callParentConstructorMethod = $callParentConstructorMethod;
 
         $this->constructHandle(
+            $mockDefinition,
             $class,
             $state,
             $callParentMethod,

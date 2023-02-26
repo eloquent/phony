@@ -29,6 +29,7 @@ use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Mock\MockGenerator;
+use Eloquent\Phony\Mock\MockRegistry;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
@@ -89,6 +90,7 @@ class FacadeContainer
         public ?MockBuilderFactory $mockBuilderFactory = null,
         public ?MockFactory $mockFactory = null,
         public ?MockGenerator $mockGenerator = null,
+        public ?MockRegistry $mockRegistry = null,
         public ?Sequencer $eventSequence = null,
         public ?Sequencer $idSequence = null,
         public ?Sequencer $mockClassLabelSequence = null,
@@ -229,7 +231,9 @@ class FacadeContainer
             $this->generatorAnswerBuilderFactory,
             $this->functionHookManager
         );
+        $this->mockRegistry ??= new MockRegistry();
         $this->handleFactory ??= new HandleFactory(
+            $this->mockRegistry,
             $this->stubFactory,
             $this->stubVerifierFactory,
             $this->emptyValueFactory,
@@ -242,6 +246,7 @@ class FacadeContainer
         $this->mockFactory ??= new MockFactory(
             $this->mockLabelSequence,
             $this->mockGenerator,
+            $this->mockRegistry,
             $this->handleFactory
         );
         $this->mockBuilderFactory ??= new MockBuilderFactory(

@@ -871,26 +871,7 @@ EOD;
                 ';';
         }
 
-        $source .= "\n    private static \$_uncallableMethods = ";
-        $uncallableMethodNames = $definition->uncallableMethodNames();
-
-        if (empty($uncallableMethodNames)) {
-            $source .= '[]';
-        } else {
-            $source .= var_export($uncallableMethodNames, true);
-        }
-
-        $source .= ";\n    private static \$_traitMethods = ";
-        $traitMethodNames = $definition->traitMethodNames();
-
-        if (empty($traitMethodNames)) {
-            $source .= '[]';
-        } else {
-            $source .= var_export($traitMethodNames, true);
-        }
-
-        $source .= ";\n" .
-            "    private static \$_customMethods = [];\n" .
+        $source .= "\n" .
             "    private static \$_staticHandle;\n";
 
         if ($this->isReadOnlyPropertySupported) {

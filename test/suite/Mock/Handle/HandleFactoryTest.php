@@ -33,6 +33,7 @@ class HandleFactoryTest extends TestCase
         $class = $mockBuilder->build(true);
         $mock = $class->newInstanceWithoutConstructor();
         $expected = new InstanceHandle(
+            $mockBuilder->definition(),
             $mock,
             (object) [
                 'defaultAnswerCallback' => [StubData::class, 'returnsEmptyAnswerCallback'],
@@ -79,6 +80,7 @@ class HandleFactoryTest extends TestCase
         $handleProperty->setAccessible(true);
         $handleProperty->setValue(null, null);
         $expected = new StaticHandle(
+            $mockBuilder->definition(),
             $class,
             (object) [
                 'defaultAnswerCallback' => [StubData::class, 'forwardsAnswerCallback'],

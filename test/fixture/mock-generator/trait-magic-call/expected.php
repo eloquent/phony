@@ -75,12 +75,6 @@ implements \Eloquent\Phony\Mock\Mock
         return $this->$methodName($name, $arguments->all());
     }
 
-    private static $_uncallableMethods = [];
-    private static $_traitMethods = array (
-  '__callstatic' => 'Eloquent\\Phony\\Test\\TestTraitJ',
-  '__call' => 'Eloquent\\Phony\\Test\\TestTraitJ',
-);
-    private static $_customMethods = [];
     private static $_staticHandle;
     private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
 }

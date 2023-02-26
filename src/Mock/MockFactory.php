@@ -24,15 +24,18 @@ class MockFactory
      *
      * @param Sequencer     $labelSequencer The label sequencer to use.
      * @param MockGenerator $generator      The generator to use.
+     * @param MockRegistry  $registry       The registry to use.
      * @param HandleFactory $handleFactory  The handle factory to use.
      */
     public function __construct(
         Sequencer $labelSequencer,
         MockGenerator $generator,
+        MockRegistry $registry,
         HandleFactory $handleFactory
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->generator = $generator;
+        $this->registry = $registry;
         $this->handleFactory = $handleFactory;
         $this->definitions = [];
     }
@@ -97,14 +100,9 @@ class MockFactory
             // @codeCoverageIgnoreEnd
         }
 
+        $this->registry->definitions[$className] = $definition;
         $class = new ReflectionClass($className);
-
-        $customMethodsProperty = $class->getProperty('_customMethods');
-        $customMethodsProperty->setAccessible(true);
-        $customMethodsProperty->setValue(null, $definition->customMethodFnsByName());
-
         $this->handleFactory->staticHandle($class);
-
         $this->definitions[] = [$signature, $class];
 
         return $class;
@@ -163,6 +161,11 @@ class MockFactory
      * @var MockGenerator
      */
     private $generator;
+
+    /**
+     * @var MockRegistry
+     */
+    private $registry;
 
     /**
      * @var HandleFactory

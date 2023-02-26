@@ -50,6 +50,7 @@ class StaticHandleTest extends TestCase
         }
         $this->class = $this->mockBuilder->build(true);
         $this->subject = new StaticHandle(
+            $this->mockBuilder->definition(),
             $this->class,
             $this->state,
             $this->container->stubFactory,
@@ -280,6 +281,7 @@ class StaticHandleTest extends TestCase
         $this->class = $this->mockBuilder->build(true);
         $className = $this->class->getName();
         $this->subject = new StaticHandle(
+            $this->mockBuilder->definition(),
             $this->class,
             $this->state,
             $this->container->stubFactory,

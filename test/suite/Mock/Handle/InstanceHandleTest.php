@@ -199,6 +199,7 @@ class InstanceHandleTest extends TestCase
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
         $this->subject = new InstanceHandle(
+            $this->mockBuilder->definition(),
             $this->mock,
             $this->state,
             $this->container->stubFactory,
@@ -220,6 +221,7 @@ class InstanceHandleTest extends TestCase
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
         $this->subject = new InstanceHandle(
+            $this->mockBuilder->definition(),
             $this->mock,
             $this->state,
             $this->container->stubFactory,
@@ -241,6 +243,7 @@ class InstanceHandleTest extends TestCase
         $this->class = $this->mockBuilder->build(true);
         $this->mock = $this->mockBuilder->partialWith(null);
         $this->subject = new InstanceHandle(
+            $this->mockBuilder->definition(),
             $this->mock,
             $this->state,
             $this->container->stubFactory,

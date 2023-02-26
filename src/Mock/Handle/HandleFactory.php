@@ -12,6 +12,7 @@ use Eloquent\Phony\Mock\Exception\InvalidMockException;
 use Eloquent\Phony\Mock\Exception\MockException;
 use Eloquent\Phony\Mock\Exception\NonMockClassException;
 use Eloquent\Phony\Mock\Mock;
+use Eloquent\Phony\Mock\MockRegistry;
 use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubData;
 use Eloquent\Phony\Stub\StubFactory;
@@ -27,6 +28,7 @@ class HandleFactory
     /**
      * Construct a new handle factory.
      *
+     * @param MockRegistry        $mockRegistry        The mock registry to use.
      * @param StubFactory         $stubFactory         The stub factory to use.
      * @param StubVerifierFactory $stubVerifierFactory The stub verifier factory to use.
      * @param EmptyValueFactory   $emptyValueFactory   The empty value factory to use.
@@ -35,6 +37,7 @@ class HandleFactory
      * @param Invoker             $invoker             The invoker to use.
      */
     public function __construct(
+        MockRegistry $mockRegistry,
         StubFactory $stubFactory,
         StubVerifierFactory $stubVerifierFactory,
         EmptyValueFactory $emptyValueFactory,
@@ -42,6 +45,7 @@ class HandleFactory
         AssertionRecorder $assertionRecorder,
         Invoker $invoker
     ) {
+        $this->mockRegistry = $mockRegistry;
         $this->stubFactory = $stubFactory;
         $this->stubVerifierFactory = $stubVerifierFactory;
         $this->emptyValueFactory = $emptyValueFactory;
@@ -84,6 +88,7 @@ class HandleFactory
         }
 
         $handle = new InstanceHandle(
+            $this->mockRegistry->definitions[$class->getName()],
             $mock,
             (object) [
                 'defaultAnswerCallback' =>
@@ -148,6 +153,7 @@ class HandleFactory
         }
 
         $handle = new StaticHandle(
+            $this->mockRegistry->definitions[$class->getName()],
             $class,
             (object) [
                 'defaultAnswerCallback' =>
@@ -167,6 +173,11 @@ class HandleFactory
 
         return $handle;
     }
+
+    /**
+     * @var MockRegistry
+     */
+    private $mockRegistry;
 
     /**
      * @var StubFactory

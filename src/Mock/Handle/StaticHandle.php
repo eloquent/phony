@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Mock\Handle;
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Stub\EmptyValueFactory;
 use Eloquent\Phony\Stub\StubFactory;
 use Eloquent\Phony\Stub\StubVerifierFactory;
@@ -24,6 +25,7 @@ class StaticHandle implements Handle
     /**
      * Construct a new static handle.
      *
+     * @param MockDefinition          $mockDefinition      The mock definition.
      * @param ReflectionClass<object> $class               The class.
      * @param stdClass                $state               The state.
      * @param StubFactory             $stubFactory         The stub factory to use.
@@ -34,6 +36,7 @@ class StaticHandle implements Handle
      * @param Invoker                 $invoker             The invoker to use.
      */
     public function __construct(
+        MockDefinition $mockDefinition,
         ReflectionClass $class,
         stdClass $state,
         StubFactory $stubFactory,
@@ -65,6 +68,7 @@ class StaticHandle implements Handle
         }
 
         $this->constructHandle(
+            $mockDefinition,
             $class,
             $state,
             $callParentMethod,

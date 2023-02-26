@@ -159,15 +159,6 @@ implements \Eloquent\Phony\Mock\Mock
         return $this->$name(...$arguments->all());
     }
 
-    private static $_uncallableMethods = array (
-  'testtraitcmethoda' => true,
-);
-    private static $_traitMethods = array (
-  'testclassastaticmethoda' => 'Eloquent\\Phony\\Test\\TestTraitA',
-  'testclassamethodb' => 'Eloquent\\Phony\\Test\\TestTraitA',
-  'testtraitbmethoda' => 'Eloquent\\Phony\\Test\\TestTraitB',
-);
-    private static $_customMethods = [];
     private static $_staticHandle;
     private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
 }

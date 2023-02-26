@@ -27,6 +27,7 @@ use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
 use Eloquent\Phony\Mock\MockFactory;
 use Eloquent\Phony\Mock\MockGenerator;
+use Eloquent\Phony\Mock\MockRegistry;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use Eloquent\Phony\Reflection\FunctionSignatureInspector;
 use Eloquent\Phony\Sequencer\Sequencer;
@@ -235,7 +236,9 @@ trait FacadeContainerTrait
             $generatorAnswerBuilderFactory,
             $functionHookManager
         );
+        $mockRegistry = new MockRegistry();
         $handleFactory = new HandleFactory(
+            $mockRegistry,
             $stubFactory,
             $stubVerifierFactory,
             $emptyValueFactory,
@@ -248,6 +251,7 @@ trait FacadeContainerTrait
         $mockFactory = new MockFactory(
             $mockLabelSequence,
             $mockGenerator,
+            $mockRegistry,
             $handleFactory
         );
         $mockBuilderFactory = new MockBuilderFactory(

@@ -772,20 +772,6 @@ implements \Eloquent\Phony\Mock\Mock,
     public static $propertyB = 222;
     public $propertyC = 'valueC';
     public $propertyD = 333;
-    private static $_uncallableMethods = array (
-  'current' => true,
-  'next' => true,
-  'key' => true,
-  'valid' => true,
-  'rewind' => true,
-  'count' => true,
-  'offsetexists' => true,
-  'offsetget' => true,
-  'offsetset' => true,
-  'offsetunset' => true,
-);
-    private static $_traitMethods = [];
-    private static $_customMethods = [];
     private static $_staticHandle;
     private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
 }

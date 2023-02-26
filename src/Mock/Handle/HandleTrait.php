@@ -8,6 +8,7 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Mock\Builder\MockDefinition;
 use Eloquent\Phony\Mock\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Exception\FinalMethodStubException;
 use Eloquent\Phony\Mock\Exception\MockException;
@@ -383,6 +384,7 @@ trait HandleTrait
      * @param ReflectionClass<object> $class
      */
     private function constructHandle(
+        MockDefinition $mockDefinition,
         ReflectionClass $class,
         stdClass $state,
         ?ReflectionMethod $callParentMethod,
@@ -396,6 +398,7 @@ trait HandleTrait
         AssertionRecorder $assertionRecorder,
         Invoker $invoker
     ): void {
+        $this->mockDefinition = $mockDefinition;
         $this->mock = $mock;
         $this->class = $class;
         $this->state = $state;
@@ -409,24 +412,15 @@ trait HandleTrait
         $this->assertionRecorder = $assertionRecorder;
         $this->invoker = $invoker;
 
-        $uncallableMethodsProperty = $class->getProperty('_uncallableMethods');
-        $uncallableMethodsProperty->setAccessible(true);
-        /** @var array<string,bool> $uncallableMethods */
-        $uncallableMethods = $uncallableMethodsProperty->getValue();
-        $this->uncallableMethods = $uncallableMethods;
-
-        $traitMethodsProperty = $class->getProperty('_traitMethods');
-        $traitMethodsProperty->setAccessible(true);
-        /** @var array<string,class-string> $traitMethods */
-        $traitMethods = $traitMethodsProperty->getValue();
-        $this->traitMethods = $traitMethods;
-
-        $customMethodsProperty = $class->getProperty('_customMethods');
-        $customMethodsProperty->setAccessible(true);
-        /** @var array<string,callable> $customMethods */
-        $customMethods = $customMethodsProperty->getValue();
-        $this->customMethods = $customMethods;
+        $this->uncallableMethods = $mockDefinition->uncallableMethodNames();
+        $this->traitMethods = $mockDefinition->traitMethodNames();
+        $this->customMethods = $mockDefinition->customMethodFnsByName();
     }
+
+    /**
+     * @var MockDefinition
+     */
+    private $mockDefinition;
 
     /**
      * @var stdClass

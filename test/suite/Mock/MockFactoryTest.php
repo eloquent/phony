@@ -82,6 +82,7 @@ class MockFactoryTest extends TestCase
                 $this->container->functionSignatureInspector,
                 $this->container->featureDetector
             ),
+            $this->container->mockRegistry,
             $this->handleFactory
         );
         $builder = $this->builderFactory->create();

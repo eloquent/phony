@@ -78,14 +78,6 @@ implements \Eloquent\Phony\Mock\Mock,
         \Eloquent\Phony\Call\Arguments $arguments
     ) {}
 
-    private static $_uncallableMethods = array (
-  'staticmethod' => true,
-  '__callstatic' => true,
-  'method' => true,
-  '__call' => true,
-);
-    private static $_traitMethods = [];
-    private static $_customMethods = [];
     private static $_staticHandle;
     private readonly \Eloquent\Phony\Mock\Handle\InstanceHandle $_handle;
 }
