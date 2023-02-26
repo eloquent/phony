@@ -663,6 +663,9 @@ array of types to <a href="#facade.mock"><code>mock()</code></a> or
 <p>A single base class may also be mocked with other types:</p>
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>handle</span> = mock([<span class="pl-v">ClassA</span>::class, <span class="pl-v">InterfaceA</span>::class, <span class="pl-v">TraitA</span>::class]);        <span class="pl-c">// with `use function`</span>
 <span class="pl-s1"><span class="pl-c1">$</span>handle</span> = <span class="pl-v">Phony</span>::<span class="pl-en">mock</span>([<span class="pl-v">ClassA</span>::class, <span class="pl-v">InterfaceA</span>::class, <span class="pl-v">TraitA</span>::class]); <span class="pl-c">// without `use function`</span></pre></div>
+<p>It's also possible to use intersection type notation with the <code>&amp;</code> symbol:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">$</span>handle</span> = mock(<span class="pl-s">'InterfaceA&amp;InterfaceB&amp;TraitA'</span>);        <span class="pl-c">// with `use function`</span>
+<span class="pl-s1"><span class="pl-c1">$</span>handle</span> = <span class="pl-v">Phony</span>::<span class="pl-en">mock</span>(<span class="pl-s">'InterfaceA&amp;InterfaceB&amp;TraitA'</span>); <span class="pl-c">// without `use function`</span></pre></div>
 <h3><a id="ad-hoc-mocks" class="anchor" aria-hidden="true" href="#ad-hoc-mocks"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ad hoc mocks</h3>
 <p><em>Phony</em> supports the creation of mock objects with methods and/or properties
 that are not pre-defined in some other class, interface, or trait. It does so
@@ -3668,9 +3671,9 @@ functions or static methods depending on the method of importing:</p>
 <em><a href="#the-mock-handle-api">handle</a></em> Phony::<a href="#facade.mock"><strong>mock</strong></a>($types = []) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new <a href="#mocking-basics">full mock</a>, and return a <a href="#mock-handles">mock handle</a>.</p>
-<p><em>Each value in <code>$types</code> can be either a class name, or an <a href="#ad-hoc-mocks">ad hoc mock</a>
-definition. If only a single type is being mocked, the class name or definition
-can be passed without being wrapped in an array.</em></p>
+<p><em>Each value in <code>$types</code> can be either a string of class names delimited with <code>&amp;</code>
+symbols, or an <a href="#ad-hoc-mocks">ad hoc mock</a> definition. Alternatively, a single string of class
+names can be passed without being wrapped in an array.</em></p>
 <p><em>See <a href="#mocking-basics">Mocking basics</a>.</em></p>
 <a name="facade.partialMock"></a>
 <hr>
@@ -3679,9 +3682,9 @@ can be passed without being wrapped in an array.</em></p>
 <em><a href="#the-mock-handle-api">handle</a></em> Phony::<a href="#facade.partialMock"><strong>partialMock</strong></a>($types = [], $arguments = []) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new <a href="#partial-mocks">partial mock</a>, and return a <a href="#mock-handles">mock handle</a>.</p>
-<p><em>Each value in <code>$types</code> can be either a class name, or an <a href="#ad-hoc-mocks">ad hoc mock</a>
-definition. If only a single type is being mocked, the class name or definition
-can be passed without being wrapped in an array.</em></p>
+<p><em>Each value in <code>$types</code> can be either a string of class names delimited with <code>&amp;</code>
+symbols, or an <a href="#ad-hoc-mocks">ad hoc mock</a> definition. Alternatively, a single string of class
+names can be passed without being wrapped in an array.</em></p>
 <p><em>Omitting <code>$arguments</code> will cause the original constructor to be called with an
 empty argument list. However, if a <code>null</code> value is supplied for <code>$arguments</code>,
 the original constructor will not be called at all.</em></p>
@@ -3693,9 +3696,9 @@ the original constructor will not be called at all.</em></p>
 <em><a href="#the-mock-builder-api">builder</a></em> Phony::<a href="#facade.mockBuilder"><strong>mockBuilder</strong></a>($types = []) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new <a href="#mock-builders">mock builder</a>.</p>
-<p><em>Each value in <code>$types</code> can be either a class name, or an <a href="#ad-hoc-mocks">ad hoc mock</a>
-definition. If only a single type is being mocked, the class name or definition
-can be passed without being wrapped in an array.</em></p>
+<p><em>Each value in <code>$types</code> can be either a string of class names delimited with <code>&amp;</code>
+symbols, or an <a href="#ad-hoc-mocks">ad hoc mock</a> definition. Alternatively, a single string of class
+names can be passed without being wrapped in an array.</em></p>
 <a name="facade.on"></a>
 <hr>
 <blockquote>
@@ -4121,7 +4124,9 @@ throws <a href="#assertionexception">AssertionException</a></p>
 <p><em>fluent</em> $builder-&gt;<a href="#builder.like"><strong>like</strong></a>(...$types)</p>
 </blockquote>
 <p>Add classes, interfaces, or traits.</p>
-<p><em>Each type value can be either a class name, or an <a href="#ad-hoc-mocks">ad hoc mock</a> definition.</em></p>
+<p><em>Each value in <code>$types</code> can be either a string of class names delimited with <code>&amp;</code>
+symbols, or an <a href="#ad-hoc-mocks">ad hoc mock</a> definition, or an array containing either of the
+former.</em></p>
 <p><em>See <a href="#customizing-the-mock-class">Customizing the mock class</a>.</em></p>
 <a name="builder.addMethod"></a>
 <hr>
