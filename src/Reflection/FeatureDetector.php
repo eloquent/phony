@@ -95,6 +95,12 @@ class FeatureDetector
     public function standardFeatures(): array
     {
         return [
+            'class.readonly' => function () {
+                $reflectionClass = new ReflectionClass('ReflectionClass');
+
+                return $reflectionClass->hasMethod('isReadOnly');
+            },
+
             'object.property.readonly' => function () {
                 $reflectionProperty = new ReflectionClass('ReflectionProperty');
 
