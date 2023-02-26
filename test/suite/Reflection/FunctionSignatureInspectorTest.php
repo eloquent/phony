@@ -313,6 +313,28 @@ class FunctionSignatureInspectorTest extends TestCase
     /**
      * @requires PHP >= 8.1
      */
+    public function testSignatureWithIntersectionType()
+    {
+        $actual = 'Countable&Iterator';
+        $expected = '\Countable&\Iterator';
+        $function = new ReflectionFunction(
+            eval(sprintf('return function (%s $a): %s {};', $actual, $actual))
+        );
+        $actual = $this->subject->signature($function);
+        $expected = [
+            [
+                'a' => [sprintf('%s ', $expected), '', '', ''],
+            ],
+            $expected,
+        ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
     public function testSignatureWithTentativeReturnType()
     {
         $function = new ReflectionMethod('Exception', '__wakeup');

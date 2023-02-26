@@ -129,9 +129,16 @@ class FunctionSignatureInspector
 
             $subTypes = explode(self::UNION, $typeReference);
 
+            if ([$typeReference] === $subTypes) {
+                $subTypes = explode(self::INTERSECTION, $typeReference);
+                $delimiter = self::INTERSECTION;
+            } else {
+                $delimiter = self::UNION;
+            }
+
             foreach ($subTypes as $subType) {
                 if ($returnType) {
-                    $returnType .= self::UNION;
+                    $returnType .= $delimiter;
                 }
 
                 switch ($subType) {
@@ -218,9 +225,16 @@ class FunctionSignatureInspector
             if ($typeReference && 'mixed' !== $typeReference) {
                 $subTypes = explode(self::UNION, $typeReference);
 
+                if ([$typeReference] === $subTypes) {
+                    $subTypes = explode(self::INTERSECTION, $typeReference);
+                    $delimiter = self::INTERSECTION;
+                } else {
+                    $delimiter = self::UNION;
+                }
+
                 foreach ($subTypes as $subType) {
                     if ($type) {
-                        $type .= self::UNION;
+                        $type .= $delimiter;
                     }
 
                     switch ($subType) {
@@ -318,4 +332,5 @@ class FunctionSignatureInspector
     const DEFAULT_NULL = ' = null';
     const NS = '\\';
     const UNION = '|';
+    const INTERSECTION = '&';
 }
