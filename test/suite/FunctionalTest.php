@@ -38,6 +38,7 @@ use Eloquent\Phony\Test\TestClassC;
 use Eloquent\Phony\Test\TestClassD;
 use Eloquent\Phony\Test\TestClassG;
 use Eloquent\Phony\Test\TestClassI;
+use Eloquent\Phony\Test\TestInterfaceWithUnionTypes;
 use Eloquent\Phony\Test\TestClassWithConstructorProperties;
 use Eloquent\Phony\Test\TestClassWithFinalReturnType;
 use Eloquent\Phony\Test\TestClassWithSerializeMagicMethods;
@@ -1925,5 +1926,24 @@ class FunctionalTest extends TestCase
         $this->assertTrue($class::staticMethodA(true));
         $this->assertFalse($class::staticMethodB(false));
         $this->assertNull($class::staticMethodC(null));
+    }
+
+    public function testCanMockUnionTypes()
+    {
+        $handle = mock(TestInterfaceWithUnionTypes::class);
+        $staticHandle = onStatic($handle);
+        $mock = $handle->get();
+        $class = $staticHandle->className();
+
+        $this->assertSame(0, $mock->methodA(111));
+        $this->assertSame(0, $mock->methodA('a'));
+        $this->assertSame(0, $class::staticMethodA(111));
+        $this->assertSame(0, $class::staticMethodA('a'));
+
+        $handle->methodA->returns('x');
+        $staticHandle->staticMethodA->returns('y');
+
+        $this->assertSame('x', $mock->methodA(111));
+        $this->assertSame('y', $class::staticMethodA(111));
     }
 }
