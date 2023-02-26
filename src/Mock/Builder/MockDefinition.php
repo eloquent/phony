@@ -45,6 +45,8 @@ class MockDefinition
         $this->className = $className;
         $this->parentClassName = '';
 
+        $this->uncallableMethodNames = [];
+        $this->traitMethodNames = [];
         $this->customMethodFnsByName = [];
         $this->signature = [
             'types' => array_keys($types),
@@ -149,6 +151,34 @@ class MockDefinition
     public function className(): string
     {
         return $this->className;
+    }
+
+    /**
+     * Get a map of all uncallable method names.
+     *
+     * The method name keys are all normalized to lowercase.
+     *
+     * @return array<string,true> A map of all uncallable method names.
+     */
+    public function uncallableMethodNames()
+    {
+        $this->buildMethods();
+
+        return $this->uncallableMethodNames;
+    }
+
+    /**
+     * Get a map of all trait method names to the declaring class name.
+     *
+     * The method name keys are all normalized to lowercase.
+     *
+     * @return array<string,class-string> A map of all trait method names to the declaring class name.
+     */
+    public function traitMethodNames()
+    {
+        $this->buildMethods();
+
+        return $this->traitMethodNames;
     }
 
     /**
@@ -362,6 +392,17 @@ class MockDefinition
             );
         }
 
+        foreach ($methods as $methodName => $definition) {
+            $methodName = strtolower($methodName);
+
+            if (!$definition->isCallable()) {
+                $this->uncallableMethodNames[$methodName] = true;
+            } elseif ($definition instanceof TraitMethodDefinition) {
+                $this->traitMethodNames[$methodName] =
+                    $definition->method()->getDeclaringClass()->getName();
+            }
+        }
+
         $this->methods =
             new MethodDefinitionCollection($methods, $traitMethods);
     }
@@ -400,6 +441,16 @@ class MockDefinition
      * @var string
      */
     private $className;
+
+    /**
+     * @var array<string,true>
+     */
+    private $uncallableMethodNames;
+
+    /**
+     * @var array<string,class-string>
+     */
+    private $traitMethodNames;
 
     /**
      * @var array<string,callable>

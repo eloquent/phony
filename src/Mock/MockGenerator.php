@@ -871,22 +871,8 @@ EOD;
                 ';';
         }
 
-        $methods = $definition->methods()->allMethods();
-        $uncallableMethodNames = [];
-        $traitMethodNames = [];
-
-        foreach ($methods as $methodName => $method) {
-            $methodName = strtolower($methodName);
-
-            if (!$method->isCallable()) {
-                $uncallableMethodNames[$methodName] = true;
-            } elseif ($method instanceof TraitMethodDefinition) {
-                $traitMethodNames[$methodName] =
-                    $method->method()->getDeclaringClass()->getName();
-            }
-        }
-
         $source .= "\n    private static \$_uncallableMethods = ";
+        $uncallableMethodNames = $definition->uncallableMethodNames();
 
         if (empty($uncallableMethodNames)) {
             $source .= '[]';
@@ -895,6 +881,7 @@ EOD;
         }
 
         $source .= ";\n    private static \$_traitMethods = ";
+        $traitMethodNames = $definition->traitMethodNames();
 
         if (empty($traitMethodNames)) {
             $source .= '[]';
