@@ -2053,4 +2053,13 @@ class FunctionalTest extends TestCase
         $this->assertInstanceOf(Countable::class, $mock);
         $this->assertInstanceOf(Iterator::class, $mock);
     }
+
+    public function testCanMockStringable()
+    {
+        $handle = mock('Stringable');
+        $mock = $handle->get();
+
+        $this->assertInstanceOf(Stringable::class, $mock);
+        $this->assertSame('', (string) $mock);
+    }
 }
