@@ -11,6 +11,8 @@
 - **[NEW]** Added support for PHP 8.1 `readonly` properties in ad hoc mocks
   ([#260]).
 - **[NEW]** Added support for PHP 8.2 ([#257], [#258] - thanks [@danepowell]).
+- **[NEW]** Added support for PHP 8.2 disjunctive normal form (DNF) types
+  ([#263]).
 - **[NEW]** Added support for PHP 8.2 `true` types ([#262]).
 - **[NEW]** Added support for PHP 8.2 `false` standalone types ([#262]).
 - **[NEW]** Added support for PHP 8.2 `null` standalone types ([#262]).
@@ -34,6 +36,7 @@
 [#260]: https://github.com/eloquent/phony/issues/260
 [#261]: https://github.com/eloquent/phony/issues/261
 [#262]: https://github.com/eloquent/phony/issues/262
+[#263]: https://github.com/eloquent/phony/issues/263
 [#264]: https://github.com/eloquent/phony/issues/264
 
 ## 5.0.2 (2021-02-17)
