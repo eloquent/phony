@@ -38,6 +38,7 @@ use GlobIterator;
 use InfiniteIterator;
 use InvalidArgumentException;
 use Iterator;
+use IteratorAggregate;
 use IteratorIterator;
 use LengthException;
 use LimitIterator;
@@ -230,6 +231,18 @@ class EmptyValueFactoryTest extends TestCase
 
         $this->assertInstanceOf(Countable::class, $countableIterator);
         $this->assertInstanceOf(Iterator::class, $countableIterator);
+    }
+
+    /**
+     * @requires PHP >= 8.2
+     */
+    public function testFromTypeWithDnfType()
+    {
+        $countableIterator =
+            $this->subject->fromType($this->createType('(Countable&Iterator)|(Countable&IteratorAggregate)'));
+
+        $this->assertInstanceOf(Countable::class, $countableIterator);
+        $this->assertInstanceOf(IteratorAggregate::class, $countableIterator);
     }
 
     public function testFromTypeWithStdClass()

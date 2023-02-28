@@ -62,14 +62,17 @@ class EmptyValueFactory
             return null;
         }
 
+        // in any union type, just use the last type
+        if ($type instanceof ReflectionUnionType) {
+            $subTypes = $type->getTypes();
+            $type = end($subTypes);
+        }
+
         if ($type instanceof ReflectionNamedType) {
             $typeName = $type->getName();
-        } elseif ($type instanceof ReflectionUnionType) {
-            $subTypes = $type->getTypes();
-            /** @var ReflectionNamedType */
-            $lastSubType = end($subTypes);
-            $typeName = $lastSubType->getName();
         } elseif ($type instanceof ReflectionIntersectionType) {
+            // intersections can only be satisfied by a mock
+            // also, they can only be composed of class/interface names
             $types = [];
 
             foreach ($type->getTypes() as $type) {
