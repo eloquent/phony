@@ -108,7 +108,7 @@ class MockGenerator
                 $definition->methods()->publicMethods(),
                 $hasParentClass
             ) .
-            $this->generateMagicCall($definition) .
+            $this->generateMagicCall($definition, $className) .
             $this->generateMethods(
                 $className,
                 $definition->methods()->protectedStaticMethods(),
@@ -265,8 +265,14 @@ EOD;
                 $source .= ',';
             }
 
+            $parameterType = $parameter[0];
+
+            if ('self ' === $parameterType) {
+                $parameterType = '\\' . $className . ' ';
+            }
+
             $source .= "\n        " .
-                $parameter[0] .
+                $parameterType .
                 $parameter[1] .
                 '$a' .
                 ++$index .
@@ -274,6 +280,10 @@ EOD;
         }
 
         if ($returnType) {
+            if ('self' === $returnType) {
+                $returnType = '\\' . $className;
+            }
+
             $source .= "\n    ) : " . $returnType . " {\n";
             $canReturn = 'never' !== $returnType && 'void' !== $returnType;
         } else {
@@ -435,6 +445,10 @@ EOD;
             }
 
             if ($returnType) {
+                if ('self' === $returnType) {
+                    $returnType = '\\' . $className;
+                }
+
                 $returnTypeSource = ' : ' . $returnType;
                 $canReturn = 'never' !== $returnType && 'void' !== $returnType;
             } else {
@@ -531,7 +545,13 @@ EOD;
                         $source .= ",\n        ";
                     }
 
-                    $source .= $parameter[0] .
+                    $parameterType = $parameter[0];
+
+                    if ('self ' === $parameterType) {
+                        $parameterType = '\\' . $className . ' ';
+                    }
+
+                    $source .= $parameterType .
                         $parameter[1] .
                         $parameter[2] .
                         '$a' .
@@ -548,8 +568,10 @@ EOD;
         return $source;
     }
 
-    private function generateMagicCall(MockDefinition $definition): string
-    {
+    private function generateMagicCall(
+        MockDefinition $definition,
+        string $className
+    ): string {
         $methods = $definition->methods();
         $callName = $methods->methodName('__call');
         $methods = $methods->publicMethods();
@@ -575,8 +597,14 @@ EOD;
                 $source .= ',';
             }
 
+            $parameterType = $parameter[0];
+
+            if ('self ' === $parameterType) {
+                $parameterType = '\\' . $className . ' ';
+            }
+
             $source .= "\n        " .
-                $parameter[0] .
+                $parameterType .
                 $parameter[1] .
                 '$a' .
                 ++$index .
@@ -584,6 +612,10 @@ EOD;
         }
 
         if ($returnType) {
+            if ('self' === $returnType) {
+                $returnType = '\\' . $className;
+            }
+
             $source .= "\n    ) : " . $returnType . " {\n";
             $canReturn = 'never' !== $returnType && 'void' !== $returnType;
         } else {

@@ -13,8 +13,8 @@ implements Mock
     }
 
     public static function staticMethod(
-        self $a0
-    ) : self {
+        \MockGeneratorTraitSelfType $a0
+    ) : \MockGeneratorTraitSelfType {
         $argumentCount = \func_num_args();
         $arguments = [];
 
@@ -40,8 +40,8 @@ implements Mock
     }
 
     public function method(
-        self $a0
-    ) : self {
+        \MockGeneratorTraitSelfType $a0
+    ) : \MockGeneratorTraitSelfType {
         $argumentCount = \func_num_args();
         $arguments = [];
 
