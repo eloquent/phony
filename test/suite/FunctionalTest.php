@@ -2056,7 +2056,7 @@ class FunctionalTest extends TestCase
 
     public function testCanMockStringable()
     {
-        $handle = mock('Stringable');
+        $handle = mock(Stringable::class);
         $mock = $handle->get();
 
         $this->assertInstanceOf(Stringable::class, $mock);
