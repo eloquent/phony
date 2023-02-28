@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Reflection;
 
 use AllowDynamicProperties;
+use Eloquent\Phony\Test\TestTraitWithSelfType;
 use PHPUnit\Framework\TestCase;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -166,6 +167,21 @@ class FunctionSignatureInspectorTest extends TestCase
                 'b' => [sprintf('\%s ', FunctionSignatureInspectorTest::class), '', '', ''],
             ],
             sprintf('\%s', FunctionSignatureInspectorTest::class),
+        ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureWithTraitSelfTypeHint()
+    {
+        $function = new ReflectionMethod(TestTraitWithSelfType::class, 'method');
+        $actual = $this->subject->signature($function);
+        $expected = [
+            [
+                'a' => ['self ', '', '', ''],
+            ],
+            'self',
         ];
 
         $this->assertEquals($expected, $actual);

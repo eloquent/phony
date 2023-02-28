@@ -529,49 +529,50 @@ class StubData implements Stub
                     $emptyValueFactory
                 ) {
                     if (!$valueIsSet) {
-                        if (
-                            $type = $invocableInspector
-                                ->callbackReflector($callback)->getReturnType()
-                        ) {
-                            try {
-                                $value = $emptyValueFactory->fromType($type);
-                            } catch (FinalClassException $e) {
-                                if ($type instanceof ReflectionNamedType) {
-                                    $typeString = $type->getName();
-                                } elseif ($type instanceof ReflectionUnionType) {
-                                    $typeString = '';
+                        $function =
+                            $invocableInspector->callbackReflector($callback);
 
-                                    /** @var ReflectionNamedType $subType  */
-                                    foreach ($type->getTypes() as $subType) {
-                                        if ($typeString) {
-                                            $typeString .= '|';
-                                        }
+                        try {
+                            $value =
+                                $emptyValueFactory->fromFunction($function);
+                        } catch (FinalClassException $e) {
+                            $type = $function->getReturnType();
 
-                                        $typeString .= $subType->getName();
+                            if ($type instanceof ReflectionNamedType) {
+                                $typeString = $type->getName();
+                            } elseif ($type instanceof ReflectionUnionType) {
+                                $typeString = '';
+
+                                /** @var ReflectionNamedType $subType  */
+                                foreach ($type->getTypes() as $subType) {
+                                    if ($typeString) {
+                                        $typeString .= '|';
                                     }
-                                } elseif ($type instanceof ReflectionIntersectionType) {
-                                    $typeString = '';
 
-                                    /** @var ReflectionNamedType $subType  */
-                                    foreach ($type->getTypes() as $subType) {
-                                        if ($typeString) {
-                                            $typeString .= '&';
-                                        }
-
-                                        $typeString .= $subType->getName();
-                                    }
-                                } else {
-                                    $typeString = '<unknown>';
+                                    $typeString .= $subType->getName();
                                 }
+                            } elseif (
+                                $type instanceof ReflectionIntersectionType
+                            ) {
+                                $typeString = '';
 
-                                throw new FinalReturnTypeException(
-                                    $this->exporter->exportCallable($callback),
-                                    $typeString,
-                                    $e
-                                );
+                                /** @var ReflectionNamedType $subType  */
+                                foreach ($type->getTypes() as $subType) {
+                                    if ($typeString) {
+                                        $typeString .= '&';
+                                    }
+
+                                    $typeString .= $subType->getName();
+                                }
+                            } else {
+                                $typeString = '<unknown>';
                             }
-                        } else {
-                            $value = null;
+
+                            throw new FinalReturnTypeException(
+                                $this->exporter->exportCallable($callback),
+                                $typeString,
+                                $e
+                            );
                         }
 
                         $valueIsSet = true;

@@ -26,6 +26,8 @@
   indicating their type (e.g. `&1[]`, `&2{}`, `&3()`), since all types now share
   a single sequence of identifier numbers. References will now be rendered as
   just an ampersand followed by the identifier number (e.g. `&1`, `&2`, `&3`).
+- **[FIXED]** Mocking traits that use `self` types no longer causes fatal
+  errors ([#268]).
 - **[FIXED]** The exporter no longer omits falsy labels like `'0'`.
 
 [#255]: https://github.com/eloquent/phony/issues/255
@@ -38,6 +40,7 @@
 [#262]: https://github.com/eloquent/phony/issues/262
 [#263]: https://github.com/eloquent/phony/issues/263
 [#264]: https://github.com/eloquent/phony/issues/264
+[#268]: https://github.com/eloquent/phony/issues/268
 
 ## 5.0.2 (2021-02-17)
 

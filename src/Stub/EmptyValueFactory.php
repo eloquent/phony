@@ -6,8 +6,10 @@ namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
+use ReflectionClass;
 use ReflectionFunctionAbstract;
 use ReflectionIntersectionType;
+use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionType;
 use ReflectionUnionType;
@@ -52,12 +54,15 @@ class EmptyValueFactory
     /**
      * Create a value of the supplied type.
      *
-     * @param ReflectionType $type The type.
+     * @param ReflectionType               $type    The type.
+     * @param ReflectionClass<object>|null $context The class context.
      *
      * @return mixed A value of the supplied type.
      */
-    public function fromType(ReflectionType $type)
-    {
+    public function fromType(
+        ReflectionType $type,
+        ReflectionClass $context = null
+    ) {
         if ($type->allowsNull()) {
             return null;
         }
@@ -122,6 +127,12 @@ class EmptyValueFactory
                 $fn = function () { yield from []; };
 
                 return $fn();
+
+            case 'self':
+                if ($context) {
+                    $typeName = $context->getName();
+                }
+                // deliberately falls through
         }
 
         if ($this->isEnumSupported && enum_exists($typeName)) {
@@ -141,6 +152,10 @@ class EmptyValueFactory
     public function fromFunction(ReflectionFunctionAbstract $function)
     {
         if ($type = $function->getReturnType()) {
+            if ($function instanceof ReflectionMethod) {
+                return $this->fromType($type, $function->getDeclaringClass());
+            }
+
             return $this->fromType($type);
         }
 

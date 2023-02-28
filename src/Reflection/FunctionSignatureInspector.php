@@ -184,8 +184,13 @@ class FunctionSignatureInspector
                             $method = $function;
                             /** @var ReflectionClass<object> */
                             $declaringClass = $method->getDeclaringClass();
-                            $returnType .=
-                                self::NS . $declaringClass->getName();
+
+                            if ($declaringClass->isTrait()) {
+                                $returnType .= $subType;
+                            } else {
+                                $returnType .=
+                                    self::NS . $declaringClass->getName();
+                            }
 
                             break;
 
@@ -310,7 +315,13 @@ class FunctionSignatureInspector
                                 /** @var ReflectionClass<object> */
                                 $declaringClass =
                                     $parameter->getDeclaringClass();
-                                $type .= self::NS . $declaringClass->getName();
+
+                                if ($declaringClass->isTrait()) {
+                                    $type .= $subType;
+                                } else {
+                                    $type .=
+                                        self::NS . $declaringClass->getName();
+                                }
 
                                 break;
 

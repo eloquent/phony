@@ -68,6 +68,7 @@ use Eloquent\Phony\Test\TestTraitE;
 use Eloquent\Phony\Test\TestTraitF;
 use Eloquent\Phony\Test\TestTraitH;
 use Eloquent\Phony\Test\TestTraitJ;
+use Eloquent\Phony\Test\TestTraitWithSelfType;
 use PHPUnit\Framework\TestCase;
 
 #[AllowDynamicProperties]
@@ -2061,5 +2062,20 @@ class FunctionalTest extends TestCase
 
         $this->assertInstanceOf(Stringable::class, $mock);
         $this->assertSame('', (string) $mock);
+    }
+
+    /**
+     * @see https://github.com/eloquent/phony/issues/268
+     */
+    public function testCanMockTraitsWithAbstractSelfMethods()
+    {
+        $handle = mock([TestTraitWithSelfType::class, IteratorAggregate::class]);
+        $mock = $handle->get();
+        $staticHandle = onStatic($handle);
+        $class = $staticHandle->className();
+
+        $this->assertInstanceOf(IteratorAggregate::class, $mock);
+        $this->assertInstanceOf(IteratorAggregate::class, $mock->method($mock));
+        $this->assertInstanceOf(IteratorAggregate::class, $class::staticMethod($mock));
     }
 }
