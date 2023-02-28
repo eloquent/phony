@@ -127,62 +127,86 @@ class FunctionSignatureInspector
                 $typeReference,
             ) = $returnMatches;
 
-            $subTypes = explode(self::UNION, $typeReference);
+            $unionParts = explode(self::UNION, $typeReference);
+            $isFirstUnion = true;
 
-            if ([$typeReference] === $subTypes) {
-                $subTypes = explode(self::INTERSECTION, $typeReference);
-                $delimiter = self::INTERSECTION;
-            } else {
-                $delimiter = self::UNION;
-            }
-
-            foreach ($subTypes as $subType) {
-                if ($returnType) {
-                    $returnType .= $delimiter;
+            foreach ($unionParts as $unionPart) {
+                if ($isFirstUnion) {
+                    $isFirstUnion = false;
+                } else {
+                    $returnType .= self::UNION;
                 }
 
-                switch ($subType) {
-                    case 'array':
-                    case 'bool':
-                    case 'callable':
-                    case 'false':
-                    case 'float':
-                    case 'int':
-                    case 'iterable':
-                    case 'mixed':
-                    case 'never':
-                    case 'null':
-                    case 'object':
-                    case 'static':
-                    case 'string':
-                    case 'true':
-                    case 'void':
-                        $returnType .= $subType;
+                if (self::OPEN_PAREN === $unionPart[0]) {
+                    $hasParens = true;
+                    $intersectionParts =
+                        explode(self::INTERSECTION, substr($unionPart, 1, -1));
+                } else {
+                    $hasParens = false;
+                    $intersectionParts = explode(self::INTERSECTION, $unionPart);
+                }
 
-                        break;
+                $isFirstIntersection = true;
 
-                    case 'self':
-                        /** @var ReflectionMethod */
-                        $method = $function;
-                        /** @var ReflectionClass<object> */
-                        $declaringClass = $method->getDeclaringClass();
-                        $returnType .= self::NS . $declaringClass->getName();
+                foreach ($intersectionParts as $subType) {
+                    if ($isFirstIntersection) {
+                        $isFirstIntersection = false;
 
-                        break;
+                        if ($hasParens) {
+                            $returnType .= self::OPEN_PAREN;
+                        }
+                    } else {
+                        $returnType .= self::INTERSECTION;
+                    }
 
-                    case 'parent':
-                        /** @var ReflectionMethod */
-                        $method = $function;
-                        /** @var ReflectionClass<object> */
-                        $declaringClass = $method->getDeclaringClass();
-                        /** @var ReflectionClass<object> */
-                        $parentClass = $declaringClass->getParentClass();
-                        $returnType .= self::NS . $parentClass->getName();
+                    switch ($subType) {
+                        case 'array':
+                        case 'bool':
+                        case 'callable':
+                        case 'false':
+                        case 'float':
+                        case 'int':
+                        case 'iterable':
+                        case 'mixed':
+                        case 'never':
+                        case 'null':
+                        case 'object':
+                        case 'static':
+                        case 'string':
+                        case 'true':
+                        case 'void':
+                            $returnType .= $subType;
 
-                        break;
+                            break;
 
-                    default:
-                        $returnType .= self::NS . $subType;
+                        case 'self':
+                            /** @var ReflectionMethod */
+                            $method = $function;
+                            /** @var ReflectionClass<object> */
+                            $declaringClass = $method->getDeclaringClass();
+                            $returnType .=
+                                self::NS . $declaringClass->getName();
+
+                            break;
+
+                        case 'parent':
+                            /** @var ReflectionMethod */
+                            $method = $function;
+                            /** @var ReflectionClass<object> */
+                            $declaringClass = $method->getDeclaringClass();
+                            /** @var ReflectionClass<object> */
+                            $parentClass = $declaringClass->getParentClass();
+                            $returnType .= self::NS . $parentClass->getName();
+
+                            break;
+
+                        default:
+                            $returnType .= self::NS . $subType;
+                    }
+                }
+
+                if ($hasParens) {
+                    $returnType .= self::CLOSE_PAREN;
                 }
             }
 
@@ -223,68 +247,97 @@ class FunctionSignatureInspector
             $type = '';
 
             if ($typeReference && 'mixed' !== $typeReference) {
-                $subTypes = explode(self::UNION, $typeReference);
+                $unionParts = explode(self::UNION, $typeReference);
+                $isFirstUnion = true;
 
-                if ([$typeReference] === $subTypes) {
-                    $subTypes = explode(self::INTERSECTION, $typeReference);
-                    $delimiter = self::INTERSECTION;
-                } else {
-                    $delimiter = self::UNION;
-                }
-
-                foreach ($subTypes as $subType) {
-                    if ($type) {
-                        $type .= $delimiter;
+                foreach ($unionParts as $unionPart) {
+                    if ($isFirstUnion) {
+                        $isFirstUnion = false;
+                    } else {
+                        $type .= self::UNION;
                     }
 
-                    switch ($subType) {
-                        case '':
-                        case 'array':
-                        case 'bool':
-                        case 'callable':
-                        case 'false':
-                        case 'float':
-                        case 'int':
-                        case 'iterable':
-                        case 'mixed':
-                        case 'null':
-                        case 'object':
-                        case 'string':
-                        case 'true':
-                            $type .= $subType;
+                    if (self::OPEN_PAREN === $unionPart[0]) {
+                        $hasParens = true;
+                        $intersectionParts = explode(
+                            self::INTERSECTION,
+                            substr($unionPart, 1, -1)
+                        );
+                    } else {
+                        $hasParens = false;
+                        $intersectionParts =
+                            explode(self::INTERSECTION, $unionPart);
+                    }
 
-                            break;
+                    $isFirstIntersection = true;
 
-                        case 'self':
-                            if (!$parameters) {
-                                $parameters = $function->getParameters();
+                    foreach ($intersectionParts as $subType) {
+                        if ($isFirstIntersection) {
+                            $isFirstIntersection = false;
+
+                            if ($hasParens) {
+                                $type .= self::OPEN_PAREN;
                             }
+                        } else {
+                            $type .= self::INTERSECTION;
+                        }
 
-                            $parameter = $parameters[$index];
+                        switch ($subType) {
+                            case '':
+                            case 'array':
+                            case 'bool':
+                            case 'callable':
+                            case 'false':
+                            case 'float':
+                            case 'int':
+                            case 'iterable':
+                            case 'mixed':
+                            case 'null':
+                            case 'object':
+                            case 'string':
+                            case 'true':
+                                $type .= $subType;
 
-                            /** @var ReflectionClass<object> */
-                            $declaringClass = $parameter->getDeclaringClass();
-                            $type .= self::NS . $declaringClass->getName();
+                                break;
 
-                            break;
+                            case 'self':
+                                if (!$parameters) {
+                                    $parameters = $function->getParameters();
+                                }
 
-                        case 'parent':
-                            if (!$parameters) {
-                                $parameters = $function->getParameters();
-                            }
+                                $parameter = $parameters[$index];
 
-                            $parameter = $parameters[$index];
+                                /** @var ReflectionClass<object> */
+                                $declaringClass =
+                                    $parameter->getDeclaringClass();
+                                $type .= self::NS . $declaringClass->getName();
 
-                            /** @var ReflectionClass<object> */
-                            $declaringClass = $parameter->getDeclaringClass();
-                            /** @var ReflectionClass<object> */
-                            $parentClass = $declaringClass->getParentClass();
-                            $type .= self::NS . $parentClass->getName();
+                                break;
 
-                            break;
+                            case 'parent':
+                                if (!$parameters) {
+                                    $parameters = $function->getParameters();
+                                }
 
-                        default:
-                            $type .= self::NS . $subType;
+                                $parameter = $parameters[$index];
+
+                                /** @var ReflectionClass<object> */
+                                $declaringClass =
+                                    $parameter->getDeclaringClass();
+                                /** @var ReflectionClass<object> */
+                                $parentClass =
+                                    $declaringClass->getParentClass();
+                                $type .= self::NS . $parentClass->getName();
+
+                                break;
+
+                            default:
+                                $type .= self::NS . $subType;
+                        }
+                    }
+
+                    if ($hasParens) {
+                        $type .= self::CLOSE_PAREN;
                     }
                 }
             }
@@ -333,4 +386,6 @@ class FunctionSignatureInspector
     const NS = '\\';
     const UNION = '|';
     const INTERSECTION = '&';
+    const OPEN_PAREN = '(';
+    const CLOSE_PAREN = ')';
 }
