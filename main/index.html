@@ -3796,12 +3796,14 @@ argument that the wildcard matches.</em></p>
 <a name="facade.emptyValue"></a>
 <hr>
 <blockquote>
-<p><em>mixed</em> <a href="#facade.emptyValue"><strong>emptyValue</strong></a>($type) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
-<em>mixed</em> Phony::<a href="#facade.emptyValue"><strong>emptyValue</strong></a>($type) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
+<p><em>mixed</em> <a href="#facade.emptyValue"><strong>emptyValue</strong></a>($type, $resolveSelf = null) <em>(with <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em><br>
+<em>mixed</em> Phony::<a href="#facade.emptyValue"><strong>emptyValue</strong></a>($type, $resolveSelf = null) <em>(without <a href="https://php.net/language.namespaces.importing" rel="nofollow">use function</a>)</em></p>
 </blockquote>
 <p>Create a new "empty" value.</p>
 <p><em>The <code>$type</code> parameter accepts a <a href="https://php.net/reflectiontype" rel="nofollow">ReflectionType</a>, which can be created via
 PHP's built-in <a href="https://php.net/reflection" rel="nofollow">reflection</a> API.</em></p>
+<p>The <code>$resolveSelf</code> parameter accepts a callback that takes no arguments, and
+returns the resolved class name of the <code>self</code>/<code>static</code> type.</p>
 <p><em>This table details the "empty" value that will be returned for each type:</em></p>
 <table>
 <thead>
