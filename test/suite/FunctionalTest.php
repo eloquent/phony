@@ -2102,4 +2102,13 @@ class FunctionalTest extends TestCase
         $this->assertInstanceOf($class, $mock->method());
         $this->assertInstanceOf($class, $class::staticMethod());
     }
+
+    public function testCanCallMocksWithNamedArguments()
+    {
+        $handle = mock(TestClassA::class);
+        $mock = $handle->get();
+        $mock->testClassAMethodB(second: '<second>', first: '<first>');
+
+        $this->assertTrue((bool) $handle->testClassAMethodB->calledWith('<first>', '<second>'));
+    }
 }

@@ -4,6 +4,16 @@
 
 - **[BC BREAK]** PHP 7.3 is no longer supported.
 - **[BC BREAK]** PHP 7.4 is no longer supported.
+- **[NEW]** Added experimental support for PHP 8.0 named arguments ([#251]).
+  - Generated mocks and function hooks now use the original parameter names from
+    the underlying method/function. This means they can be called with the same
+    named arguments as their "real" counterparts, so long as the named argument
+    corresponds to a parameter name defined in the method/function signature. In
+    other words, named arguments should work as expected _unless_ they're being
+    collected by a variadic (`...`) parameter.
+  - None of Phony's APIs support supplying named arguments yet. This means you
+    will still need to specify arguments positionally when matching stub
+    arguments, verifying call input, and anything else to do with arguments.
 - **[NEW]** Added support for PHP 8.1 ([#255], [#256] - thanks [@keksa]).
 - **[NEW]** Added support for PHP 8.1 intersection types ([#259]).
 - **[NEW]** Added support for PHP 8.1 enumerations ([#261]).
@@ -35,6 +45,7 @@
 - **[FIXED]** Mocks of methods with `static` return types no longer fail when
   the empty value factory attempts to create a return value.
 
+[#251]: https://github.com/eloquent/phony/issues/251
 [#255]: https://github.com/eloquent/phony/issues/255
 [#256]: https://github.com/eloquent/phony/pull/256
 [#257]: https://github.com/eloquent/phony/issues/257
