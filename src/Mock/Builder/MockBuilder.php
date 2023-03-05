@@ -133,9 +133,9 @@ class MockBuilder
     /**
      * Add classes, interfaces, or traits.
      *
-     * Each value in `$types` can be either a class name, or an ad hoc mock
-     * definition. If only a single type is being mocked, the class name or
-     * definition can be passed without being wrapped in an array.
+     * Each value in `$types` can be either a string of class names delimited
+     * with `&` symbols, or an ad hoc mock definition, or an array containing
+     * either of the former.
      *
      * @param mixed ...$types Types to add.
      *

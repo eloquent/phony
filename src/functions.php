@@ -26,9 +26,9 @@ use Throwable;
 /**
  * Create a new mock builder.
  *
- * Each value in `$types` can be either a class name, or an ad hoc mock
- * definition. If only a single type is being mocked, the class name or
- * definition can be passed without being wrapped in an array.
+ * Each value in `$types` can be either a string of class names delimited with
+ * `&` symbols, or an ad hoc mock definition. Alternatively, a single string of
+ * class names can be passed without being wrapped in an array.
  *
  * @param mixed $types The types to mock.
  *
@@ -42,9 +42,9 @@ function mockBuilder($types = []): MockBuilder
 /**
  * Create a new full mock, and return a handle.
  *
- * Each value in `$types` can be either a class name, or an ad hoc mock
- * definition. If only a single type is being mocked, the class name or
- * definition can be passed without being wrapped in an array.
+ * Each value in `$types` can be either a string of class names delimited with
+ * `&` symbols, or an ad hoc mock definition. Alternatively, a single string of
+ * class names can be passed without being wrapped in an array.
  *
  * @param mixed $types The types to mock.
  *
@@ -62,9 +62,9 @@ function mock($types = []): InstanceHandle
 /**
  * Create a new partial mock, and return a handle.
  *
- * Each value in `$types` can be either a class name, or an ad hoc mock
- * definition. If only a single type is being mocked, the class name or
- * definition can be passed without being wrapped in an array.
+ * Each value in `$types` can be either a string of class names delimited with
+ * `&` symbols, or an ad hoc mock definition. Alternatively, a single string of
+ * class names can be passed without being wrapped in an array.
  *
  * Omitting `$arguments` will cause the original constructor to be called
  * with an empty argument list. However, if a `null` value is supplied for
