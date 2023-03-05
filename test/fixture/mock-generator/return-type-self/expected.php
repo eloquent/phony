@@ -11,66 +11,66 @@ implements Mock,
 {
     public static function staticMethod() : \Eloquent\Phony\Test\TestInterfaceWithSelfReturnType
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['mockgeneratorselfreturntype'])) {
-            $result = StaticHandleRegistry::$handles['mockgeneratorselfreturntype']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['mockgeneratorselfreturntype']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 
     public static function __callStatic(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) : \Eloquent\Phony\Test\TestInterfaceWithSelfReturnType {
-        $result = StaticHandleRegistry::$handles['mockgeneratorselfreturntype']->spy($a0)
-            ->invokeWith(new Arguments($a1));
+        $¤result = StaticHandleRegistry::$handles['mockgeneratorselfreturntype']->spy($name)
+            ->invokeWith(new Arguments($arguments));
 
-        return $result;
+        return $¤result;
     }
 
     public function method() : \Eloquent\Phony\Test\TestInterfaceWithSelfReturnType
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function __call(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) : \Eloquent\Phony\Test\TestInterfaceWithSelfReturnType {
-        $result = $this->_handle->spy($a0)
-            ->invokeWith(new Arguments($a1));
+        $¤result = $this->_handle->spy($name)
+            ->invokeWith(new Arguments($arguments));
 
-        return $result;
+        return $¤result;
     }
 
     private static function _callMagicStatic(

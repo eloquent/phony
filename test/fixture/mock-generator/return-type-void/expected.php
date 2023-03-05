@@ -11,66 +11,66 @@ implements Mock,
 {
     public static function staticMethod() : void
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['mockgeneratorvoidreturntype'])) {
             StaticHandleRegistry::$handles['mockgeneratorvoidreturntype']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+                new Arguments($¤arguments)
             );
         }
     }
 
     public static function __callStatic(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) : void {
-        StaticHandleRegistry::$handles['mockgeneratorvoidreturntype']->spy($a0)
-            ->invokeWith(new Arguments($a1));
+        StaticHandleRegistry::$handles['mockgeneratorvoidreturntype']->spy($name)
+            ->invokeWith(new Arguments($arguments));
     }
 
     public function method() : void
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+                new Arguments($¤arguments)
             );
         }
     }
 
     public function customMethod() : void
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+                new Arguments($¤arguments)
             );
         }
     }
 
     public function __call(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) : void {
-        $this->_handle->spy($a0)
-            ->invokeWith(new Arguments($a1));
+        $this->_handle->spy($name)
+            ->invokeWith(new Arguments($arguments));
     }
 
     private static function _callMagicStatic(

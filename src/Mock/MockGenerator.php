@@ -251,6 +251,8 @@ EOD;
         $methodReflector = $methods[$callStaticName]->method();
         $returnsReference = $methodReflector->returnsReference() ? '&' : '';
 
+        $result = self::VAR_PREFIX . 'result';
+
         $source = <<<EOD
 
     public static function {$returnsReference}__callStatic(
@@ -258,13 +260,17 @@ EOD;
 
         list($parameters, $returnType) =
             $this->signatureInspector->signature($methodReflector);
-        $index = -1;
+        $isFirst = true;
+        $parameterNames = [];
 
-        foreach ($parameters as $parameter) {
-            if (-1 !== $index) {
+        foreach ($parameters as $parameterName => $parameter) {
+            if ($isFirst) {
+                $isFirst = false;
+            } else {
                 $source .= ',';
             }
 
+            $parameterNames[] = $parameterName;
             $parameterType = $parameter[0];
 
             if ('self ' === $parameterType) {
@@ -274,8 +280,7 @@ EOD;
             $source .= "\n        " .
                 $parameterType .
                 $parameter[1] .
-                '$a' .
-                ++$index .
+                '$' . $parameterName .
                 $parameter[3];
         }
 
@@ -298,17 +303,17 @@ EOD;
 
         if ($canReturn) {
             $source .= <<<EOD
-        \$result = {$staticHandle}->spy(\$a0)
-            ->invokeWith(new Arguments(\$a1));
+        $result = {$staticHandle}->spy(\${$parameterNames[0]})
+            ->invokeWith(new Arguments(\${$parameterNames[1]}));
 
-        return \$result;
+        return $result;
     }
 
 EOD;
         } else {
             $source .= <<<EOD
-        {$staticHandle}->spy(\$a0)
-            ->invokeWith(new Arguments(\$a1));
+        {$staticHandle}->spy(\${$parameterNames[0]})
+            ->invokeWith(new Arguments(\${$parameterNames[1]}));
     }
 
 EOD;
@@ -385,6 +390,10 @@ EOD;
             var_export(strtolower($className), true)
         );
 
+        $arguments = self::VAR_PREFIX . 'arguments';
+        $argumentCount = self::VAR_PREFIX . 'argumentCount';
+        $result = self::VAR_PREFIX . 'result';
+        $i = self::VAR_PREFIX . 'i';
         $source = '';
 
         foreach ($methods as $method) {
@@ -418,6 +427,7 @@ EOD;
             $parameterCount = count($parameters);
             $variadicIndex = -1;
             $variadicReference = '';
+            $variadicName = '';
 
             if (empty($parameters)) {
                 $argumentPacking = '';
@@ -425,20 +435,20 @@ EOD;
                 $argumentPacking = "\n";
                 $index = -1;
 
-                foreach ($parameters as $parameter) {
+                foreach ($parameters as $parameterName => $parameter) {
                     if ($parameter[2]) {
                         --$parameterCount;
 
                         $variadicIndex = ++$index;
                         $variadicReference = $parameter[1];
+                        $variadicName = $parameterName;
                     } else {
                         $argumentPacking .=
-                            "\n        if (\$argumentCount > " .
+                            "\n        if ($argumentCount > " .
                             ++$index .
-                            ") {\n            \$arguments[] = " .
+                            ") {\n            {$arguments}[] = " .
                             $parameter[1] .
-                            '$a' .
-                            $index .
+                            '$' . $parameterName .
                             ";\n        }";
                     }
                 }
@@ -465,18 +475,18 @@ EOD;
             }
 
             $body =
-                "        \$argumentCount = \\func_num_args();\n" .
-                '        $arguments = [];' .
+                "        $argumentCount = \\func_num_args();\n" .
+                "        $arguments = [];" .
                 $argumentPacking .
-                "\n\n        for (\$i = " .
+                "\n\n        for ($i = " .
                 $parameterCount .
-                "; \$i < \$argumentCount; ++\$i) {\n";
+                "; $i < $argumentCount; ++$i) {\n";
 
             if ($variadicIndex > -1) {
-                $body .= "            \$arguments[] = $variadicReference\$a" .
-                    "{$variadicIndex}[\$i - $variadicIndex];\n";
+                $body .= "            {$arguments}[] = $variadicReference\$" .
+                    "{$variadicName}[$i - $variadicIndex];\n";
             } else {
-                $body .= "            \$arguments[] = \\func_get_arg(\$i);\n";
+                $body .= "            {$arguments}[] = \\func_get_arg($i);\n";
             }
 
             $body .=
@@ -484,17 +494,17 @@ EOD;
 
             if ($canReturn) {
                 $body .=
-                    "            \$result = {$handle}->spy" .
+                    "            $result = {$handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
                     '                new Arguments' .
-                    "(\$arguments)\n            );\n\n" .
-                    '            return $result;';
+                    "($arguments)\n            );\n\n" .
+                    "            return $result;";
             } else {
                 $body .=
                     "            {$handle}->spy" .
                     "(__FUNCTION__)->invokeWith(\n" .
                     '                new Arguments' .
-                    "(\$arguments)\n            );";
+                    "($arguments)\n            );";
             }
 
             $body .= "\n        }";
@@ -503,19 +513,19 @@ EOD;
                 $body .= " else {\n            ";
 
                 if ($canReturn) {
-                    $body .= '$result = ';
+                    $body .= "$result = ";
                 } else {
                     $body .= '';
                 }
 
                 if ($hasParentClass) {
-                    $body .= "parent::$name(...\$arguments);";
+                    $body .= "parent::$name(...$arguments);";
                 } else {
                     $body .= 'null;';
                 }
 
                 if ($canReturn) {
-                    $body .= "\n\n            return \$result;";
+                    $body .= "\n\n            return $result;";
                 }
 
                 $body .= "\n        }";
@@ -534,10 +544,9 @@ EOD;
             if (empty($parameters)) {
                 $source .= '()' . $returnTypeSource . "\n    {\n";
             } else {
-                $index = -1;
                 $isFirst = true;
 
-                foreach ($parameters as $parameter) {
+                foreach ($parameters as $parameterName => $parameter) {
                     if ($isFirst) {
                         $isFirst = false;
                         $source .= "(\n        ";
@@ -554,8 +563,7 @@ EOD;
                     $source .= $parameterType .
                         $parameter[1] .
                         $parameter[2] .
-                        '$a' .
-                        ++$index .
+                        '$' . $parameterName .
                         $parameter[3];
                 }
 
@@ -584,19 +592,25 @@ EOD;
         $methodReflector = $methods[$callName]->method();
         $returnsReference = $methodReflector->returnsReference() ? '&' : '';
 
+        $result = self::VAR_PREFIX . 'result';
+
         $source = <<<EOD
 
     public function {$returnsReference}__call(
 EOD;
         list($parameters, $returnType) =
             $this->signatureInspector->signature($methodReflector);
-        $index = -1;
+        $isFirst = true;
+        $parameterNames = [];
 
-        foreach ($parameters as $parameter) {
-            if (-1 !== $index) {
+        foreach ($parameters as $parameterName => $parameter) {
+            if ($isFirst) {
+                $isFirst = false;
+            } else {
                 $source .= ',';
             }
 
+            $parameterNames[] = $parameterName;
             $parameterType = $parameter[0];
 
             if ('self ' === $parameterType) {
@@ -606,8 +620,7 @@ EOD;
             $source .= "\n        " .
                 $parameterType .
                 $parameter[1] .
-                '$a' .
-                ++$index .
+                '$' . $parameterName .
                 $parameter[2];
         }
 
@@ -624,18 +637,18 @@ EOD;
         }
 
         if ($canReturn) {
-            $source .= <<<'EOD'
-        $result = $this->_handle->spy($a0)
-            ->invokeWith(new Arguments($a1));
+            $source .= <<<EOD
+        $result = \$this->_handle->spy(\${$parameterNames[0]})
+            ->invokeWith(new Arguments(\${$parameterNames[1]}));
 
         return $result;
     }
 
 EOD;
         } else {
-            $source .= <<<'EOD'
-        $this->_handle->spy($a0)
-            ->invokeWith(new Arguments($a1));
+            $source .= <<<EOD
+        \$this->_handle->spy(\${$parameterNames[0]})
+            ->invokeWith(new Arguments(\${$parameterNames[1]}));
     }
 
 EOD;
@@ -946,6 +959,7 @@ EOD;
         return $source;
     }
 
+    const VAR_PREFIX = "$\u{a4}";
     const NS_SEPARATOR = "\u{a6}";
     const METHOD_SEPARATOR = "\u{bb}";
     const STATIC_HANDLE = 'StaticHandleRegistry::$handles[%s]';

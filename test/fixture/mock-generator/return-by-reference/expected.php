@@ -10,93 +10,93 @@ extends \Eloquent\Phony\Test\TestClassG
 implements Mock
 {
     public static function &testClassGStaticMethodA(
-        $a0,
-        &$a1,
-        &$a2
+        $a,
+        &$b,
+        &$c
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $a;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = &$a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = &$b;
         }
-        if ($argumentCount > 2) {
-            $arguments[] = &$a2;
+        if ($¤argumentCount > 2) {
+            $¤arguments[] = &$c;
         }
 
-        for ($i = 3; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 3; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['mockgeneratorreturnbyreference'])) {
-            $result = StaticHandleRegistry::$handles['mockgeneratorreturnbyreference']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['mockgeneratorreturnbyreference']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassGStaticMethodA(...$arguments);
+            $¤result = parent::testClassGStaticMethodA(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public static function &__callStatic(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) {
-        $result = StaticHandleRegistry::$handles['mockgeneratorreturnbyreference']->spy($a0)
-            ->invokeWith(new Arguments($a1));
+        $¤result = StaticHandleRegistry::$handles['mockgeneratorreturnbyreference']->spy($name)
+            ->invokeWith(new Arguments($arguments));
 
-        return $result;
+        return $¤result;
     }
 
     public function &testClassGMethodA(
-        $a0,
-        &$a1,
-        &$a2
+        $a,
+        &$b,
+        &$c
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $a;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = &$a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = &$b;
         }
-        if ($argumentCount > 2) {
-            $arguments[] = &$a2;
+        if ($¤argumentCount > 2) {
+            $¤arguments[] = &$c;
         }
 
-        for ($i = 3; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 3; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassGMethodA(...$arguments);
+            $¤result = parent::testClassGMethodA(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function &__call(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) {
-        $result = $this->_handle->spy($a0)
-            ->invokeWith(new Arguments($a1));
+        $¤result = $this->_handle->spy($name)
+            ->invokeWith(new Arguments($arguments));
 
-        return $result;
+        return $¤result;
     }
 
     private static function _callParentStatic(

@@ -17,23 +17,23 @@ implements Mock
     }
 
     public static function __callStatic(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) {
-        $result = StaticHandleRegistry::$handles['mockgeneratortraitmagiccall']->spy($a0)
-            ->invokeWith(new Arguments($a1));
+        $¤result = StaticHandleRegistry::$handles['mockgeneratortraitmagiccall']->spy($name)
+            ->invokeWith(new Arguments($arguments));
 
-        return $result;
+        return $¤result;
     }
 
     public function __call(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) {
-        $result = $this->_handle->spy($a0)
-            ->invokeWith(new Arguments($a1));
+        $¤result = $this->_handle->spy($name)
+            ->invokeWith(new Arguments($arguments));
 
-        return $result;
+        return $¤result;
     }
 
     private static function _callTraitStatic(

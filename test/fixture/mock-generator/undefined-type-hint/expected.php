@@ -9,33 +9,33 @@ class MockGeneratorUndefinedTypeHint
 implements Mock
 {
     public function methodA(
-        \Non\Existent $a0,
-        ?\Non\Existent $a1 = null
+        \Non\Existent $first,
+        ?\Non\Existent $second = null
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $first;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = $second;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 

@@ -11,26 +11,26 @@ class MockGeneratorCustomMethodInvocableObject
 implements Mock
 {
     public function methodA(
-        ...$a0
+        ...$arguments
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = $a0[$i - 0];
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = $arguments[$¤i - 0];
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 

@@ -11,197 +11,197 @@ implements Mock,
 {
     public static function staticMethodA() : \Eloquent\Phony\Test\Php81\TestBasicEnum
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['mockgeneratorenumtypes'])) {
-            $result = StaticHandleRegistry::$handles['mockgeneratorenumtypes']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['mockgeneratorenumtypes']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 
     public static function staticMethodB(
-        \Eloquent\Phony\Test\Php81\TestBasicEnum $a0
+        \Eloquent\Phony\Test\Php81\TestBasicEnum $case
     ) : \Eloquent\Phony\Test\Php81\TestBasicEnum {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $case;
         }
 
-        for ($i = 1; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['mockgeneratorenumtypes'])) {
-            $result = StaticHandleRegistry::$handles['mockgeneratorenumtypes']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['mockgeneratorenumtypes']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 
     public static function staticMethodC() : \Eloquent\Phony\Test\Php81\TestBackedEnum
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['mockgeneratorenumtypes'])) {
-            $result = StaticHandleRegistry::$handles['mockgeneratorenumtypes']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['mockgeneratorenumtypes']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 
     public static function staticMethodD(
-        \Eloquent\Phony\Test\Php81\TestBackedEnum $a0
+        \Eloquent\Phony\Test\Php81\TestBackedEnum $case
     ) : \Eloquent\Phony\Test\Php81\TestBackedEnum {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $case;
         }
 
-        for ($i = 1; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['mockgeneratorenumtypes'])) {
-            $result = StaticHandleRegistry::$handles['mockgeneratorenumtypes']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['mockgeneratorenumtypes']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function methodA() : \Eloquent\Phony\Test\Php81\TestBasicEnum
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function methodB(
-        \Eloquent\Phony\Test\Php81\TestBasicEnum $a0
+        \Eloquent\Phony\Test\Php81\TestBasicEnum $case
     ) : \Eloquent\Phony\Test\Php81\TestBasicEnum {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $case;
         }
 
-        for ($i = 1; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function methodC() : \Eloquent\Phony\Test\Php81\TestBackedEnum
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function methodD(
-        \Eloquent\Phony\Test\Php81\TestBackedEnum $a0
+        \Eloquent\Phony\Test\Php81\TestBackedEnum $case
     ) : \Eloquent\Phony\Test\Php81\TestBackedEnum {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $case;
         }
 
-        for ($i = 1; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 

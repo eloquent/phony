@@ -13,56 +13,56 @@ implements Mock
     }
 
     public static function staticMethod(
-        \MockGeneratorTraitSelfType $a0
+        \MockGeneratorTraitSelfType $a
     ) : \MockGeneratorTraitSelfType {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $a;
         }
 
-        for ($i = 1; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['mockgeneratortraitselftype'])) {
-            $result = StaticHandleRegistry::$handles['mockgeneratortraitselftype']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['mockgeneratortraitselftype']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function method(
-        \MockGeneratorTraitSelfType $a0
+        \MockGeneratorTraitSelfType $a
     ) : \MockGeneratorTraitSelfType {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $a;
         }
 
-        for ($i = 1; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 

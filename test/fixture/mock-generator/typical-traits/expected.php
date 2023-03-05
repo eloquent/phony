@@ -34,204 +34,204 @@ implements Mock,
     const CONSTANT_C = null;
 
     public static function testClassAStaticMethodB(
-        $a0,
-        $a1,
-        &$a2 = null
+        $first,
+        $second,
+        &$third = null
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $first;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = $second;
         }
-        if ($argumentCount > 2) {
-            $arguments[] = &$a2;
+        if ($¤argumentCount > 2) {
+            $¤arguments[] = &$third;
         }
 
-        for ($i = 3; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 3; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits'])) {
-            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassAStaticMethodB(...$arguments);
+            $¤result = parent::testClassAStaticMethodB(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public static function testClassBStaticMethodA()
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits'])) {
-            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassBStaticMethodA(...$arguments);
+            $¤result = parent::testClassBStaticMethodA(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public static function testClassBStaticMethodB(
-        $a0,
-        $a1
+        $first,
+        $second
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $first;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = $second;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits'])) {
-            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassBStaticMethodB(...$arguments);
+            $¤result = parent::testClassBStaticMethodB(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public static function testClassAStaticMethodA()
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits'])) {
-            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassAStaticMethodA(...$arguments);
+            $¤result = parent::testClassAStaticMethodA(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public static function methodA(
-        $a0,
-        &$a1
+        $first,
+        &$second
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $first;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = &$a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = &$second;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits'])) {
-            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::methodA(...$arguments);
+            $¤result = parent::methodA(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public static function methodB(
-        $a0 = null,
-        $a1 = 111,
-        $a2 = array (
+        $first = null,
+        $second = 111,
+        $third = array (
 ),
-        $a3 = array (
+        $fourth = array (
   0 => 'valueA',
   1 => 'valueB',
 ),
-        $a4 = array (
+        $fifth = array (
   'keyA' => 'valueA',
   'keyB' => 'valueB',
 )
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $first;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = $second;
         }
-        if ($argumentCount > 2) {
-            $arguments[] = $a2;
+        if ($¤argumentCount > 2) {
+            $¤arguments[] = $third;
         }
-        if ($argumentCount > 3) {
-            $arguments[] = $a3;
+        if ($¤argumentCount > 3) {
+            $¤arguments[] = $fourth;
         }
-        if ($argumentCount > 4) {
-            $arguments[] = $a4;
+        if ($¤argumentCount > 4) {
+            $¤arguments[] = $fifth;
         }
 
-        for ($i = 5; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 5; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits'])) {
-            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::methodB(...$arguments);
+            $¤result = parent::methodB(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public static function __callStatic(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) {
-        $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy($a0)
-            ->invokeWith(new Arguments($a1));
+        $¤result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy($name)
+            ->invokeWith(new Arguments($arguments));
 
-        return $result;
+        return $¤result;
     }
 
     public function __construct()
@@ -239,540 +239,540 @@ implements Mock,
     }
 
     public function testClassAMethodB(
-        $a0,
-        $a1,
-        &$a2 = null
+        $first,
+        $second,
+        &$third = null
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $first;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = $second;
         }
-        if ($argumentCount > 2) {
-            $arguments[] = &$a2;
+        if ($¤argumentCount > 2) {
+            $¤arguments[] = &$third;
         }
 
-        for ($i = 3; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 3; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassAMethodB(...$arguments);
+            $¤result = parent::testClassAMethodB(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function testClassBMethodA()
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassBMethodA(...$arguments);
+            $¤result = parent::testClassBMethodA(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function testClassBMethodB(
-        &$a0,
-        &$a1
+        &$first,
+        &$second
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = &$a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = &$first;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = &$a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = &$second;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassBMethodB(...$arguments);
+            $¤result = parent::testClassBMethodB(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function testClassAMethodA()
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassAMethodA(...$arguments);
+            $¤result = parent::testClassAMethodA(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function testTraitBMethodA()
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testTraitBMethodA(...$arguments);
+            $¤result = parent::testTraitBMethodA(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function current() : mixed
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::current(...$arguments);
+            $¤result = parent::current(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function next() : void
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+                new Arguments($¤arguments)
             );
         } else {
-            parent::next(...$arguments);
+            parent::next(...$¤arguments);
         }
     }
 
     public function key() : mixed
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::key(...$arguments);
+            $¤result = parent::key(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function valid() : bool
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::valid(...$arguments);
+            $¤result = parent::valid(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function rewind() : void
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+                new Arguments($¤arguments)
             );
         } else {
-            parent::rewind(...$arguments);
+            parent::rewind(...$¤arguments);
         }
     }
 
     public function count() : int
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::count(...$arguments);
+            $¤result = parent::count(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function offsetExists(
-        $a0
+        $offset
     ) : bool {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $offset;
         }
 
-        for ($i = 1; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::offsetExists(...$arguments);
+            $¤result = parent::offsetExists(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function offsetGet(
-        $a0
+        $offset
     ) : mixed {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $offset;
         }
 
-        for ($i = 1; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::offsetGet(...$arguments);
+            $¤result = parent::offsetGet(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function offsetSet(
-        $a0,
-        $a1
+        $offset,
+        $value
     ) : void {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $offset;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = $value;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+                new Arguments($¤arguments)
             );
         } else {
-            parent::offsetSet(...$arguments);
+            parent::offsetSet(...$¤arguments);
         }
     }
 
     public function offsetUnset(
-        $a0
+        $offset
     ) : void {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $offset;
         }
 
-        for ($i = 1; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
             $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+                new Arguments($¤arguments)
             );
         } else {
-            parent::offsetUnset(...$arguments);
+            parent::offsetUnset(...$¤arguments);
         }
     }
 
     public function methodC(
-        \Eloquent\Phony\Test\TestClassA $a0,
-        ?\Eloquent\Phony\Test\TestClassA $a1 = null,
-        array $a2 = array (
+        \Eloquent\Phony\Test\TestClassA $first,
+        ?\Eloquent\Phony\Test\TestClassA $second = null,
+        array $third = array (
 ),
-        ?array $a3 = null
+        ?array $fourth = null
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $first;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = $second;
         }
-        if ($argumentCount > 2) {
-            $arguments[] = $a2;
+        if ($¤argumentCount > 2) {
+            $¤arguments[] = $third;
         }
-        if ($argumentCount > 3) {
-            $arguments[] = $a3;
+        if ($¤argumentCount > 3) {
+            $¤arguments[] = $fourth;
         }
 
-        for ($i = 4; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 4; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::methodC(...$arguments);
+            $¤result = parent::methodC(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function methodD()
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::methodD(...$arguments);
+            $¤result = parent::methodD(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function __call(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) {
-        $result = $this->_handle->spy($a0)
-            ->invokeWith(new Arguments($a1));
+        $¤result = $this->_handle->spy($name)
+            ->invokeWith(new Arguments($arguments));
 
-        return $result;
+        return $¤result;
     }
 
     protected static function testClassAStaticMethodC()
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits'])) {
-            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassAStaticMethodC(...$arguments);
+            $¤result = parent::testClassAStaticMethodC(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     protected static function testClassAStaticMethodD(
-        $a0,
-        $a1
+        $first,
+        $second
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = $a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = $first;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = $a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = $second;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits'])) {
-            $result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['phony\\test\\mockgeneratortypicaltraits']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassAStaticMethodD(...$arguments);
+            $¤result = parent::testClassAStaticMethodD(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     protected function testClassAMethodC()
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassAMethodC(...$arguments);
+            $¤result = parent::testClassAMethodC(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 
     protected function testClassAMethodD(
-        &$a0,
-        &$a1
+        &$first,
+        &$second
     ) {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        if ($argumentCount > 0) {
-            $arguments[] = &$a0;
+        if ($¤argumentCount > 0) {
+            $¤arguments[] = &$first;
         }
-        if ($argumentCount > 1) {
-            $arguments[] = &$a1;
+        if ($¤argumentCount > 1) {
+            $¤arguments[] = &$second;
         }
 
-        for ($i = 2; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = parent::testClassAMethodD(...$arguments);
+            $¤result = parent::testClassAMethodD(...$¤arguments);
 
-            return $result;
+            return $¤result;
         }
     }
 

@@ -11,66 +11,66 @@ implements Mock,
 {
     public static function staticMethod() : static
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset(StaticHandleRegistry::$handles['mockgeneratorstaticreturntype'])) {
-            $result = StaticHandleRegistry::$handles['mockgeneratorstaticreturntype']->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = StaticHandleRegistry::$handles['mockgeneratorstaticreturntype']->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 
     public static function __callStatic(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) : static {
-        $result = StaticHandleRegistry::$handles['mockgeneratorstaticreturntype']->spy($a0)
-            ->invokeWith(new Arguments($a1));
+        $¤result = StaticHandleRegistry::$handles['mockgeneratorstaticreturntype']->spy($name)
+            ->invokeWith(new Arguments($arguments));
 
-        return $result;
+        return $¤result;
     }
 
     public function method() : static
     {
-        $argumentCount = \func_num_args();
-        $arguments = [];
+        $¤argumentCount = \func_num_args();
+        $¤arguments = [];
 
-        for ($i = 0; $i < $argumentCount; ++$i) {
-            $arguments[] = \func_get_arg($i);
+        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
+            $¤arguments[] = \func_get_arg($¤i);
         }
 
         if (isset($this->_handle)) {
-            $result = $this->_handle->spy(__FUNCTION__)->invokeWith(
-                new Arguments($arguments)
+            $¤result = $this->_handle->spy(__FUNCTION__)->invokeWith(
+                new Arguments($¤arguments)
             );
 
-            return $result;
+            return $¤result;
         } else {
-            $result = null;
+            $¤result = null;
 
-            return $result;
+            return $¤result;
         }
     }
 
     public function __call(
-        $a0,
-        array $a1
+        $name,
+        array $arguments
     ) : static {
-        $result = $this->_handle->spy($a0)
-            ->invokeWith(new Arguments($a1));
+        $¤result = $this->_handle->spy($name)
+            ->invokeWith(new Arguments($arguments));
 
-        return $result;
+        return $¤result;
     }
 
     private static function _callMagicStatic(
