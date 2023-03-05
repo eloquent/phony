@@ -31,7 +31,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $directory;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -58,7 +57,6 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $localName;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -85,7 +83,6 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $contents;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -112,7 +109,6 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $pattern;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -143,7 +139,6 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $baseDirectory;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -170,7 +165,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $compression;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -219,7 +213,6 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $extension;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -246,7 +239,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $extension;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -281,7 +273,6 @@ implements Mock
         if ($¤argumentCount > 2) {
             $¤arguments[] = $extension;
         }
-
         for ($¤i = 3; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -316,7 +307,6 @@ implements Mock
         if ($¤argumentCount > 2) {
             $¤arguments[] = $extension;
         }
-
         for ($¤i = 3; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -347,7 +337,6 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $to;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -374,7 +363,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $mode;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -401,7 +389,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $localName;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -458,7 +445,6 @@ implements Mock
         if ($¤argumentCount > 2) {
             $¤arguments[] = $overwrite;
         }
-
         for ($¤i = 3; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -530,7 +516,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $unserializeOptions;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -711,7 +696,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $format;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -760,7 +744,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $localName;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -787,7 +770,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $localName;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -818,7 +800,6 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $value;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -841,7 +822,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $localName;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -864,7 +844,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $alias;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -895,7 +874,6 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $webIndex;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -922,7 +900,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $metadata;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -949,7 +926,6 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $privateKey;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -976,7 +952,6 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $length;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -1039,7 +1014,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $allowLinks;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -1216,7 +1190,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $flags;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -1283,7 +1256,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $suffix;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -1372,7 +1344,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $offset;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -1791,7 +1762,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $class;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -1818,7 +1788,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $class;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -1853,7 +1822,6 @@ implements Mock
         if ($¤argumentCount > 2) {
             $¤arguments[] = $context;
         }
-
         for ($¤i = 3; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -1880,7 +1848,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $class;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -1903,7 +1870,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $class;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }

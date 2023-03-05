@@ -17,7 +17,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $first;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }

@@ -6,6 +6,7 @@ $builder = $factory->create(
         'methodB' => function ($a, $b, stdClass ...$c) {},
         'methodC' => function ($a, $b, &...$c) {},
         'methodD' => function ($a, $b, ?stdClass...$c) {},
+        'methodE' => function (...$a) {},
     ]
 );
 

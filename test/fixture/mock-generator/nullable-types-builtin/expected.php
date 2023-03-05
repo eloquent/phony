@@ -22,7 +22,6 @@ implements Mock,
         if ($¤argumentCount > 1) {
             $¤arguments[] = $object;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -63,7 +62,6 @@ implements Mock,
         if ($¤argumentCount > 1) {
             $¤arguments[] = $object;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -116,7 +114,6 @@ implements Mock,
         if ($¤argumentCount > 1) {
             $¤arguments[] = $object;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -169,7 +166,6 @@ implements Mock,
         if ($¤argumentCount > 1) {
             $¤arguments[] = $object;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }

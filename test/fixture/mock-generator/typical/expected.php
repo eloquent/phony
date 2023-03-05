@@ -35,7 +35,6 @@ implements Mock,
         if ($¤argumentCount > 2) {
             $¤arguments[] = &$third;
         }
-
         for ($¤i = 3; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -88,7 +87,6 @@ implements Mock,
         if ($¤argumentCount > 1) {
             $¤arguments[] = $second;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -141,7 +139,6 @@ implements Mock,
         if ($¤argumentCount > 1) {
             $¤arguments[] = &$second;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -191,7 +188,6 @@ implements Mock,
         if ($¤argumentCount > 4) {
             $¤arguments[] = $fifth;
         }
-
         for ($¤i = 5; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -240,7 +236,6 @@ implements Mock,
         if ($¤argumentCount > 2) {
             $¤arguments[] = &$third;
         }
-
         for ($¤i = 3; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -293,7 +288,6 @@ implements Mock,
         if ($¤argumentCount > 1) {
             $¤arguments[] = &$second;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -466,7 +460,6 @@ implements Mock,
         if ($¤argumentCount > 0) {
             $¤arguments[] = $offset;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -493,7 +486,6 @@ implements Mock,
         if ($¤argumentCount > 0) {
             $¤arguments[] = $offset;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -524,7 +516,6 @@ implements Mock,
         if ($¤argumentCount > 1) {
             $¤arguments[] = $value;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -547,7 +538,6 @@ implements Mock,
         if ($¤argumentCount > 0) {
             $¤arguments[] = $offset;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -583,7 +573,6 @@ implements Mock,
         if ($¤argumentCount > 3) {
             $¤arguments[] = $fourth;
         }
-
         for ($¤i = 4; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -668,7 +657,6 @@ implements Mock,
         if ($¤argumentCount > 1) {
             $¤arguments[] = $second;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -721,7 +709,6 @@ implements Mock,
         if ($¤argumentCount > 1) {
             $¤arguments[] = &$second;
         }
-
         for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
