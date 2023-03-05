@@ -8,6 +8,7 @@ use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Reflection\FeatureDetector;
 use ReflectionFunctionAbstract;
 use ReflectionIntersectionType;
+use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionType;
 use ReflectionUnionType;
@@ -52,12 +53,15 @@ class EmptyValueFactory
     /**
      * Create a value of the supplied type.
      *
-     * @param ReflectionType $type The type.
+     * @param ReflectionType $type        The type.
+     * @param callable|null  $resolveSelf A callback to use if it is necessary to resolve a `self` or `static` type.
      *
      * @return mixed A value of the supplied type.
      */
-    public function fromType(ReflectionType $type)
-    {
+    public function fromType(
+        ReflectionType $type,
+        callable $resolveSelf = null
+    ) {
         if ($type->allowsNull()) {
             return null;
         }
@@ -122,6 +126,12 @@ class EmptyValueFactory
                 $fn = function () { yield from []; };
 
                 return $fn();
+
+            case 'self':
+            case 'static':
+                if ($resolveSelf) {
+                    $typeName = $resolveSelf();
+                }
         }
 
         if ($this->isEnumSupported && enum_exists($typeName)) {
@@ -141,6 +151,12 @@ class EmptyValueFactory
     public function fromFunction(ReflectionFunctionAbstract $function)
     {
         if ($type = $function->getReturnType()) {
+            if ($function instanceof ReflectionMethod) {
+                return $this->fromType($type, function () use ($function) {
+                    return $function->getDeclaringClass()->getName();
+                });
+            }
+
             return $this->fromType($type);
         }
 

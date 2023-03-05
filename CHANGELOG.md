@@ -17,6 +17,9 @@
 - **[NEW]** Added support for PHP 8.2 `false` standalone types ([#262]).
 - **[NEW]** Added support for PHP 8.2 `null` standalone types ([#262]).
 - **[NEW]** Added support for PHP 8.2 `readonly` classes ([#264]).
+- **[NEW]** `emptyValue()` now accepts a `$resolveSelf` argument, which can be
+  used to return a resolved class name to use when the supplied `$type` value
+  includes a `self` or `static` type.
 - **[IMPROVED]** The exporter now uses a single sequence of numbers to identify
   arrays, objects, and wrappers. Previously a separate sequence of numbers was
   used for arrays, due to a limitation of older PHP versions. This means
@@ -29,6 +32,8 @@
 - **[FIXED]** Mocking traits that use `self` types no longer causes fatal
   errors ([#268]).
 - **[FIXED]** The exporter no longer omits falsy labels like `'0'`.
+- **[FIXED]** Mocks of methods with `static` return types no longer fail when
+  the empty value factory attempts to create a return value.
 
 [#255]: https://github.com/eloquent/phony/issues/255
 [#256]: https://github.com/eloquent/phony/pull/256

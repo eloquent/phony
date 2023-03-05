@@ -329,15 +329,21 @@ trait FacadeTrait
     /**
      * Get an "empty" value for the supplied type.
      *
-     * @param ReflectionType $type The type.
+     * The `$resolveSelf` parameter accepts a callback that takes no arguments,
+     * and returns the resolved class name of the `self`/`static` type.
+     *
+     * @param ReflectionType $type        The type.
+     * @param callable|null  $resolveSelf A callback to use if it is necessary to resolve a `self` or `static` type.
      *
      * @return mixed An "empty" value of the supplied type.
      */
-    public static function emptyValue(ReflectionType $type)
-    {
+    public static function emptyValue(
+        ReflectionType $type,
+        callable $resolveSelf = null
+    ) {
         $container = self::$globals::$container;
 
-        return $container->emptyValueFactory->fromType($type);
+        return $container->emptyValueFactory->fromType($type, $resolveSelf);
     }
 
     /**

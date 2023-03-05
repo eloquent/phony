@@ -4912,13 +4912,16 @@ _Negative values for `$maximumArguments` represent "no maximum"._
 
 ---
 
-> _mixed_ [**emptyValue**](#facade.emptyValue)($type) _(with [use function])_<br />
-> _mixed_ Phony::[**emptyValue**](#facade.emptyValue)($type) _(without [use function])_
+> _mixed_ [**emptyValue**](#facade.emptyValue)($type, $resolveSelf = null) _(with [use function])_<br />
+> _mixed_ Phony::[**emptyValue**](#facade.emptyValue)($type, $resolveSelf = null) _(without [use function])_
 
 Create a new "empty" value.
 
 _The `$type` parameter accepts a [ReflectionType], which can be created via
 PHP's built-in [reflection] API._
+
+The `$resolveSelf` parameter accepts a callback that takes no arguments, and
+returns the resolved class name of the `self`/`static` type.
 
 _This table details the "empty" value that will be returned for each type:_
 

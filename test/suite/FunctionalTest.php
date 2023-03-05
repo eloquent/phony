@@ -54,6 +54,8 @@ use Eloquent\Phony\Test\TestInterfaceE;
 use Eloquent\Phony\Test\TestInterfaceWithFinalReturnType;
 use Eloquent\Phony\Test\TestInterfaceWithReturnType;
 use Eloquent\Phony\Test\TestInterfaceWithScalarTypeHint;
+use Eloquent\Phony\Test\TestInterfaceWithSelfReturnType;
+use Eloquent\Phony\Test\TestInterfaceWithStaticReturnType;
 use Eloquent\Phony\Test\TestInterfaceWithUnionFinalReturnType;
 use Eloquent\Phony\Test\TestInterfaceWithUnionTypes;
 use Eloquent\Phony\Test\TestInterfaceWithVariadicParameter;
@@ -2077,5 +2079,27 @@ class FunctionalTest extends TestCase
         $this->assertInstanceOf(IteratorAggregate::class, $mock);
         $this->assertInstanceOf(IteratorAggregate::class, $mock->method($mock));
         $this->assertInstanceOf(IteratorAggregate::class, $class::staticMethod($mock));
+    }
+
+    public function testCanMockSelfTypes()
+    {
+        $handle = mock(TestInterfaceWithSelfReturnType::class);
+        $mock = $handle->get();
+        $staticHandle = onStatic($handle);
+        $class = $staticHandle->className();
+
+        $this->assertInstanceOf(TestInterfaceWithSelfReturnType::class, $mock->method());
+        $this->assertInstanceOf(TestInterfaceWithSelfReturnType::class, $class::staticMethod());
+    }
+
+    public function testCanMockStaticTypes()
+    {
+        $handle = mock(TestInterfaceWithStaticReturnType::class);
+        $mock = $handle->get();
+        $staticHandle = onStatic($handle);
+        $class = $staticHandle->className();
+
+        $this->assertInstanceOf($class, $mock->method());
+        $this->assertInstanceOf($class, $class::staticMethod());
     }
 }
