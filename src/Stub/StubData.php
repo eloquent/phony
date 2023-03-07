@@ -766,7 +766,7 @@ class StubData implements Stub
      *
      * This method supports reference parameters.
      *
-     * @param Arguments|array<int,mixed> $arguments The arguments.
+     * @param Arguments|array<int|string,mixed> $arguments The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
@@ -781,10 +781,7 @@ class StubData implements Stub
             $this->closeRule();
         }
 
-        if ($arguments instanceof Arguments) {
-            $argumentsArray = $arguments->positional();
-        } else {
-            $argumentsArray = $arguments;
+        if (!$arguments instanceof Arguments) {
             $arguments = new Arguments($arguments);
         }
 
@@ -793,7 +790,7 @@ class StubData implements Stub
         foreach ($this->rules as $rule) {
             if (
                 $this->matcherVerifier
-                    ->matches($rule->criteria(), $argumentsArray)
+                    ->matches($rule->criteria(), $arguments->positional())
             ) {
                 break;
             }

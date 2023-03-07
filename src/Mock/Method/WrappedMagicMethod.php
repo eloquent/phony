@@ -78,7 +78,7 @@ class WrappedMagicMethod implements WrappedMethod
      *
      * This method supports reference parameters.
      *
-     * @param Arguments|array<int,mixed> $arguments The arguments.
+     * @param Arguments|array<int|string,mixed> $arguments The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
