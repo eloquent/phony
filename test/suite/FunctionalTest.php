@@ -2113,6 +2113,9 @@ class FunctionalTest extends TestCase
         $this->assertTrue((bool) $handle->testClassAMethodB->calledWith('<first>', '<second>'));
     }
 
+    /**
+     * @requires PHP >= 8.1
+     */
     public function testCanCallMocksWithVariadicNamedArguments()
     {
         $mock = partialMock(TestClassWithVariadicNamedArguments::class)->get();
