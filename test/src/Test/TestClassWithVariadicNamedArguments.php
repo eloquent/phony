@@ -8,8 +8,8 @@ class TestClassWithVariadicNamedArguments
 {
     public array $arguments;
 
-    public function setArguments(...$arguments)
+    public function setArguments($a, $b, ...$arguments)
     {
-        $this->arguments = $arguments;
+        $this->arguments = func_get_args();
     }
 }

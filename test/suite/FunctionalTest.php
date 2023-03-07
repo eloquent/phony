@@ -2116,8 +2116,8 @@ class FunctionalTest extends TestCase
     public function testCanCallMocksWithVariadicNamedArguments()
     {
         $mock = partialMock(TestClassWithVariadicNamedArguments::class)->get();
-        $mock->setArguments(a: 'x', b: 'y');
+        $mock->setArguments(a: 'w', b: 'x', c: 'y', d: 'z');
 
-        $this->assertSame(['a' => 'x', 'b' => 'y'], $mock->arguments);
+        $this->assertSame(['w', 'x', 'c' => 'y', 'd' => 'z'], $mock->arguments);
     }
 }

@@ -460,14 +460,14 @@ EOD;
                     "$argumentName => $variadicReference$argumentValue) {\n" .
                     "            {$arguments}[$argumentName] = " .
                     "$variadicReference$argumentValue;\n" .
-                    "        }";
+                    '        }';
             } else {
                 $argumentPacking .=
                     "\n        for ($i = " .
                     $parameterCount .
                     "; $i < $argumentCount; ++$i) {\n" .
                     "            {$arguments}[] = \\func_get_arg($i);\n" .
-                    "        }";
+                    '        }';
             }
 
             if ($returnType) {
