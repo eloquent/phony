@@ -6,6 +6,7 @@ namespace Eloquent\Phony\Invocation;
 
 use Closure;
 use Eloquent\Phony\Mock\Method\WrappedMethod;
+use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
@@ -35,18 +36,33 @@ class InvocableInspector
             $callback = $callback->callback();
         }
 
-        if (is_array($callback)) {
-            return new ReflectionMethod($callback[0], $callback[1]);
+        if ($callback instanceof Closure) {
+            return new ReflectionFunction($callback);
         }
 
-        if (is_string($callback) && false !== strpos($callback, '::')) {
-            list($className, $methodName) = explode('::', $callback);
-
-            return new ReflectionMethod($className, $methodName);
-        }
-
-        if (is_object($callback) && !$callback instanceof Closure) {
+        if (is_object($callback)) {
             return new ReflectionMethod($callback, '__invoke');
+        }
+
+        if (is_array($callback)) {
+            list($classNameOrObject, $methodName) = $callback;
+
+            if (str_starts_with($methodName, 'parent::')) {
+                $class = new ReflectionClass($classNameOrObject);
+                /** @var ReflectionClass<object> $parentClass */
+                $parentClass = $class->getParentClass();
+
+                return new ReflectionMethod(
+                    $parentClass->getName(),
+                    substr($methodName, 8),
+                );
+            }
+
+            return new ReflectionMethod(...$callback);
+        }
+
+        if (is_string($callback) && str_contains($callback, '::')) {
+            return new ReflectionMethod($callback);
         }
 
         /** @var string $callback */
