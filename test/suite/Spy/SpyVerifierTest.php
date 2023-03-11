@@ -701,11 +701,11 @@ class SpyVerifierTest extends TestCase
 
     public function calledWithData()
     {
-        //                                    arguments                  calledWith calledWithWildcard
+        //                               arguments             calledWith calledWithWildcard
         return [
             'Exact arguments'        => [['a', 'b', 'c'],      true,      true],
-            'First arguments'        => [['a', 'b'],           false,      true],
-            'Single argument'        => [['a'],                false,      true],
+            'First arguments'        => [['a', 'b'],           false,     true],
+            'Single argument'        => [['a'],                false,     true],
             'Last arguments'         => [['b', 'c'],           false,     false],
             'Last argument'          => [['c'],                false,     false],
             'Extra arguments'        => [['a', 'b', 'c', 'd'], false,     false],
