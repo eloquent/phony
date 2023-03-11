@@ -58,8 +58,6 @@ trait WrappedInvocableTrait
     /**
      * Invoke this object.
      *
-     * Does not support named arguments.
-     *
      * @param mixed ...$arguments The arguments.
      *
      * @return mixed     The result of invocation.
@@ -67,15 +65,11 @@ trait WrappedInvocableTrait
      */
     public function invoke(...$arguments)
     {
-        /** @var array<int,mixed> $arguments */
-
         return $this->invokeWith($arguments);
     }
 
     /**
      * Invoke this object.
-     *
-     * Does not support named arguments.
      *
      * @param mixed ...$arguments The arguments.
      *
@@ -84,8 +78,6 @@ trait WrappedInvocableTrait
      */
     public function __invoke(...$arguments)
     {
-        /** @var array<int,mixed> $arguments */
-
         return $this->invokeWith($arguments);
     }
 

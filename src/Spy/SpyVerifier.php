@@ -393,8 +393,6 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Invoke this object.
      *
-     * Does not support named arguments.
-     *
      * @param mixed ...$arguments The arguments.
      *
      * @return mixed     The result of invocation.
@@ -402,15 +400,11 @@ class SpyVerifier implements Spy, CardinalityVerifier
      */
     public function invoke(...$arguments)
     {
-        /** @var array<int,mixed> $arguments */
-
         return $this->spy->invokeWith($arguments);
     }
 
     /**
      * Invoke this object.
-     *
-     * Does not support named arguments.
      *
      * @param mixed ...$arguments The arguments.
      *
@@ -419,8 +413,6 @@ class SpyVerifier implements Spy, CardinalityVerifier
      */
     public function __invoke(...$arguments)
     {
-        /** @var array<int,mixed> $arguments */
-
         return $this->spy->invokeWith($arguments);
     }
 
