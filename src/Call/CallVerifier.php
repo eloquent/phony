@@ -590,6 +590,8 @@ class CallVerifier implements Call, CardinalityVerifier
         $cardinality = $this->resetCardinality()->assertSingular();
         $matchers = $this->matcherFactory->adaptAll($arguments);
 
+        /** @var array<int,Matcher> $matchers */
+
         list($matchCount, $matchingEvents) = $this->matchIf(
             $this->call,
             $this->matcherVerifier
@@ -620,6 +622,8 @@ class CallVerifier implements Call, CardinalityVerifier
 
         $cardinality = $this->cardinality;
         $matchers = $this->matcherFactory->adaptAll($arguments);
+
+        /** @var array<int,Matcher> $matchers */
 
         if ($result = $this->checkCalledWith(...$matchers)) {
             return $result;

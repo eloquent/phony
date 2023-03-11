@@ -121,6 +121,39 @@ class MatcherFactoryTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testAdaptAllWithNamedMatchers()
+    {
+        $this->subject->addMatcherDriver($this->driverA);
+        $this->subject->addMatcherDriver($this->driverB);
+
+        $valueB = new EqualToMatcher('b', true, $this->exporter);
+        $valueC = (object) [];
+        $valueD = $this->container->handleFactory->instanceHandle(
+            $this->container->mockBuilderFactory->create()->full()
+        );
+        $values = [
+            'a' => 'a',
+            'b' => $valueB,
+            'c' => $valueC,
+            'd' => $valueD,
+            'e' => new TestMatcherA(),
+            'f' => '*',
+            'g' => '~',
+        ];
+        $actual = $this->subject->adaptAll($values);
+        $expected = [
+            'a' => new EqualToMatcher('a', true, $this->exporter),
+            'b' => $valueB,
+            'c' => new EqualToMatcher($valueC, true, $this->exporter),
+            'd' => new EqualToMatcher($valueD, true, $this->exporter),
+            'e' => new EqualToMatcher('a', false, $this->exporter),
+            'f' => $this->wildcardMatcher,
+            'g' => $this->anyMatcher,
+        ];
+
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testEqualTo()
     {
         $expected = new EqualToMatcher('x', false, $this->exporter);
