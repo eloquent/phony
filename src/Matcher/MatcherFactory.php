@@ -113,17 +113,17 @@ class MatcherFactory
     /**
      * Create new matchers for the all supplied values.
      *
-     * @param array<int,mixed> $values The values to create matchers for.
+     * @param array<int|string,mixed> $values The values to create matchers for.
      *
-     * @return array<int,Matcher> The newly created matchers.
+     * @return array<int|string,Matcher> The newly created matchers.
      */
     public function adaptAll(array $values): array
     {
         $matchers = [];
 
-        foreach ($values as $value) {
+        foreach ($values as $key => $value) {
             if ($value instanceof Matcher) {
-                $matchers[] = $value;
+                $matchers[$key] = $value;
 
                 continue;
             }
@@ -131,7 +131,7 @@ class MatcherFactory
             if (is_object($value)) {
                 foreach ($this->driverIndex as $className => $driver) {
                     if (is_a($value, $className)) {
-                        $matchers[] = $driver->wrapMatcher($value);
+                        $matchers[$key] = $driver->wrapMatcher($value);
 
                         continue 2;
                     }
@@ -139,11 +139,12 @@ class MatcherFactory
             }
 
             if ('*' === $value) {
-                $matchers[] = $this->wildcardAnyMatcher;
+                $matchers[$key] = $this->wildcardAnyMatcher;
             } elseif ('~' === $value) {
-                $matchers[] = $this->anyMatcher;
+                $matchers[$key] = $this->anyMatcher;
             } else {
-                $matchers[] = new EqualToMatcher($value, true, $this->exporter);
+                $matchers[$key] =
+                    new EqualToMatcher($value, true, $this->exporter);
             }
         }
 

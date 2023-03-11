@@ -180,7 +180,9 @@ class StubData implements Stub
             $this->closeRule();
         }
 
-        $this->criteria = $this->matcherFactory->adaptAll($arguments);
+        /** @var array<int,Matcher> $matchers */
+        $matchers = $this->matcherFactory->adaptAll($arguments);
+        $this->criteria = $matchers;
 
         return $this;
     }

@@ -477,6 +477,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
 
         $cardinality = $this->resetCardinality();
 
+        /** @var array<int,Matcher> $matchers */
         $matchers = $this->matcherFactory->adaptAll($arguments);
         $calls = $this->spy->allCalls();
         $matchingEvents = [];
@@ -515,6 +516,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
         /** @var array<int,mixed> $arguments */
 
         $cardinality = $this->cardinality;
+        /** @var array<int,Matcher> $matchers */
         $matchers = $this->matcherFactory->adaptAll($arguments);
 
         if ($result = $this->checkCalledWith(...$matchers)) {
