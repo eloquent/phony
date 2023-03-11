@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Reflection;
 
 use AllowDynamicProperties;
+use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\TestClassB;
+use Eloquent\Phony\Test\TestInvocable;
 use Eloquent\Phony\Test\TestTraitWithSelfType;
 use PHPUnit\Framework\TestCase;
 use ReflectionFunction;
@@ -378,6 +381,121 @@ class FunctionSignatureInspectorTest extends TestCase
         $function = new ReflectionMethod('Exception', '__wakeup');
         $actual = $this->subject->signature($function);
         $expected = [[], 'void'];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureFromCallbackWithString()
+    {
+        $callback = 'implode';
+        $actual = $this->subject->signatureFromCallback($callback);
+        $expected = [
+            [
+                'separator' => ['array|string ', '', '', ''],
+                'array' => ['?array ', '', '', ' = null'],
+            ],
+            'string',
+        ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureFromCallbackWithStaticMethodArray()
+    {
+        $callback = [TestClassA::class, 'testClassAStaticMethodB'];
+        $actual = $this->subject->signatureFromCallback($callback);
+        $expected = [
+            [
+                'first' => ['', '', '', ''],
+                'second' => ['', '', '', ''],
+            ],
+            '',
+        ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureFromCallbackWithInstanceMethodArray()
+    {
+        $obj = new TestClassA();
+        $callback = [$obj, 'testClassAMethodB'];
+        $actual = $this->subject->signatureFromCallback($callback);
+        $expected = [
+            [
+                'first' => ['', '', '', ''],
+                'second' => ['', '', '', ''],
+            ],
+            '',
+        ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureFromCallbackWithStaticMethodString()
+    {
+        $callback = TestClassA::class . '::testClassAStaticMethodB';
+        $actual = $this->subject->signatureFromCallback($callback);
+        $expected = [
+            [
+                'first' => ['', '', '', ''],
+                'second' => ['', '', '', ''],
+            ],
+            '',
+        ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @requires PHP < 8.2
+     */
+    public function testSignatureFromCallbackWithRelativeStaticMethodArray()
+    {
+        $callback = [TestClassB::class, 'parent::testClassAStaticMethodB'];
+        $actual = $this->subject->signatureFromCallback($callback);
+        $expected = [
+            [
+                'first' => ['', '', '', ''],
+                'second' => ['', '', '', ''],
+            ],
+            '',
+        ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureFromCallbackWithInvocable()
+    {
+        $callback = new TestInvocable();
+        $actual = $this->subject->signatureFromCallback($callback);
+        $expected = [
+            [
+                'arguments' => ['', '', '...', ''],
+            ],
+            '',
+        ];
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSignatureFromCallbackWithClosure()
+    {
+        $callback = function (string $a, int $b): bool {};
+        $actual = $this->subject->signatureFromCallback($callback);
+        $expected = [
+            [
+                'a' => ['string ', '', '', ''],
+                'b' => ['int ', '', '', ''],
+            ],
+            'bool',
+        ];
 
         $this->assertEquals($expected, $actual);
         $this->assertSame($expected, $actual);

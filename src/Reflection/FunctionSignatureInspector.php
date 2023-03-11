@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Reflection;
 
+use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
 
@@ -391,6 +393,55 @@ class FunctionSignatureInspector
         }
 
         return $signature;
+    }
+
+    /**
+     * Get the function signature of the supplied callback.
+     *
+     * @param callable $callback The callback.
+     *
+     * @return array{array<string,array<int,string>>,string} The function signature.
+     */
+    public function signatureFromCallback(callable $callback): array
+    {
+        if (is_object($callback)) {
+            return $this->signature(
+                new ReflectionMethod($callback, '__invoke')
+            );
+        }
+
+        if (is_array($callback)) {
+            list($classNameOrObject, $methodName) = $callback;
+
+            if (str_starts_with($methodName, 'parent::')) {
+                $class = new ReflectionClass($classNameOrObject);
+                /** @var ReflectionClass<object> $parentClass */
+                $parentClass = $class->getParentClass();
+
+                return $this->signature(
+                    new ReflectionMethod(
+                        $parentClass->getName(),
+                        substr($methodName, 8),
+                    )
+                );
+            }
+
+            return $this->signature(new ReflectionMethod(...$callback));
+        }
+
+        if (is_string($callback)) {
+            if (str_contains($callback, '::')) {
+                return $this->signature(new ReflectionMethod($callback));
+            }
+
+            return $this->signature(new ReflectionFunction($callback));
+        }
+
+        // @codeCoverageIgnoreStart
+        throw new InvalidArgumentException(
+            sprintf('Unsupported callback of type %s.', gettype($callback))
+        );
+        // @codeCoverageIgnoreEnd
     }
 
     const DEFAULT_NULL = ' = null';
