@@ -22,7 +22,7 @@ class MatcherVerifierTest extends TestCase
 
     public function matchesData()
     {
-        //                                    matchers                   isValid
+        //                               matchers              isValid
         return [
             'Exact arguments'        => [['a', 'b', 'c'],      true],
             'Empty'                  => [[],                   false],
@@ -146,7 +146,7 @@ class MatcherVerifierTest extends TestCase
 
     public function explainData()
     {
-        //                                    matchers                   isMatch matcherMatches                  argumentMatches
+        //                               matchers              isMatch matcherMatches             argumentMatches
         return [
             'Exact arguments'        => [['a', 'b', 'c'],      true,   [true, true, true],        [true, true, true]],
             'Empty'                  => [[],                   false,  [],                        [false, false, false]],
