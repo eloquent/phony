@@ -793,7 +793,7 @@ class StubData implements Stub
         foreach ($this->rules as $rule) {
             if (
                 $this->matcherVerifier
-                    ->matches($rule->criteria(), $argumentsArray)
+                    ->matches($rule->criteria(), [], $argumentsArray)
             ) {
                 break;
             }

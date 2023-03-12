@@ -261,7 +261,7 @@ class AssertionRenderer
             ++$totalCount;
 
             $callResult = $this->matcherVerifier
-                ->explain($matchers, $call->arguments()->all());
+                ->explain($matchers, [], $call->arguments()->all());
 
             if ($callResult->isMatch) {
                 ++$matchCount;

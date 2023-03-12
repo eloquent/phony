@@ -486,7 +486,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
         foreach ($calls as $call) {
             if (
                 $this->matcherVerifier
-                    ->matches($matchers, $call->arguments()->all())
+                    ->matches($matchers, [], $call->arguments()->all())
             ) {
                 $matchingEvents[] = $call;
                 ++$matchCount;

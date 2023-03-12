@@ -4419,10 +4419,7 @@ $spy->calledWith(wildcard('~', 4));    // verification fails (too few arguments)
 $spy->calledWith(wildcard('~', 0, 2)); // verification fails (too many arguments)
 ```
 
-The behavior of wildcard matchers is only well defined when they appear at the
-end of a matcher list. If a wildcard appears before any other matcher, any
-behavior exhibited by _Phony_ is not guaranteed, and may change in future
-versions:
+Wildcard matchers may only appear at the end of a matcher list:
 
 ```php
 $spy->calledWith('*');           // this is supported
