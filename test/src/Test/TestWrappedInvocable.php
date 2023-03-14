@@ -15,7 +15,7 @@ class TestWrappedInvocable implements WrappedInvocable
     {
         if (!$callback) {
             $this->isAnonymous = true;
-            $this->callback = function () {};
+            $this->callback = function (...$args) {};
         } else {
             $this->isAnonymous = false;
             $this->callback = $callback;
