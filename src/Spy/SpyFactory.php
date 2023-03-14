@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Spy;
 
 use Eloquent\Phony\Call\CallFactory;
+use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Invocation\WrappedInvocable;
 use Eloquent\Phony\Sequencer\Sequencer;
 
 /**
@@ -21,19 +23,22 @@ class SpyFactory
      * @param Invoker             $invoker             The invoker to use.
      * @param GeneratorSpyFactory $generatorSpyFactory The generator spy factory to use.
      * @param IterableSpyFactory  $iterableSpyFactory  The iterable spy factory to use.
+     * @param InvocableInspector  $invocableInspector  The invocable inspector to use.
      */
     public function __construct(
         Sequencer $labelSequencer,
         CallFactory $callFactory,
         Invoker $invoker,
         GeneratorSpyFactory $generatorSpyFactory,
-        IterableSpyFactory $iterableSpyFactory
+        IterableSpyFactory $iterableSpyFactory,
+        InvocableInspector $invocableInspector
     ) {
         $this->labelSequencer = $labelSequencer;
         $this->callFactory = $callFactory;
         $this->invoker = $invoker;
         $this->generatorSpyFactory = $generatorSpyFactory;
         $this->iterableSpyFactory = $iterableSpyFactory;
+        $this->invocableInspector = $invocableInspector;
     }
 
     /**
@@ -45,8 +50,20 @@ class SpyFactory
      */
     public function create(?callable $callback): Spy
     {
+        if ($callback) {
+            if ($callback instanceof WrappedInvocable) {
+                $parameters = $callback->parameters();
+            } else {
+                $parameters = $this->invocableInspector
+                    ->callbackReflector($callback)->getParameters();
+            }
+        } else {
+            $parameters = [];
+        }
+
         return new SpyData(
             $callback,
+            $parameters,
             strval($this->labelSequencer->next()),
             $this->callFactory,
             $this->invoker,
@@ -79,4 +96,9 @@ class SpyFactory
      * @var IterableSpyFactory
      */
     private $iterableSpyFactory;
+
+    /**
+     * @var InvocableInspector
+     */
+    private $invocableInspector;
 }

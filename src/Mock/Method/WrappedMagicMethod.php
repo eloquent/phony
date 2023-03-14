@@ -9,6 +9,7 @@ use Eloquent\Phony\Mock\Handle\Handle;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Handle\StaticHandle;
 use ReflectionMethod;
+use ReflectionParameter;
 use Throwable;
 
 /**
@@ -51,6 +52,16 @@ class WrappedMagicMethod implements WrappedMethod
         } elseif ($handle instanceof InstanceHandle) {
             $this->mock = $handle->get();
         }
+    }
+
+    /**
+     * Returns the parameters.
+     *
+     * @return array<int,ReflectionParameter> The parameters.
+     */
+    public function parameters(): array
+    {
+        return [];
     }
 
     /**

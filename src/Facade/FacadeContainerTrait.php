@@ -196,7 +196,8 @@ trait FacadeContainerTrait
             $callFactory,
             $invoker,
             $generatorSpyFactory,
-            $iterableSpyFactory
+            $iterableSpyFactory,
+            $invocableInspector
         );
         $generatorVerifierFactory = new GeneratorVerifierFactory(
             $matcherFactory,

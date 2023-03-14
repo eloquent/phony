@@ -14,6 +14,7 @@ use Eloquent\Phony\Test\TestClassB;
 use Exception;
 use Generator;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 
 #[AllowDynamicProperties]
 class StubVerifierTest extends TestCase
@@ -143,6 +144,7 @@ class StubVerifierTest extends TestCase
 
     public function testProxyMethods()
     {
+        $this->assertEquals((new ReflectionFunction('implode'))->getParameters(), $this->subject->parameters());
         $this->assertSame($this->self, $this->subject->self());
         $this->assertSame($this->label, $this->subject->label());
     }

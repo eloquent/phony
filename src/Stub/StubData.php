@@ -25,6 +25,7 @@ use Eloquent\Phony\Stub\Exception\UnusedStubCriteriaException;
 use Exception;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
+use ReflectionParameter;
 use ReflectionUnionType;
 use Throwable;
 
@@ -58,20 +59,22 @@ class StubData implements Stub
     /**
      * Construct a new stub data instance.
      *
-     * @param ?callable                     $callback                      The callback, or null to create an anonymous stub.
-     * @param string                        $label                         The label.
-     * @param callable                      $defaultAnswerCallback         The callback to use when creating a default answer.
-     * @param MatcherFactory                $matcherFactory                The matcher factory to use.
-     * @param MatcherVerifier               $matcherVerifier               The matcher verifier to use.
-     * @param Invoker                       $invoker                       The invoker to use.
-     * @param InvocableInspector            $invocableInspector            The invocable inspector to use.
-     * @param EmptyValueFactory             $emptyValueFactory             The empty value factory to use.
-     * @param GeneratorAnswerBuilderFactory $generatorAnswerBuilderFactory The generator answer builder factory to use.
-     * @param Exporter                      $exporter                      The exporter to use.
-     * @param AssertionRenderer             $assertionRenderer             The assertion renderer to use.
+     * @param ?callable                      $callback                      The callback, or null to create an anonymous stub.
+     * @param array<int,ReflectionParameter> $parameters                    The parameters.
+     * @param string                         $label                         The label.
+     * @param callable                       $defaultAnswerCallback         The callback to use when creating a default answer.
+     * @param MatcherFactory                 $matcherFactory                The matcher factory to use.
+     * @param MatcherVerifier                $matcherVerifier               The matcher verifier to use.
+     * @param Invoker                        $invoker                       The invoker to use.
+     * @param InvocableInspector             $invocableInspector            The invocable inspector to use.
+     * @param EmptyValueFactory              $emptyValueFactory             The empty value factory to use.
+     * @param GeneratorAnswerBuilderFactory  $generatorAnswerBuilderFactory The generator answer builder factory to use.
+     * @param Exporter                       $exporter                      The exporter to use.
+     * @param AssertionRenderer              $assertionRenderer             The assertion renderer to use.
      */
     public function __construct(
         ?callable $callback,
+        array $parameters,
         string $label,
         callable $defaultAnswerCallback,
         MatcherFactory $matcherFactory,
@@ -91,6 +94,7 @@ class StubData implements Stub
             $this->callback = $callback;
         }
 
+        $this->parameters = $parameters;
         $this->self = $this;
         $this->label = $label;
         $this->defaultAnswerCallback = $defaultAnswerCallback;
@@ -106,6 +110,16 @@ class StubData implements Stub
         $this->secondaryRequests = [];
         $this->answers = [];
         $this->rules = [];
+    }
+
+    /**
+     * Returns the parameters.
+     *
+     * @return array<int,ReflectionParameter> The parameters.
+     */
+    public function parameters(): array
+    {
+        return $this->parameters;
     }
 
     /**
@@ -828,6 +842,11 @@ class StubData implements Stub
     {
         return ['label' => $this->label];
     }
+
+    /**
+     * @var array<int,ReflectionParameter>
+     */
+    private $parameters;
 
     /**
      * @var mixed

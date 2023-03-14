@@ -21,6 +21,7 @@ use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestTraitA;
 use Eloquent\Phony\Test\TestTraitG;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 use ReflectionMethod;
 
 #[AllowDynamicProperties]
@@ -195,6 +196,72 @@ class StaticHandleTest extends TestCase
 
         $this->expectException(AssertionException::class);
         $this->subject->noInteraction();
+    }
+
+    public function testParametersWithMagicMethod()
+    {
+        $this->setUpWith(TestClassB::class);
+
+        $this->assertSame([], $this->subject->nonexistent->parameters());
+    }
+
+    public function testParametersWithUncallableMethod()
+    {
+        $this->setUpWith(TestInterfaceA::class);
+
+        $this->assertEquals(
+            (new ReflectionMethod(TestInterfaceA::class, 'testClassAStaticMethodB'))->getParameters(),
+            $this->subject->testClassAStaticMethodB->parameters()
+        );
+    }
+
+    public function testParametersWithTraitMethod()
+    {
+        $this->setUpWith(TestTraitA::class);
+
+        $this->assertEquals(
+            (new ReflectionMethod(TestTraitA::class, 'testClassAStaticMethodA'))->getParameters(),
+            $this->subject->testClassAStaticMethodA->parameters()
+        );
+    }
+
+    public function testParametersWithCustomMethod()
+    {
+        $callback = function ($a, $b, ...$c) {};
+        $mockBuilder = $this->mockBuilderFactory->create(
+            [
+                'static methodA' => $callback,
+            ]
+        );
+        $class = $mockBuilder->build(true);
+        $className = strtolower($class->getName());
+        $subject = new StaticHandle(
+            $mockBuilder->definition(),
+            $class,
+            $this->state,
+            $this->container->stubFactory,
+            $this->container->stubVerifierFactory,
+            $this->container->emptyValueFactory,
+            $this->container->assertionRenderer,
+            $this->container->assertionRecorder,
+            $this->container->invoker
+        );
+        StaticHandleRegistry::$handles[$className] = $subject;
+
+        $this->assertEquals(
+            (new ReflectionFunction($callback))->getParameters(),
+            $subject->methodA->parameters()
+        );
+    }
+
+    public function testParametersWithParentMethod()
+    {
+        $this->setUpWith(TestClassA::class);
+
+        $this->assertEquals(
+            (new ReflectionMethod(TestClassA::class, 'testClassAStaticMethodB'))->getParameters(),
+            $this->subject->testClassAStaticMethodB->parameters()
+        );
     }
 
     public function testStubbingWithParentMethod()

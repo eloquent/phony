@@ -18,6 +18,7 @@ use Error;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 use RuntimeException;
 
 #[AllowDynamicProperties]
@@ -37,9 +38,11 @@ class SpyVerifierTest extends TestCase
         $this->matcherFactory = $this->container->matcherFactory;
 
         $this->callback = 'implode';
+        $this->parameters = (new ReflectionFunction('implode'))->getParameters();
         $this->label = 'label';
         $this->spy = new SpyData(
             $this->callback,
+            $this->parameters,
             $this->label,
             $this->container->callFactory,
             $this->container->invoker,
@@ -186,6 +189,7 @@ class SpyVerifierTest extends TestCase
     {
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame($this->callback, $this->subject->callback());
+        $this->assertSame($this->parameters, $this->subject->parameters());
         $this->assertSame($this->label, $this->subject->label());
     }
 
@@ -411,6 +415,7 @@ class SpyVerifierTest extends TestCase
     {
         $spy = new SpyData(
             null,
+            [],
             '111',
             $this->container->callFactory,
             $this->container->invoker,
@@ -465,6 +470,7 @@ class SpyVerifierTest extends TestCase
         };
         $spy = new SpyData(
             $callback,
+            [],
             '111',
             $this->container->callFactory,
             $this->container->invoker,
@@ -525,6 +531,7 @@ class SpyVerifierTest extends TestCase
         };
         $spy = new SpyData(
             $callback,
+            (new ReflectionFunction($callback))->getParameters(),
             '111',
             $this->container->callFactory,
             $this->container->invoker,
@@ -555,6 +562,7 @@ class SpyVerifierTest extends TestCase
         };
         $spy = new SpyData(
             $callback,
+            [],
             '111',
             $this->container->callFactory,
             $this->container->invoker,
@@ -584,6 +592,7 @@ class SpyVerifierTest extends TestCase
         };
         $spy = new SpyData(
             $callback,
+            [],
             '111',
             $this->container->callFactory,
             $this->container->invoker,
@@ -701,11 +710,11 @@ class SpyVerifierTest extends TestCase
 
     public function calledWithData()
     {
-        //                                    arguments                  calledWith calledWithWildcard
+        //                               arguments             calledWith calledWithWildcard
         return [
             'Exact arguments'        => [['a', 'b', 'c'],      true,      true],
-            'First arguments'        => [['a', 'b'],           false,      true],
-            'Single argument'        => [['a'],                false,      true],
+            'First arguments'        => [['a', 'b'],           false,     true],
+            'Single argument'        => [['a'],                false,     true],
             'Last arguments'         => [['b', 'c'],           false,     false],
             'Last argument'          => [['c'],                false,     false],
             'Extra arguments'        => [['a', 'b', 'c', 'd'], false,     false],

@@ -16,6 +16,7 @@ use Eloquent\Phony\Test\TestFinalClassA;
 use Exception;
 use Generator;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 use RuntimeException;
 
 #[AllowDynamicProperties]
@@ -26,6 +27,7 @@ class StubDataTest extends TestCase
         $this->container = new FacadeContainer();
 
         $this->callback = 'implode';
+        $this->parameters = (new ReflectionFunction('implode'))->getParameters();
         $this->label = 'label';
         $this->defaultAnswerCallback = function ($stub) {
             $stub->returns('default answer');
@@ -33,6 +35,7 @@ class StubDataTest extends TestCase
 
         $this->subject = new StubData(
             $this->callback,
+            $this->parameters,
             $this->label,
             $this->defaultAnswerCallback,
             $this->container->matcherFactory,
@@ -144,6 +147,7 @@ class StubDataTest extends TestCase
     {
         $this->subject = new StubData(
             $this->callback,
+            $this->parameters,
             $this->label,
             $this->defaultAnswerCallback,
             $this->container->matcherFactory,
@@ -158,6 +162,7 @@ class StubDataTest extends TestCase
 
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame($this->callback, $this->subject->callback());
+        $this->assertSame($this->parameters, $this->subject->parameters());
         $this->assertSame($this->subject, $this->subject->self());
         $this->assertSame($this->label, $this->subject->label());
         $this->assertSame($this->defaultAnswerCallback, $this->subject->defaultAnswerCallback());
@@ -392,6 +397,7 @@ class StubDataTest extends TestCase
     {
         $subject = new StubData(
             null,
+            [],
             $this->label,
             $this->defaultAnswerCallback,
             $this->container->matcherFactory,
@@ -722,6 +728,7 @@ class StubDataTest extends TestCase
     {
         $subject = new StubData(
             null,
+            [],
             $this->label,
             $this->defaultAnswerCallback,
             $this->container->matcherFactory,
@@ -765,6 +772,7 @@ class StubDataTest extends TestCase
     {
         $this->subject = new StubData(
             $this->callbackA,
+            [],
             $this->label,
             $this->defaultAnswerCallback,
             $this->container->matcherFactory,
@@ -855,6 +863,7 @@ class StubDataTest extends TestCase
     {
         $subject = new StubData(
             $callback,
+            (new ReflectionFunction($callback))->getParameters(),
             $this->label,
             $this->defaultAnswerCallback,
             $this->container->matcherFactory,
@@ -876,6 +885,7 @@ class StubDataTest extends TestCase
     {
         $this->subject = new StubData(
             $this->referenceCallback,
+            (new ReflectionFunction($this->referenceCallback))->getParameters(),
             $this->label,
             $this->defaultAnswerCallback,
             $this->container->matcherFactory,
@@ -928,6 +938,7 @@ class StubDataTest extends TestCase
     {
         $this->subject = new StubData(
             eval("return function (): $type {};"),
+            [],
             $this->label,
             $this->defaultAnswerCallback,
             $this->container->matcherFactory,
@@ -960,6 +971,7 @@ class StubDataTest extends TestCase
         $callbackString = $this->container->exporter->exportCallable($callback);
         $subject = new StubData(
             $callback,
+            [],
             $this->label,
             $this->defaultAnswerCallback,
             $this->container->matcherFactory,
@@ -1215,6 +1227,7 @@ class StubDataTest extends TestCase
     {
         $stub = new StubData(
             null,
+            [],
             '',
             $this->defaultAnswerCallback,
             $this->container->matcherFactory,

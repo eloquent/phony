@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Spy;
 use AllowDynamicProperties;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 
 #[AllowDynamicProperties]
 class SpyFactoryTest extends TestCase
@@ -19,9 +20,10 @@ class SpyFactoryTest extends TestCase
 
     public function testCreate()
     {
-        $callback = function () {};
+        $callback = function ($a, $b, ...$c) {};
         $expected = new SpyData(
             $callback,
+            (new ReflectionFunction($callback))->getParameters(),
             '0',
             $this->container->callFactory,
             $this->container->invoker,

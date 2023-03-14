@@ -22,6 +22,7 @@ use Eloquent\Phony\Test\TestInterfaceWithReturnType;
 use Eloquent\Phony\Test\TestTraitA;
 use Eloquent\Phony\Test\TestTraitG;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 use ReflectionMethod;
 
 #[AllowDynamicProperties]
@@ -260,6 +261,60 @@ class InstanceHandleTest extends TestCase
         $this->assertSame($this->subject, $this->subject->constructWith([&$a, &$b]));
         $this->assertSame('first', $a);
         $this->assertSame('second', $b);
+    }
+
+    public function testParametersWithMagicMethod()
+    {
+        $this->setUpWith(TestClassB::class);
+
+        $this->assertSame([], $this->subject->nonexistent->parameters());
+    }
+
+    public function testParametersWithUncallableMethod()
+    {
+        $this->setUpWith(TestInterfaceA::class);
+
+        $this->assertEquals(
+            (new ReflectionMethod(TestInterfaceA::class, 'testClassAMethodB'))->getParameters(),
+            $this->subject->testClassAMethodB->parameters()
+        );
+    }
+
+    public function testParametersWithTraitMethod()
+    {
+        $this->setUpWith(TestTraitA::class);
+
+        $this->assertEquals(
+            (new ReflectionMethod(TestTraitA::class, 'testClassAMethodB'))->getParameters(),
+            $this->subject->testClassAMethodB->parameters()
+        );
+    }
+
+    public function testParametersWithCustomMethod()
+    {
+        $callback = function ($a, $b, ...$c) {};
+        $mockBuilder = $this->mockBuilderFactory->create(
+            [
+                'methodA' => $callback,
+            ]
+        );
+        $mock = $mockBuilder->full();
+        $subject = $this->container->handleFactory->instanceHandle($mock);
+
+        $this->assertEquals(
+            (new ReflectionFunction($callback))->getParameters(),
+            $subject->methodA->parameters()
+        );
+    }
+
+    public function testParametersWithParentMethod()
+    {
+        $this->setUpWith(TestClassA::class);
+
+        $this->assertEquals(
+            (new ReflectionMethod(TestClassA::class, 'testClassAMethodB'))->getParameters(),
+            $this->subject->testClassAMethodB->parameters()
+        );
     }
 
     public function testStubbingWithParentMethod()

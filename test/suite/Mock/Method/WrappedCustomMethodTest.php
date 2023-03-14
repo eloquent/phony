@@ -34,6 +34,7 @@ class WrappedCustomMethodTest extends TestCase
     {
         $this->assertSame($this->customCallback, $this->subject->customCallback());
         $this->assertSame($this->method, $this->subject->method());
+        $this->assertEquals($this->method->getParameters(), $this->subject->parameters());
         $this->assertSame('setUp', $this->subject->name());
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());

@@ -10,6 +10,7 @@ use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Handle\StaticHandle;
 use Eloquent\Phony\Mock\Mock;
 use ReflectionMethod;
+use ReflectionParameter;
 
 /**
  * Used for implementing wrapped methods.
@@ -26,6 +27,16 @@ trait WrappedMethodTrait
     public function method(): ReflectionMethod
     {
         return $this->method;
+    }
+
+    /**
+     * Returns the parameters.
+     *
+     * @return array<int,ReflectionParameter> The parameters.
+     */
+    public function parameters(): array
+    {
+        return $this->method->getParameters();
     }
 
     /**

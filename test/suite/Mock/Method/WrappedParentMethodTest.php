@@ -32,6 +32,7 @@ class WrappedParentMethodTest extends TestCase
         $this->assertSame($this->callParentMethod, $this->subject->callParentMethod());
         $this->assertSame($this->method, $this->subject->method());
         $this->assertSame('testClassAMethodE', $this->subject->name());
+        $this->assertEquals($this->method->getParameters(), $this->subject->parameters());
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());

@@ -18,6 +18,7 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\WrappedInvocableTrait;
 use Generator;
 use Iterator;
+use ReflectionParameter;
 use Throwable;
 use Traversable;
 
@@ -32,15 +33,17 @@ class SpyData implements Spy
     /**
      * Construct a new spy.
      *
-     * @param ?callable           $callback            The callback, or null to create an anonymous spy.
-     * @param string              $label               The label.
-     * @param CallFactory         $callFactory         The call factory to use.
-     * @param Invoker             $invoker             The invoker to use.
-     * @param GeneratorSpyFactory $generatorSpyFactory The generator spy factory to use.
-     * @param IterableSpyFactory  $iterableSpyFactory  The iterable spy factory to use.
+     * @param ?callable                      $callback            The callback, or null to create an anonymous spy.
+     * @param array<int,ReflectionParameter> $parameters          The parameters.
+     * @param string                         $label               The label.
+     * @param CallFactory                    $callFactory         The call factory to use.
+     * @param Invoker                        $invoker             The invoker to use.
+     * @param GeneratorSpyFactory            $generatorSpyFactory The generator spy factory to use.
+     * @param IterableSpyFactory             $iterableSpyFactory  The iterable spy factory to use.
      */
     public function __construct(
         ?callable $callback,
+        array $parameters,
         string $label,
         CallFactory $callFactory,
         Invoker $invoker,
@@ -55,6 +58,7 @@ class SpyData implements Spy
             $this->callback = $callback;
         }
 
+        $this->parameters = $parameters;
         $this->label = $label;
         $this->callFactory = $callFactory;
         $this->invoker = $invoker;
@@ -65,6 +69,16 @@ class SpyData implements Spy
         $this->useGeneratorSpies = true;
         $this->useIterableSpies = false;
         $this->isRecording = true;
+    }
+
+    /**
+     * Returns the parameters.
+     *
+     * @return array<int,ReflectionParameter> The parameters.
+     */
+    public function parameters(): array
+    {
+        return $this->parameters;
     }
 
     /**
@@ -410,6 +424,11 @@ class SpyData implements Spy
     {
         return ['label' => $this->label];
     }
+
+    /**
+     * @var array<int,ReflectionParameter>
+     */
+    private $parameters;
 
     /**
      * @var CallFactory

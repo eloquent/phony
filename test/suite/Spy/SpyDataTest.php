@@ -12,6 +12,7 @@ use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Exception;
 use Generator;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 
 #[AllowDynamicProperties]
 class SpyDataTest extends TestCase
@@ -23,10 +24,12 @@ class SpyDataTest extends TestCase
         $this->eventFactory = $this->container->eventFactory;
 
         $this->callback = 'implode';
+        $this->parameters = (new ReflectionFunction('implode'))->getParameters();
         $this->label = 'label';
 
         $this->subject = new SpyData(
             $this->callback,
+            $this->parameters,
             $this->label,
             $this->container->callFactory,
             $this->container->invoker,
@@ -49,6 +52,7 @@ class SpyDataTest extends TestCase
     {
         $this->assertFalse($this->subject->isAnonymous());
         $this->assertSame($this->callback, $this->subject->callback());
+        $this->assertSame($this->parameters, $this->subject->parameters());
         $this->assertSame($this->label, $this->subject->label());
         $this->assertTrue($this->subject->useGeneratorSpies());
         $this->assertFalse($this->subject->useIterableSpies());
@@ -277,6 +281,7 @@ class SpyDataTest extends TestCase
     {
         $spy = new SpyData(
             null,
+            [],
             '111',
             $this->callFactory,
             $this->invoker,
@@ -321,6 +326,7 @@ class SpyDataTest extends TestCase
         };
         $spy = new SpyData(
             $callback,
+            [],
             '111',
             $this->callFactory,
             $this->invoker,
@@ -371,6 +377,7 @@ class SpyDataTest extends TestCase
         };
         $spy = new SpyData(
             $callback,
+            [],
             '111',
             $this->callFactory,
             $this->invoker,
@@ -398,6 +405,7 @@ class SpyDataTest extends TestCase
         };
         $spy = new SpyData(
             $callback,
+            (new ReflectionFunction($callback))->getParameters(),
             '111',
             $this->callFactory,
             $this->invoker,
@@ -418,6 +426,7 @@ class SpyDataTest extends TestCase
         };
         $spy = new SpyData(
             $this->callback,
+            [],
             '',
             $this->callFactory,
             $this->invoker,
@@ -452,6 +461,7 @@ class SpyDataTest extends TestCase
         };
         $spy = new SpyData(
             $this->callback,
+            (new ReflectionFunction($this->callback))->getParameters(),
             '',
             $this->callFactory,
             $this->invoker,
@@ -474,6 +484,7 @@ class SpyDataTest extends TestCase
         };
         $spy = new SpyData(
             $callback,
+            [],
             '111',
             $this->callFactory,
             $this->invoker,
@@ -493,6 +504,7 @@ class SpyDataTest extends TestCase
         };
         $spy = new SpyData(
             $callback,
+            [],
             '111',
             $this->callFactory,
             $this->invoker,
@@ -523,6 +535,7 @@ class SpyDataTest extends TestCase
         };
         $spy = new SpyData(
             $this->callback,
+            [],
             '',
             $this->callFactory,
             $this->invoker,
@@ -558,6 +571,7 @@ class SpyDataTest extends TestCase
         };
         $spy = new SpyData(
             $this->callback,
+            (new ReflectionFunction($this->callback))->getParameters(),
             '',
             $this->callFactory,
             $this->invoker,

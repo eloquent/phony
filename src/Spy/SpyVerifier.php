@@ -30,6 +30,7 @@ use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Generator;
 use InvalidArgumentException;
 use Iterator;
+use ReflectionParameter;
 use Throwable;
 use Traversable;
 
@@ -91,6 +92,16 @@ class SpyVerifier implements Spy, CardinalityVerifier
     public function isAnonymous(): bool
     {
         return $this->spy->isAnonymous();
+    }
+
+    /**
+     * Returns the parameters.
+     *
+     * @return array<int,ReflectionParameter> The parameters.
+     */
+    public function parameters(): array
+    {
+        return $this->spy->parameters();
     }
 
     /**

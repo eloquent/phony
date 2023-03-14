@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Invocation;
 
+use ReflectionParameter;
+
 /**
  * The interface implemented by wrapped invocables.
  */
@@ -31,6 +33,13 @@ interface WrappedInvocable extends Invocable
      * @return bool True if anonymous.
      */
     public function isAnonymous(): bool;
+
+    /**
+     * Returns the parameters.
+     *
+     * @return array<int,ReflectionParameter> The parameters.
+     */
+    public function parameters(): array;
 
     /**
      * Get the callback.

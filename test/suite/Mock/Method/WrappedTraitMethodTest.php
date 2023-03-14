@@ -39,6 +39,7 @@ class WrappedTraitMethodTest extends TestCase
         $this->assertSame($this->traitName, $this->subject->traitName());
         $this->assertSame($this->method, $this->subject->method());
         $this->assertSame('testClassAMethodB', $this->subject->name());
+        $this->assertEquals($this->method->getParameters(), $this->subject->parameters());
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());

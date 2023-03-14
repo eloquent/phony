@@ -8,6 +8,7 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
+use Eloquent\Phony\Invocation\WrappedInvocable;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
 use Eloquent\Phony\Sequencer\Sequencer;
@@ -65,6 +66,17 @@ class StubFactory
         ?callable $callback,
         ?callable $defaultAnswerCallback
     ): Stub {
+        if ($callback) {
+            if ($callback instanceof WrappedInvocable) {
+                $parameters = $callback->parameters();
+            } else {
+                $parameters = $this->invocableInspector
+                    ->callbackReflector($callback)->getParameters();
+            }
+        } else {
+            $parameters = [];
+        }
+
         if (null === $defaultAnswerCallback) {
             $defaultAnswerCallback =
                 [StubData::class, 'returnsEmptyAnswerCallback'];
@@ -72,6 +84,7 @@ class StubFactory
 
         return new StubData(
             $callback,
+            $parameters,
             strval($this->labelSequencer->next()),
             $defaultAnswerCallback,
             $this->matcherFactory,

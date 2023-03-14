@@ -45,6 +45,7 @@ class WrappedMagicMethodTest extends TestCase
         $this->assertSame($this->method, $this->subject->method());
         $this->assertSame($this->isUncallable, $this->subject->isUncallable());
         $this->assertSame($this->name, $this->subject->name());
+        $this->assertSame([], $this->subject->parameters());
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertFalse($this->subject->isAnonymous());

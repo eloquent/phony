@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Stub;
 use AllowDynamicProperties;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 
 #[AllowDynamicProperties]
 class StubFactoryTest extends TestCase
@@ -19,10 +20,11 @@ class StubFactoryTest extends TestCase
 
     public function testCreate()
     {
-        $callback = function () { return 'a'; };
+        $callback = function ($a, $b, ...$c) { return 'a'; };
         $defaultAnswerCallback = function ($stub) { $stub->forwards(); };
         $expected = new StubData(
             $callback,
+            (new ReflectionFunction($callback))->getParameters(),
             '0',
             $defaultAnswerCallback,
             $this->container->matcherFactory,
@@ -37,7 +39,7 @@ class StubFactoryTest extends TestCase
         $actual = $this->subject->create($callback, $defaultAnswerCallback);
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame('a', call_user_func($actual->callback()));
+        $this->assertSame('a', call_user_func($actual->callback(), 1, 2));
         $this->assertSame($actual, $actual->self());
     }
 }

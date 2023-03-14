@@ -191,7 +191,8 @@ class FacadeContainer
             $this->callFactory,
             $this->invoker,
             $this->generatorSpyFactory,
-            $this->iterableSpyFactory
+            $this->iterableSpyFactory,
+            $this->invocableInspector
         );
         $this->generatorVerifierFactory ??= new GeneratorVerifierFactory(
             $this->matcherFactory,

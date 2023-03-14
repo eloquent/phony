@@ -30,6 +30,7 @@ class WrappedUncallableMethodTest extends TestCase
     {
         $this->assertSame($this->method, $this->subject->method());
         $this->assertSame('testClassAMethodA', $this->subject->name());
+        $this->assertEquals($this->method->getParameters(), $this->subject->parameters());
         $this->assertSame($this->handle, $this->subject->handle());
         $this->assertSame($this->mock, $this->subject->mock());
         $this->assertNull($this->subject->callback());
