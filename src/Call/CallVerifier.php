@@ -595,7 +595,7 @@ class CallVerifier implements Call, CardinalityVerifier
         list($matchCount, $matchingEvents) = $this->matchIf(
             $this->call,
             $this->matcherVerifier
-                ->matches($matchers, [], $this->call->arguments()->all())
+                ->matches($matchers, [], $this->call->arguments()->positional())
         );
 
         if ($cardinality->matches($matchCount, 1)) {

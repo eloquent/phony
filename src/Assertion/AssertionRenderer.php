@@ -161,7 +161,7 @@ class AssertionRenderer
             foreach ($calls as $call) {
                 $renderedArguments = [];
 
-                foreach ($call->arguments()->all() as $argument) {
+                foreach ($call->arguments()->positional() as $argument) {
                     $renderedArguments[] =
                         '    ' . $renderedResult .
                         ' ' . $this->exporter->export($argument);
@@ -261,7 +261,7 @@ class AssertionRenderer
             ++$totalCount;
 
             $callResult = $this->matcherVerifier
-                ->explain($matchers, [], $call->arguments()->all());
+                ->explain($matchers, [], $call->arguments()->positional());
 
             if ($callResult->isMatch) {
                 ++$matchCount;
@@ -369,9 +369,11 @@ class AssertionRenderer
                 $renderedArguments = [];
 
                 if (count($arguments)) {
+                    $argumentPosition = 0;
+
                     foreach (
                         $callResult->argumentMatches as
-                            $argumentIndex => $isMatch
+                            $argumentIndexOrName => $isMatch
                     ) {
                         if ($isMatch xor $isNever) {
                             $renderedResult = $this->pass;
@@ -379,20 +381,20 @@ class AssertionRenderer
                             $renderedResult = $this->fail;
                         }
 
-                        $exists = $arguments->has($argumentIndex);
+                        $exists = $arguments->has($argumentIndexOrName);
 
                         if ($exists) {
-                            $argument = $arguments->get($argumentIndex);
+                            $argument = $arguments->get($argumentIndexOrName);
                             $value = $this->exporter->export($argument);
 
                             if (
                                 !$isMatch &&
-                                isset($matchers[$argumentIndex]) &&
-                                $matchers[$argumentIndex] instanceof
+                                isset($matchers[$argumentIndexOrName]) &&
+                                $matchers[$argumentIndexOrName] instanceof
                                     EqualToMatcher
                             ) {
                                 $value = $this->differenceEngine->difference(
-                                    $matchers[$argumentIndex]
+                                    $matchers[$argumentIndexOrName]
                                         ->describe($this->exporter),
                                     $value
                                 );
@@ -400,7 +402,7 @@ class AssertionRenderer
                         } else {
                             $value =
                                 '<' .
-                                ($requiredArgumentCount - $argumentIndex) .
+                                ($requiredArgumentCount - $argumentPosition) .
                                 ' missing>';
                         }
 
@@ -410,6 +412,8 @@ class AssertionRenderer
                         if (!$exists) {
                             break;
                         }
+
+                        ++$argumentPosition;
                     }
                 }
 
@@ -533,7 +537,7 @@ class AssertionRenderer
 
                 $renderedArguments = [];
 
-                foreach ($call->arguments()->all() as $argument) {
+                foreach ($call->arguments()->positional() as $argument) {
                     $renderedArguments[] =
                         $this->exporter->export($argument, 0);
                 }
@@ -661,7 +665,7 @@ class AssertionRenderer
 
                 $renderedArguments = [];
 
-                foreach ($call->arguments()->all() as $argument) {
+                foreach ($call->arguments()->positional() as $argument) {
                     $renderedArguments[] =
                         $this->exporter->export($argument, 0);
                 }
@@ -896,7 +900,7 @@ class AssertionRenderer
 
                 $renderedArguments = [];
 
-                foreach ($call->arguments()->all() as $argument) {
+                foreach ($call->arguments()->positional() as $argument) {
                     $renderedArguments[] =
                         $this->exporter->export($argument, 0);
                 }
@@ -1068,7 +1072,7 @@ class AssertionRenderer
 
                 $renderedArguments = [];
 
-                foreach ($call->arguments()->all() as $argument) {
+                foreach ($call->arguments()->positional() as $argument) {
                     $renderedArguments[] =
                         $this->exporter->export($argument, 0);
                 }
@@ -1217,7 +1221,7 @@ class AssertionRenderer
 
                 $renderedArguments = [];
 
-                foreach ($call->arguments()->all() as $argument) {
+                foreach ($call->arguments()->positional() as $argument) {
                     $renderedArguments[] =
                         $this->exporter->export($argument, 0);
                 }
@@ -1361,7 +1365,7 @@ class AssertionRenderer
 
                 $renderedArguments = [];
 
-                foreach ($call->arguments()->all() as $argument) {
+                foreach ($call->arguments()->positional() as $argument) {
                     $renderedArguments[] =
                         $this->exporter->export($argument, 0);
                 }
@@ -1565,7 +1569,7 @@ class AssertionRenderer
             $isMatch = false;
             $renderedArguments = [];
 
-            foreach ($call->arguments()->all() as $argument) {
+            foreach ($call->arguments()->positional() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
             }
 
@@ -1900,7 +1904,7 @@ class AssertionRenderer
             $isMatchingCall = false;
             $renderedArguments = [];
 
-            foreach ($call->arguments()->all() as $argument) {
+            foreach ($call->arguments()->positional() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
             }
 
@@ -2246,7 +2250,7 @@ class AssertionRenderer
             $isMatch = false;
             $renderedArguments = [];
 
-            foreach ($call->arguments()->all() as $argument) {
+            foreach ($call->arguments()->positional() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
             }
 
@@ -2567,7 +2571,7 @@ class AssertionRenderer
             $isMatchingCall = false;
             $renderedArguments = [];
 
-            foreach ($call->arguments()->all() as $argument) {
+            foreach ($call->arguments()->positional() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
             }
 
@@ -2875,7 +2879,7 @@ class AssertionRenderer
             $isMatchingCall = false;
             $renderedArguments = [];
 
-            foreach ($call->arguments()->all() as $argument) {
+            foreach ($call->arguments()->positional() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
             }
 
@@ -3180,7 +3184,7 @@ class AssertionRenderer
             $isMatchingCall = false;
             $renderedArguments = [];
 
-            foreach ($call->arguments()->all() as $argument) {
+            foreach ($call->arguments()->positional() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
             }
 
@@ -3490,7 +3494,7 @@ class AssertionRenderer
             $isMatchingCall = false;
             $renderedArguments = [];
 
-            foreach ($call->arguments()->all() as $argument) {
+            foreach ($call->arguments()->positional() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument, 0);
             }
 
@@ -3705,10 +3709,10 @@ class AssertionRenderer
         usort($calls, [CallData::class, 'compareSequential']);
         $renderedCalls = [];
 
-        foreach ($calls as $index => $call) {
+        foreach ($calls as $call) {
             $renderedArguments = [];
 
-            foreach ($call->arguments()->all() as $argument) {
+            foreach ($call->arguments()->positional() as $argument) {
                 $renderedArguments[] = $this->exporter->export($argument);
             }
 
@@ -3838,7 +3842,7 @@ class AssertionRenderer
                 $call = $event->call();
                 $renderedArguments = [];
 
-                foreach ($call->arguments()->all() as $argument) {
+                foreach ($call->arguments()->positional() as $argument) {
                     $renderedArguments[] =
                         $this->exporter->export($argument);
                 }
@@ -3853,7 +3857,7 @@ class AssertionRenderer
             if ($event instanceof Call) {
                 $renderedArguments = [];
 
-                foreach ($event->arguments()->all() as $argument) {
+                foreach ($event->arguments()->positional() as $argument) {
                     $renderedArguments[] = $this->exporter->export($argument);
                 }
 

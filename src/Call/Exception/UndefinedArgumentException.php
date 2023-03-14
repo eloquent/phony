@@ -4,42 +4,15 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Call\Exception;
 
-use Exception;
-
 /**
- * Thrown when an argument that was requested by index does not exist.
+ * The interface implemented by undefined argument exceptions.
  */
-final class UndefinedArgumentException extends Exception
+interface UndefinedArgumentException
 {
     /**
-     * Construct a new undefined argument exception.
+     * Returns true if the undefined argument was requested by name.
      *
-     * @param int $index The index.
+     * @return bool True if the undefined argument was requested by name.
      */
-    public function __construct(int $index)
-    {
-        $this->index = $index;
-
-        parent::__construct(
-            sprintf(
-                'No argument defined for index %s.',
-                var_export($index, true)
-            )
-        );
-    }
-
-    /**
-     * Get the index.
-     *
-     * @return int The index.
-     */
-    public function index(): int
-    {
-        return $this->index;
-    }
-
-    /**
-     * @var int
-     */
-    private $index;
+    public function isNamed(): bool;
 }

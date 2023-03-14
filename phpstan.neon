@@ -6,6 +6,8 @@ parameters:
     # allow @throws with interfaces
     - message: "/@throws with type .* is not subtype of Throwable/"
       paths:
+        - src/Call/Arguments.php
+        - src/Call/Call.php
         - src/Call/CallData.php
         - src/Call/CallVerifier.php
         - src/Facade/FacadeTrait.php

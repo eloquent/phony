@@ -7,6 +7,8 @@ namespace Eloquent\Phony\Call;
 use ArrayIterator;
 use Countable;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
+use Eloquent\Phony\Call\Exception\UndefinedNamedArgumentException;
+use Eloquent\Phony\Call\Exception\UndefinedPositionalArgumentException;
 use Eloquent\Phony\Collection\NormalizesIndices;
 use Iterator;
 use IteratorAggregate;
@@ -23,28 +25,34 @@ class Arguments implements Countable, IteratorAggregate
     /**
      * Create a new set of call arguments from the supplied arguments.
      *
-     * Does not support named arguments.
-     *
      * @param mixed ...$arguments The arguments.
      *
      * @return Arguments The arguments object.
      */
     public static function create(...$arguments): self
     {
-        /** @var array<int,mixed> $arguments */
-
         return new self($arguments);
     }
 
     /**
      * Construct a new set of call arguments.
      *
-     * @param array<int,mixed> $arguments The arguments.
+     * @param array<int|string,mixed> $arguments The arguments.
      */
     public function __construct(array $arguments)
     {
         $this->arguments = $arguments;
         $this->count = count($arguments);
+        $this->positional = [];
+        $this->named = [];
+
+        foreach ($arguments as $indexOrName => &$value) {
+            if (is_string($indexOrName)) {
+                $this->named[$indexOrName] = &$value;
+            } else {
+                $this->positional[] = &$value;
+            }
+        }
     }
 
     /**
@@ -56,8 +64,8 @@ class Arguments implements Countable, IteratorAggregate
     {
         $arguments = [];
 
-        foreach ($this->arguments as $argument) {
-            $arguments[] = $argument;
+        foreach ($this->arguments as $indexOrName => $argument) {
+            $arguments[$indexOrName] = $argument;
         }
 
         return new self($arguments);
@@ -68,7 +76,7 @@ class Arguments implements Countable, IteratorAggregate
      *
      * This method supports reference parameters.
      *
-     * @return array<int,mixed> The arguments.
+     * @return array<int|string,mixed> The arguments.
      */
     public function all(): array
     {
@@ -76,57 +84,100 @@ class Arguments implements Countable, IteratorAggregate
     }
 
     /**
-     * Set an argument by index.
+     * Get the positional arguments.
      *
-     * If called with no arguments, sets the first argument to null.
+     * This method supports reference parameters.
      *
-     * If called with one argument, sets the first argument to `$indexOrValue`.
+     * @return array<int,mixed> The positional arguments.
+     */
+    public function positional(): array
+    {
+        return $this->positional;
+    }
+
+    /**
+     * Get the named arguments.
      *
-     * If called with two arguments, sets the argument at `$indexOrValue` to
-     * `$value`.
+     * This method supports reference parameters.
      *
-     * @param mixed $indexOrValue The index, or value if no index is specified.
-     * @param mixed $value        The value.
+     * @return array<string,mixed> The named arguments.
+     */
+    public function named(): array
+    {
+        return $this->named;
+    }
+
+    /**
+     * Set an argument by index or name.
+     *
+     * If called with no arguments, sets the first positional argument to null.
+     *
+     * If called with one argument, sets the first positional argument to
+     * `$indexOrNameOrValue`.
+     *
+     * If called with two arguments, sets the argument at `$indexOrNameOrValue`
+     * to `$value`.
+     *
+     * @param mixed $indexOrNameOrValue The index, or name; or value, if no index or name is specified.
+     * @param mixed $value              The value.
      *
      * @return $this                      This arguments object.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function set($indexOrValue = null, $value = null): self
+    public function set($indexOrNameOrValue = null, $value = null): self
     {
         if (func_num_args() > 1) {
-            /** @var int $index */
-            $index = $indexOrValue;
+            /** @var int|string $indexOrName */
+            $indexOrName = $indexOrNameOrValue;
             /** @var null $value */
+            $isNamed = is_string($indexOrName);
         } else {
-            $index = 0;
+            $indexOrName = 0;
             $normalized = 0;
-            $value = $indexOrValue;
+            $value = $indexOrNameOrValue;
+            $isNamed = false;
         }
 
-        if (!$this->normalizeIndex($this->count, $index, $normalized)) {
-            throw new UndefinedArgumentException($index);
+        if ($isNamed) {
+            /** @var string $indexOrName */
+            if (!array_key_exists($indexOrName, $this->named)) {
+                throw new UndefinedNamedArgumentException($indexOrName);
+            }
+
+            $this->named[$indexOrName] = $value;
+
+            return $this;
+        }
+
+        /** @var int $indexOrName */
+
+        if (!$this->normalizeIndex($this->count, $indexOrName, $normalized)) {
+            throw new UndefinedPositionalArgumentException($indexOrName);
         }
 
         /** @var int $normalized */
-
         $this->arguments[$normalized] = $value;
 
         return $this;
     }
 
     /**
-     * Returns true if the argument index exists.
+     * Returns true if the argument index or name exists.
      *
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param int $index The index.
+     * @param int|string $indexOrName The index or name.
      *
      * @return bool True if the argument exists.
      */
-    public function has(int $index = 0): bool
+    public function has(int|string $indexOrName = 0): bool
     {
-        if ($this->normalizeIndex($this->count, $index)) {
+        if (is_string($indexOrName)) {
+            return array_key_exists($indexOrName, $this->named);
+        }
+
+        if ($this->normalizeIndex($this->count, $indexOrName)) {
             return true;
         }
 
@@ -134,20 +185,28 @@ class Arguments implements Countable, IteratorAggregate
     }
 
     /**
-     * Get an argument by index.
+     * Get an argument by index or name.
      *
      * Negative indices are offset from the end of the list. That is, `-1`
      * indicates the last element, and `-2` indicates the second last element.
      *
-     * @param int $index The index.
+     * @param int|string $indexOrName The index or name.
      *
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function get(int $index = 0)
+    public function get(int|string $indexOrName = 0)
     {
-        if (!$this->normalizeIndex($this->count, $index, $normalized)) {
-            throw new UndefinedArgumentException($index);
+        if (is_string($indexOrName)) {
+            if (!array_key_exists($indexOrName, $this->named)) {
+                throw new UndefinedNamedArgumentException($indexOrName);
+            }
+
+            return $this->arguments[$indexOrName];
+        }
+
+        if (!$this->normalizeIndex($this->count, $indexOrName, $normalized)) {
+            throw new UndefinedPositionalArgumentException($indexOrName);
         }
 
         return $this->arguments[$normalized];
@@ -166,7 +225,7 @@ class Arguments implements Countable, IteratorAggregate
     /**
      * Get an iterator for these arguments.
      *
-     * @return Iterator<int,mixed> The iterator.
+     * @return Iterator<int|string,mixed> The iterator.
      */
     public function getIterator(): Iterator
     {
@@ -174,9 +233,19 @@ class Arguments implements Countable, IteratorAggregate
     }
 
     /**
-     * @var array<int,mixed>
+     * @var array<int|string,mixed>
      */
     private $arguments;
+
+    /**
+     * @var array<int,mixed>
+     */
+    private $positional;
+
+    /**
+     * @var array<string,mixed>
+     */
+    private $named;
 
     /**
      * @var int

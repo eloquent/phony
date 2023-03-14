@@ -784,7 +784,7 @@ class StubData implements Stub
         }
 
         if ($arguments instanceof Arguments) {
-            $argumentsArray = $arguments->all();
+            $argumentsArray = $arguments->positional();
         } else {
             $argumentsArray = $arguments;
             $arguments = new Arguments($arguments);

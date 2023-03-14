@@ -204,7 +204,8 @@ class InstanceHandle implements Handle
 
                 $this->stub($name)->doesWith(
                     function ($arguments) use ($method, $object) {
-                        return $method->invokeArgs($object, $arguments->all());
+                        return $method
+                            ->invokeArgs($object, $arguments->positional());
                     },
                     [],
                     false,
