@@ -9,6 +9,7 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\TestClock;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 use RuntimeException;
 
 #[AllowDynamicProperties]
@@ -25,9 +26,10 @@ class CallEventFactoryTest extends TestCase
     public function testCreateCalled()
     {
         $callback = 'implode';
+        $parameters = (new ReflectionFunction('implode'))->getParameters();
         $arguments = Arguments::create('a', 'b');
-        $expected = new CalledEvent(0, 0.0, $callback, $arguments);
-        $actual = $this->subject->createCalled($callback, $arguments);
+        $expected = new CalledEvent(0, 0.0, $callback, $parameters, $arguments);
+        $actual = $this->subject->createCalled($callback, $parameters, $arguments);
 
         $this->assertEquals($expected, $actual);
     }

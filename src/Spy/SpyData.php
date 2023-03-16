@@ -386,7 +386,8 @@ class SpyData implements Spy
             return $this->invoker->callWith($callback, $arguments);
         }
 
-        $call = $this->callFactory->record($callback, $arguments, $this);
+        $call = $this->callFactory
+            ->record($callback, $this->parameters, $arguments, $this);
         $responseEvent = $call->responseEvent();
 
         if ($responseEvent instanceof ThrewEvent) {

@@ -41,7 +41,7 @@ class AssertionRendererTest extends TestCase
         $eventFactory = $callFactory->eventFactory();
         $this->callA = $callFactory->create(
             $eventFactory
-                ->createCalled([$this->thisObjectA, 'testClassAMethodA'], Arguments::create('a', 'b')),
+                ->createCalled([$this->thisObjectA, 'testClassAMethodA'], [], Arguments::create('a', 'b')),
             $eventFactory->createReturned('x'),
             null,
             $eventFactory->createReturned('x')
@@ -63,7 +63,7 @@ class AssertionRendererTest extends TestCase
         );
         $this->callF = $callFactory->create(
             $eventFactory
-                ->createCalled($this->thisObjectBHandle->testClassAMethodA, Arguments::create()),
+                ->createCalled($this->thisObjectBHandle->testClassAMethodA, [], Arguments::create()),
             $eventFactory->createReturned(null),
             null,
             $eventFactory->createReturned(null)

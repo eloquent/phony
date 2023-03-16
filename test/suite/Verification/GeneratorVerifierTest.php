@@ -93,7 +93,7 @@ class GeneratorVerifierTest extends TestCase
         $this->matchers = $this->matcherFactory->adaptAll($this->arguments->all());
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
-            $this->eventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], $this->arguments),
+            $this->eventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], [], $this->arguments),
             ($responseEvent = $this->eventFactory->createReturned($this->returnValueA)),
             null,
             $responseEvent
@@ -105,7 +105,7 @@ class GeneratorVerifierTest extends TestCase
             $responseEvent
         );
         $this->callC = $this->callFactory->create(
-            $this->eventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], $this->arguments),
+            $this->eventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], [], $this->arguments),
             ($responseEvent = $this->eventFactory->createThrew($this->exceptionA)),
             null,
             $responseEvent

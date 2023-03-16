@@ -15,6 +15,7 @@ use Exception;
 use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 use RuntimeException;
 
 #[AllowDynamicProperties]
@@ -26,8 +27,9 @@ class CallDataTest extends TestCase
         $this->callFactory = new TestCallFactory();
         $this->eventFactory = $this->callFactory->eventFactory();
         $this->callback = 'implode';
+        $this->parameters = (new ReflectionFunction('implode'))->getParameters();
         $this->arguments = new Arguments(['a', 'b']);
-        $this->calledEvent = $this->eventFactory->createCalled($this->callback, $this->arguments);
+        $this->calledEvent = $this->eventFactory->createCalled($this->callback, $this->parameters, $this->arguments);
         $this->subject = new CallData($this->index, $this->calledEvent);
 
         $this->events = [$this->calledEvent];
@@ -62,6 +64,7 @@ class CallDataTest extends TestCase
         $this->assertFalse($this->subject->isGenerator());
         $this->assertFalse($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
+        $this->assertSame($this->parameters, $this->subject->parameters());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame('a', $this->subject->argument());
         $this->assertSame('a', $this->subject->argument(0));
@@ -304,8 +307,8 @@ class CallDataTest extends TestCase
 
     public function testCompareSequential()
     {
-        $calledEventA = $this->eventFactory->createCalled($this->callback, $this->arguments);
-        $calledEventB = $this->eventFactory->createCalled($this->callback, $this->arguments);
+        $calledEventA = $this->eventFactory->createCalled($this->callback, $this->parameters, $this->arguments);
+        $calledEventB = $this->eventFactory->createCalled($this->callback, $this->parameters, $this->arguments);
         $callA = new CallData(111, $calledEventA);
         $callB = new CallData(222, $calledEventB);
 

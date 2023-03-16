@@ -13,6 +13,7 @@ use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Event\EventCollection;
 use InvalidArgumentException;
+use ReflectionParameter;
 use Throwable;
 
 /**
@@ -74,6 +75,13 @@ interface Call extends Event, EventCollection
      * @return callable The callback.
      */
     public function callback(): callable;
+
+    /**
+     * Get the parameters.
+     *
+     * @return array<int,ReflectionParameter> The parameters.
+     */
+    public function parameters(): array;
 
     /**
      * Get the arguments.

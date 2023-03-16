@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Call\Event;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Clock\Clock;
 use Eloquent\Phony\Sequencer\Sequencer;
+use ReflectionParameter;
 use Throwable;
 
 /**
@@ -29,19 +30,22 @@ class CallEventFactory
     /**
      * Create a new 'called' event.
      *
-     * @param callable  $callback  The callback.
-     * @param Arguments $arguments The arguments.
+     * @param callable                       $callback   The callback.
+     * @param array<int,ReflectionParameter> $parameters The parameters.
+     * @param Arguments                      $arguments  The arguments.
      *
      * @return CalledEvent The newly created event.
      */
     public function createCalled(
         callable $callback,
+        array $parameters,
         Arguments $arguments
     ): CalledEvent {
         return new CalledEvent(
             $this->sequencer->next(),
             $this->clock->time(),
             $callback,
+            $parameters,
             $arguments
         );
     }

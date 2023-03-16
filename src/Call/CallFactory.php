@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Call;
 use Eloquent\Phony\Call\Event\CallEventFactory;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Spy\SpyData;
+use ReflectionParameter;
 use Throwable;
 
 /**
@@ -31,14 +32,16 @@ class CallFactory
     /**
      * Record call details by invoking a callback.
      *
-     * @param callable  $callback  The callback.
-     * @param Arguments $arguments The arguments.
-     * @param SpyData   $spy       The spy to record the call to.
+     * @param callable                       $callback   The callback.
+     * @param array<int,ReflectionParameter> $parameters The parameters.
+     * @param Arguments                      $arguments  The arguments.
+     * @param SpyData                        $spy        The spy to record the call to.
      *
      * @return CallData The newly created call.
      */
     public function record(
         callable $callback,
+        array $parameters,
         Arguments $arguments,
         SpyData $spy
     ): CallData {
@@ -46,7 +49,8 @@ class CallFactory
 
         $call = new CallData(
             $spy->nextIndex(),
-            $this->eventFactory->createCalled($spy, $originalArguments)
+            $this->eventFactory
+                ->createCalled($spy, $parameters, $originalArguments)
         );
         $spy->addCall($call);
 

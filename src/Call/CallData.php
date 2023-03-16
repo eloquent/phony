@@ -19,6 +19,7 @@ use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Generator;
 use InvalidArgumentException;
 use Iterator;
+use ReflectionParameter;
 use Throwable;
 use Traversable;
 
@@ -455,6 +456,16 @@ class CallData implements Call
     public function callback(): callable
     {
         return $this->calledEvent->callback();
+    }
+
+    /**
+     * Get the parameters.
+     *
+     * @return array<int,ReflectionParameter> The parameters.
+     */
+    public function parameters(): array
+    {
+        return $this->calledEvent->parameters();
     }
 
     /**

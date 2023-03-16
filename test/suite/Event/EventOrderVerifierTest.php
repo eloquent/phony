@@ -10,6 +10,7 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 
 #[AllowDynamicProperties]
 class EventOrderVerifierTest extends TestCase
@@ -26,10 +27,12 @@ class EventOrderVerifierTest extends TestCase
 
         $this->callVerifierFactory = $this->container->callVerifierFactory;
 
-        $this->callACalled = $this->eventFactory->createCalled('implode', Arguments::create('a'));
+        $implodeParameters = (new ReflectionFunction('implode'))->getParameters();
+
+        $this->callACalled = $this->eventFactory->createCalled('implode', $implodeParameters, Arguments::create('a'));
         $this->callAResponse = $this->eventFactory->createReturned(null);
-        $this->callBCalled = $this->eventFactory->createCalled('implode', Arguments::create('b'));
-        $this->callCCalled = $this->eventFactory->createCalled('implode', Arguments::create('c'));
+        $this->callBCalled = $this->eventFactory->createCalled('implode', $implodeParameters, Arguments::create('b'));
+        $this->callCCalled = $this->eventFactory->createCalled('implode', $implodeParameters, Arguments::create('c'));
         $this->callCResponse = $this->eventFactory->createReturned(null);
         $this->callBResponse = $this->eventFactory->createReturned(null);
         $this->callA = $this->callFactory->create($this->callACalled, $this->callAResponse);

@@ -8,6 +8,7 @@ use AllowDynamicProperties;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Test\TestCallFactory;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 
 #[AllowDynamicProperties]
 class CalledEventTest extends TestCase
@@ -17,8 +18,10 @@ class CalledEventTest extends TestCase
         $this->sequenceNumber = 111;
         $this->time = 1.11;
         $this->callback = 'implode';
+        $this->parameters = (new ReflectionFunction('implode'))->getParameters();
         $this->arguments = new Arguments(['a', 'b']);
-        $this->subject = new CalledEvent($this->sequenceNumber, $this->time, $this->callback, $this->arguments);
+        $this->subject =
+            new CalledEvent($this->sequenceNumber, $this->time, $this->callback, $this->parameters, $this->arguments);
 
         $this->callFactory = new TestCallFactory();
     }
@@ -28,6 +31,7 @@ class CalledEventTest extends TestCase
         $this->assertSame($this->sequenceNumber, $this->subject->sequenceNumber());
         $this->assertSame($this->time, $this->subject->time());
         $this->assertSame($this->callback, $this->subject->callback());
+        $this->assertSame($this->parameters, $this->subject->parameters());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertNull($this->subject->call());
     }

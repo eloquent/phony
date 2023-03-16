@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Call\Event;
 
 use Eloquent\Phony\Call\Arguments;
+use ReflectionParameter;
 
 /**
  * Represents the start of a call.
@@ -16,20 +17,23 @@ class CalledEvent implements CallEvent
     /**
      * Construct a new 'called' event.
      *
-     * @param int       $sequenceNumber The sequence number.
-     * @param float     $time           The time at which the event occurred, in seconds since the Unix epoch.
-     * @param callable  $callback       The callback.
-     * @param Arguments $arguments      The arguments.
+     * @param int                            $sequenceNumber The sequence number.
+     * @param float                          $time           The time at which the event occurred, in seconds since the Unix epoch.
+     * @param callable                       $callback       The callback.
+     * @param array<int,ReflectionParameter> $parameters     The parameters.
+     * @param Arguments                      $arguments      The arguments.
      */
     public function __construct(
         int $sequenceNumber,
         float $time,
         $callback,
+        array $parameters,
         Arguments $arguments
     ) {
         $this->sequenceNumber = $sequenceNumber;
         $this->time = $time;
         $this->callback = $callback;
+        $this->parameters = $parameters;
         $this->arguments = $arguments;
     }
 
@@ -41,6 +45,16 @@ class CalledEvent implements CallEvent
     public function callback(): callable
     {
         return $this->callback;
+    }
+
+    /**
+     * Get the parameters.
+     *
+     * @return array<int,ReflectionParameter> The parameters.
+     */
+    public function parameters(): array
+    {
+        return $this->parameters;
     }
 
     /**
@@ -57,6 +71,11 @@ class CalledEvent implements CallEvent
      * @var callable
      */
     private $callback;
+
+    /**
+     * @var array<int,ReflectionParameter>
+     */
+    private $parameters;
 
     /**
      * @var Arguments

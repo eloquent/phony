@@ -18,6 +18,7 @@ use Exception;
 use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 use RuntimeException;
 
 #[AllowDynamicProperties]
@@ -51,9 +52,10 @@ class CallVerifierTest extends TestCase
 
         $this->thisValue = new TestClassA();
         $this->callback = [$this->thisValue, 'testClassAMethodA'];
+        $this->parameters = [];
         $this->arguments = new Arguments(['a', 'b', 'c']);
         $this->returnValue = 'abc';
-        $this->calledEvent = $this->eventFactory->createCalled($this->callback, $this->arguments);
+        $this->calledEvent = $this->eventFactory->createCalled($this->callback, $this->parameters, $this->arguments);
         $this->returnedEvent = $this->eventFactory->createReturned($this->returnValue);
         $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent, null, $this->returnedEvent);
         $this->subject = call_user_func($this->createCallVerifier, $this->call);
@@ -189,6 +191,7 @@ class CallVerifierTest extends TestCase
         $this->assertFalse($this->subject->isGenerator());
         $this->assertTrue($this->subject->hasCompleted());
         $this->assertSame($this->callback, $this->subject->callback());
+        $this->assertSame($this->parameters, $this->subject->parameters());
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame('a', $this->subject->argument());
         $this->assertSame('a', $this->subject->argument(0));
@@ -284,7 +287,7 @@ class CallVerifierTest extends TestCase
 
     public function calledWithData()
     {
-        //                                    arguments                  calledWith calledWithWildcard
+        //                               arguments             calledWith calledWithWildcard
         return [
             'Exact arguments'        => [['a', 'b', 'c'],      true,      true],
             'First arguments'        => [['a', 'b'],           false,     true],
@@ -371,6 +374,23 @@ class CallVerifierTest extends TestCase
         $this->assertEquals($this->assertionResult, $this->subject->calledWith($this->matcherFactory->wildcard()));
 
         $this->assertEquals($this->emptyAssertionResult, $this->subject->never()->calledWith('b', 'c'));
+    }
+
+    public function testCalledWithWithParameterNames()
+    {
+        $thisValue = new TestClassA();
+        $callback = [$thisValue, 'testClassAMethodB'];
+        $parameters = (new ReflectionMethod(TestClassA::class, 'testClassAMethodB'))->getParameters();
+        $arguments = new Arguments(['a', 'b', 'c']);
+        $returnValue = 'abc';
+        $calledEvent = $this->eventFactory->createCalled($callback, $parameters, $arguments);
+        $returnedEvent = $this->eventFactory->createReturned($returnValue);
+        $call = $this->callFactory->create($calledEvent, $returnedEvent, null, $returnedEvent);
+        $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
+        $subject = call_user_func($this->createCallVerifier, $call);
+
+        $this->assertSame($parameters, $subject->parameters());
+        $this->assertEquals($assertionResult, $subject->calledWith('a', 'b', 'c'));
     }
 
     public function testCalledWithFailure()

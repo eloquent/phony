@@ -76,7 +76,7 @@ class SpyVerifierTest extends TestCase
         $this->matchers = $this->matcherFactory->adaptAll($this->arguments->all());
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
-            $this->callEventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], $this->arguments),
+            $this->callEventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], [], $this->arguments),
             ($responseEvent = $this->callEventFactory->createReturned($this->returnValueA)),
             null,
             $responseEvent
@@ -90,7 +90,7 @@ class SpyVerifierTest extends TestCase
         );
         $this->callBResponse = $this->callB->responseEvent();
         $this->callC = $this->callFactory->create(
-            $this->callEventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], $this->arguments),
+            $this->callEventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], [], $this->arguments),
             ($responseEvent = $this->callEventFactory->createThrew($this->exceptionA)),
             null,
             $responseEvent
@@ -389,19 +389,19 @@ class SpyVerifierTest extends TestCase
         $this->callFactory->reset();
         $expected = [
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create(['a'])),
+                $this->callEventFactory->createCalled($spy, $this->parameters, Arguments::create(['a'])),
                 ($responseEvent = $this->callEventFactory->createReturned('a')),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create(['b', 'c'])),
+                $this->callEventFactory->createCalled($spy, $this->parameters, Arguments::create(['b', 'c'])),
                 ($responseEvent = $this->callEventFactory->createReturned('bc')),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create(['d'])),
+                $this->callEventFactory->createCalled($spy, $this->parameters, Arguments::create(['d'])),
                 ($responseEvent = $this->callEventFactory->createReturned('d')),
                 null,
                 $responseEvent
@@ -438,19 +438,19 @@ class SpyVerifierTest extends TestCase
         $this->callFactory->reset();
         $expected = [
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('a')),
+                $this->callEventFactory->createCalled($spy, [], Arguments::create('a')),
                 ($responseEvent = $this->callEventFactory->createReturned(null)),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('b', 'c')),
+                $this->callEventFactory->createCalled($spy, [], Arguments::create('b', 'c')),
                 ($responseEvent = $this->callEventFactory->createReturned(null)),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('d')),
+                $this->callEventFactory->createCalled($spy, [], Arguments::create('d')),
                 ($responseEvent = $this->callEventFactory->createReturned(null)),
                 null,
                 $responseEvent
@@ -502,19 +502,19 @@ class SpyVerifierTest extends TestCase
         $this->callFactory->reset();
         $expected = [
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('a')),
+                $this->callEventFactory->createCalled($spy, [], Arguments::create('a')),
                 ($responseEvent = $this->callEventFactory->createThrew($exceptions[0])),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('b', 'c')),
+                $this->callEventFactory->createCalled($spy, [], Arguments::create('b', 'c')),
                 ($responseEvent = $this->callEventFactory->createThrew($exceptions[1])),
                 null,
                 $responseEvent
             ),
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('d')),
+                $this->callEventFactory->createCalled($spy, [], Arguments::create('d')),
                 ($responseEvent = $this->callEventFactory->createThrew($exceptions[2])),
                 null,
                 $responseEvent
@@ -614,7 +614,7 @@ class SpyVerifierTest extends TestCase
         $this->callFactory->reset();
         $expected = [
             $this->callFactory->create(
-                $this->callEventFactory->createCalled($spy, Arguments::create('b')),
+                $this->callEventFactory->createCalled($spy, [], Arguments::create('b')),
                 ($responseEvent = $this->callEventFactory->createReturned('x')),
                 null,
                 $responseEvent
@@ -1546,7 +1546,7 @@ class SpyVerifierTest extends TestCase
         $this->exceptionA = new Error('You done goofed.');
         $this->exceptionB = new Error('Consequences will never be the same.');
         $this->callC = $this->callFactory->create(
-            $this->callEventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], $this->arguments),
+            $this->callEventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], [], $this->arguments),
             ($responseEvent = $this->callEventFactory->createThrew($this->exceptionA)),
             null,
             $responseEvent
@@ -1577,7 +1577,7 @@ class SpyVerifierTest extends TestCase
         $exception = $builder->get();
         $threwEvent = $this->callEventFactory->createThrew($exception);
         $call = $this->callFactory->create(
-            $this->callEventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], $this->arguments),
+            $this->callEventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], [], $this->arguments),
             $threwEvent,
             null,
             $threwEvent

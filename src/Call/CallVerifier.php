@@ -31,6 +31,7 @@ use Eloquent\Phony\Verification\IterableVerifierFactory;
 use Generator;
 use InvalidArgumentException;
 use Iterator;
+use ReflectionParameter;
 use Throwable;
 use Traversable;
 
@@ -407,6 +408,16 @@ class CallVerifier implements Call, CardinalityVerifier
     public function callback(): callable
     {
         return $this->call->callback();
+    }
+
+    /**
+     * Get the parameters.
+     *
+     * @return array<int,ReflectionParameter> The parameters.
+     */
+    public function parameters(): array
+    {
+        return $this->call->parameters();
     }
 
     /**
