@@ -201,9 +201,9 @@ class AssertionRenderer
     /**
      * Render a failed calledWith() verification.
      *
-     * @param Spy|Call           $subject     The subject.
-     * @param Cardinality        $cardinality The cardinality.
-     * @param array<int,Matcher> $matchers    The matchers.
+     * @param Spy|Call                  $subject     The subject.
+     * @param Cardinality               $cardinality The cardinality.
+     * @param array<int|string,Matcher> $matchers    The matchers.
      *
      * @return string The rendered failure message.
      */
@@ -216,6 +216,7 @@ class AssertionRenderer
 
         if (
             1 === $matcherCount &&
+            isset($matchers[0]) &&
             $matchers[0] instanceof WildcardMatcher &&
             $matchers[0]->matcher() instanceof AnyMatcher &&
             0 === $matchers[0]->minimumArguments() &&
@@ -247,6 +248,16 @@ class AssertionRenderer
                 $this->reset;
         }
 
+        $parameterNames = [];
+
+        foreach ($subject->parameters() as $parameter) {
+            if ($parameter->isVariadic()) {
+                break;
+            }
+
+            $parameterNames[] = $parameter->getName();
+        }
+
         if ($matcherCount > 0) {
             $matcherMatchCounts = array_fill(0, $matcherCount, 0);
         } else {
@@ -260,16 +271,19 @@ class AssertionRenderer
         foreach ($calls as $call) {
             ++$totalCount;
 
-            $callResult = $this->matcherVerifier
-                ->explain($matchers, [], $call->arguments()->positional());
+            $callResult = $this->matcherVerifier->explain(
+                $matchers,
+                $parameterNames,
+                $call->arguments()->all()
+            );
 
             if ($callResult->isMatch) {
                 ++$matchCount;
             }
 
-            foreach ($callResult->matcherMatches as $index => $isMatch) {
+            foreach ($callResult->matcherMatches as $key => $isMatch) {
                 if ($isMatch) {
-                    ++$matcherMatchCounts[$index];
+                    ++$matcherMatchCounts[$key];
                 }
             }
 
@@ -279,7 +293,7 @@ class AssertionRenderer
         $renderedMatchers = [];
         $requiredArgumentCount = 0;
 
-        foreach ($matchers as $index => $matcher) {
+        foreach ($matchers as $key => $matcher) {
             if ($matcher instanceof WildcardMatcher) {
                 $requiredArgumentCount += $matcher->minimumArguments();
             } else {
@@ -287,7 +301,7 @@ class AssertionRenderer
             }
 
             if (
-                $cardinality->matches($matcherMatchCounts[$index], $totalCount)
+                $cardinality->matches($matcherMatchCounts[$key], $totalCount)
             ) {
                 $resultText = self::PASS;
                 $resultStart = $this->passStart;
@@ -300,11 +314,11 @@ class AssertionRenderer
                 $matcherMatchCount = '';
             } else {
                 $matchOrMatches =
-                    1 === $matcherMatchCounts[$index] ? 'match' : 'matches';
+                    1 === $matcherMatchCounts[$key] ? 'match' : 'matches';
                 $matcherMatchCount =
                     ' ' . $resultStart .
                     $this->faint .
-                    '(' . $matcherMatchCounts[$index] .
+                    '(' . $matcherMatchCounts[$key] .
                     ' ' . $matchOrMatches .
                     ')' . $this->reset;
             }
@@ -373,7 +387,7 @@ class AssertionRenderer
 
                     foreach (
                         $callResult->argumentMatches as
-                            $argumentIndexOrName => $isMatch
+                            $argumentPositionOrName => $isMatch
                     ) {
                         if ($isMatch xor $isNever) {
                             $renderedResult = $this->pass;
@@ -381,20 +395,21 @@ class AssertionRenderer
                             $renderedResult = $this->fail;
                         }
 
-                        $exists = $arguments->has($argumentIndexOrName);
+                        $exists = $arguments->has($argumentPositionOrName);
 
                         if ($exists) {
-                            $argument = $arguments->get($argumentIndexOrName);
+                            $argument =
+                                $arguments->get($argumentPositionOrName);
                             $value = $this->exporter->export($argument);
 
                             if (
                                 !$isMatch &&
-                                isset($matchers[$argumentIndexOrName]) &&
-                                $matchers[$argumentIndexOrName] instanceof
+                                isset($matchers[$argumentPositionOrName]) &&
+                                $matchers[$argumentPositionOrName] instanceof
                                     EqualToMatcher
                             ) {
                                 $value = $this->differenceEngine->difference(
-                                    $matchers[$argumentIndexOrName]
+                                    $matchers[$argumentPositionOrName]
                                         ->describe($this->exporter),
                                     $value
                                 );
@@ -3808,7 +3823,7 @@ class AssertionRenderer
     /**
      * Render a sequence of matchers.
      *
-     * @param array<int,Matcher> $matchers The matchers.
+     * @param array<int|string,Matcher> $matchers The matchers.
      *
      * @return string The rendered matchers.
      */

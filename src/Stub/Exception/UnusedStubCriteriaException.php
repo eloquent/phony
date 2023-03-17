@@ -16,8 +16,8 @@ final class UnusedStubCriteriaException extends Exception
     /**
      * Construct a new unused stub criteria exception.
      *
-     * @param array<int,Matcher> $criteria          The criteria.
-     * @param AssertionRenderer  $assertionRenderer The assertion renderer to use.
+     * @param array<int|string,Matcher> $criteria          The criteria.
+     * @param AssertionRenderer         $assertionRenderer The assertion renderer to use.
      */
     public function __construct(array $criteria, AssertionRenderer $assertionRenderer)
     {
@@ -38,7 +38,7 @@ final class UnusedStubCriteriaException extends Exception
     /**
      * Get the criteria.
      *
-     * @return array<int,Matcher> The criteria.
+     * @return array<int|string,Matcher> The criteria.
      */
     public function criteria(): array
     {
@@ -46,7 +46,7 @@ final class UnusedStubCriteriaException extends Exception
     }
 
     /**
-     * @var array<int,Matcher>
+     * @var array<int|string,Matcher>
      */
     private $criteria;
 }

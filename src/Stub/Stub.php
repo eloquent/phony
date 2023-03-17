@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Invocation\WrappedInvocable;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
 use Throwable;
@@ -77,11 +78,11 @@ interface Stub extends WrappedInvocable
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable                   $callback              The callback.
-     * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
-     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
+     * @param callable                          $callback              The callback.
+     * @param Arguments|array<int|string,mixed> $arguments             The arguments.
+     * @param ?bool                             $prefixSelf            True if the self value should be prefixed.
+     * @param bool                              $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                              $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -99,35 +100,39 @@ interface Stub extends WrappedInvocable
      * Calling this method with no arguments is equivalent to calling it with a
      * single argument of `0`.
      *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
+     * Negative positions are offset from the end of the positional arguments.
+     * That is, `-1` indicates the last positional argument, and `-2` indicates
+     * the second-to-last positional argument.
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param int ...$indices The argument indices.
+     * @param int|string ...$positionsOrNames The argument positions and/or names.
      *
-     * @return $this This stub.
+     * @return $this                      This stub.
+     * @throws UndefinedArgumentException If a requested argument is undefined.
      */
-    public function callsArgument(int ...$indices): self;
+    public function callsArgument(int|string ...$positionsOrNames): self;
 
     /**
      * Add an argument callback to be called as part of an answer.
      *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
+     * Negative positions are offset from the end of the positional arguments.
+     * That is, `-1` indicates the last positional argument, and `-2` indicates
+     * the second-to-last positional argument.
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param int                        $index                 The argument index.
-     * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param bool                       $prefixSelf            True if the self value should be prefixed.
-     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
+     * @param int|string                        $positionOrName        The argument position or name.
+     * @param Arguments|array<int|string,mixed> $arguments             The arguments.
+     * @param bool                              $prefixSelf            True if the self value should be prefixed.
+     * @param bool                              $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                              $suffixArguments       True if the arguments should be appended individually.
      *
-     * @return $this This stub.
+     * @return $this                      This stub.
+     * @throws UndefinedArgumentException If the requested argument is undefined.
      */
     public function callsArgumentWith(
-        int $index = 0,
+        int|string $positionOrName = 0,
         $arguments = [],
         bool $prefixSelf = false,
         bool $suffixArgumentsObject = false,
@@ -137,19 +142,21 @@ interface Stub extends WrappedInvocable
     /**
      * Set the value of an argument passed by reference as part of an answer.
      *
-     * If called with no arguments, sets the first argument to null.
+     * If called with no arguments, sets the first positional argument to null.
      *
-     * If called with one argument, sets the first argument to $indexOrValue.
+     * If called with one argument, sets the first positional argument to
+     * `$positionOrNameOrValue`.
      *
-     * If called with two arguments, sets the argument at $indexOrValue to
-     * $value.
+     * If called with two arguments, sets the argument at
+     * `$positionOrNameOrValue` to `$value`.
      *
-     * @param mixed $indexOrValue The index, or value if no index is specified.
-     * @param mixed $value        The value.
+     * @param mixed $positionOrNameOrValue The position, or name; or value, if no position or name is specified.
+     * @param mixed $value                 The value.
      *
-     * @return $this This stub.
+     * @return $this                      This stub.
+     * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function setsArgument($indexOrValue = null, $value = null): self;
+    public function setsArgument($positionOrNameOrValue = null, $value = null): self;
 
     /**
      * Add a callback as an answer.
@@ -163,11 +170,11 @@ interface Stub extends WrappedInvocable
     /**
      * Add a callback as an answer.
      *
-     * @param callable                   $callback              The callback.
-     * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
-     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
+     * @param callable                          $callback              The callback.
+     * @param Arguments|array<int|string,mixed> $arguments             The arguments.
+     * @param ?bool                             $prefixSelf            True if the self value should be prefixed.
+     * @param bool                              $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                              $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -182,10 +189,10 @@ interface Stub extends WrappedInvocable
     /**
      * Add an answer that calls the wrapped callback.
      *
-     * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
-     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
+     * @param Arguments|array<int|string,mixed> $arguments             The arguments.
+     * @param ?bool                             $prefixSelf            True if the self value should be prefixed.
+     * @param bool                              $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                              $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -211,14 +218,16 @@ interface Stub extends WrappedInvocable
     /**
      * Add an answer that returns an argument.
      *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
+     * Negative positions are offset from the end of the positional arguments.
+     * That is, `-1` indicates the last positional argument, and `-2` indicates
+     * the second-to-last positional argument.
      *
-     * @param int $index The argument index.
+     * @param int|string $positionOrName The argument position or name.
      *
-     * @return $this This stub.
+     * @return $this                      This stub.
+     * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function returnsArgument(int $index = 0): self;
+    public function returnsArgument(int|string $positionOrName = 0): self;
 
     /**
      * Add an answer that returns the self value.

@@ -56,25 +56,25 @@ class FunctionHookGenerator
             $source .= "()\n{\n";
         }
 
-        $variadicIndex = -1;
+        $variadicPosition = -1;
         $variadicReference = '';
         $variadicName = '';
 
         if ($parameterCount > 0) {
             $argumentPacking = "\n";
-            $index = -1;
+            $position = -1;
 
             foreach ($parameters as $parameterName => $parameter) {
                 if ($parameter[2]) {
                     --$parameterCount;
 
-                    $variadicIndex = ++$index;
+                    $variadicPosition = ++$position;
                     $variadicReference = $parameter[1];
                     $variadicName = $parameterName;
                 } else {
                     $argumentPacking .=
                         "\n    if ($argumentCount > " .
-                        ++$index .
+                        ++$position .
                         ") {\n        {$arguments}[] = " .
                         $parameter[1] .
                         '$' . $parameterName .
@@ -93,10 +93,10 @@ class FunctionHookGenerator
             $parameterCount .
             "; $i < $argumentCount; ++$i) {\n";
 
-        if ($variadicIndex > -1) {
+        if ($variadicPosition > -1) {
             $source .=
                 "        {$arguments}[] = $variadicReference\$" .
-                "{$variadicName}[$i - $variadicIndex];\n" .
+                "{$variadicName}[$i - $variadicPosition];\n" .
                 '    }';
         } else {
             $source .=

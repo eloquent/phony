@@ -76,8 +76,8 @@ trait FacadeTrait
      * with an empty argument list. However, if a `null` value is supplied for
      * `$arguments`, the original constructor will not be called at all.
      *
-     * @param mixed                           $types     The types to mock.
-     * @param Arguments|array<int,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param mixed                                  $types     The types to mock.
+     * @param Arguments|array<int|string,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
      * @return InstanceHandle A handle around the new mock.
      */

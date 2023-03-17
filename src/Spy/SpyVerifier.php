@@ -72,6 +72,15 @@ class SpyVerifier implements Spy, CardinalityVerifier
         $this->assertionRecorder = $assertionRecorder;
         $this->assertionRenderer = $assertionRenderer;
         $this->cardinality = new Cardinality();
+        $this->parameterNames = [];
+
+        foreach ($spy->parameters() as $parameter) {
+            if ($parameter->isVariadic()) {
+                break;
+            }
+
+            $this->parameterNames[] = $parameter->getName();
+        }
     }
 
     /**
@@ -391,7 +400,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * This method supports reference parameters.
      *
-     * @param Arguments|array<int,mixed> $arguments The arguments.
+     * @param Arguments|array<int|string,mixed> $arguments The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
@@ -404,8 +413,6 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Invoke this object.
      *
-     * Does not support named arguments.
-     *
      * @param mixed ...$arguments The arguments.
      *
      * @return mixed     The result of invocation.
@@ -413,15 +420,11 @@ class SpyVerifier implements Spy, CardinalityVerifier
      */
     public function invoke(...$arguments)
     {
-        /** @var array<int,mixed> $arguments */
-
         return $this->spy->invokeWith($arguments);
     }
 
     /**
      * Invoke this object.
-     *
-     * Does not support named arguments.
      *
      * @param mixed ...$arguments The arguments.
      *
@@ -430,8 +433,6 @@ class SpyVerifier implements Spy, CardinalityVerifier
      */
     public function __invoke(...$arguments)
     {
-        /** @var array<int,mixed> $arguments */
-
         return $this->spy->invokeWith($arguments);
     }
 
@@ -476,19 +477,14 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Checks if called with the supplied arguments.
      *
-     * Does not support named arguments.
-     *
      * @param mixed ...$arguments The arguments.
      *
      * @return ?EventCollection The result.
      */
     public function checkCalledWith(...$arguments): ?EventCollection
     {
-        /** @var array<int,mixed> $arguments */
-
         $cardinality = $this->resetCardinality();
 
-        /** @var array<int,Matcher> $matchers */
         $matchers = $this->matcherFactory->adaptAll($arguments);
         $calls = $this->spy->allCalls();
         $matchingEvents = [];
@@ -497,8 +493,11 @@ class SpyVerifier implements Spy, CardinalityVerifier
 
         foreach ($calls as $call) {
             if (
-                $this->matcherVerifier
-                    ->matches($matchers, [], $call->arguments()->positional())
+                $this->matcherVerifier->matches(
+                    $matchers,
+                    $this->parameterNames,
+                    $call->arguments()->all()
+                )
             ) {
                 $matchingEvents[] = $call;
                 ++$matchCount;
@@ -515,8 +514,6 @@ class SpyVerifier implements Spy, CardinalityVerifier
     /**
      * Throws an exception unless called with the supplied arguments.
      *
-     * Does not support named arguments.
-     *
      * @param mixed ...$arguments The arguments.
      *
      * @return ?EventCollection The result, or null if the assertion recorder does not throw exceptions.
@@ -524,10 +521,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      */
     public function calledWith(...$arguments): ?EventCollection
     {
-        /** @var array<int,mixed> $arguments */
-
         $cardinality = $this->cardinality;
-        /** @var array<int,Matcher> $matchers */
         $matchers = $this->matcherFactory->adaptAll($arguments);
 
         if ($result = $this->checkCalledWith(...$matchers)) {
@@ -1015,4 +1009,9 @@ class SpyVerifier implements Spy, CardinalityVerifier
      * @var AssertionRenderer
      */
     private $assertionRenderer;
+
+    /**
+     * @var array<int,string>
+     */
+    private $parameterNames;
 }

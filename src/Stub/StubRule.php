@@ -16,8 +16,8 @@ class StubRule
     /**
      * Construct a new stub rule.
      *
-     * @param array<int,Matcher> $criteria The criteria.
-     * @param array<int,Answer>  $answers  The answers.
+     * @param array<int|string,Matcher> $criteria The criteria.
+     * @param array<int,Answer>         $answers  The answers.
      */
     public function __construct(array $criteria, array $answers)
     {
@@ -31,7 +31,7 @@ class StubRule
     /**
      * Get the criteria.
      *
-     * @return array<int,Matcher> The criteria.
+     * @return array<int|string,Matcher> The criteria.
      */
     public function criteria(): array
     {
@@ -72,7 +72,7 @@ class StubRule
     }
 
     /**
-     * @var array<int,Matcher>
+     * @var array<int|string,Matcher>
      */
     private $criteria;
 

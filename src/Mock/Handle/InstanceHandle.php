@@ -115,23 +115,19 @@ class InstanceHandle implements Handle
     /**
      * Call the original constructor.
      *
-     * Does not support named arguments.
-     *
      * @param mixed ...$arguments The arguments.
      *
      * @return $this This handle.
      */
     public function construct(...$arguments): self
     {
-        /** @var array<int,mixed> $arguments */
-
         return $this->constructWith($arguments);
     }
 
     /**
      * Call the original constructor.
      *
-     * @param Arguments|array<int,mixed> $arguments The arguments.
+     * @param Arguments|array<int|string,mixed> $arguments The arguments.
      *
      * @return $this This handle.
      */
@@ -204,8 +200,7 @@ class InstanceHandle implements Handle
 
                 $this->stub($name)->doesWith(
                     function ($arguments) use ($method, $object) {
-                        return $method
-                            ->invokeArgs($object, $arguments->positional());
+                        return $method->invokeArgs($object, $arguments->all());
                     },
                     [],
                     false,

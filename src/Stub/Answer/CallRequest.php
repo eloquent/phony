@@ -34,9 +34,9 @@ class CallRequest
         $this->suffixArgumentsObject = $suffixArgumentsObject;
         $this->suffixArguments = $suffixArguments;
 
-        foreach ($this->arguments->positional() as $index => $argument) {
+        foreach ($this->arguments->all() as $positionOrName => $argument) {
             if ($argument instanceof InstanceHandle) {
-                $this->arguments->set($index, $argument->get());
+                $this->arguments->set($positionOrName, $argument->get());
             }
         }
     }
@@ -63,7 +63,7 @@ class CallRequest
         mixed $self,
         Arguments $arguments
     ): Arguments {
-        $finalArguments = $this->arguments->positional();
+        $finalArguments = $this->arguments->all();
 
         if ($this->prefixSelf) {
             array_unshift($finalArguments, $self);
@@ -72,8 +72,7 @@ class CallRequest
             $finalArguments[] = $arguments;
         }
         if ($this->suffixArguments) {
-            $finalArguments =
-                array_merge($finalArguments, $arguments->positional());
+            $finalArguments = array_merge($finalArguments, $arguments->all());
         }
 
         return new Arguments($finalArguments);

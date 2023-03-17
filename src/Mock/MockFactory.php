@@ -131,8 +131,8 @@ class MockFactory
     /**
      * Create a new partial mock instance for the supplied definition.
      *
-     * @param ReflectionClass<object>         $class     The class.
-     * @param Arguments|array<int,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param ReflectionClass<object>                $class     The class.
+     * @param Arguments|array<int|string,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
      * @return Mock          The newly created mock.
      * @throws MockException If the mock generation fails.

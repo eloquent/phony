@@ -10,12 +10,12 @@ class UndefinedPositionalArgumentExceptionTest extends TestCase
 {
     public function testException()
     {
-        $index = 111;
-        $exception = new UndefinedPositionalArgumentException($index);
+        $position = 111;
+        $exception = new UndefinedPositionalArgumentException($position);
 
-        $this->assertSame($index, $exception->index());
+        $this->assertSame($position, $exception->position());
         $this->assertFalse($exception->isNamed());
-        $this->assertSame('No positional argument defined for index 111.', $exception->getMessage());
+        $this->assertSame('No positional argument defined for position 111.', $exception->getMessage());
         $this->assertSame(0, $exception->getCode());
         $this->assertNull($exception->getPrevious());
     }

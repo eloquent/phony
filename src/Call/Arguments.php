@@ -43,13 +43,15 @@ class Arguments implements Countable, IteratorAggregate
     {
         $this->arguments = $arguments;
         $this->count = count($arguments);
+        $this->positionalCount = 0;
         $this->positional = [];
         $this->named = [];
 
-        foreach ($arguments as $indexOrName => &$value) {
-            if (is_string($indexOrName)) {
-                $this->named[$indexOrName] = &$value;
+        foreach ($arguments as $positionOrName => &$value) {
+            if (is_string($positionOrName)) {
+                $this->named[$positionOrName] = &$value;
             } else {
+                ++$this->positionalCount;
                 $this->positional[] = &$value;
             }
         }
@@ -64,8 +66,8 @@ class Arguments implements Countable, IteratorAggregate
     {
         $arguments = [];
 
-        foreach ($this->arguments as $indexOrName => $argument) {
-            $arguments[$indexOrName] = $argument;
+        foreach ($this->arguments as $positionOrName => $argument) {
+            $arguments[$positionOrName] = $argument;
         }
 
         return new self($arguments);
@@ -108,51 +110,57 @@ class Arguments implements Countable, IteratorAggregate
     }
 
     /**
-     * Set an argument by index or name.
+     * Set an argument by position or name.
      *
      * If called with no arguments, sets the first positional argument to null.
      *
      * If called with one argument, sets the first positional argument to
-     * `$indexOrNameOrValue`.
+     * `$positionOrNameOrValue`.
      *
-     * If called with two arguments, sets the argument at `$indexOrNameOrValue`
-     * to `$value`.
+     * If called with two arguments, sets the argument at
+     * `$positionOrNameOrValue` to `$value`.
      *
-     * @param mixed $indexOrNameOrValue The index, or name; or value, if no index or name is specified.
-     * @param mixed $value              The value.
+     * @param mixed $positionOrNameOrValue The position, or name; or value, if no position or name is specified.
+     * @param mixed $value                 The value.
      *
      * @return $this                      This arguments object.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function set($indexOrNameOrValue = null, $value = null): self
+    public function set($positionOrNameOrValue = null, $value = null): self
     {
         if (func_num_args() > 1) {
-            /** @var int|string $indexOrName */
-            $indexOrName = $indexOrNameOrValue;
+            /** @var int|string $positionOrName */
+            $positionOrName = $positionOrNameOrValue;
             /** @var null $value */
-            $isNamed = is_string($indexOrName);
+            $isNamed = is_string($positionOrName);
         } else {
-            $indexOrName = 0;
+            $positionOrName = 0;
             $normalized = 0;
-            $value = $indexOrNameOrValue;
+            $value = $positionOrNameOrValue;
             $isNamed = false;
         }
 
         if ($isNamed) {
-            /** @var string $indexOrName */
-            if (!array_key_exists($indexOrName, $this->named)) {
-                throw new UndefinedNamedArgumentException($indexOrName);
+            /** @var string $positionOrName */
+            if (!array_key_exists($positionOrName, $this->named)) {
+                throw new UndefinedNamedArgumentException($positionOrName);
             }
 
-            $this->named[$indexOrName] = $value;
+            $this->named[$positionOrName] = $value;
 
             return $this;
         }
 
-        /** @var int $indexOrName */
+        /** @var int $positionOrName */
 
-        if (!$this->normalizeIndex($this->count, $indexOrName, $normalized)) {
-            throw new UndefinedPositionalArgumentException($indexOrName);
+        if (
+            !$this->normalizeIndex(
+                $this->positionalCount,
+                $positionOrName,
+                $normalized
+            )
+        ) {
+            throw new UndefinedPositionalArgumentException($positionOrName);
         }
 
         /** @var int $normalized */
@@ -162,22 +170,23 @@ class Arguments implements Countable, IteratorAggregate
     }
 
     /**
-     * Returns true if the argument index or name exists.
+     * Returns true if the argument position or name exists.
      *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
+     * Negative positions are offset from the end of the positional arguments.
+     * That is, `-1` indicates the last positional argument, and `-2` indicates
+     * the second-to-last positional argument.
      *
-     * @param int|string $indexOrName The index or name.
+     * @param int|string $positionOrName The position or name.
      *
      * @return bool True if the argument exists.
      */
-    public function has(int|string $indexOrName = 0): bool
+    public function has(int|string $positionOrName = 0): bool
     {
-        if (is_string($indexOrName)) {
-            return array_key_exists($indexOrName, $this->named);
+        if (is_string($positionOrName)) {
+            return array_key_exists($positionOrName, $this->named);
         }
 
-        if ($this->normalizeIndex($this->count, $indexOrName)) {
+        if ($this->normalizeIndex($this->positionalCount, $positionOrName)) {
             return true;
         }
 
@@ -185,28 +194,35 @@ class Arguments implements Countable, IteratorAggregate
     }
 
     /**
-     * Get an argument by index or name.
+     * Get an argument by position or name.
      *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
+     * Negative positions are offset from the end of the positional arguments.
+     * That is, `-1` indicates the last positional argument, and `-2` indicates
+     * the second-to-last positional argument.
      *
-     * @param int|string $indexOrName The index or name.
+     * @param int|string $positionOrName The position or name.
      *
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function get(int|string $indexOrName = 0)
+    public function get(int|string $positionOrName = 0)
     {
-        if (is_string($indexOrName)) {
-            if (!array_key_exists($indexOrName, $this->named)) {
-                throw new UndefinedNamedArgumentException($indexOrName);
+        if (is_string($positionOrName)) {
+            if (!array_key_exists($positionOrName, $this->named)) {
+                throw new UndefinedNamedArgumentException($positionOrName);
             }
 
-            return $this->arguments[$indexOrName];
+            return $this->arguments[$positionOrName];
         }
 
-        if (!$this->normalizeIndex($this->count, $indexOrName, $normalized)) {
-            throw new UndefinedPositionalArgumentException($indexOrName);
+        if (
+            !$this->normalizeIndex(
+                $this->positionalCount,
+                $positionOrName,
+                $normalized
+            )
+        ) {
+            throw new UndefinedPositionalArgumentException($positionOrName);
         }
 
         return $this->arguments[$normalized];
@@ -251,4 +267,9 @@ class Arguments implements Countable, IteratorAggregate
      * @var int
      */
     private $count;
+
+    /**
+     * @var int
+     */
+    private $positionalCount;
 }

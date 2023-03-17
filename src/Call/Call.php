@@ -91,17 +91,18 @@ interface Call extends Event, EventCollection
     public function arguments(): Arguments;
 
     /**
-     * Get an argument by index.
+     * Get an argument by position or name.
      *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
+     * Negative positions are offset from the end of the positional arguments.
+     * That is, `-1` indicates the last positional argument, and `-2` indicates
+     * the second-to-last positional argument.
      *
-     * @param int $index The index.
+     * @param int|string $positionOrName The position or name.
      *
      * @return mixed                      The argument.
      * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function argument(int $index = 0);
+    public function argument(int|string $positionOrName = 0);
 
     /**
      * Get the returned value.

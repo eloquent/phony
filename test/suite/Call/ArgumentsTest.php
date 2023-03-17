@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Call;
 
 use AllowDynamicProperties;
-use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
+use Eloquent\Phony\Call\Exception\UndefinedNamedArgumentException;
+use Eloquent\Phony\Call\Exception\UndefinedPositionalArgumentException;
 use PHPUnit\Framework\TestCase;
 
 #[AllowDynamicProperties]
@@ -13,17 +14,20 @@ class ArgumentsTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->a = 'a';
-        $this->b = 'b';
-        $this->arguments = [&$this->a, &$this->b];
+        $this->a = 1;
+        $this->b = 2;
+        $this->c = 3;
+        $this->arguments = [&$this->a, &$this->b, 'c' => &$this->c];
         $this->subject = new Arguments($this->arguments);
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->arguments, $this->subject->all());
+        $this->assertSame([&$this->a, &$this->b], $this->subject->positional());
+        $this->assertSame(['c' => &$this->c], $this->subject->named());
         $this->assertSame($this->arguments, iterator_to_array($this->subject));
-        $this->assertCount(2, $this->subject);
+        $this->assertCount(3, $this->subject);
     }
 
     public function testCopy()
@@ -36,43 +40,60 @@ class ArgumentsTest extends TestCase
 
         $copy->set('value');
 
-        $this->assertSame('a', $this->subject->get());
-        $this->assertSame('a', $this->arguments[0]);
+        $this->assertSame(1, $this->subject->get());
+        $this->assertSame(1, $this->arguments[0]);
     }
 
     public function testSet()
     {
-        $this->assertSame($this->subject, $this->subject->set('c'));
-        $this->assertSame($this->subject, $this->subject->set(1, 'd'));
+        $this->assertSame($this->subject, $this->subject->set(4));
+        $this->assertSame($this->subject, $this->subject->set(1, 5));
+        $this->assertSame($this->subject, $this->subject->set('c', 6));
 
-        $this->assertSame(['c', 'd'], $this->subject->all());
-        $this->assertSame('c', $this->a);
-        $this->assertSame('d', $this->b);
+        $this->assertSame([4, 5, 'c' => 6], $this->subject->all());
+        $this->assertSame(4, $this->a);
+        $this->assertSame(5, $this->b);
+        $this->assertSame(6, $this->c);
 
         $this->assertSame($this->subject, $this->subject->set());
 
-        $this->assertSame([null, 'd'], $this->subject->all());
+        $this->assertSame([null, 5, 'c' => 6], $this->subject->all());
         $this->assertNull($this->a);
+
+        $this->assertSame($this->subject, $this->subject->set(-1, 7));
+        $this->assertSame($this->subject, $this->subject->set(-2, 8));
+
+        $this->assertSame([8, 7, 'c' => 6], $this->subject->all());
+        $this->assertSame(8, $this->a);
+        $this->assertSame(7, $this->b);
     }
 
     public function testSetFailureTooHigh()
     {
-        $this->expectException(UndefinedArgumentException::class);
-        $this->subject->set(111, 'value');
+        $this->expectException(UndefinedPositionalArgumentException::class);
+        $this->subject->set(111, 222);
     }
 
     public function testSetFailureTooLow()
     {
-        $this->expectException(UndefinedArgumentException::class);
-        $this->subject->set(-111, 'value');
+        $this->expectException(UndefinedPositionalArgumentException::class);
+        $this->subject->set(-111, 222);
     }
 
-    public function testSetFailureNoArguments()
+    public function testSetFailureNonexistentPositional()
     {
         $this->subject = new Arguments([]);
 
-        $this->expectException(UndefinedArgumentException::class);
-        $this->subject->set('value');
+        $this->expectException(UndefinedPositionalArgumentException::class);
+        $this->subject->set(0, null);
+    }
+
+    public function testSetFailureNonexistentNamed()
+    {
+        $this->subject = new Arguments([]);
+
+        $this->expectException(UndefinedNamedArgumentException::class);
+        $this->subject->set('x', null);
     }
 
     public function testHas()
@@ -80,6 +101,7 @@ class ArgumentsTest extends TestCase
         $this->assertTrue($this->subject->has());
         $this->assertTrue($this->subject->has(0));
         $this->assertTrue($this->subject->has(1));
+        $this->assertTrue($this->subject->has('c'));
         $this->assertTrue($this->subject->has(-1));
         $this->assertTrue($this->subject->has(-2));
 
@@ -91,39 +113,49 @@ class ArgumentsTest extends TestCase
         $this->assertFalse($this->subject->has());
         $this->assertFalse($this->subject->has(0));
         $this->assertFalse($this->subject->has(1));
+        $this->assertFalse($this->subject->has('x'));
     }
 
     public function testGet()
     {
-        $this->assertSame('a', $this->subject->get());
-        $this->assertSame('a', $this->subject->get(0));
-        $this->assertSame('b', $this->subject->get(1));
-        $this->assertSame('b', $this->subject->get(-1));
-        $this->assertSame('a', $this->subject->get(-2));
+        $this->assertSame(1, $this->subject->get());
+        $this->assertSame(1, $this->subject->get(0));
+        $this->assertSame(2, $this->subject->get(1));
+        $this->assertSame(3, $this->subject->get('c'));
+        $this->assertSame(2, $this->subject->get(-1));
+        $this->assertSame(1, $this->subject->get(-2));
     }
 
     public function testGetFailureTooHigh()
     {
-        $this->expectException(UndefinedArgumentException::class);
+        $this->expectException(UndefinedPositionalArgumentException::class);
         $this->subject->get(111);
     }
 
     public function testGetFailureTooLow()
     {
-        $this->expectException(UndefinedArgumentException::class);
+        $this->expectException(UndefinedPositionalArgumentException::class);
         $this->subject->get(-111);
     }
 
-    public function testGetFailureNoArguments()
+    public function testGetFailureNonexistentPositional()
     {
         $this->subject = new Arguments([]);
 
-        $this->expectException(UndefinedArgumentException::class);
-        $this->subject->get();
+        $this->expectException(UndefinedPositionalArgumentException::class);
+        $this->subject->get(0);
+    }
+
+    public function testGetFailureNonexistentNamed()
+    {
+        $this->subject = new Arguments([]);
+
+        $this->expectException(UndefinedNamedArgumentException::class);
+        $this->subject->get('x');
     }
 
     public function testCreate()
     {
-        $this->assertEquals(new Arguments(['a', 'b']), Arguments::create('a', 'b'));
+        $this->assertEquals(new Arguments([1, 2, 'c' => 3]), Arguments::create(1, 2, c: 3));
     }
 }

@@ -547,8 +547,6 @@ class MockBuilder
      *
      * Calling this method will finalize the mock builder.
      *
-     * Does not support named arguments.
-     *
      * @param mixed ...$arguments The constructor arguments.
      *
      * @return Mock          The mock instance.
@@ -556,8 +554,6 @@ class MockBuilder
      */
     public function partial(...$arguments): Mock
     {
-        /** @var array<int,mixed> $arguments */
-
         $this->mock = $this->factory
             ->createPartialMock($this->build(), $arguments);
 
@@ -574,7 +570,7 @@ class MockBuilder
      *
      * This method supports reference parameters.
      *
-     * @param Arguments|array<int,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
+     * @param Arguments|array<int|string,mixed>|null $arguments The constructor arguments, or null to bypass the constructor.
      *
      * @return Mock          The mock instance.
      * @throws MockException If the mock generation fails.

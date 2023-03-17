@@ -6,6 +6,7 @@ namespace Eloquent\Phony\Stub;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Arguments;
+use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
@@ -107,9 +108,18 @@ class StubData implements Stub
         $this->exporter = $exporter;
         $this->assertionRenderer = $assertionRenderer;
 
+        $this->parameterNames = [];
         $this->secondaryRequests = [];
         $this->answers = [];
         $this->rules = [];
+
+        foreach ($parameters as $parameter) {
+            if ($parameter->isVariadic()) {
+                break;
+            }
+
+            $this->parameterNames[] = $parameter->getName();
+        }
     }
 
     /**
@@ -176,16 +186,12 @@ class StubData implements Stub
     /**
      * Modify the current criteria to match the supplied arguments.
      *
-     * Does not support named arguments.
-     *
      * @param mixed ...$arguments The arguments.
      *
      * @return $this This stub.
      */
     public function with(...$arguments): Stub
     {
-        /** @var array<int,mixed> $arguments */
-
         $this->closeRule();
 
         if (empty($this->rules)) {
@@ -194,7 +200,6 @@ class StubData implements Stub
             $this->closeRule();
         }
 
-        /** @var array<int,Matcher> $matchers */
         $matchers = $this->matcherFactory->adaptAll($arguments);
         $this->criteria = $matchers;
 
@@ -224,11 +229,11 @@ class StubData implements Stub
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param callable                   $callback              The callback.
-     * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
-     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
+     * @param callable                          $callback              The callback.
+     * @param Arguments|array<int|string,mixed> $arguments             The arguments.
+     * @param ?bool                             $prefixSelf            True if the self value should be prefixed.
+     * @param bool                              $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                              $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -268,22 +273,24 @@ class StubData implements Stub
      * Calling this method with no arguments is equivalent to calling it with a
      * single argument of `0`.
      *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
+     * Negative positions are offset from the end of the positional arguments.
+     * That is, `-1` indicates the last positional argument, and `-2` indicates
+     * the second-to-last positional argument.
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param int ...$indices The argument indices.
+     * @param int|string ...$positionsOrNames The argument positions and/or names.
      *
-     * @return $this This stub.
+     * @return $this                      This stub.
+     * @throws UndefinedArgumentException If a requested argument is undefined.
      */
-    public function callsArgument(int ...$indices): Stub
+    public function callsArgument(int|string ...$positionsOrNames): Stub
     {
-        if (empty($indices)) {
+        if (empty($positionsOrNames)) {
             $this->callsArgumentWith(0);
         } else {
-            foreach ($indices as $index) {
-                $this->callsArgumentWith($index);
+            foreach ($positionsOrNames as $positionOrName) {
+                $this->callsArgumentWith($positionOrName);
             }
         }
 
@@ -293,25 +300,27 @@ class StubData implements Stub
     /**
      * Add an argument callback to be called as part of an answer.
      *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
+     * Negative positions are offset from the end of the positional arguments.
+     * That is, `-1` indicates the last positional argument, and `-2` indicates
+     * the second-to-last positional argument.
      *
      * Note that all supplied callbacks will be called in the same invocation.
      *
-     * @param int                        $index                 The argument index.
-     * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param bool                       $prefixSelf            True if the self value should be prefixed.
-     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
+     * @param int|string                        $positionOrName        The argument position or name.
+     * @param Arguments|array<int|string,mixed> $arguments             The arguments.
+     * @param bool                              $prefixSelf            True if the self value should be prefixed.
+     * @param bool                              $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                              $suffixArguments       True if the arguments should be appended individually.
      *
-     * @return $this This stub.
+     * @return $this                      This stub.
+     * @throws UndefinedArgumentException If the requested argument is undefined.
      */
     public function callsArgumentWith(
-        int $index = 0,
+        int|string $positionOrName = 0,
         $arguments = [],
         bool $prefixSelf = false,
         bool $suffixArgumentsObject = false,
-        bool $suffixArguments = false
+        bool $suffixArguments = true
     ): Stub {
         $invoker = $this->invoker;
 
@@ -322,13 +331,13 @@ class StubData implements Stub
         return $this->callsWith(
             function ($self, $incoming) use (
                 $invoker,
-                $index,
+                $positionOrName,
                 $arguments,
                 $prefixSelf,
                 $suffixArgumentsObject,
                 $suffixArguments
             ) {
-                $callback = $incoming->get($index);
+                $callback = $incoming->get($positionOrName);
 
                 $request = new CallRequest(
                     $callback,
@@ -351,25 +360,29 @@ class StubData implements Stub
     /**
      * Set the value of an argument passed by reference as part of an answer.
      *
-     * If called with no arguments, sets the first argument to null.
+     * If called with no arguments, sets the first positional argument to null.
      *
-     * If called with one argument, sets the first argument to $indexOrValue.
+     * If called with one argument, sets the first positional argument to
+     * `$positionOrNameOrValue`.
      *
-     * If called with two arguments, sets the argument at $indexOrValue to
-     * $value.
+     * If called with two arguments, sets the argument at
+     * `$positionOrNameOrValue` to `$value`.
      *
-     * @param mixed $indexOrValue The index, or value if no index is specified.
-     * @param mixed $value        The value.
+     * @param mixed $positionOrNameOrValue The position, or name; or value, if no position or name is specified.
+     * @param mixed $value                 The value.
      *
-     * @return $this This stub.
+     * @return $this                      This stub.
+     * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function setsArgument($indexOrValue = null, $value = null): Stub
-    {
+    public function setsArgument(
+        $positionOrNameOrValue = null,
+        $value = null
+    ): Stub {
         if (func_num_args() > 1) {
-            $index = $indexOrValue;
+            $positionOrName = $positionOrNameOrValue;
         } else {
-            $index = 0;
-            $value = $indexOrValue;
+            $positionOrName = 0;
+            $value = $positionOrNameOrValue;
         }
 
         if ($value instanceof InstanceHandle) {
@@ -377,8 +390,8 @@ class StubData implements Stub
         }
 
         return $this->callsWith(
-            function ($arguments) use ($index, $value) {
-                $arguments->set($index, $value);
+            function ($arguments) use ($positionOrName, $value) {
+                $arguments->set($positionOrName, $value);
             },
             [],
             false,
@@ -406,11 +419,11 @@ class StubData implements Stub
     /**
      * Add a callback as an answer.
      *
-     * @param callable                   $callback              The callback.
-     * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
-     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
+     * @param callable                          $callback              The callback.
+     * @param Arguments|array<int|string,mixed> $arguments             The arguments.
+     * @param ?bool                             $prefixSelf            True if the self value should be prefixed.
+     * @param bool                              $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                              $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -451,10 +464,10 @@ class StubData implements Stub
     /**
      * Add an answer that calls the wrapped callback.
      *
-     * @param Arguments|array<int,mixed> $arguments             The arguments.
-     * @param ?bool                      $prefixSelf            True if the self value should be prefixed.
-     * @param bool                       $suffixArgumentsObject True if the arguments object should be appended.
-     * @param bool                       $suffixArguments       True if the arguments should be appended individually.
+     * @param Arguments|array<int|string,mixed> $arguments             The arguments.
+     * @param ?bool                             $prefixSelf            True if the self value should be prefixed.
+     * @param bool                              $suffixArgumentsObject True if the arguments object should be appended.
+     * @param bool                              $suffixArguments       True if the arguments should be appended individually.
      *
      * @return $this This stub.
      */
@@ -625,18 +638,20 @@ class StubData implements Stub
     /**
      * Add an answer that returns an argument.
      *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
+     * Negative positions are offset from the end of the positional arguments.
+     * That is, `-1` indicates the last positional argument, and `-2` indicates
+     * the second-to-last positional argument.
      *
-     * @param int $index The argument index.
+     * @param int|string $positionOrName The argument position or name.
      *
-     * @return $this This stub.
+     * @return $this                      This stub.
+     * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function returnsArgument(int $index = 0): Stub
+    public function returnsArgument(int|string $positionOrName = 0): Stub
     {
         return $this->doesWith(
-            function ($arguments) use ($index) {
-                return $arguments->get($index);
+            function ($arguments) use ($positionOrName) {
+                return $arguments->get($positionOrName);
             },
             [],
             false,
@@ -782,7 +797,7 @@ class StubData implements Stub
      *
      * This method supports reference parameters.
      *
-     * @param Arguments|array<int,mixed> $arguments The arguments.
+     * @param Arguments|array<int|string,mixed> $arguments The arguments.
      *
      * @return mixed     The result of invocation.
      * @throws Throwable If an error occurs.
@@ -798,7 +813,7 @@ class StubData implements Stub
         }
 
         if ($arguments instanceof Arguments) {
-            $argumentsArray = $arguments->positional();
+            $argumentsArray = $arguments->all();
         } else {
             $argumentsArray = $arguments;
             $arguments = new Arguments($arguments);
@@ -808,8 +823,11 @@ class StubData implements Stub
 
         foreach ($this->rules as $rule) {
             if (
-                $this->matcherVerifier
-                    ->matches($rule->criteria(), [], $argumentsArray)
+                $this->matcherVerifier->matches(
+                    $rule->criteria(),
+                    $this->parameterNames,
+                    $argumentsArray
+                )
             ) {
                 break;
             }
@@ -847,6 +865,11 @@ class StubData implements Stub
      * @var array<int,ReflectionParameter>
      */
     private $parameters;
+
+    /**
+     * @var array<int,string>
+     */
+    private $parameterNames;
 
     /**
      * @var mixed
@@ -899,7 +922,7 @@ class StubData implements Stub
     private $assertionRenderer;
 
     /**
-     * @var ?array<int,Matcher>
+     * @var ?array<int|string,Matcher>
      */
     private $criteria;
 

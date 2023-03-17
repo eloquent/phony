@@ -450,7 +450,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $this->assertSame('d', $generator->getReturn());
     }
 
-    public function testReturnsArgumentWithoutIndex()
+    public function testReturnsArgumentWithoutPosition()
     {
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returnsArgument());
 
@@ -461,7 +461,7 @@ class GeneratorAnswerBuilderTest extends TestCase
         $this->assertSame('c', $generator->getReturn());
     }
 
-    public function testReturnsArgumentWithNegativeIndex()
+    public function testReturnsArgumentWithNegativePosition()
     {
         $this->assertSame($this->stub, $this->subject->yields('a')->yields('b')->returnsArgument(-1));
 

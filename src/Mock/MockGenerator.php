@@ -425,7 +425,7 @@ EOD;
             }
 
             $parameterCount = count($parameters);
-            $variadicIndex = -1;
+            $variadicPosition = -1;
             $variadicReference = '';
             $variadicName = '';
 
@@ -433,19 +433,19 @@ EOD;
                 $argumentPacking = '';
             } else {
                 $argumentPacking = "\n";
-                $index = -1;
+                $position = -1;
 
                 foreach ($parameters as $parameterName => $parameter) {
                     if ($parameter[2]) {
                         --$parameterCount;
 
-                        $variadicIndex = ++$index;
+                        $variadicPosition = ++$position;
                         $variadicReference = $parameter[1];
                         $variadicName = $parameterName;
                     } else {
                         $argumentPacking .=
                             "\n        if ($argumentCount > " .
-                            ++$index .
+                            ++$position .
                             ") {\n            {$arguments}[] = " .
                             $parameter[1] .
                             '$' . $parameterName .
@@ -482,9 +482,9 @@ EOD;
                 $parameterCount .
                 "; $i < $argumentCount; ++$i) {\n";
 
-            if ($variadicIndex > -1) {
+            if ($variadicPosition > -1) {
                 $body .= "            {$arguments}[] = $variadicReference\$" .
-                    "{$variadicName}[$i - $variadicIndex];\n";
+                    "{$variadicName}[$i - $variadicPosition];\n";
             } else {
                 $body .= "            {$arguments}[] = \\func_get_arg($i);\n";
             }

@@ -7,7 +7,7 @@ namespace Eloquent\Phony\Call\Exception;
 use Exception;
 
 /**
- * Thrown when an argument that was requested by index does not exist.
+ * Thrown when an argument that was requested by position does not exist.
  */
 final class UndefinedPositionalArgumentException extends Exception implements
     UndefinedArgumentException
@@ -15,28 +15,28 @@ final class UndefinedPositionalArgumentException extends Exception implements
     /**
      * Construct a new undefined positional argument exception.
      *
-     * @param int $index The index.
+     * @param int $position The position.
      */
-    public function __construct(int $index)
+    public function __construct(int $position)
     {
-        $this->index = $index;
+        $this->position = $position;
 
         parent::__construct(
             sprintf(
-                'No positional argument defined for index %s.',
-                var_export($index, true)
+                'No positional argument defined for position %s.',
+                var_export($position, true)
             )
         );
     }
 
     /**
-     * Get the index.
+     * Get the position.
      *
-     * @return int The index.
+     * @return int The position.
      */
-    public function index(): int
+    public function position(): int
     {
-        return $this->index;
+        return $this->position;
     }
 
     /**
@@ -52,5 +52,5 @@ final class UndefinedPositionalArgumentException extends Exception implements
     /**
      * @var int
      */
-    private $index;
+    private $position;
 }

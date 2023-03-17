@@ -227,10 +227,10 @@ class FunctionSignatureInspector
         }
 
         $parameters = null;
-        $index = -1;
+        $position = -1;
 
         foreach ($parameterMatches as $match) {
-            ++$index;
+            ++$position;
 
             /**
              * @var string $isNullable
@@ -310,7 +310,7 @@ class FunctionSignatureInspector
                                     $parameters = $function->getParameters();
                                 }
 
-                                $parameter = $parameters[$index];
+                                $parameter = $parameters[$position];
 
                                 /** @var ReflectionClass<object> */
                                 $declaringClass =
@@ -330,7 +330,7 @@ class FunctionSignatureInspector
                                     $parameters = $function->getParameters();
                                 }
 
-                                $parameter = $parameters[$index];
+                                $parameter = $parameters[$position];
 
                                 /** @var ReflectionClass<object> */
                                 $declaringClass =
@@ -369,7 +369,7 @@ class FunctionSignatureInspector
                         $parameters = $function->getParameters();
                     }
 
-                    $parameter = $parameters[$index];
+                    $parameter = $parameters[$position];
 
                     try {
                         $realDefaultValue = $parameter->getDefaultValue();

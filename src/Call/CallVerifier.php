@@ -72,6 +72,15 @@ class CallVerifier implements Call, CardinalityVerifier
         $this->cardinality = new Cardinality();
 
         $this->argumentCount = count($call->arguments());
+        $this->parameterNames = [];
+
+        foreach ($call->parameters() as $parameter) {
+            if ($parameter->isVariadic()) {
+                break;
+            }
+
+            $this->parameterNames[] = $parameter->getName();
+        }
     }
 
     /**
@@ -431,19 +440,20 @@ class CallVerifier implements Call, CardinalityVerifier
     }
 
     /**
-     * Get an argument by index.
+     * Get an argument by position or name.
      *
-     * Negative indices are offset from the end of the list. That is, `-1`
-     * indicates the last element, and `-2` indicates the second last element.
+     * Negative positions are offset from the end of the positional arguments.
+     * That is, `-1` indicates the last positional argument, and `-2` indicates
+     * the second-to-last positional argument.
      *
-     * @param int $index The index.
+     * @param int|string $positionOrName The position or name.
      *
      * @return mixed                      The argument.
-     * @throws UndefinedArgumentException If the requested argument is undefined, or no arguments were recorded.
+     * @throws UndefinedArgumentException If the requested argument is undefined.
      */
-    public function argument(int $index = 0)
+    public function argument(int|string $positionOrName = 0)
     {
-        return $this->call->argument($index);
+        return $this->call->argument($positionOrName);
     }
 
     /**
@@ -587,8 +597,6 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Checks if called with the supplied arguments.
      *
-     * Does not support named arguments.
-     *
      * @param mixed ...$arguments The arguments.
      *
      * @return ?EventCollection            The result.
@@ -596,17 +604,16 @@ class CallVerifier implements Call, CardinalityVerifier
      */
     public function checkCalledWith(...$arguments): ?EventCollection
     {
-        /** @var array<int,mixed> $arguments */
-
         $cardinality = $this->resetCardinality()->assertSingular();
         $matchers = $this->matcherFactory->adaptAll($arguments);
 
-        /** @var array<int,Matcher> $matchers */
-
         list($matchCount, $matchingEvents) = $this->matchIf(
             $this->call,
-            $this->matcherVerifier
-                ->matches($matchers, [], $this->call->arguments()->positional())
+            $this->matcherVerifier->matches(
+                $matchers,
+                $this->parameterNames,
+                $this->call->arguments()->all()
+            )
         );
 
         if ($cardinality->matches($matchCount, 1)) {
@@ -619,8 +626,6 @@ class CallVerifier implements Call, CardinalityVerifier
     /**
      * Throws an exception unless called with the supplied arguments.
      *
-     * Does not support named arguments.
-     *
      * @param mixed ...$arguments The arguments.
      *
      * @return ?EventCollection            The result, or null if the assertion recorder does not throw exceptions.
@@ -629,12 +634,8 @@ class CallVerifier implements Call, CardinalityVerifier
      */
     public function calledWith(...$arguments): ?EventCollection
     {
-        /** @var array<int,mixed> $arguments */
-
         $cardinality = $this->cardinality;
         $matchers = $this->matcherFactory->adaptAll($arguments);
-
-        /** @var array<int,Matcher> $matchers */
 
         if ($result = $this->checkCalledWith(...$matchers)) {
             return $result;
@@ -1095,6 +1096,11 @@ class CallVerifier implements Call, CardinalityVerifier
      * @var AssertionRenderer
      */
     private $assertionRenderer;
+
+    /**
+     * @var array<int,string>
+     */
+    private $parameterNames;
 
     /**
      * @var int
