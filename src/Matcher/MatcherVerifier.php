@@ -14,21 +14,21 @@ class MatcherVerifier
     /**
      * Verify that the supplied arguments match the supplied matchers.
      *
-     * @param array<int|string,Matcher> $matchers      The matchers.
-     * @param array<int,string>         $argumentNames The argument names.
-     * @param array<int|string,mixed>   $arguments     The arguments.
+     * @param array<int|string,Matcher> $matchers       The matchers.
+     * @param array<int,string>         $parameterNames The parameter names.
+     * @param array<int|string,mixed>   $arguments      The arguments.
      *
      * @return bool                     True if the arguments match.
      * @throws InvalidArgumentException If a wildcard matcher precedes any other matcher.
      */
     public function matches(
         array $matchers,
-        array $argumentNames,
+        array $parameterNames,
         array $arguments,
     ): bool {
         $keyMap = [];
 
-        foreach ($argumentNames as $position => $name) {
+        foreach ($parameterNames as $position => $name) {
             $keyMap[$position] = $name;
             $keyMap[$name] = $position;
         }
@@ -107,21 +107,21 @@ class MatcherVerifier
      * Explain which of the supplied arguments match which of the supplied
      * matchers.
      *
-     * @param array<int|string,Matcher> $matchers      The matchers.
-     * @param array<int,string>         $argumentNames The argument names.
-     * @param array<int|string,mixed>   $arguments     The arguments.
+     * @param array<int|string,Matcher> $matchers       The matchers.
+     * @param array<int,string>         $parameterNames The parameter names.
+     * @param array<int|string,mixed>   $arguments      The arguments.
      *
      * @return MatcherResult            The result of matching.
      * @throws InvalidArgumentException If a wildcard matcher precedes any other matcher.
      */
     public function explain(
         array $matchers,
-        array $argumentNames,
+        array $parameterNames,
         array $arguments,
     ): MatcherResult {
         $keyMap = [];
 
-        foreach ($argumentNames as $position => $name) {
+        foreach ($parameterNames as $position => $name) {
             $keyMap[$position] = $name;
             $keyMap[$name] = $position;
         }
