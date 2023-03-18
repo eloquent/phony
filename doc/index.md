@@ -187,6 +187,8 @@
     - [AssertionException]
     - [UndefinedArgumentException]
     - [UndefinedCallException]
+    - [UndefinedNamedArgumentException]
+    - [UndefinedPositionalArgumentException]
     - [UndefinedEventException]
     - [UndefinedResponseException]
 - [License]
@@ -5591,15 +5593,16 @@ _See [Invoking callables]._
 
 ---
 
-> _fluent_ $stub->[**callsArgument**](#stub.callsArgument)(...$indices)
+> _fluent_ $stub->[**callsArgument**](#stub.callsArgument)(...$positionsOrNames)
 
 Add argument callbacks to be called as part of an answer.
 
 _Calling this method with no arguments is equivalent to calling it with a single
 argument of `0`._
 
-_Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element._
+_Negative positions are offset from the end of the positional arguments. That
+is, `-1` indicates the last positional argument, and `-2` indicates the
+second-to-last positional argument._
 
 _Note that all supplied callbacks will be called in the same invocation._
 
@@ -5609,12 +5612,13 @@ _See [Invoking arguments]._
 
 ---
 
-> _fluent_ $stub->[**callsArgumentWith**](#stub.callsArgumentWith)($index = 0, $arguments = [], $prefixSelf = false, $suffixArgumentsObject = false, $suffixArguments = true)
+> _fluent_ $stub->[**callsArgumentWith**](#stub.callsArgumentWith)($positionOrName = 0, $arguments = [], $prefixSelf = false, $suffixArgumentsObject = false, $suffixArguments = true)
 
 Add an argument callback to be called as part of an answer.
 
-_Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element._
+_Negative positions are offset from the end of the positional arguments. That
+is, `-1` indicates the last positional argument, and `-2` indicates the
+second-to-last positional argument._
 
 _This method supports reference parameters._
 
@@ -5628,16 +5632,21 @@ _See [Invoking arguments]._
 
 ---
 
-> _fluent_ $stub->[**setsArgument**](#stub.setsArgument)($indexOrValue = null, $value = null)
+> _fluent_ $stub->[**setsArgument**](#stub.setsArgument)($positionOrNameOrValue = null, $value = null)
 
 Set the value of an argument passed by reference as part of an answer.
 
 _If called with no arguments, sets the first argument to `null`._
 
-_If called with one argument, sets the first argument to `$indexOrValue`._
+_If called with one argument, sets the first argument to
+`$positionOrNameOrValue`._
 
-_If called with two arguments, sets the argument at `$indexOrValue` to
+_If called with two arguments, sets the argument at `$positionOrNameOrValue` to
 `$value`._
+
+_Negative positions are offset from the end of the positional arguments. That
+is, `-1` indicates the last positional argument, and `-2` indicates the
+second-to-last positional argument._
 
 _This method supports [mock handle substitution]._
 
@@ -5700,12 +5709,13 @@ _See [Returning values]._
 
 ---
 
-> _fluent_ $stub->[**returnsArgument**](#stub.returnsArgument)($index = 0)
+> _fluent_ $stub->[**returnsArgument**](#stub.returnsArgument)($positionOrName = 0)
 
 Add an answer that returns an argument.
 
-_Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element._
+_Negative positions are offset from the end of the positional arguments. That
+is, `-1` indicates the last positional argument, and `-2` indicates the
+second-to-last positional argument._
 
 _See [Returning arguments]._
 
@@ -5794,15 +5804,16 @@ _See [Invoking callables in a generator]._
 
 ---
 
-> _fluent_ $generatorAnswer->[**callsArgument**](#generatorAnswer.callsArgument)(...$indices)
+> _fluent_ $generatorAnswer->[**callsArgument**](#generatorAnswer.callsArgument)(...$positionsOrNames)
 
 Add argument callbacks to be called as part of the answer.
 
 _Calling this method with no arguments is equivalent to calling it with a single
 argument of `0`._
 
-_Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element._
+_Negative positions are offset from the end of the positional arguments. That
+is, `-1` indicates the last positional argument, and `-2` indicates the
+second-to-last positional argument._
 
 _See [Invoking arguments in a generator]._
 
@@ -5810,12 +5821,13 @@ _See [Invoking arguments in a generator]._
 
 ---
 
-> _fluent_ $generatorAnswer->[**callsArgumentWith**](#generatorAnswer.callsArgumentWith)($index = 0, $arguments = [], $prefixSelf = false, $suffixArgumentsObject = false, $suffixArguments = true)
+> _fluent_ $generatorAnswer->[**callsArgumentWith**](#generatorAnswer.callsArgumentWith)($positionOrName = 0, $arguments = [], $prefixSelf = false, $suffixArgumentsObject = false, $suffixArguments = true)
 
 Add an argument callback to be called as part of the answer.
 
-_Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element._
+_Negative positions are offset from the end of the positional arguments. That
+is, `-1` indicates the last positional argument, and `-2` indicates the
+second-to-last positional argument._
 
 _This method supports reference parameters._
 
@@ -5827,16 +5839,21 @@ _See [Invoking arguments in a generator]._
 
 ---
 
-> _fluent_ $generatorAnswer->[**setsArgument**](#generatorAnswer.setsArgument)($indexOrValue = null, $value = null)
+> _fluent_ $generatorAnswer->[**setsArgument**](#generatorAnswer.setsArgument)($positionOrNameOrValue = null, $value = null)
 
 Set the value of an argument passed by reference as part of the answer.
 
 _If called with no arguments, sets the first argument to `null`._
 
-_If called with one argument, sets the first argument to `$indexOrValue`._
+_If called with one argument, sets the first argument to
+`$positionOrNameOrValue`._
 
-_If called with two arguments, sets the argument at `$indexOrValue` to
+_If called with two arguments, sets the argument at `$positionOrNameOrValue` to
 `$value`._
+
+_Negative positions are offset from the end of the positional arguments. That
+is, `-1` indicates the last positional argument, and `-2` indicates the
+second-to-last positional argument._
 
 _This method supports [mock handle substitution] of the value._
 
@@ -5896,12 +5913,13 @@ _See [Returning values from a generator]._
 
 ---
 
-> _[stub][stub-api]_ $generatorAnswer->[**returnsArgument**](#generatorAnswer.returnsArgument)($index = 0)
+> _[stub][stub-api]_ $generatorAnswer->[**returnsArgument**](#generatorAnswer.returnsArgument)($positionOrName = 0)
 
 End the generator by returning an argument.
 
-_Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element._
+_Negative positions are offset from the end of the positional arguments. That
+is, `-1` indicates the last positional argument, and `-2` indicates the
+second-to-last positional argument._
 
 _See [Returning arguments from a generator]._
 
@@ -6624,13 +6642,14 @@ _See [Verifying that a spy was called with specific arguments],
 
 ---
 
-> _mixed_ $call->[**argument**](#call.argument)($index = 0)
+> _mixed_ $call->[**argument**](#call.argument)($positionOrName = 0)
 > throws [UndefinedArgumentException]
 
-Get an argument by index.
+Get an argument by position or name.
 
-_Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element._
+_Negative positions are offset from the end of the positional arguments. That
+is, `-1` indicates the last positional argument, and `-2` indicates the
+second-to-last positional argument._
 
 _See [Verifying that a spy was called with specific arguments],
 [Verifying that a call was made with specific arguments]._
@@ -7228,7 +7247,7 @@ methods:
 - [`$arguments->all()`](#arguments.all)
 - [`count($arguments)`](#arguments.count)
 - [`$arguments->count()`](#arguments.count)
-- [`foreach ($arguments as $index => $argument)`](#arguments.implements.Traversable)
+- [`foreach ($arguments as $positionOrName => $argument)`](#arguments.implements.Traversable)
 - [`$arguments->has()`](#arguments.has)
 - [`$arguments->get()`](#arguments.get)
 - [`$arguments->set()`](#arguments.set)
@@ -7273,7 +7292,7 @@ _See [Verifying that a spy was called with specific arguments],
 
 ---
 
-> [**foreach ($arguments as $index => $argument)**](#arguments.implements.Traversable) { /_ ... _/ }
+> [**foreach ($arguments as $positionOrName => $argument)**](#arguments.implements.Traversable) { /_ ... _/ }
 
 Arguments implement the [Traversable] interface, allowing them to be used in a
 `foreach` statement.
@@ -7285,12 +7304,13 @@ _See [Verifying that a spy was called with specific arguments],
 
 ---
 
-> _bool_ $arguments->[**has**](#arguments.has)($index = 0)
+> _bool_ $arguments->[**has**](#arguments.has)($positionOrName = 0)
 
-Returns `true` if an argument exists at `$index`.
+Returns `true` if an argument exists at `$positionOrName`.
 
-_Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element._
+_Negative positions are offset from the end of the positional arguments. That
+is, `-1` indicates the last positional argument, and `-2` indicates the
+second-to-last positional argument._
 
 _See [Verifying that a spy was called with specific arguments],
 [Verifying that a call was made with specific arguments]._
@@ -7299,13 +7319,14 @@ _See [Verifying that a spy was called with specific arguments],
 
 ---
 
-> _mixed_ $arguments->[**get**](#arguments.get)($index = 0)
+> _mixed_ $arguments->[**get**](#arguments.get)($positionOrName = 0)
 > throws [UndefinedArgumentException]
 
-Get the argument at `$index`.
+Get the argument at `$positionOrName`.
 
-_Negative indices are offset from the end of the list. That is, `-1` indicates
-the last element, and `-2` indicates the second last element._
+_Negative positions are offset from the end of the positional arguments. That
+is, `-1` indicates the last positional argument, and `-2` indicates the
+second-to-last positional argument._
 
 _See [Verifying that a spy was called with specific arguments],
 [Verifying that a call was made with specific arguments]._
@@ -7314,17 +7335,22 @@ _See [Verifying that a spy was called with specific arguments],
 
 ---
 
-> _fluent_ $arguments->[**set**](#arguments.set)($indexOrValue = null, $value = null)
+> _fluent_ $arguments->[**set**](#arguments.set)($positionOrNameOrValue = null, $value = null)
 > throws [UndefinedArgumentException]
 
-Set an argument by index.
+Set an argument by position or name.
 
 _If called with no arguments, sets the first argument to `null`._
 
-_If called with one argument, sets the first argument to `$indexOrValue`._
+_If called with one argument, sets the first argument to
+`$positionOrNameOrValue`._
 
-_If called with two arguments, sets the argument at `$indexOrValue` to
+_If called with two arguments, sets the argument at `$positionOrNameOrValue` to
 `$value`._
+
+_Negative positions are offset from the end of the positional arguments. That
+is, `-1` indicates the last positional argument, and `-2` indicates the
+second-to-last positional argument._
 
 _See [Verifying that a spy was called with specific arguments],
 [Verifying that a call was made with specific arguments]._
@@ -8106,17 +8132,22 @@ public API methods.
 
 #### UndefinedArgumentException
 
-Thrown when an argument that was requested does not exist.
+An interface implemented by exceptions that are thrown when an argument that was
+requested does not exist.
 
 Namespace: `Eloquent\Phony\Call\Exception`
 
-<a name="undefinedargumentexception.index" />
+Implemented by:
+- [UndefinedNamedArgumentException]
+- [UndefinedPositionalArgumentException]
+
+<a name="undefineargumentexception.isNamed" />
 
 ---
 
-> _int_ $exception->[**index**](#undefinedargumentexception.index)()
+> _bool_ $exception->[**isNamed**](#undefineargumentexception.isNamed)()
 
-Get the index.
+Returns true if the undefined argument was requested by name.
 
 #### UndefinedCallException
 
@@ -8131,6 +8162,38 @@ Namespace: `Eloquent\Phony\Call\Exception`
 > _int_ $exception->[**index**](#undefinedcallexception.index)()
 
 Get the index.
+
+#### UndefinedNamedArgumentException
+
+Thrown when a named argument that was requested does not exist.
+
+Namespace: `Eloquent\Phony\Call\Exception`
+
+Implements: [UndefinedArgumentException]
+
+<a name="undefinednamedargumentexception.name" />
+
+---
+
+> _string_ $exception->[**name**](#undefinednamedargumentexception.name)()
+
+Get the name.
+
+#### UndefinedPositionalArgumentException
+
+Thrown when a positional argument that was requested does not exist.
+
+Namespace: `Eloquent\Phony\Call\Exception`
+
+Implements: [UndefinedArgumentException]
+
+<a name="undefinedpositionalargumentexception.position" />
+
+---
+
+> _int_ $exception->[**position**](#undefinedpositionalargumentexception.position)()
+
+Get the position.
 
 #### UndefinedEventException
 
@@ -8308,6 +8371,8 @@ For the full copyright and license information, please view the [LICENSE file].
 [undefinedargumentexception]: #undefinedargumentexception
 [undefinedcallexception]: #undefinedcallexception
 [undefinedeventexception]: #undefinedeventexception
+[undefinednamedargumentexception]: #undefinednamedargumentexception
+[undefinedpositionalargumentexception]: #undefinedpositionalargumentexception
 [undefinedresponseexception]: #undefinedresponseexception
 [understanding verification output]: #understanding-verification-output
 [usage]: #usage
