@@ -368,6 +368,10 @@ class StubData implements Stub
      * If called with two arguments, sets the argument at
      * `$positionOrNameOrValue` to `$value`.
      *
+     * Negative positions are offset from the end of the positional arguments.
+     * That is, `-1` indicates the last positional argument, and `-2` indicates
+     * the second-to-last positional argument.
+     *
      * @param mixed $positionOrNameOrValue The position, or name; or value, if no position or name is specified.
      * @param mixed $value                 The value.
      *
