@@ -360,9 +360,9 @@ class StubData implements Stub
     /**
      * Set the value of an argument passed by reference as part of an answer.
      *
-     * If called with no arguments, sets the first positional argument to null.
+     * If called with no arguments, sets the first argument to null.
      *
-     * If called with one argument, sets the first positional argument to
+     * If called with one argument, sets the first argument to
      * `$positionOrNameOrValue`.
      *
      * If called with two arguments, sets the argument at

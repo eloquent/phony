@@ -60,12 +60,35 @@ class ArgumentsTest extends TestCase
         $this->assertSame([null, 5, 'c' => 6], $this->subject->all());
         $this->assertNull($this->a);
 
-        $this->assertSame($this->subject, $this->subject->set(-1, 7));
-        $this->assertSame($this->subject, $this->subject->set(-2, 8));
+        $this->assertSame($this->subject, $this->subject->set(7));
 
-        $this->assertSame([8, 7, 'c' => 6], $this->subject->all());
-        $this->assertSame(8, $this->a);
-        $this->assertSame(7, $this->b);
+        $this->assertSame([7, 5, 'c' => 6], $this->subject->all());
+        $this->assertSame(7, $this->a);
+
+        $this->assertSame($this->subject, $this->subject->set(-1, 8));
+        $this->assertSame($this->subject, $this->subject->set(-2, 9));
+
+        $this->assertSame([9, 8, 'c' => 6], $this->subject->all());
+        $this->assertSame(9, $this->a);
+        $this->assertSame(8, $this->b);
+    }
+
+    public function testSetFirstNamed()
+    {
+        $a = 1;
+        $b = 2;
+        $arguments = ['a' => &$a, 'b' => &$b];
+        $subject = new Arguments($arguments);
+
+        $this->assertSame($subject, $subject->set());
+
+        $this->assertSame(['a' => null, 'b' => 2], $subject->all());
+        $this->assertNull($a);
+
+        $this->assertSame($subject, $subject->set(3));
+
+        $this->assertSame(['a' => 3, 'b' => 2], $subject->all());
+        $this->assertSame(3, $a);
     }
 
     public function testSetFailureTooHigh()

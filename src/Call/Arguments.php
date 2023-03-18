@@ -47,7 +47,15 @@ class Arguments implements Countable, IteratorAggregate
         $this->positional = [];
         $this->named = [];
 
+        $firstPositionOrName = 0;
+        $isFirst = true;
+
         foreach ($arguments as $positionOrName => &$value) {
+            if ($isFirst) {
+                $isFirst = false;
+                $firstPositionOrName = $positionOrName;
+            }
+
             if (is_string($positionOrName)) {
                 $this->named[$positionOrName] = &$value;
             } else {
@@ -55,6 +63,8 @@ class Arguments implements Countable, IteratorAggregate
                 $this->positional[] = &$value;
             }
         }
+
+        $this->firstPositionOrName = $firstPositionOrName;
     }
 
     /**
@@ -112,9 +122,9 @@ class Arguments implements Countable, IteratorAggregate
     /**
      * Set an argument by position or name.
      *
-     * If called with no arguments, sets the first positional argument to null.
+     * If called with no arguments, sets the first argument to null.
      *
-     * If called with one argument, sets the first positional argument to
+     * If called with one argument, sets the first argument to
      * `$positionOrNameOrValue`.
      *
      * If called with two arguments, sets the argument at
@@ -132,15 +142,13 @@ class Arguments implements Countable, IteratorAggregate
             /** @var int|string $positionOrName */
             $positionOrName = $positionOrNameOrValue;
             /** @var null $value */
-            $isNamed = is_string($positionOrName);
         } else {
-            $positionOrName = 0;
-            $normalized = 0;
+            $positionOrName = $this->firstPositionOrName;
+            $normalized = $this->firstPositionOrName;
             $value = $positionOrNameOrValue;
-            $isNamed = false;
         }
 
-        if ($isNamed) {
+        if (is_string($positionOrName)) {
             /** @var string $positionOrName */
             if (!array_key_exists($positionOrName, $this->named)) {
                 throw new UndefinedNamedArgumentException($positionOrName);
@@ -262,6 +270,11 @@ class Arguments implements Countable, IteratorAggregate
      * @var array<string,mixed>
      */
     private $named;
+
+    /**
+     * @var int|string
+     */
+    private $firstPositionOrName;
 
     /**
      * @var int
