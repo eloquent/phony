@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Stub\Answer\Builder;
 
 use Eloquent\Phony\Call\Arguments;
-use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
@@ -113,8 +112,7 @@ class GeneratorAnswerBuilder
      *
      * @param int|string ...$positionsOrNames The argument positions and/or names.
      *
-     * @return $this                      This builder.
-     * @throws UndefinedArgumentException If a requested argument is undefined.
+     * @return $this This builder.
      */
     public function callsArgument(int|string ...$positionsOrNames): self
     {
@@ -144,8 +142,7 @@ class GeneratorAnswerBuilder
      * @param bool                              $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool                              $suffixArguments       True if the arguments should be appended individually.
      *
-     * @return $this                      This builder.
-     * @throws UndefinedArgumentException If the requested argument is undefined.
+     * @return $this This builder.
      */
     public function callsArgumentWith(
         int|string $positionOrName = 0,
@@ -207,8 +204,7 @@ class GeneratorAnswerBuilder
      * @param mixed $positionOrNameOrValue The position, or name; or value, if no position or name is specified.
      * @param mixed $value                 The value.
      *
-     * @return $this                      This builder.
-     * @throws UndefinedArgumentException If the requested argument is undefined.
+     * @return $this This builder.
      */
     public function setsArgument(
         $positionOrNameOrValue = null,
@@ -359,8 +355,7 @@ class GeneratorAnswerBuilder
      *
      * @param int|string $positionOrName The argument position or name.
      *
-     * @return Stub                       The stub.
-     * @throws UndefinedArgumentException If the requested argument is undefined.
+     * @return Stub The stub.
      */
     public function returnsArgument(int|string $positionOrName = 0): Stub
     {

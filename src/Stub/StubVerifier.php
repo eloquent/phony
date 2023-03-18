@@ -8,7 +8,6 @@ use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallVerifierFactory;
-use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Invocation\WrappedInvocable;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherVerifier;
@@ -227,8 +226,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @param int|string ...$positionsOrNames The argument positions and/or names.
      *
-     * @return $this                      This stub.
-     * @throws UndefinedArgumentException If a requested argument is undefined.
+     * @return $this This stub.
      */
     public function callsArgument(int|string ...$positionsOrNames): Stub
     {
@@ -252,8 +250,7 @@ class StubVerifier extends SpyVerifier implements Stub
      * @param bool                              $suffixArgumentsObject True if the arguments object should be appended.
      * @param bool                              $suffixArguments       True if the arguments should be appended individually.
      *
-     * @return $this                      This stub.
-     * @throws UndefinedArgumentException If the requested argument is undefined.
+     * @return $this This stub.
      */
     public function callsArgumentWith(
         int|string $positionOrName = 0,
@@ -291,8 +288,7 @@ class StubVerifier extends SpyVerifier implements Stub
      * @param mixed $positionOrNameOrValue The position, or name; or value, if no position or name is specified.
      * @param mixed $value                 The value.
      *
-     * @return $this                      This stub.
-     * @throws UndefinedArgumentException If the requested argument is undefined.
+     * @return $this This stub.
      */
     public function setsArgument(
         $positionOrNameOrValue = null,
@@ -402,8 +398,7 @@ class StubVerifier extends SpyVerifier implements Stub
      *
      * @param int|string $positionOrName The argument position or name.
      *
-     * @return $this                      This stub.
-     * @throws UndefinedArgumentException If the requested argument is undefined.
+     * @return $this This stub.
      */
     public function returnsArgument(int|string $positionOrName = 0): Stub
     {
