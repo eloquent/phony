@@ -277,6 +277,40 @@ class SpyDataTest extends TestCase
         $this->assertEquals($expected, $spy->allCalls());
     }
 
+    public function testInvokeMethodsWithNamedArguments()
+    {
+        $spy = $this->subject;
+        $spy->invokeWith(['array' => ['1'], 'separator' => ',']);
+        $spy->invoke(array: ['2', '3'], separator: ',');
+        $spy(array: ['4'], separator: ',');
+        $this->callFactory->reset();
+        $expected = [
+            $this->callFactory->create(
+                $this->eventFactory
+                    ->createCalled($spy, $this->parameters, Arguments::create(array: ['1'], separator: ',')),
+                ($responseEvent = $this->eventFactory->createReturned('1')),
+                null,
+                $responseEvent
+            ),
+            $this->callFactory->create(
+                $this->eventFactory
+                    ->createCalled($spy, $this->parameters, Arguments::create(array: ['2', '3'], separator: ',')),
+                ($responseEvent = $this->eventFactory->createReturned('2,3')),
+                null,
+                $responseEvent
+            ),
+            $this->callFactory->create(
+                $this->eventFactory
+                    ->createCalled($spy, $this->parameters, Arguments::create(array: ['4'], separator: ',')),
+                ($responseEvent = $this->eventFactory->createReturned('4')),
+                null,
+                $responseEvent
+            ),
+        ];
+
+        $this->assertEquals($expected, $spy->allCalls());
+    }
+
     public function testInvokeMethodsWithoutSubject()
     {
         $spy = new SpyData(

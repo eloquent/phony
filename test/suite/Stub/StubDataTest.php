@@ -1208,6 +1208,15 @@ class StubDataTest extends TestCase
         $this->assertSame('', (string) call_user_func($this->subject));
     }
 
+    public function testInvokeMethodsWithNamedArguments()
+    {
+        $this->subject->returns();
+
+        $this->assertSame('', (string) $this->subject->invokeWith(['array' => ['1'], 'separator' => ',']));
+        $this->assertSame('', (string) $this->subject->invoke(array: ['2', '3'], separator: ','));
+        $this->assertSame('', (string) call_user_func($this->subject, array: ['4'], separator: ','));
+    }
+
     public function testInvokeWithWithReferenceParameters()
     {
         $a = null;
