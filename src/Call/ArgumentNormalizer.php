@@ -45,7 +45,7 @@ class ArgumentNormalizer
                 $key = $name;
             }
 
-            $normalized[$key] = $value;
+            $normalized[$key] = &$value;
             $positions[$key] = $position;
         }
 

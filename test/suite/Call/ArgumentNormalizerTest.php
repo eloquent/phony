@@ -174,4 +174,25 @@ class ArgumentNormalizerTest extends TestCase
             'out of order'
         );
     }
+
+    public function testNormalizeMaintainsReferences()
+    {
+        $a = 222;
+        $b = 111;
+        $c = 444;
+        $d = 333;
+        $actual = $this->subject->normalize([], [&$c, &$d, 'a' => &$a, 'b' => &$b]);
+
+        $this->assertSame([&$c, &$d, 'a' => &$a, 'b' => &$b], $actual);
+
+        $a = 555;
+        $b = 666;
+        $c = 777;
+        $d = 888;
+
+        $this->assertSame(777, $actual[0]);
+        $this->assertSame(888, $actual[1]);
+        $this->assertSame(555, $actual['a']);
+        $this->assertSame(666, $actual['b']);
+    }
 }
