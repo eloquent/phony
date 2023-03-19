@@ -85,13 +85,15 @@
         <tspan>call with arguments:</tspan>
     </text>
     <text x="16" y="44">
-        <tspan xml:space="preserve">    </tspan>
+        <tspan xml:space="preserve">     </tspan>
+        <tspan><tspan class="tooltip"><title>The first argument is named "animal"</title>animal:</tspan></tspan>
         <tspan class="green"><tspan class="tooltip"><title>This matcher matched the correct number of times</title>✓</tspan></tspan>
         <tspan><tspan class="tooltip"><title>The first argument should be a string</title>"aardvark"</tspan></tspan>
         <tspan class="green faint"><tspan class="tooltip"><title>This matcher matched one time</title>(1 match)</tspan></tspan>
     </text>
     <text x="16" y="60">
         <tspan xml:space="preserve">    </tspan>
+        <tspan><tspan class="tooltip"><title>The second argument is named "animals"</title>animals:</tspan></tspan>
         <tspan class="red"><tspan class="tooltip"><title>This matcher matched an incorrect number of times</title>✗</tspan></tspan>
         <tspan><tspan class="tooltip"><title>The second argument should be an array with 3 elements</title>#0["bonobo", "chameleon", "dugong"]</tspan></tspan>
         <tspan class="red faint"><tspan class="tooltip"><title>This matcher never matched</title>(0 matches)</tspan></tspan>
@@ -105,12 +107,14 @@
         </tspan>
     </text>
     <text x="16" y="108">
-        <tspan xml:space="preserve">    </tspan>
+        <tspan xml:space="preserve">     </tspan>
+        <tspan><tspan class="tooltip"><title>The first argument is named "animal"</title>animal:</tspan></tspan>
         <tspan class="green"><tspan class="tooltip"><title>This argument matched</title>✓</tspan></tspan>
         <tspan><tspan class="tooltip"><title>This argument was a matching string</title>"aardvark"</tspan></tspan>
     </text>
     <text x="16" y="124">
         <tspan xml:space="preserve">    </tspan>
+        <tspan><tspan class="tooltip"><title>The second argument is named "animals"</title>animals:</tspan></tspan>
         <tspan class="red"><tspan class="tooltip"><title>This argument did not match</title>✗</tspan></tspan>
         <tspan>#0["bonobo", "</tspan><tspan class="cyan faint">[-</tspan><tspan class="cyan underline"><tspan class="tooltip"><title>This expected value was missing</title>chameleon</tspan></tspan><tspan class="cyan faint">-]</tspan><tspan class="yellow faint">{+</tspan><tspan class="yellow underline"><tspan class="tooltip"><title>This unexpected value was encountered</title>capybara</tspan></tspan><tspan class="yellow faint">+}</tspan><tspan>", "dugong"]</tspan>
     </text>
@@ -122,12 +126,14 @@
         </tspan>
     </text>
     <text x="16" y="156">
-        <tspan xml:space="preserve">    </tspan>
+        <tspan xml:space="preserve">     </tspan>
+        <tspan><tspan class="tooltip"><title>The first argument is named "animal"</title>animal:</tspan></tspan>
         <tspan class="red"><tspan class="tooltip"><title>This argument did not match</title>✗</tspan></tspan>
         <tspan>"</tspan><tspan class="cyan faint">[-</tspan><tspan class="cyan underline"><tspan class="tooltip"><title>This expected value was missing</title>aardvark</tspan></tspan><tspan class="cyan faint">-]</tspan><tspan class="yellow faint">{+</tspan><tspan class="yellow underline"><tspan class="tooltip"><title>This unexpected value was encountered</title>armadillo</tspan></tspan><tspan class="yellow faint">+}</tspan><tspan>"</tspan>
     </text>
     <text x="16" y="172">
         <tspan xml:space="preserve">    </tspan>
+        <tspan><tspan class="tooltip"><title>The second argument is named "animals"</title>animals:</tspan></tspan>
         <tspan class="red"><tspan class="tooltip"><title>This argument did not match</title>✗</tspan></tspan>
         <tspan>#0["bonobo", "chameleon", "</tspan><tspan class="cyan faint">[-</tspan><tspan class="cyan underline"><tspan class="tooltip"><title>This expected value was missing</title>dugong</tspan></tspan><tspan class="cyan faint">-]</tspan><tspan class="yellow faint">{+</tspan><tspan class="yellow underline"><tspan class="tooltip"><title>This unexpected value was encountered</title>dormouse</tspan></tspan><tspan class="yellow faint">+}</tspan><tspan>"]</tspan>
     </text>

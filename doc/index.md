@@ -3605,11 +3605,11 @@ The first part of the output explains what was expected. In the above example:
 - `Expected ClassA[label]->methodA call` -
   Expected a call to `methodA` on a mock of `ClassA`, with a label of `label`.
 - `with arguments:` - The arguments should match the conditions detailed below.
-- `✓ "aardvark" (1 match)` - The first argument should be the string
-  `"aardvark"`, and 1 call had a matching first argument.
-- `✗ #0["bonobo", "chameleon", "dugong"] (0 matches)` - The second argument
-  should be an array with 3 string elements, but no calls had a matching second
-  argument.
+- `animal: ✓ "aardvark" (1 match)` - The first argument (named `animal`) should
+  be the string `"aardvark"`, and 1 call had a matching first argument.
+- `animals: ✗ #0["bonobo", "chameleon", "dugong"] (0 matches)` - The second
+  argument (named `animals`) should be an array with 3 string elements, but no
+  calls had a matching second argument.
 
 #### Cardinality output
 
@@ -3624,17 +3624,17 @@ The third part of the output explains what actually happened. In the above
 example:
 
 - `✗ Call #0:` - The first call did not match.
-- `✓ "aardvark"` - The first argument of the first call matched.
-- `✗ #0["bonobo", "[-chameleon-]{+capybara+}", "dugong"]` - The second argument
-  of the first call did not match. The second array element was expected to be
-  `"chameleon"`, but it was actually `"capybara"`.
+- `animal: ✓ "aardvark"` - The first argument of the first call matched.
+- `animals: ✗ #0["bonobo", "[-chameleon-]{+capybara+}", "dugong"]` - The second
+  argument of the first call did not match. The second array element was
+  expected to be `"chameleon"`, but it was actually `"capybara"`.
 - `✗ Call #1:` - The second call did not match.
-- `✗ "[-aardvark-]{+armadillo+}"` - The first argument of the second call did
-  not match. The argument was expected to be `"aardvark"`, but it was actually
-  `"armadillo"`.
-- `✗ #0["bonobo", "chameleon", "[-dugong-]{+dormouse+}"]` - The second argument
-  of the second call did not match. The third array element was expected to be
-  `"dugong"`, but it was actually `"dormouse"`.
+- `animal: ✗ "[-aardvark-]{+armadillo+}"` - The first argument of the second
+  call did not match. The argument was expected to be `"aardvark"`, but it was
+  actually `"armadillo"`.
+- `animals: ✗ #0["bonobo", "chameleon", "[-dugong-]{+dormouse+}"]` - The second
+  argument of the second call did not match. The third array element was
+  expected to be `"dugong"`, but it was actually `"dormouse"`.
 
 ### Generator and iterable verification
 
