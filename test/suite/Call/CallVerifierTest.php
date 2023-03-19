@@ -460,6 +460,92 @@ class CallVerifierTest extends TestCase
         $this->assertEquals($this->emptyAssertionResult, $this->subject->never()->calledWith('b', 'c'));
     }
 
+    public function testCalledWithWithNamedArguments()
+    {
+        $call = $this->callFactory->create(
+            $this->eventFactory->createCalled(
+                'implode',
+                (new ReflectionFunction('implode'))->getParameters(),
+                new Arguments(['separator' => ',', 'array' => ['a', 'b']])
+            ),
+            ($responseEvent = $this->eventFactory->createReturned('a,b')),
+            null,
+            $responseEvent
+        );
+        $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
+        $subject = call_user_func($this->createCallVerifier, $call);
+        $positionalMatchers = $this->matcherFactory->adaptAll([',', ['a', 'b']]);
+        $namedMatchers = $this->matcherFactory->adaptAll(['array' => ['a', 'b'], 'separator' => ',']);
+
+        $this->assertEquals($assertionResult, $subject->calledWith(...$positionalMatchers));
+        $this->assertEquals($assertionResult, $subject->calledWith(...$namedMatchers));
+    }
+
+    public function testCalledWithWithPositionalArguments()
+    {
+        $call = $this->callFactory->create(
+            $this->eventFactory->createCalled(
+                'implode',
+                (new ReflectionFunction('implode'))->getParameters(),
+                new Arguments([',', ['a', 'b']])
+            ),
+            ($responseEvent = $this->eventFactory->createReturned('a,b')),
+            null,
+            $responseEvent
+        );
+        $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
+        $subject = call_user_func($this->createCallVerifier, $call);
+        $positionalMatchers = $this->matcherFactory->adaptAll([',', ['a', 'b']]);
+        $namedMatchers = $this->matcherFactory->adaptAll(['array' => ['a', 'b'], 'separator' => ',']);
+
+        $this->assertEquals($assertionResult, $subject->calledWith(...$positionalMatchers));
+        $this->assertEquals($assertionResult, $subject->calledWith(...$namedMatchers));
+    }
+
+    public function testCalledWithWithPositionalVariadicArguments()
+    {
+        $call = $this->callFactory->create(
+            $this->eventFactory->createCalled(
+                [TestClassWithVariadicNamedArguments::class, 'setStaticArguments'],
+                (new ReflectionMethod(TestClassWithVariadicNamedArguments::class, 'setStaticArguments'))
+                    ->getParameters(),
+                new Arguments([1, 2, 'x' => 3, 'y' => 4]),
+            ),
+            ($responseEvent = $this->eventFactory->createReturned(null)),
+            null,
+            $responseEvent
+        );
+        $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
+        $subject = call_user_func($this->createCallVerifier, $call);
+        $positionalMatchers = $this->matcherFactory->adaptAll([1, 2, 'x' => 3, 'y' => 4]);
+        $namedMatchers = $this->matcherFactory->adaptAll(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]);
+
+        $this->assertEquals($assertionResult, $subject->calledWith(...$positionalMatchers));
+        $this->assertEquals($assertionResult, $subject->calledWith(...$namedMatchers));
+    }
+
+    public function testCalledWithWithNamedVariadicArguments()
+    {
+        $call = $this->callFactory->create(
+            $this->eventFactory->createCalled(
+                [TestClassWithVariadicNamedArguments::class, 'setStaticArguments'],
+                (new ReflectionMethod(TestClassWithVariadicNamedArguments::class, 'setStaticArguments'))
+                    ->getParameters(),
+                new Arguments(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]),
+            ),
+            ($responseEvent = $this->eventFactory->createReturned(null)),
+            null,
+            $responseEvent
+        );
+        $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
+        $subject = call_user_func($this->createCallVerifier, $call);
+        $positionalMatchers = $this->matcherFactory->adaptAll([1, 2, 'x' => 3, 'y' => 4]);
+        $namedMatchers = $this->matcherFactory->adaptAll(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]);
+
+        $this->assertEquals($assertionResult, $subject->calledWith(...$positionalMatchers));
+        $this->assertEquals($assertionResult, $subject->calledWith(...$namedMatchers));
+    }
+
     public function testCalledWithWithParameterNames()
     {
         $thisValue = new TestClassA();
