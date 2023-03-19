@@ -11,6 +11,7 @@ use Eloquent\Phony\Event\EventSequence;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
 use Eloquent\Phony\Test\GeneratorFactory;
 use Eloquent\Phony\Test\TestClassA;
+use Eloquent\Phony\Test\TestClassWithVariadicNamedArguments;
 use Eloquent\Phony\Verification\Cardinality;
 use Eloquent\Phony\Verification\Exception\InvalidSingularCardinalityException;
 use Error;
@@ -18,6 +19,7 @@ use Exception;
 use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 use ReflectionMethod;
 use RuntimeException;
 
@@ -349,6 +351,88 @@ class CallVerifierTest extends TestCase
     public function testCheckCalledWithWithWildcardOnly()
     {
         $this->assertTrue((bool) $this->subject->checkCalledWith($this->matcherFactory->wildcard()));
+    }
+
+    public function testCheckCalledWithWithNamedArguments()
+    {
+        $call = $this->callFactory->create(
+            $this->eventFactory->createCalled(
+                'implode',
+                (new ReflectionFunction('implode'))->getParameters(),
+                new Arguments(['separator' => ',', 'array' => ['a', 'b']])
+            ),
+            ($responseEvent = $this->eventFactory->createReturned('a,b')),
+            null,
+            $responseEvent
+        );
+        $subject = call_user_func($this->createCallVerifier, $call);
+        $positionalMatchers = $this->matcherFactory->adaptAll([',', ['a', 'b']]);
+        $namedMatchers = $this->matcherFactory->adaptAll(['array' => ['a', 'b'], 'separator' => ',']);
+
+        $this->assertTrue((bool) $subject->checkCalledWith(...$positionalMatchers));
+        $this->assertTrue((bool) $subject->checkCalledWith(...$namedMatchers));
+    }
+
+    public function testCheckCalledWithWithPositionalArguments()
+    {
+        $call = $this->callFactory->create(
+            $this->eventFactory->createCalled(
+                'implode',
+                (new ReflectionFunction('implode'))->getParameters(),
+                new Arguments([',', ['a', 'b']])
+            ),
+            ($responseEvent = $this->eventFactory->createReturned('a,b')),
+            null,
+            $responseEvent
+        );
+        $subject = call_user_func($this->createCallVerifier, $call);
+        $positionalMatchers = $this->matcherFactory->adaptAll([',', ['a', 'b']]);
+        $namedMatchers = $this->matcherFactory->adaptAll(['array' => ['a', 'b'], 'separator' => ',']);
+
+        $this->assertTrue((bool) $subject->checkCalledWith(...$positionalMatchers));
+        $this->assertTrue((bool) $subject->checkCalledWith(...$namedMatchers));
+    }
+
+    public function testCheckCalledWithWithPositionalVariadicArguments()
+    {
+        $call = $this->callFactory->create(
+            $this->eventFactory->createCalled(
+                [TestClassWithVariadicNamedArguments::class, 'setStaticArguments'],
+                (new ReflectionMethod(TestClassWithVariadicNamedArguments::class, 'setStaticArguments'))
+                    ->getParameters(),
+                new Arguments([1, 2, 'x' => 3, 'y' => 4]),
+            ),
+            ($responseEvent = $this->eventFactory->createReturned(null)),
+            null,
+            $responseEvent
+        );
+        $subject = call_user_func($this->createCallVerifier, $call);
+        $positionalMatchers = $this->matcherFactory->adaptAll([1, 2, 'x' => 3, 'y' => 4]);
+        $namedMatchers = $this->matcherFactory->adaptAll(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]);
+
+        $this->assertTrue((bool) $subject->checkCalledWith(...$positionalMatchers));
+        $this->assertTrue((bool) $subject->checkCalledWith(...$namedMatchers));
+    }
+
+    public function testCheckCalledWithWithNamedVariadicArguments()
+    {
+        $call = $this->callFactory->create(
+            $this->eventFactory->createCalled(
+                [TestClassWithVariadicNamedArguments::class, 'setStaticArguments'],
+                (new ReflectionMethod(TestClassWithVariadicNamedArguments::class, 'setStaticArguments'))
+                    ->getParameters(),
+                new Arguments(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]),
+            ),
+            ($responseEvent = $this->eventFactory->createReturned(null)),
+            null,
+            $responseEvent
+        );
+        $subject = call_user_func($this->createCallVerifier, $call);
+        $positionalMatchers = $this->matcherFactory->adaptAll([1, 2, 'x' => 3, 'y' => 4]);
+        $namedMatchers = $this->matcherFactory->adaptAll(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]);
+
+        $this->assertTrue((bool) $subject->checkCalledWith(...$positionalMatchers));
+        $this->assertTrue((bool) $subject->checkCalledWith(...$namedMatchers));
     }
 
     public function testCalledWith()
