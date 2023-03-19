@@ -45,6 +45,7 @@ use Eloquent\Phony\Test\TestClassWithConstructorProperties;
 use Eloquent\Phony\Test\TestClassWithFinalReturnType;
 use Eloquent\Phony\Test\TestClassWithSerializeMagicMethods;
 use Eloquent\Phony\Test\TestClassWithToStringException;
+use Eloquent\Phony\Test\TestClassWithVariadicNamedArgumentConstructor;
 use Eloquent\Phony\Test\TestCountableIterator;
 use Eloquent\Phony\Test\TestFinalClassA;
 use Eloquent\Phony\Test\TestInterfaceA;
@@ -2110,5 +2111,22 @@ class FunctionalTest extends TestCase
         $mock->testClassAMethodB(second: '<second>', first: '<first>');
 
         $this->assertTrue((bool) $handle->testClassAMethodB->calledWith('<first>', '<second>'));
+    }
+
+    public function testCanConstructPartialMocksWithNamedArguments()
+    {
+        $handle = partialMock(TestClassWithVariadicNamedArgumentConstructor::class, [1, 'b' => 2, 'c' => 3, 'd' => 4]);
+        $mock = $handle->get();
+
+        $this->assertSame([1, 2, 'c' => 3, 'd' => 4], $mock->arguments);
+    }
+
+    public function testCanConstructFullMocksWithNamedArguments()
+    {
+        $handle = mock(TestClassWithVariadicNamedArgumentConstructor::class);
+        $handle->construct(1, b: 2, c: 3, d: 4);
+        $mock = $handle->get();
+
+        $this->assertSame([1, 2, 'c' => 3, 'd' => 4], $mock->arguments);
     }
 }
