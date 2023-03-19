@@ -2,7 +2,7 @@
 
 class ClassA
 {
-    public static function staticMethodA()
+    public static function staticMethodA(...$arguments)
     {
     }
 
@@ -10,7 +10,7 @@ class ClassA
     {
     }
 
-    public function methodA()
+    public function methodA(...$arguments)
     {
     }
 

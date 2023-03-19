@@ -6,6 +6,7 @@ namespace Eloquent\Phony\Test\Facade;
 
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Assertion\ExceptionAssertionRecorder;
+use Eloquent\Phony\Call\ArgumentNormalizer;
 use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\CallEventFactory;
@@ -60,6 +61,7 @@ class FacadeContainer
 
     public function __construct(
         public ?AnyMatcher $anyMatcher = null,
+        public ?ArgumentNormalizer $argumentNormalizer = null,
         public ?array $sequences = null,
         public ?AssertionRenderer $assertionRenderer = null,
         public ?CallEventFactory $eventFactory = null,
@@ -149,11 +151,13 @@ class FacadeContainer
         $this->differenceEngine ??= new DifferenceEngine(
             $this->featureDetector
         );
+        $this->argumentNormalizer ??= new ArgumentNormalizer();
         $this->assertionRenderer ??= new AssertionRenderer(
             $this->matcherVerifier,
             $this->exporter,
             $this->differenceEngine,
-            $this->featureDetector
+            $this->featureDetector,
+            $this->argumentNormalizer
         );
         $this->stubFactory ??= new StubFactory(
             $this->stubLabelSequence,

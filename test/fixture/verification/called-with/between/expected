@@ -1,13 +1,13 @@
 %RESET%Expected %BOLD%spy#0[label]%RESET% call with arguments:
-    %RED%✗%RESET% "aardvark" %RED%%FAINT%(2 matches)%RESET%
-    %RED%✗%RESET% #1["bonobo", "capybara", "dugong"] %RED%%FAINT%(2 matches)%RESET%
+     animal: %RED%✗%RESET% "aardvark" %RED%%FAINT%(2 matches)%RESET%
+    animals: %RED%✗%RESET% #1["bonobo", "capybara", "dugong"] %RED%%FAINT%(2 matches)%RESET%
 %RED%Between 3 and 4 allowed. Matched 2 of 3:%RESET%
 %GREEN%✓%RESET% Call #0:
-    %GREEN%✓%RESET% "aardvark"
-    %GREEN%✓%RESET% #2["bonobo", "capybara", "dugong"]
+     animal: %GREEN%✓%RESET% "aardvark"
+    animals: %GREEN%✓%RESET% #2["bonobo", "capybara", "dugong"]
 %RED%✗%RESET% Call #1:
-    %RED%✗%RESET% "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%aardvark%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%armadillo%RESET%%YELLOW%%FAINT%+}%RESET%"
-    %RED%✗%RESET% #%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%1%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%2%RESET%%YELLOW%%FAINT%+}%RESET%["bonobo", "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%capybara%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%chameleon%RESET%%YELLOW%%FAINT%+}%RESET%", "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%dugong%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%dormouse%RESET%%YELLOW%%FAINT%+}%RESET%"]
+     animal: %RED%✗%RESET% "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%aardvark%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%armadillo%RESET%%YELLOW%%FAINT%+}%RESET%"
+    animals: %RED%✗%RESET% #%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%1%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%2%RESET%%YELLOW%%FAINT%+}%RESET%["bonobo", "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%capybara%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%chameleon%RESET%%YELLOW%%FAINT%+}%RESET%", "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%dugong%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%dormouse%RESET%%YELLOW%%FAINT%+}%RESET%"]
 %GREEN%✓%RESET% Call #2:
-    %GREEN%✓%RESET% "aardvark"
-    %GREEN%✓%RESET% #2["bonobo", "capybara", "dugong"]
+     animal: %GREEN%✓%RESET% "aardvark"
+    animals: %GREEN%✓%RESET% #2["bonobo", "capybara", "dugong"]

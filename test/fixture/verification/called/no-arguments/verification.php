@@ -5,9 +5,9 @@ use Eloquent\Phony\Test\Facade\Phony;
 // setup
 $spy = Phony::spy()->setLabel('label');
 $spy();
-$spy('aardvark', ['bonobo', 'capybara', 'dugong']);
+$spy(animal: 'aardvark', animals: ['bonobo', 'capybara', 'dugong']);
 $spy();
-$spy('armadillo', ['bonobo', 'chameleon', 'dormouse']);
+$spy(animal: 'armadillo', animals: ['bonobo', 'chameleon', 'dormouse']);
 $spy();
 
 // verification

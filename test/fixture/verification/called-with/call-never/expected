@@ -1,6 +1,6 @@
 %RESET%Expected %BOLD%spy#0[label]%RESET% call #1 not to have arguments:
-    %RED%✗%RESET% "aardvark"
-    %RED%✗%RESET% #1["bonobo", "chameleon", "dugong"]
+     animal: %RED%✗%RESET% "aardvark"
+    animals: %RED%✗%RESET% #1["bonobo", "chameleon", "dugong"]
 %RED%✗%RESET% Call #1:
-    %RED%✗%RESET% "aardvark"
-    %RED%✗%RESET% #2["bonobo", "chameleon", "dugong"]
+     animal: %RED%✗%RESET% "aardvark"
+    animals: %RED%✗%RESET% #2["bonobo", "chameleon", "dugong"]

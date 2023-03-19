@@ -1,5 +1,5 @@
 %RESET%Expected no %BOLD%spy#0[label]%RESET% call.
 %RED%Matched 1 of 1:%RESET%
 %RED%✗%RESET% Call #1:
-    %RED%✗%RESET% "armadillo"
-    %RED%✗%RESET% #1["bonobo", "chameleon", "dormouse"]
+     animal: %RED%✗%RESET% "armadillo"
+    animals: %RED%✗%RESET% #1["bonobo", "chameleon", "dormouse"]

@@ -6,6 +6,7 @@ namespace Eloquent\Phony\Facade;
 
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
+use Eloquent\Phony\Call\ArgumentNormalizer;
 use Eloquent\Phony\Call\CallFactory;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Call\Event\CallEventFactory;
@@ -154,11 +155,13 @@ trait FacadeContainerTrait
         $differenceEngine = new DifferenceEngine(
             $featureDetector
         );
+        $argumentNormalizer = new ArgumentNormalizer();
         $assertionRenderer = new AssertionRenderer(
             $matcherVerifier,
             $exporter,
             $differenceEngine,
-            $featureDetector
+            $featureDetector,
+            $argumentNormalizer
         );
         $stubFactory = new StubFactory(
             $stubLabelSequence,

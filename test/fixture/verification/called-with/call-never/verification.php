@@ -4,8 +4,8 @@ use Eloquent\Phony\Test\Facade\Phony;
 
 // setup
 $spy = Phony::spy()->setLabel('label');
-$spy('aardvark', ['bonobo', 'capybara', 'dugong']);
-$spy('aardvark', ['bonobo', 'chameleon', 'dugong']);
+$spy(animal: 'aardvark', animals: ['bonobo', 'capybara', 'dugong']);
+$spy(animal: 'aardvark', animals: ['bonobo', 'chameleon', 'dugong']);
 
 // verification
-$spy->lastCall()->never()->calledWith('aardvark', ['bonobo', 'chameleon', 'dugong']);
+$spy->lastCall()->never()->calledWith(animal: 'aardvark', animals: ['bonobo', 'chameleon', 'dugong']);
