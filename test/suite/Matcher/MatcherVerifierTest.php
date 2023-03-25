@@ -160,7 +160,7 @@ class MatcherVerifierTest extends TestCase
         $wildcard = new WildcardMatcher($this->matcherFactory->equalTo(3), 0, -1);
         $positionalMatchers = [$matcher1, $matcher2, $wildcard];
         $mixedMatchers = [$matcher1, 'b' => $matcher2, $wildcard];
-        $namedMatchers = ['a' => $matcher1, 'b' => $matcher2, $wildcard];
+        $namedMatchers = ['a' => $matcher1, 'b' => $matcher2, 'x' => $wildcard];
 
         $matchingPositionalArguments = [
             [1, 2],
@@ -279,7 +279,7 @@ class MatcherVerifierTest extends TestCase
         $wildcard = new WildcardMatcher($this->matcherFactory->equalTo(3), 1, -1);
         $positionalMatchers = [$matcher1, $matcher2, $wildcard];
         $mixedMatchers = [$matcher1, 'b' => $matcher2, $wildcard];
-        $namedMatchers = ['a' => $matcher1, 'b' => $matcher2, $wildcard];
+        $namedMatchers = ['a' => $matcher1, 'b' => $matcher2, 'x' => $wildcard];
 
         $matchingPositionalArguments = [
             [1, 2, 3],
@@ -398,7 +398,7 @@ class MatcherVerifierTest extends TestCase
         $wildcard = new WildcardMatcher($this->matcherFactory->equalTo(3), 0, 1);
         $positionalMatchers = [$matcher1, $matcher2, $wildcard];
         $mixedMatchers = [$matcher1, 'b' => $matcher2, $wildcard];
-        $namedMatchers = ['a' => $matcher1, 'b' => $matcher2, $wildcard];
+        $namedMatchers = ['a' => $matcher1, 'b' => $matcher2, 'x' => $wildcard];
 
         $matchingPositionalArguments = [
             [1, 2],
@@ -772,7 +772,7 @@ class MatcherVerifierTest extends TestCase
         $wildcard = new WildcardMatcher($this->matcherFactory->equalTo(3), 0, -1);
         $positionalMatchers = [$matcher1, $matcher2, $wildcard];
         $mixedMatchers = [$matcher1, 'b' => $matcher2, $wildcard];
-        $namedMatchers = ['a' => $matcher1, 'b' => $matcher2, $wildcard];
+        $namedMatchers = ['a' => $matcher1, 'b' => $matcher2, 'x' => $wildcard];
 
         $matchingPositionalArguments = [
             [
@@ -1059,7 +1059,7 @@ class MatcherVerifierTest extends TestCase
         $wildcard = new WildcardMatcher($this->matcherFactory->equalTo(3), 1, -1);
         $positionalMatchers = [$matcher1, $matcher2, $wildcard];
         $mixedMatchers = [$matcher1, 'b' => $matcher2, $wildcard];
-        $namedMatchers = ['a' => $matcher1, 'b' => $matcher2, $wildcard];
+        $namedMatchers = ['a' => $matcher1, 'b' => $matcher2, 'x' => $wildcard];
 
         $matchingPositionalArguments = [
             [
@@ -1346,7 +1346,7 @@ class MatcherVerifierTest extends TestCase
         $wildcard = new WildcardMatcher($this->matcherFactory->equalTo(3), 0, 1);
         $positionalMatchers = [$matcher1, $matcher2, $wildcard];
         $mixedMatchers = [$matcher1, 'b' => $matcher2, $wildcard];
-        $namedMatchers = ['a' => $matcher1, 'b' => $matcher2, $wildcard];
+        $namedMatchers = ['a' => $matcher1, 'b' => $matcher2, 'x' => $wildcard];
 
         $matchingPositionalArguments = [
             [
