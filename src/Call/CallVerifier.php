@@ -18,7 +18,7 @@ use Eloquent\Phony\Event\EventCollection;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Verification\Cardinality;
 use Eloquent\Phony\Verification\CardinalityVerifier;
@@ -605,13 +605,13 @@ class CallVerifier implements Call, CardinalityVerifier
     public function checkCalledWith(...$arguments): ?EventCollection
     {
         $cardinality = $this->resetCardinality()->assertSingular();
-        $matchers = $this->matcherFactory->adaptAll($arguments);
+        $matcherSet =
+            $this->matcherFactory->adaptSet($this->parameterNames, $arguments);
 
         list($matchCount, $matchingEvents) = $this->matchIf(
             $this->call,
             $this->matcherVerifier->matches(
-                $matchers,
-                $this->parameterNames,
+                $matcherSet,
                 $this->call->arguments()->all()
             )
         );
@@ -635,15 +635,17 @@ class CallVerifier implements Call, CardinalityVerifier
     public function calledWith(...$arguments): ?EventCollection
     {
         $cardinality = $this->cardinality;
-        $matchers = $this->matcherFactory->adaptAll($arguments);
 
-        if ($result = $this->checkCalledWith(...$matchers)) {
+        if ($result = $this->checkCalledWith(...$arguments)) {
             return $result;
         }
 
+        $matcherSet =
+            $this->matcherFactory->adaptSet($this->parameterNames, $arguments);
+
         return $this->assertionRecorder->createFailure(
             $this->assertionRenderer
-                ->renderCalledWith($this->call, $cardinality, $matchers)
+                ->renderCalledWith($this->call, $cardinality, $matcherSet)
         );
     }
 

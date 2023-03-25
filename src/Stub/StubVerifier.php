@@ -10,7 +10,7 @@ use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Invocation\WrappedInvocable;
 use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Spy\Spy;
 use Eloquent\Phony\Spy\SpyVerifier;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilder;
@@ -31,7 +31,7 @@ class StubVerifier extends SpyVerifier implements Stub
      * @param Stub                          $stub                          The stub.
      * @param Spy                           $spy                           The spy.
      * @param MatcherFactory                $matcherFactory                The matcher factory to use.
-     * @param MatcherVerifier               $matcherVerifier               The macther verifier to use.
+     * @param MatcherVerifier               $matcherVerifier               The matcher verifier to use.
      * @param GeneratorVerifierFactory      $generatorVerifierFactory      The generator verifier factory to use.
      * @param IterableVerifierFactory       $iterableVerifierFactory       The iterable verifier factory to use.
      * @param CallVerifierFactory           $callVerifierFactory           The call verifier factory to use.

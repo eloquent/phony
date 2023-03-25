@@ -1,0 +1,88 @@
+# matchers
+00 declared a: 8 (omitted)
+01 declared b: 8 (omitted)
+02 variadic c: 6
+03 variadic d: 6
+
+# matching - order a
+isMatch = true
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 variadic c: match
+03 variadic d: match
+
+# matching - order b
+isMatch = true
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 variadic c: match
+03 variadic d: match
+
+# non-matching - empty
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 variadic c: non-match (omitted)
+03 variadic d: non-match (omitted)
+
+# non-matching - c missing
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 variadic c: non-match (omitted)
+03 variadic d: match
+
+# non-matching - d missing
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 variadic c: match
+03 variadic d: non-match (omitted)
+
+# non-matching - c non-match
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 variadic c: non-match
+03 variadic d: match
+
+# non-matching - d non-match
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 variadic c: match
+03 variadic d: non-match
+
+# non-matching - all non-match
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 variadic c: non-match
+03 variadic d: non-match
+
+# non-matching - extra arguments, mixed
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: non-match (extra)
+02 variadic c: match
+03 variadic d: match
+04 variadic y: non-match (extra)
+05 variadic z: non-match (extra)
+
+# non-matching - extra arguments, named
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: non-match (extra)
+02 variadic c: match
+03 variadic d: match
+04 variadic y: non-match (extra)
+05 variadic z: non-match (extra)
+
+# non-matching - all non-match, extra arguments
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: non-match (extra)
+02 variadic c: non-match
+03 variadic d: non-match
+04 variadic y: non-match (extra)
+05 variadic z: non-match (extra)

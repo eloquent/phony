@@ -83,12 +83,12 @@ class EdgeCaseTest extends TestCase
                 case 'SimpleXMLElement':
                 case 'SimpleXMLIterator':
 
-                // unsupported
+                    // unsupported
                 case '__PHP_Incomplete_Class':
                 case 'BackedEnum':
                 case 'UnitEnum':
 
-                // php bugs
+                    // php bugs
                 case 'DatePeriod':
                 case 'IntlBreakIterator':
                 case 'IntlCalendar':

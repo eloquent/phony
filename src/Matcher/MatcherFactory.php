@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Matcher;
 
 use Eloquent\Phony\Exporter\Exporter;
+use InvalidArgumentException;
 
 /**
  * Creates matchers.
@@ -111,7 +112,7 @@ class MatcherFactory
     }
 
     /**
-     * Create new matchers for the all supplied values.
+     * Create new matchers for all supplied values.
      *
      * @param array<int|string,mixed> $values The values to create matchers for.
      *
@@ -149,6 +150,166 @@ class MatcherFactory
         }
 
         return $matchers;
+    }
+
+    /**
+     * Create a new matcher set for the supplied values.
+     *
+     * @param array<int,string>       $parameterNames The parameter names.
+     * @param array<int|string,mixed> $values         The values to create matchers for.
+     *
+     * @return MatcherSet               The newly created matcher set.
+     * @throws InvalidArgumentException If the supplied values are invalid.
+     */
+    public function adaptSet(array $parameterNames, array $values): MatcherSet
+    {
+        $keyMap = [];
+        $declaredMatchers = [];
+
+        foreach ($parameterNames as $position => $name) {
+            $keyMap[$position] = $name;
+            $keyMap[$name] = $position;
+
+            $declaredMatchers[$position] = null;
+        }
+
+        $declaredCount = count($parameterNames);
+        $variadicMatchers = [];
+        $wildcardMatcher = null;
+        $hasNamedMatcher = false;
+        $position = -1;
+
+        foreach ($values as $key => $value) {
+            $matcher = null;
+
+            if ($value instanceof Matcher) {
+                $matcher = $value;
+            } elseif (is_object($value)) {
+                foreach ($this->driverIndex as $className => $driver) {
+                    if (is_a($value, $className)) {
+                        $matcher = $driver->wrapMatcher($value);
+
+                        break;
+                    }
+                }
+            } elseif ('*' === $value) {
+                $matcher = $this->wildcardAnyMatcher;
+            } elseif ('~' === $value) {
+                $matcher = $this->anyMatcher;
+            }
+
+            if (!$matcher) {
+                $matcher = new EqualToMatcher($value, true, $this->exporter);
+            }
+
+            $isPositional = is_int($key);
+
+            if ($matcher instanceof WildcardMatcher) {
+                if (!$isPositional) {
+                    throw new InvalidArgumentException(
+                        'Cannot use a named wildcard matcher.'
+                    );
+                }
+                if ($hasNamedMatcher) {
+                    throw new InvalidArgumentException(
+                        'Cannot use a wildcard matcher after a named matcher.'
+                    );
+                }
+                if ($wildcardMatcher) {
+                    throw new InvalidArgumentException(
+                        'Cannot use a wildcard matcher ' .
+                        'after a wildcard matcher.'
+                    );
+                }
+
+                $wildcardMatcher = $matcher;
+
+                continue;
+            }
+
+            ++$position;
+
+            if ($isPositional) {
+                if ($hasNamedMatcher) {
+                    throw new InvalidArgumentException(
+                        'Cannot use a positional matcher after a named matcher.'
+                    );
+                }
+                if ($wildcardMatcher) {
+                    throw new InvalidArgumentException(
+                        'Cannot use a positional matcher ' .
+                        'after a wildcard matcher.'
+                    );
+                }
+
+                if ($position < $declaredCount) {
+                    $declaredMatchers[$position] = $matcher;
+                } else {
+                    $variadicMatchers[$position] = $matcher;
+                }
+            } else {
+                $hasNamedMatcher = true;
+
+                if (isset($keyMap[$key])) {
+                    /** @var int $mappedKey */
+                    $mappedKey = $keyMap[$key];
+
+                    if (isset($declaredMatchers[$mappedKey])) {
+                        throw new InvalidArgumentException(
+                            "Named matcher $$key overwrites previous matcher."
+                        );
+                    }
+
+                    $declaredMatchers[$mappedKey] = $matcher;
+                } else {
+                    $variadicMatchers[$key] = $matcher;
+                }
+            }
+        }
+
+        uksort($variadicMatchers, [__CLASS__, 'compareVariadicKeys']);
+
+        return new MatcherSet(
+            parameterNames: $parameterNames,
+            keyMap: $keyMap,
+            declaredCount: $declaredCount,
+            declaredMatchers: $declaredMatchers,
+            variadicMatchers: $variadicMatchers,
+            wildcardMatcher: $wildcardMatcher,
+            wildcardInnerMatcher: $wildcardMatcher?->matcher(),
+            wildcardMinimum: $wildcardMatcher?->minimumArguments() ?? 0,
+            wildcardMaximum: $wildcardMatcher?->maximumArguments() ?? -1,
+        );
+    }
+
+    /**
+     * Create a new matcher set for the supplied parameter names that matches
+     * any number and type of arguments.
+     *
+     * @param array<int,string> $parameterNames The parameter names.
+     *
+     * @return MatcherSet The newly created matcher set.
+     */
+    public function wildcardAnySet(array $parameterNames): MatcherSet
+    {
+        $keyMap = [];
+
+        foreach ($parameterNames as $position => $name) {
+            $keyMap[$position] = $name;
+            $keyMap[$name] = $position;
+        }
+
+        return new MatcherSet(
+            parameterNames: $parameterNames,
+            keyMap: $keyMap,
+            declaredCount: 0,
+            declaredMatchers: [],
+            variadicMatchers: [],
+            wildcardMatcher: $this->wildcardAnyMatcher,
+            wildcardInnerMatcher: $this->anyMatcher,
+            wildcardMinimum: 0,
+            wildcardMaximum: -1,
+        );
     }
 
     /**
@@ -244,4 +405,21 @@ class MatcherFactory
      * @var Exporter
      */
     private $exporter;
+
+    private static function compareVariadicKeys(
+        int|string $a,
+        int|string $b,
+    ): int {
+        $aIsPositional = is_int($a);
+        $bIsPositional = is_int($b);
+
+        if ($aIsPositional && !$bIsPositional) {
+            return -1;
+        }
+        if (!$aIsPositional && $bIsPositional) {
+            return 1;
+        }
+
+        return $a < $b ? -1 : 1;
+    }
 }

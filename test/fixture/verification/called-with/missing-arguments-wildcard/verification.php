@@ -11,8 +11,8 @@ $spy(animalA: 'aardvark', animalB: 'bonobo', animalC: 'chameleon', animalD: 'dug
 
 // verification
 $spy->calledWith(
+    Phony::wildcard('~', 99, 100),
     animalA: 'aardvark',
     animalB: 'bonobo',
     animalC: 'chameleon',
-    animals: Phony::wildcard('~', 99, 100)
 );

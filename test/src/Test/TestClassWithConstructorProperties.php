@@ -10,7 +10,8 @@ class TestClassWithConstructorProperties
         public int $publicConstructor,
         protected int $protectedConstructor,
         private int $privateConstructor
-    ) { }
+    ) {
+    }
 
     public function __get(string $name)
     {

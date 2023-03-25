@@ -1,0 +1,180 @@
+# matchers
+00 variadic a: 14
+01 variadic b: 14
+02 wild (2-3): 20
+
+# matching - positional wildcards, order a
+isMatch = true
+00 variadic 0: wild-match
+01 variadic 1: wild-match
+02 variadic a: match
+03 variadic b: match
+
+# matching - positional wildcards, order b
+isMatch = true
+00 variadic 0: wild-match
+01 variadic 1: wild-match
+02 variadic a: match
+03 variadic b: match
+
+# matching - mixed wildcards, order a
+isMatch = true
+00 variadic 0: wild-match
+01 variadic a: match
+02 variadic b: match
+03 variadic z: wild-match
+
+# matching - mixed wildcards, order b
+isMatch = true
+00 variadic 0: wild-match
+01 variadic a: match
+02 variadic b: match
+03 variadic y: wild-match
+
+# matching - named wildcards, order a
+isMatch = true
+00 variadic a: match
+01 variadic b: match
+02 variadic y: wild-match
+03 variadic z: wild-match
+
+# matching - named wildcards, order b
+isMatch = true
+00 variadic a: match
+01 variadic b: match
+02 variadic y: wild-match
+03 variadic z: wild-match
+
+# non-matching - empty
+isMatch = false
+00 variadic a: non-match (omitted)
+01 variadic b: non-match (omitted)
+02 wild (2-3): non-match (missing 2)
+
+# non-matching - positional wildcards, a missing
+isMatch = false
+00 variadic 0: wild-match
+01 variadic 1: wild-match
+02 variadic a: non-match (omitted)
+03 variadic b: match
+
+# non-matching - mixed wildcards, a missing
+isMatch = false
+00 variadic 0: wild-match
+01 variadic a: non-match (omitted)
+02 variadic b: match
+03 variadic z: wild-match
+
+# non-matching - named wildcards, a missing
+isMatch = false
+00 variadic a: non-match (omitted)
+01 variadic b: match
+02 variadic y: wild-match
+03 variadic z: wild-match
+
+# non-matching - positional wildcards, b missing
+isMatch = false
+00 variadic 0: wild-match
+01 variadic 1: wild-match
+02 variadic a: match
+03 variadic b: non-match (omitted)
+
+# non-matching - mixed wildcards, b missing
+isMatch = false
+00 variadic 0: wild-match
+01 variadic a: match
+02 variadic b: non-match (omitted)
+03 variadic z: wild-match
+
+# non-matching - named wildcards, b missing
+isMatch = false
+00 variadic a: match
+01 variadic b: non-match (omitted)
+02 variadic y: wild-match
+03 variadic z: wild-match
+
+# non-matching - positional wildcards, a non-match
+isMatch = false
+00 variadic 0: wild-match
+01 variadic 1: wild-match
+02 variadic a: non-match
+03 variadic b: match
+
+# non-matching - mixed wildcards, a non-match
+isMatch = false
+00 variadic 0: wild-match
+01 variadic a: non-match
+02 variadic b: match
+03 variadic z: wild-match
+
+# non-matching - named wildcards, a non-match
+isMatch = false
+00 variadic a: non-match
+01 variadic b: match
+02 variadic y: wild-match
+03 variadic z: wild-match
+
+# non-matching - positional wildcards, b non-match
+isMatch = false
+00 variadic 0: wild-match
+01 variadic 1: wild-match
+02 variadic a: match
+03 variadic b: non-match
+
+# non-matching - mixed wildcards, b non-match
+isMatch = false
+00 variadic 0: wild-match
+01 variadic a: match
+02 variadic b: non-match
+03 variadic z: wild-match
+
+# non-matching - named wildcards, b non-match
+isMatch = false
+00 variadic a: match
+01 variadic b: non-match
+02 variadic y: wild-match
+03 variadic z: wild-match
+
+# non-matching - positional wildcards, all non-match
+isMatch = false
+00 variadic 0: non-match (extra)
+01 variadic 1: non-match (extra)
+02 variadic a: non-match
+03 variadic b: non-match
+04 wild (2-3): non-match (missing 2)
+
+# non-matching - mixed wildcards, all non-match
+isMatch = false
+00 variadic 0: non-match (extra)
+01 variadic a: non-match
+02 variadic b: non-match
+03 variadic z: non-match (extra)
+04 wild (2-3): non-match (missing 2)
+
+# non-matching - named wildcards, all non-match
+isMatch = false
+00 variadic a: non-match
+01 variadic b: non-match
+02 variadic y: non-match (extra)
+03 variadic z: non-match (extra)
+04 wild (2-3): non-match (missing 2)
+
+# non-matching - extra arguments, mixed
+isMatch = false
+00 variadic 0: wild-match
+01 variadic 1: wild-match
+02 variadic 2: wild-match
+03 variadic a: match
+04 variadic b: match
+05 variadic y: non-match (extra)
+06 variadic z: non-match (extra)
+
+# non-matching - extra arguments, named
+isMatch = false
+00 variadic a: match
+01 variadic b: match
+02 variadic v: wild-match
+03 variadic w: wild-match
+04 variadic x: wild-match
+05 variadic y: non-match (extra)
+06 variadic z: non-match (extra)

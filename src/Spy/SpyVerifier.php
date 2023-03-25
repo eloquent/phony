@@ -18,7 +18,7 @@ use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Invocation\WrappedInvocable;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Verification\Cardinality;
 use Eloquent\Phony\Verification\CardinalityVerifier;
@@ -46,7 +46,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
      *
      * @param Spy                      $spy                      The spy.
      * @param MatcherFactory           $matcherFactory           The matcher factory to use.
-     * @param MatcherVerifier          $matcherVerifier          The macther verifier to use.
+     * @param MatcherVerifier          $matcherVerifier          The matcher verifier to use.
      * @param GeneratorVerifierFactory $generatorVerifierFactory The generator verifier factory to use.
      * @param IterableVerifierFactory  $iterableVerifierFactory  The iterable verifier factory to use.
      * @param CallVerifierFactory      $callVerifierFactory      The call verifier factory to use.
@@ -485,7 +485,8 @@ class SpyVerifier implements Spy, CardinalityVerifier
     {
         $cardinality = $this->resetCardinality();
 
-        $matchers = $this->matcherFactory->adaptAll($arguments);
+        $matcherSet =
+            $this->matcherFactory->adaptSet($this->parameterNames, $arguments);
         $calls = $this->spy->allCalls();
         $matchingEvents = [];
         $totalCount = count($calls);
@@ -494,8 +495,7 @@ class SpyVerifier implements Spy, CardinalityVerifier
         foreach ($calls as $call) {
             if (
                 $this->matcherVerifier->matches(
-                    $matchers,
-                    $this->parameterNames,
+                    $matcherSet,
                     $call->arguments()->all()
                 )
             ) {
@@ -522,15 +522,17 @@ class SpyVerifier implements Spy, CardinalityVerifier
     public function calledWith(...$arguments): ?EventCollection
     {
         $cardinality = $this->cardinality;
-        $matchers = $this->matcherFactory->adaptAll($arguments);
 
-        if ($result = $this->checkCalledWith(...$matchers)) {
+        if ($result = $this->checkCalledWith(...$arguments)) {
             return $result;
         }
 
+        $matcherSet =
+            $this->matcherFactory->adaptSet($this->parameterNames, $arguments);
+
         return $this->assertionRecorder->createFailure(
             $this->assertionRenderer
-                ->renderCalledWith($this->spy, $cardinality, $matchers)
+                ->renderCalledWith($this->spy, $cardinality, $matcherSet)
         );
     }
 

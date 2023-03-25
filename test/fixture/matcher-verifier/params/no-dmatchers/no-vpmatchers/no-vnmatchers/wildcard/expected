@@ -1,0 +1,396 @@
+# matchers
+00 declared a: 13 (omitted)
+01 declared b: 13 (omitted)
+02 declared c: 23 (omitted)
+03 wild (2-6): 27
+
+# matching - positional, minimum arguments
+isMatch = true
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: match (omitted)
+
+# matching - mixed, minimum declared arguments
+isMatch = true
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: match (omitted)
+
+# matching - mixed, minimum declared + variadic arguments
+isMatch = true
+00 declared a: wild-match
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 variadic z: wild-match
+
+# matching - named, minimum declared arguments
+isMatch = true
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: match (omitted)
+
+# matching - named, minimum variadic arguments
+isMatch = true
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 variadic y: wild-match
+04 variadic z: wild-match
+
+# matching - named, minimum declared + variadic arguments
+isMatch = true
+00 declared a: match (omitted)
+01 declared b: wild-match
+02 declared c: match (omitted)
+03 variadic z: wild-match
+
+# matching - positional, in-between arguments
+isMatch = true
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: wild-match
+03 variadic 3: wild-match
+
+# matching - mixed, in-between arguments
+isMatch = true
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: wild-match
+03 variadic z: wild-match
+
+# matching - named, in-between declared + variadic arguments
+isMatch = true
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: wild-match
+03 variadic z: wild-match
+
+# matching - named, in-between variadic arguments
+isMatch = true
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 variadic w: wild-match
+04 variadic x: wild-match
+05 variadic y: wild-match
+06 variadic z: wild-match
+
+# matching - positional, maximum arguments
+isMatch = true
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: wild-match
+03 variadic 3: wild-match
+04 variadic 4: wild-match
+05 variadic 5: wild-match
+
+# matching - mixed, maximum arguments
+isMatch = true
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: wild-match
+03 variadic x: wild-match
+04 variadic y: wild-match
+05 variadic z: wild-match
+
+# matching - named, maximum declared + variadic arguments
+isMatch = true
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: wild-match
+03 variadic x: wild-match
+04 variadic y: wild-match
+05 variadic z: wild-match
+
+# matching - named, maximum variadic arguments
+isMatch = true
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 variadic u: wild-match
+04 variadic v: wild-match
+05 variadic w: wild-match
+06 variadic x: wild-match
+07 variadic y: wild-match
+08 variadic z: wild-match
+
+# non-matching - empty
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 wild (2-6): non-match (missing 2)
+
+# non-matching - positional, below minimum
+isMatch = false
+00 declared a: wild-match
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 wild (2-6): non-match (missing 1)
+
+# non-matching - named, below minimum declared
+isMatch = false
+00 declared a: wild-match
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 wild (2-6): non-match (missing 1)
+
+# non-matching - named, below minimum variadic
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 variadic z: wild-match
+04 wild (2-6): non-match (missing 1)
+
+# non-matching - positional, above maximum
+isMatch = false
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: wild-match
+03 variadic 3: wild-match
+04 variadic 4: wild-match
+05 variadic 5: wild-match
+06 variadic 6: non-match (extra)
+
+# non-matching - mixed, above maximum declared
+isMatch = false
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: wild-match
+03 variadic w: wild-match
+04 variadic x: wild-match
+05 variadic y: wild-match
+06 variadic z: non-match (extra)
+
+# non-matching - mixed, above maximum variadic
+isMatch = false
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: match (omitted)
+03 variadic v: wild-match
+04 variadic w: wild-match
+05 variadic x: wild-match
+06 variadic y: wild-match
+07 variadic z: non-match (extra)
+
+# non-matching - named, above maximum declared
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: wild-match
+02 declared c: wild-match
+03 variadic v: wild-match
+04 variadic w: wild-match
+05 variadic x: wild-match
+06 variadic y: wild-match
+07 variadic z: non-match (extra)
+
+# non-matching - named, above maximum variadic
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 variadic t: wild-match
+04 variadic u: wild-match
+05 variadic v: wild-match
+06 variadic w: wild-match
+07 variadic x: wild-match
+08 variadic y: wild-match
+09 variadic z: non-match (extra)
+
+# non-matching - positional, all non-match
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: non-match (extra)
+02 declared c: non-match (extra)
+03 variadic 3: non-match (extra)
+04 variadic 4: non-match (extra)
+05 variadic 5: non-match (extra)
+06 wild (2-6): non-match (missing 2)
+
+# non-matching - mixed, all non-match declared
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: non-match (extra)
+02 declared c: non-match (extra)
+03 variadic x: non-match (extra)
+04 variadic y: non-match (extra)
+05 variadic z: non-match (extra)
+06 wild (2-6): non-match (missing 2)
+
+# non-matching - mixed, all non-match variadic
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: non-match (extra)
+02 declared c: match (omitted)
+03 variadic w: non-match (extra)
+04 variadic x: non-match (extra)
+05 variadic y: non-match (extra)
+06 variadic z: non-match (extra)
+07 wild (2-6): non-match (missing 2)
+
+# non-matching - named, all non-match declared
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: non-match (extra)
+02 declared c: non-match (extra)
+03 variadic w: non-match (extra)
+04 variadic x: non-match (extra)
+05 variadic y: non-match (extra)
+06 variadic z: non-match (extra)
+07 wild (2-6): non-match (missing 2)
+
+# non-matching - named, all non-match variadic
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 variadic u: non-match (extra)
+04 variadic v: non-match (extra)
+05 variadic w: non-match (extra)
+06 variadic x: non-match (extra)
+07 variadic y: non-match (extra)
+08 variadic z: non-match (extra)
+09 wild (2-6): non-match (missing 2)
+
+# non-matching - positional, leading non-match
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: wild-match
+02 declared c: match (omitted)
+03 wild (2-6): non-match (missing 1)
+
+# non-matching - mixed, leading non-match declared
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: wild-match
+02 declared c: match (omitted)
+03 wild (2-6): non-match (missing 1)
+
+# non-matching - mixed, leading non-match variadic
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 variadic z: wild-match
+04 wild (2-6): non-match (missing 1)
+
+# non-matching - named, leading non-match declared
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: wild-match
+02 declared c: match (omitted)
+03 wild (2-6): non-match (missing 1)
+
+# non-matching - named, leading non-match variadic
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 variadic y: wild-match
+04 variadic z: non-match (extra)
+05 wild (2-6): non-match (missing 1)
+
+# non-matching - positional, trailing non-match
+isMatch = false
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: wild-match
+03 variadic 3: wild-match
+04 variadic 4: wild-match
+05 variadic 5: non-match (extra)
+
+# non-matching - mixed, trailing non-match declared
+isMatch = false
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: wild-match
+03 variadic x: wild-match
+04 variadic y: wild-match
+05 variadic z: non-match (extra)
+
+# non-matching - mixed, trailing non-match variadic
+isMatch = false
+00 declared a: wild-match
+01 declared b: wild-match
+02 declared c: match (omitted)
+03 variadic w: wild-match
+04 variadic x: wild-match
+05 variadic y: wild-match
+06 variadic z: non-match (extra)
+
+# non-matching - named, trailing non-match declared
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: wild-match
+02 declared c: wild-match
+03 variadic w: wild-match
+04 variadic x: wild-match
+05 variadic y: wild-match
+06 variadic z: non-match (extra)
+
+# non-matching - named, trailing non-match variadic
+isMatch = false
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+02 declared c: match (omitted)
+03 variadic u: wild-match
+04 variadic v: wild-match
+05 variadic w: wild-match
+06 variadic x: wild-match
+07 variadic y: wild-match
+08 variadic z: non-match (extra)
+
+# non-matching - positional, extra declared
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: wild-match
+02 declared c: wild-match
+
+# non-matching - mixed, extra declared
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: wild-match
+02 declared c: wild-match
+
+# non-matching - named, extra declared
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: wild-match
+02 declared c: wild-match
+
+# non-matching - positional, all non-match, extra arguments
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: non-match (extra)
+02 declared c: non-match (extra)
+03 variadic 3: non-match (extra)
+04 variadic 4: non-match (extra)
+05 variadic 5: non-match (extra)
+06 variadic 6: non-match (extra)
+07 variadic 7: non-match (extra)
+08 wild (2-6): non-match (missing 2)
+
+# non-matching - mixed, all non-match, extra arguments
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: non-match (extra)
+02 declared c: non-match (extra)
+03 variadic v: non-match (extra)
+04 variadic w: non-match (extra)
+05 variadic x: non-match (extra)
+06 variadic y: non-match (extra)
+07 variadic z: non-match (extra)
+08 wild (2-6): non-match (missing 2)
+
+# non-matching - named, all non-match, extra arguments
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: non-match (extra)
+02 declared c: non-match (extra)
+03 variadic v: non-match (extra)
+04 variadic w: non-match (extra)
+05 variadic x: non-match (extra)
+06 variadic y: non-match (extra)
+07 variadic z: non-match (extra)
+08 wild (2-6): non-match (missing 2)

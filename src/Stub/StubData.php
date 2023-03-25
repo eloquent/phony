@@ -10,9 +10,9 @@ use Eloquent\Phony\Exporter\Exporter;
 use Eloquent\Phony\Invocation\InvocableInspector;
 use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Invocation\WrappedInvocableTrait;
-use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Matcher\MatcherSet;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Mock\Exception\FinalClassException;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Mock\Method\WrappedCustomMethod;
@@ -119,6 +119,9 @@ class StubData implements Stub
 
             $this->parameterNames[] = $parameter->getName();
         }
+
+        $this->wildcardAnyMatcherSet =
+            $this->matcherFactory->wildcardAnySet($this->parameterNames);
     }
 
     /**
@@ -199,8 +202,8 @@ class StubData implements Stub
             $this->closeRule();
         }
 
-        $matchers = $this->matcherFactory->adaptAll($arguments);
-        $this->criteria = $matchers;
+        $this->criteria =
+            $this->matcherFactory->adaptSet($this->parameterNames, $arguments);
 
         return $this;
     }
@@ -772,7 +775,7 @@ class StubData implements Stub
                 $this->criteria = null;
             } else {
                 $rule = new StubRule(
-                    [$this->matcherFactory->wildcard()],
+                    $this->wildcardAnyMatcherSet,
                     $this->answers
                 );
             }
@@ -781,7 +784,7 @@ class StubData implements Stub
             $this->answers = [];
         }
 
-        if (null !== $this->criteria) {
+        if ($this->criteria) {
             $criteria = $this->criteria;
             $this->criteria = null;
 
@@ -822,11 +825,8 @@ class StubData implements Stub
 
         foreach ($this->rules as $rule) {
             if (
-                $this->matcherVerifier->matches(
-                    $rule->criteria(),
-                    $this->parameterNames,
-                    $argumentsArray
-                )
+                $this->matcherVerifier
+                    ->matches($rule->criteria(), $argumentsArray)
             ) {
                 break;
             }
@@ -921,7 +921,7 @@ class StubData implements Stub
     private $assertionRenderer;
 
     /**
-     * @var ?array<int|string,Matcher>
+     * @var ?MatcherSet
      */
     private $criteria;
 
@@ -939,4 +939,9 @@ class StubData implements Stub
      * @var array<int,StubRule>
      */
     private $rules;
+
+    /**
+     * @var MatcherSet
+     */
+    private $wildcardAnyMatcherSet;
 }

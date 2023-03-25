@@ -8,5 +8,5 @@ use RuntimeException;
 
 class TestException extends RuntimeException
 {
-  public mixed $arbitrary;
+    public mixed $arbitrary;
 }

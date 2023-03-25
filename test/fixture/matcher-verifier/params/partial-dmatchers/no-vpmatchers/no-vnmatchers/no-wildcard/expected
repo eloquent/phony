@@ -1,0 +1,238 @@
+# matchers
+00 declared a: 18
+01 declared b: 18
+02 declared c: 15
+03 declared d: 26 (omitted)
+04 declared e: 26 (omitted)
+
+# matching - positional
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# matching - positional, ignored keys
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# matching - mixed, order a
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# matching - mixed, order b
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# matching - named, order a
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# matching - named, order b
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - empty
+isMatch = false
+00 declared a: non-match (omitted)
+01 declared b: non-match (omitted)
+02 declared c: non-match (omitted)
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - positional, missing arg
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match (omitted)
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - mixed, missing arg
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match (omitted)
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - named, missing arg
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match (omitted)
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - positional, all non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - mixed, all non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - named, all non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - positional, leading non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - mixed, leading non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - named, leading non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - positional, middle non-match
+isMatch = false
+00 declared a: match
+01 declared b: non-match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - mixed, middle non-match
+isMatch = false
+00 declared a: match
+01 declared b: non-match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - named, middle non-match
+isMatch = false
+00 declared a: match
+01 declared b: non-match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - positional, trailing non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - mixed, trailing non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - named, trailing non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+
+# non-matching - positional, extra arguments
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: non-match (extra)
+04 declared e: non-match (extra)
+
+# non-matching - mixed, extra arguments
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic y: non-match (extra)
+06 variadic z: non-match (extra)
+
+# non-matching - named, extra arguments
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic y: non-match (extra)
+06 variadic z: non-match (extra)
+
+# non-matching - positional, all non-match, extra arguments
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 declared d: non-match (extra)
+04 declared e: non-match (extra)
+
+# non-matching - mixed, all non-match, extra arguments
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic y: non-match (extra)
+06 variadic z: non-match (extra)
+
+# non-matching - named, all non-match, extra arguments
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic y: non-match (extra)
+06 variadic z: non-match (extra)

@@ -525,10 +525,10 @@ class InlineExporter implements Exporter
 
                     break;
 
-                // @codeCoverageIgnoreStart
+                    // @codeCoverageIgnoreStart
                 default:
                     $result->type = '???';
-                // @codeCoverageIgnoreEnd
+                    // @codeCoverageIgnoreEnd
             }
         }
 

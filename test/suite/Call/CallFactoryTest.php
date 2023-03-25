@@ -80,7 +80,10 @@ class CallFactoryTest extends TestCase
 
     public function testRecordWithGeneratedEvents()
     {
-        $callback = function () { return; yield null; };
+        $callback = function () {
+            return;
+            yield null;
+        };
         $parameters = [];
         $arguments = Arguments::create(['a', 'b']);
         $generator = call_user_func($callback);
@@ -96,7 +99,10 @@ class CallFactoryTest extends TestCase
 
     public function testCreateGeneratedEvent()
     {
-        $generatorFactory = function () { return; yield null; };
+        $generatorFactory = function () {
+            return;
+            yield null;
+        };
         $generator = call_user_func($generatorFactory);
         $expected = new ReturnedEvent(0, 0.0, $generator);
         $actual = $this->eventFactory->createReturned($generator);

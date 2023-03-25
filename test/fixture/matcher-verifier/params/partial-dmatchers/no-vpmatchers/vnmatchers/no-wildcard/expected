@@ -1,0 +1,376 @@
+# matchers
+00 declared a: 26
+01 declared b: 26
+02 declared c: 23
+03 declared d: 32 (omitted)
+04 declared e: 32 (omitted)
+05 variadic f: 23
+06 variadic g: 26
+
+# matching - positional
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# matching - positional, ignored keys
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# matching - mixed
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# matching - named, order a
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# matching - named, order b
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - empty
+isMatch = false
+00 declared a: non-match (omitted)
+01 declared b: non-match (omitted)
+02 declared c: non-match (omitted)
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: non-match (omitted)
+06 variadic g: non-match (omitted)
+
+# non-matching - positional, missing declared arg
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match (omitted)
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - mixed, missing declared arg
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match (omitted)
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - named, missing declared arg
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match (omitted)
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - positional, missing variadic arg
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: non-match (omitted)
+06 variadic g: match
+
+# non-matching - mixed, missing variadic arg
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: non-match (omitted)
+06 variadic g: match
+
+# non-matching - named, missing variadic arg
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: non-match (omitted)
+06 variadic g: match
+
+# non-matching - positional, all non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: non-match
+06 variadic g: non-match
+
+# non-matching - mixed, all non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: non-match
+06 variadic g: non-match
+
+# non-matching - named, all non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: non-match
+06 variadic g: non-match
+
+# non-matching - positional, leading declared non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - mixed, leading declared non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - named, leading declared non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - positional, middle declared non-match
+isMatch = false
+00 declared a: match
+01 declared b: non-match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - mixed, middle declared non-match
+isMatch = false
+00 declared a: match
+01 declared b: non-match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - named, middle declared non-match
+isMatch = false
+00 declared a: match
+01 declared b: non-match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - positional, trailing declared non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - mixed, trailing declared non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - named, trailing declared non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - positional, variadic f non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: non-match
+06 variadic g: match
+
+# non-matching - mixed, variadic f non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: non-match
+06 variadic g: match
+
+# non-matching - named, variadic f non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: non-match
+06 variadic g: match
+
+# non-matching - positional, variadic g non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: non-match
+
+# non-matching - mixed, variadic g non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: non-match
+
+# non-matching - named, variadic g non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: non-match
+
+# non-matching - positional, extra arguments
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: non-match (extra)
+04 declared e: non-match (extra)
+05 variadic f: match
+06 variadic g: match
+
+# non-matching - mixed, extra arguments
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: non-match (extra)
+04 declared e: non-match (extra)
+05 variadic f: match
+06 variadic g: match
+07 variadic y: non-match (extra)
+08 variadic z: non-match (extra)
+
+# non-matching - named, extra arguments
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: match
+06 variadic g: match
+07 variadic y: non-match (extra)
+08 variadic z: non-match (extra)
+
+# non-matching - positional, all non-match, extra arguments
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 declared d: non-match (extra)
+04 declared e: non-match (extra)
+05 variadic f: non-match
+06 variadic g: non-match
+
+# non-matching - mixed, all non-match, extra arguments
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 declared d: non-match (extra)
+04 declared e: non-match (extra)
+05 variadic f: non-match
+06 variadic g: non-match
+07 variadic y: non-match (extra)
+08 variadic z: non-match (extra)
+
+# non-matching - named, all non-match, extra arguments
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 declared d: match (omitted)
+04 declared e: match (omitted)
+05 variadic f: non-match
+06 variadic g: non-match
+07 variadic y: non-match (extra)
+08 variadic z: non-match (extra)

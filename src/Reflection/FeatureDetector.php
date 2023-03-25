@@ -114,7 +114,7 @@ class FeatureDetector
                     return $interface->isInternal();
                 }
 
-               return false;
+                return false;
             },
 
             'stdout.ansi' => function () {

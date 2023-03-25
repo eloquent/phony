@@ -24,7 +24,7 @@ use Eloquent\Phony\Invocation\Invoker;
 use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\MatcherDriver;
 use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Matcher\WildcardMatcher;
 use Eloquent\Phony\Mock\Builder\MockBuilderFactory;
 use Eloquent\Phony\Mock\Handle\HandleFactory;
@@ -49,7 +49,8 @@ use Eloquent\Phony\Verification\IterableVerifierFactory;
 
 class FacadeContainer
 {
-    public static function withTestCallFactory(): self {
+    public static function withTestCallFactory(): self
+    {
         $callFactory = new TestCallFactory();
         $eventFactory = $callFactory->eventFactory();
 

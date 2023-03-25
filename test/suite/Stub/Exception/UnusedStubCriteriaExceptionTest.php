@@ -14,12 +14,12 @@ class UnusedStubCriteriaExceptionTest extends TestCase
         $container = new FacadeContainer();
         $assertionRenderer = $container->assertionRenderer;
         $matcherFactory = $container->matcherFactory;
-        $criteria = [$matcherFactory->equalTo('a'), $matcherFactory->equalTo('b')];
+        $criteria = $matcherFactory->adaptSet([], [$matcherFactory->equalTo('a'), $matcherFactory->equalTo('b')]);
         $exception = new UnusedStubCriteriaException($criteria, $assertionRenderer);
 
         $this->assertSame($criteria, $exception->criteria());
         $this->assertSame(
-            'Stub criteria \'"a", "b"\' were never used. Check for incomplete stub rules.',
+            'Stub criteria \'0: "a", 1: "b"\' were never used. Check for incomplete stub rules.',
             $exception->getMessage()
         );
         $this->assertSame(0, $exception->getCode());

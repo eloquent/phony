@@ -152,8 +152,8 @@ class GeneratorAnswerBuilderTest extends TestCase
         $actual = null;
         $this->subject->callsWith(
             function ($phonySelf) use (&$actual) {
-                    $actual = func_get_args();
-                }
+                $actual = func_get_args();
+            }
         )
             ->returns();
         $arguments = Arguments::create('a', 'b');

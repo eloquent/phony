@@ -6,13 +6,16 @@
 Matched 0 of 3:
 %RED%✗%RESET% Call #0:
     animalA: %GREEN%✓%RESET% "aardvark"
-        ...: %RED%✗%RESET% <3 missing>
+    animalB: %RED%✗%RESET% <omitted>
+    animalC: %RED%✗%RESET% <omitted>
+    animalD: %RED%✗%RESET% <omitted>
 %RED%✗%RESET% Call #1:
     animalA: %GREEN%✓%RESET% "aardvark"
     animalB: %GREEN%✓%RESET% "bonobo"
-        ...: %RED%✗%RESET% <2 missing>
+    animalC: %RED%✗%RESET% <omitted>
+    animalD: %RED%✗%RESET% <omitted>
 %RED%✗%RESET% Call #2:
     animalA: %GREEN%✓%RESET% "aardvark"
     animalB: %GREEN%✓%RESET% "bonobo"
     animalC: %GREEN%✓%RESET% "chameleon"
-        ...: %RED%✗%RESET% <1 missing>
+    animalD: %RED%✗%RESET% <omitted>

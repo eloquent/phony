@@ -1,0 +1,29 @@
+# matchers
+00 declared a: 1 (omitted)
+01 declared b: 1 (omitted)
+
+# matching - empty
+isMatch = true
+00 declared a: match (omitted)
+01 declared b: match (omitted)
+
+# non-matching - positional
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: non-match (extra)
+02 variadic 2: non-match (extra)
+03 variadic 3: non-match (extra)
+
+# non-matching - mixed
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: non-match (extra)
+02 variadic y: non-match (extra)
+03 variadic z: non-match (extra)
+
+# non-matching - named
+isMatch = false
+00 declared a: non-match (extra)
+01 declared b: non-match (extra)
+02 variadic y: non-match (extra)
+03 variadic z: non-match (extra)

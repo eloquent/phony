@@ -8,6 +8,9 @@ abstract class GeneratorFactory
 {
     public static function createEmpty()
     {
-        return (function () { return; yield null; })();
+        return (function () {
+            return;
+            yield null;
+        })();
     }
 }

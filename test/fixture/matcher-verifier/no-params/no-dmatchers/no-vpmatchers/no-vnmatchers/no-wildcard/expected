@@ -1,0 +1,19 @@
+# matchers
+
+# matching - empty
+isMatch = true
+
+# non-matching - positional
+isMatch = false
+00 variadic 0: non-match (extra)
+01 variadic 1: non-match (extra)
+
+# non-matching - mixed
+isMatch = false
+00 variadic 0: non-match (extra)
+01 variadic z: non-match (extra)
+
+# non-matching - named
+isMatch = false
+00 variadic y: non-match (extra)
+01 variadic z: non-match (extra)

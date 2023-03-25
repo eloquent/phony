@@ -7,7 +7,7 @@ namespace Eloquent\Phony\Call;
 use Eloquent\Phony\Assertion\AssertionRecorder;
 use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 
@@ -20,7 +20,7 @@ class CallVerifierFactory
      * Construct a new call verifier factory.
      *
      * @param MatcherFactory           $matcherFactory           The matcher factory to use.
-     * @param MatcherVerifier          $matcherVerifier          The macther verifier to use.
+     * @param MatcherVerifier          $matcherVerifier          The matcher verifier to use.
      * @param GeneratorVerifierFactory $generatorVerifierFactory The generator verifier factory to use.
      * @param IterableVerifierFactory  $iterableVerifierFactory  The iterable verifier factory to use.
      * @param AssertionRecorder        $assertionRecorder        The assertion recorder to use.

@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php
+
+use Eloquent\Phony\Matcher\Verification\MatcherVerifierTest;
+use Eloquent\Phony\Test\Facade\FacadeContainer;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__) . '/test/suite/Matcher/Verification/MatcherVerifierTest.php';
+
+$inputPath = $argv[1];
+$outputPath = $argv[2];
+
+if (!($inputPath && $outputPath)) {
+    error_log('Usage: build-matcher-verifier-fixture input-path output-path');
+    exit(1);
+}
+
+$container = new FacadeContainer;
+$matcherFactory = $container->matcherFactory;
+$matcherVerifier = $container->matcherVerifier;
+
+require $inputPath;
+
+$cases = MatcherVerifierTest::mergeCases($matchingCases, $nonMatchingCases);
+$matcherSet = $matcherFactory->adaptSet($parameterNames, array_pop($matcherSets));
+
+$resultSets = [];
+
+foreach ($cases as $label => list($isMatch, $arguments)) {
+    $resultSets[$label] = [$isMatch, $arguments, $matcherVerifier->explain($matcherSet, $arguments)];
+}
+
+$output = MatcherVerifierTest::renderResults($matcherSet, $resultSets);
+file_put_contents($outputPath, trim($output) . "\n");

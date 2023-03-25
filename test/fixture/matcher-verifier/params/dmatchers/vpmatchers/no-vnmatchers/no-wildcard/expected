@@ -1,0 +1,128 @@
+# matchers
+00 declared a: 9
+01 declared b: 9
+02 declared c: 9
+03 variadic 3: 9
+04 variadic 4: 8
+05 variadic 5: 8
+
+# matching - positional
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 variadic 3: match
+04 variadic 4: match
+05 variadic 5: match
+
+# matching - positional, ignored keys
+isMatch = true
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 variadic 3: match
+04 variadic 4: match
+05 variadic 5: match
+
+# non-matching - empty
+isMatch = false
+00 declared a: non-match (omitted)
+01 declared b: non-match (omitted)
+02 declared c: non-match (omitted)
+03 variadic 3: non-match (omitted)
+04 variadic 4: non-match (omitted)
+05 variadic 5: non-match (omitted)
+
+# non-matching - missing args
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 variadic 3: match
+04 variadic 4: non-match (omitted)
+05 variadic 5: non-match (omitted)
+
+# non-matching - all non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 variadic 3: non-match
+04 variadic 4: non-match
+05 variadic 5: non-match
+
+# non-matching - leading declared non-match
+isMatch = false
+00 declared a: non-match
+01 declared b: match
+02 declared c: match
+03 variadic 3: match
+04 variadic 4: match
+05 variadic 5: match
+
+# non-matching - middle declared non-match
+isMatch = false
+00 declared a: match
+01 declared b: non-match
+02 declared c: match
+03 variadic 3: match
+04 variadic 4: match
+05 variadic 5: match
+
+# non-matching - trailing declared non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: non-match
+03 variadic 3: match
+04 variadic 4: match
+05 variadic 5: match
+
+# non-matching - leading variadic non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 variadic 3: non-match
+04 variadic 4: match
+05 variadic 5: match
+
+# non-matching - middle variadic non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 variadic 3: match
+04 variadic 4: non-match
+05 variadic 5: match
+
+# non-matching - trailing variadic non-match
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 variadic 3: match
+04 variadic 4: match
+05 variadic 5: non-match
+
+# non-matching - extra arguments
+isMatch = false
+00 declared a: match
+01 declared b: match
+02 declared c: match
+03 variadic 3: match
+04 variadic 4: match
+05 variadic 5: match
+06 variadic 6: non-match (extra)
+07 variadic 7: non-match (extra)
+
+# non-matching - all non-match, extra arguments
+isMatch = false
+00 declared a: non-match
+01 declared b: non-match
+02 declared c: non-match
+03 variadic 3: non-match
+04 variadic 4: non-match
+05 variadic 5: non-match
+06 variadic 6: non-match (extra)
+07 variadic 7: non-match (extra)

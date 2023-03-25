@@ -85,13 +85,26 @@ class AssertionRendererTest extends TestCase
         );
     }
 
-    public function testRenderMatchers()
+    public function testRenderMatcherSet()
     {
-        $matcherA = $this->matcherFactory->equalTo('a');
-        $matcherB = $this->matcherFactory->equalTo(111);
-
-        $this->assertSame('<none>', $this->subject->renderMatchers([]));
-        $this->assertSame('"a"', $this->subject->renderMatchers([$matcherA]));
-        $this->assertSame('"a", 111', $this->subject->renderMatchers([$matcherA, $matcherB]));
+        $this->assertSame('<none>', $this->subject->renderMatcherSet($this->matcherFactory->adaptSet([], [])));
+        $this->assertSame(
+            'a: "1", b: "2"',
+            $this->subject->renderMatcherSet($this->matcherFactory->adaptSet(['a', 'b'], ['1', '2']))
+        );
+        $this->assertSame(
+            'a: "1", b: <omitted>',
+            $this->subject->renderMatcherSet($this->matcherFactory->adaptSet(['a', 'b'], ['1']))
+        );
+        $this->assertSame(
+            'a: 1, b: 2, 2: 3, 3: 4, y: 5, z: 6',
+            $this->subject
+                ->renderMatcherSet($this->matcherFactory->adaptSet(['a', 'b'], [1, 2, 3, 4, 'z' => 6, 'y' => 5]))
+        );
+        $this->assertSame(
+            'a: 1, b: 2, 2: 3, 3: 4, y: 5, z: 6, <any>*',
+            $this->subject
+                ->renderMatcherSet($this->matcherFactory->adaptSet(['a', 'b'], [1, 2, 3, 4, '*', 'z' => 6, 'y' => 5]))
+        );
     }
 }

@@ -9,8 +9,7 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Spy\Spy;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Spy\SpyFactory;
 use Eloquent\Phony\Stub\Answer\Builder\GeneratorAnswerBuilderFactory;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
@@ -28,7 +27,7 @@ class StubVerifierFactory
      * @param StubFactory                   $stubFactory                   The stub factory to use.
      * @param SpyFactory                    $spyFactory                    The spy factory to use.
      * @param MatcherFactory                $matcherFactory                The matcher factory to use.
-     * @param MatcherVerifier               $matcherVerifier               The macther verifier to use.
+     * @param MatcherVerifier               $matcherVerifier               The matcher verifier to use.
      * @param GeneratorVerifierFactory      $generatorVerifierFactory      The generator verifier factory to use.
      * @param IterableVerifierFactory       $iterableVerifierFactory       The iterable verifier factory to use.
      * @param CallVerifierFactory           $callVerifierFactory           The call verifier factory to use.

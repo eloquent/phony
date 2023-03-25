@@ -6,11 +6,12 @@ namespace Eloquent\Phony\Test\Php82;
 
 readonly class TestClassReadonly
 {
-  public string $propertyA;
-  public int $propertyB;
+    public string $propertyA;
+    public int $propertyB;
 
-  public function __construct() {
-    $this->propertyA = 'a';
-    $this->propertyB = 111;
-  }
+    public function __construct()
+    {
+        $this->propertyA = 'a';
+        $this->propertyB = 111;
+    }
 }

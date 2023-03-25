@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Stub;
 
-use Eloquent\Phony\Matcher\Matcher;
+use Eloquent\Phony\Matcher\MatcherSet;
 use Eloquent\Phony\Stub\Answer\Answer;
 use Eloquent\Phony\Stub\Exception\UndefinedAnswerException;
 
@@ -16,10 +16,10 @@ class StubRule
     /**
      * Construct a new stub rule.
      *
-     * @param array<int|string,Matcher> $criteria The criteria.
-     * @param array<int,Answer>         $answers  The answers.
+     * @param MatcherSet        $criteria The criteria.
+     * @param array<int,Answer> $answers  The answers.
      */
-    public function __construct(array $criteria, array $answers)
+    public function __construct(MatcherSet $criteria, array $answers)
     {
         $this->criteria = $criteria;
         $this->answers = $answers;
@@ -31,9 +31,9 @@ class StubRule
     /**
      * Get the criteria.
      *
-     * @return array<int|string,Matcher> The criteria.
+     * @return MatcherSet The criteria.
      */
-    public function criteria(): array
+    public function criteria(): MatcherSet
     {
         return $this->criteria;
     }
@@ -72,7 +72,7 @@ class StubRule
     }
 
     /**
-     * @var array<int|string,Matcher>
+     * @var MatcherSet
      */
     private $criteria;
 

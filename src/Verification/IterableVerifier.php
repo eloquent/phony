@@ -322,7 +322,7 @@ class IterableVerifier implements EventCollection, CardinalityVerifier
         if (1 === $argumentCount) {
             $key = null;
             $value = $this->matcherFactory->adapt($keyOrValue);
-        } elseif ($argumentCount > 0)  {
+        } elseif ($argumentCount > 0) {
             $key = $this->matcherFactory->adapt($keyOrValue);
             $value = $this->matcherFactory->adapt($value);
         } else {

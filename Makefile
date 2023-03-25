@@ -6,18 +6,23 @@ export PHP_CS_FIXER_IGNORE_ENV=true
 
 _HOOK_FIXTURE_INPUT_FILES := $(shell find test/fixture/hook-generator -name callback.php)
 _HOOK_FIXTURE_OUTPUT_FILES := $(_HOOK_FIXTURE_INPUT_FILES:callback.php=expected.php)
+GENERATED_FILES += $(_HOOK_FIXTURE_OUTPUT_FILES)
+
+_MATCHER_VERIFIER_FIXTURE_INPUT_FILES := $(shell find test/fixture/matcher-verifier -name verification.php)
+_MATCHER_VERIFIER_FIXTURE_OUTPUT_FILES := $(_MATCHER_VERIFIER_FIXTURE_INPUT_FILES:verification.php=expected)
+GENERATED_FILES += $(_MATCHER_VERIFIER_FIXTURE_OUTPUT_FILES)
 
 _MOCK_FIXTURE_INPUT_FILES := $(shell find test/fixture/mock-generator -name builder.php)
 _MOCK_FIXTURE_OUTPUT_FILES := $(_MOCK_FIXTURE_INPUT_FILES:builder.php=expected.php)
+GENERATED_FILES += $(_MOCK_FIXTURE_OUTPUT_FILES)
 
 _VERIFICATION_FIXTURE_INPUT_FILES := $(shell find test/fixture/verification -name verification.php)
 _VERIFICATION_FIXTURE_OUTPUT_FILES := $(_VERIFICATION_FIXTURE_INPUT_FILES:verification.php=expected)
+GENERATED_FILES += $(_VERIFICATION_FIXTURE_OUTPUT_FILES)
 _VERIFICATION_IMAGE_FILES := $(_VERIFICATION_FIXTURE_INPUT_FILES:test/fixture/verification/%/verification.php=artifacts/build/doc-img/%.svg)
 
 _DOC_MARKDOWN_FILES := $(wildcard doc/*.md)
 _DOC_HTML_FILES := $(_DOC_MARKDOWN_FILES:doc/%.md=artifacts/build/doc-html/%.html)
-
-GENERATED_FILES += $(_HOOK_FIXTURE_OUTPUT_FILES) $(_MOCK_FIXTURE_OUTPUT_FILES) $(_VERIFICATION_FIXTURE_OUTPUT_FILES)
 
 ################################################################################
 
@@ -93,6 +98,9 @@ artifacts/test/integration.touch: vendor $(PHP_SOURCE_FILES) $(_PHP_TEST_ASSETS)
 
 test/fixture/hook-generator/%/expected.php: | test/fixture/hook-generator/%/callback.php
 	scripts/build-hook-generator-fixture "$|" "$@"
+
+test/fixture/matcher-verifier/%/expected: | test/fixture/matcher-verifier/%/verification.php
+	scripts/build-matcher-verifier-fixture "$|" "$@"
 
 test/fixture/mock-generator/%/expected.php: | test/fixture/mock-generator/%/builder.php
 	scripts/build-mock-generator-fixture "$|" "$@"

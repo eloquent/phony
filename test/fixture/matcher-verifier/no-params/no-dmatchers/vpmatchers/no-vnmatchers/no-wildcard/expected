@@ -1,0 +1,70 @@
+# matchers
+00 variadic 0: 7
+01 variadic 1: 6
+
+# matching - positional
+isMatch = true
+00 variadic 0: match
+01 variadic 1: match
+
+# matching - positional, ignored keys
+isMatch = true
+00 variadic 0: match
+01 variadic 1: match
+
+# non-matching - empty
+isMatch = false
+00 variadic 0: non-match (omitted)
+01 variadic 1: non-match (omitted)
+
+# non-matching - missing positional arg
+isMatch = false
+00 variadic 0: match
+01 variadic 1: non-match (omitted)
+
+# non-matching - all non-match
+isMatch = false
+00 variadic 0: non-match
+01 variadic 1: non-match
+
+# non-matching - positional 0 non-match
+isMatch = false
+00 variadic 0: non-match
+01 variadic 1: match
+
+# non-matching - positional 1 non-match
+isMatch = false
+00 variadic 0: match
+01 variadic 1: non-match
+
+# non-matching - extra positional arguments
+isMatch = false
+00 variadic 0: match
+01 variadic 1: match
+02 variadic 2: non-match (extra)
+03 variadic 3: non-match (extra)
+
+# non-matching - extra mixed arguments
+isMatch = false
+00 variadic 0: match
+01 variadic 1: match
+02 variadic 2: non-match (extra)
+03 variadic 3: non-match (extra)
+04 variadic y: non-match (extra)
+05 variadic z: non-match (extra)
+
+# non-matching - extra named arguments
+isMatch = false
+00 variadic 0: match
+01 variadic 1: match
+02 variadic y: non-match (extra)
+03 variadic z: non-match (extra)
+
+# non-matching - all non-match, extra arguments
+isMatch = false
+00 variadic 0: non-match
+01 variadic 1: non-match
+02 variadic 2: non-match (extra)
+03 variadic 3: non-match (extra)
+04 variadic y: non-match (extra)
+05 variadic z: non-match (extra)

@@ -9,7 +9,7 @@ use Eloquent\Phony\Assertion\AssertionRenderer;
 use Eloquent\Phony\Call\CallVerifierFactory;
 use Eloquent\Phony\Hook\FunctionHookManager;
 use Eloquent\Phony\Matcher\MatcherFactory;
-use Eloquent\Phony\Matcher\MatcherVerifier;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Verification\GeneratorVerifierFactory;
 use Eloquent\Phony\Verification\IterableVerifierFactory;
 use InvalidArgumentException;
@@ -24,7 +24,7 @@ class SpyVerifierFactory
      *
      * @param SpyFactory               $spyFactory               The spy factory to use.
      * @param MatcherFactory           $matcherFactory           The matcher factory to use.
-     * @param MatcherVerifier          $matcherVerifier          The macther verifier to use.
+     * @param MatcherVerifier          $matcherVerifier          The matcher verifier to use.
      * @param GeneratorVerifierFactory $generatorVerifierFactory The generator verifier factory to use.
      * @param IterableVerifierFactory  $iterableVerifierFactory  The iterable verifier factory to use.
      * @param CallVerifierFactory      $callVerifierFactory      The call verifier factory to use.

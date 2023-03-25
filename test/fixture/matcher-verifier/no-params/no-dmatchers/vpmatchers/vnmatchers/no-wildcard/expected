@@ -1,0 +1,107 @@
+# matchers
+00 variadic 0: 10
+01 variadic 1: 9
+02 variadic a: 9
+03 variadic b: 9
+
+# matching - order a
+isMatch = true
+00 variadic 0: match
+01 variadic 1: match
+02 variadic a: match
+03 variadic b: match
+
+# matching - order a, ignored positional keys
+isMatch = true
+00 variadic 0: match
+01 variadic 1: match
+02 variadic a: match
+03 variadic b: match
+
+# matching - order b
+isMatch = true
+00 variadic 0: match
+01 variadic 1: match
+02 variadic a: match
+03 variadic b: match
+
+# non-matching - empty
+isMatch = false
+00 variadic 0: non-match (omitted)
+01 variadic 1: non-match (omitted)
+02 variadic a: non-match (omitted)
+03 variadic b: non-match (omitted)
+
+# non-matching - missing positional arg
+isMatch = false
+00 variadic 0: match
+01 variadic 1: non-match (omitted)
+02 variadic a: match
+03 variadic b: match
+
+# non-matching - missing named arg a
+isMatch = false
+00 variadic 0: match
+01 variadic 1: match
+02 variadic a: non-match (omitted)
+03 variadic b: match
+
+# non-matching - missing named arg b
+isMatch = false
+00 variadic 0: match
+01 variadic 1: match
+02 variadic a: match
+03 variadic b: non-match (omitted)
+
+# non-matching - all non-match
+isMatch = false
+00 variadic 0: non-match
+01 variadic 1: non-match
+02 variadic a: non-match
+03 variadic b: non-match
+
+# non-matching - positional 0 non-match
+isMatch = false
+00 variadic 0: non-match
+01 variadic 1: match
+02 variadic a: match
+03 variadic b: match
+
+# non-matching - positional 1 non-match
+isMatch = false
+00 variadic 0: match
+01 variadic 1: non-match
+02 variadic a: match
+03 variadic b: match
+
+# non-matching - named a non-match
+isMatch = false
+00 variadic 0: match
+01 variadic 1: match
+02 variadic a: non-match
+03 variadic b: match
+
+# non-matching - named b non-match
+isMatch = false
+00 variadic 0: match
+01 variadic 1: match
+02 variadic a: match
+03 variadic b: non-match
+
+# non-matching - extra arguments
+isMatch = false
+00 variadic 0: match
+01 variadic 1: match
+02 variadic a: match
+03 variadic b: match
+04 variadic y: non-match (extra)
+05 variadic z: non-match (extra)
+
+# non-matching - all non-match, extra arguments
+isMatch = false
+00 variadic 0: non-match
+01 variadic 1: non-match
+02 variadic a: non-match
+03 variadic b: non-match
+04 variadic y: non-match (extra)
+05 variadic z: non-match (extra)

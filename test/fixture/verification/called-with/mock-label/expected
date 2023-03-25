@@ -2,4 +2,6 @@
      animal: %RED%✗%RESET% "aardvark" %RED%%FAINT%(0 matches)%RESET%
     animals: %RED%✗%RESET% #0["bonobo", "chameleon", "dugong"] %RED%%FAINT%(0 matches)%RESET%
 Matched 0 of 1:
-%RED%✗%RESET% Call #0 (no arguments)
+%RED%✗%RESET% Call #0:
+     animal: %RED%✗%RESET% <omitted>
+    animals: %RED%✗%RESET% <omitted>

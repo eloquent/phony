@@ -209,8 +209,7 @@ class GeneratorAnswerBuilder
     public function setsArgument(
         $positionOrNameOrValue = null,
         $value = null
-    ): self
-    {
+    ): self {
         if (func_num_args() > 1) {
             $positionOrName = $positionOrNameOrValue;
         } else {

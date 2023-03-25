@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Assertion;
 
 use Eloquent\Phony\Call\ArgumentNormalizer;
+use Eloquent\Phony\Call\Arguments;
 use Eloquent\Phony\Call\Call;
 use Eloquent\Phony\Call\CallData;
 use Eloquent\Phony\Call\Event\CalledEvent;
@@ -20,11 +21,10 @@ use Eloquent\Phony\Difference\DifferenceEngine;
 use Eloquent\Phony\Difference\DifferenceSequenceMatcher;
 use Eloquent\Phony\Event\Event;
 use Eloquent\Phony\Exporter\Exporter;
-use Eloquent\Phony\Matcher\AnyMatcher;
 use Eloquent\Phony\Matcher\EqualToMatcher;
 use Eloquent\Phony\Matcher\Matcher;
-use Eloquent\Phony\Matcher\MatcherVerifier;
-use Eloquent\Phony\Matcher\WildcardMatcher;
+use Eloquent\Phony\Matcher\MatcherSet;
+use Eloquent\Phony\Matcher\Verification\MatcherVerifier;
 use Eloquent\Phony\Mock\Handle\Handle;
 use Eloquent\Phony\Mock\Handle\InstanceHandle;
 use Eloquent\Phony\Reflection\FeatureDetector;
@@ -243,49 +243,22 @@ class AssertionRenderer
     /**
      * Render a failed calledWith() verification.
      *
-     * @param Spy|Call                  $subject     The subject.
-     * @param Cardinality               $cardinality The cardinality.
-     * @param array<int|string,Matcher> $matchers    The matchers.
+     * @param Spy|Call    $subject     The subject.
+     * @param Cardinality $cardinality The cardinality.
+     * @param MatcherSet  $matcherSet  The matcher set.
      *
      * @return string The rendered failure message.
      */
     public function renderCalledWith(
-        $subject,
+        Spy|Call $subject,
         Cardinality $cardinality,
-        array $matchers
+        MatcherSet $matcherSet
     ): string {
-        $parameterNames = [];
-
-        foreach ($subject->parameters() as $parameter) {
-            if ($parameter->isVariadic()) {
-                break;
-            }
-
-            $parameterNames[] = $parameter->getName();
-        }
-
-        /** @var array<int|string,Matcher> $matchers */
-        $matchers =
-            $this->argumentNormalizer->normalize($parameterNames, $matchers);
-        $matcherCount = count($matchers);
-
-        if (
-            1 === $matcherCount &&
-            isset($matchers[0]) &&
-            $matchers[0] instanceof WildcardMatcher &&
-            $matchers[0]->matcher() instanceof AnyMatcher &&
-            0 === $matchers[0]->minimumArguments() &&
-            $matchers[0]->maximumArguments() < 0
-        ) {
+        if ($matcherSet->isUnboundWildcardAny()) {
             return $this->renderCalled($subject, $cardinality);
         }
 
-        $isCall = $subject instanceof Call;
-
-        if ($isCall) {
-            /** @var Call $subject */
-
-            /** @var array<int,Call> $calls */
+        if ($subject instanceof Call) {
             $calls = [$subject];
             /** @var callable $callback */
             $callback = $subject->callback();
@@ -294,8 +267,6 @@ class AssertionRenderer
                 $this->exporter->exportCallable($callback) .
                 $this->reset;
         } else {
-            /** @var Spy $subject */
-
             $calls = $subject->allCalls();
             $renderedSubject =
                 $this->bold .
@@ -303,129 +274,140 @@ class AssertionRenderer
                 $this->reset;
         }
 
-        $normalizedArguments = [];
-        $matcherMatchCounts = [];
+        $minimum = $cardinality->minimum();
+        $maximum = $cardinality->maximum();
+        $isNever = 0 === $maximum;
+
+        $maxKeyLength = self::maxMatcherSetKeyLength($matcherSet);
+
+        foreach ($calls as $call) {
+            $keyLength = self::maxArgumentKeyLength($call->arguments());
+
+            if ($keyLength > $maxKeyLength) {
+                $maxKeyLength = $keyLength;
+            }
+        }
+
+        $callArguments = [];
         $callResults = [];
         $totalCount = 0;
         $matchCount = 0;
+        $declaredMatcherCounts = [];
+        $variadicMatcherCounts = [];
+        $wildcardMatcherCount = 0;
 
         foreach ($calls as $callIndex => $call) {
             ++$totalCount;
 
-            $arguments = $this->argumentNormalizer->normalize(
-                $parameterNames,
-                $call->arguments()->all()
-            );
-            $normalizedArguments[$callIndex] = $arguments;
+            $arguments = $call->arguments()->all();
+            $callArguments[$callIndex] = $arguments;
 
-            $callResult = $this->matcherVerifier->explain(
-                $matchers,
-                $parameterNames,
-                $arguments
-            );
+            $callResult =
+                $this->matcherVerifier->explain($matcherSet, $arguments);
+            $callResults[$callIndex] = $callResult;
 
             if ($callResult->isMatch) {
                 ++$matchCount;
             }
 
-            foreach (
-                $callResult->matcherMatches as $positionOrName => $isMatch
-            ) {
+            foreach ($callResult->declaredResults as $position => $result) {
+                $isMatch = $result->isMatch;
+                $declaredMatcherCounts[$position] =
+                    $declaredMatcherCounts[$position] ?? 0;
+
                 if ($isMatch) {
-                    $matcherMatchCounts[$positionOrName] ??= 0;
-                    ++$matcherMatchCounts[$positionOrName];
+                    ++$declaredMatcherCounts[$position];
                 }
             }
 
-            $callResults[] = $callResult;
-        }
+            foreach ($callResult->variadicResults as $result) {
+                $matcherKey = $result->matcherKey;
+                $isMatch = $result->isMatch;
 
-        $namePadLength = 0;
+                if (null !== $matcherKey) {
+                    $variadicMatcherCounts[$matcherKey] =
+                        $variadicMatcherCounts[$matcherKey] ?? 0;
 
-        foreach ($matchers as $positionOrName => $matcher) {
-            $length = strlen((string) $positionOrName);
-
-            if ($length > $namePadLength) {
-                $namePadLength = $length;
+                    if ($isMatch) {
+                        ++$variadicMatcherCounts[$matcherKey];
+                    }
+                }
             }
-        }
 
-        foreach ($calls as $callIndex => $call) {
-            $callResult = $callResults[$callIndex];
+            if ($callResult->wildcardResult) {
+                $isMatch = $callResult->wildcardResult->isMatch;
 
-            foreach (
-                $callResult->argumentMatches as $positionOrName => $isMatch
-            ) {
-                $length = strlen((string) $positionOrName);
-
-                if ($length > $namePadLength) {
-                    $namePadLength = $length;
+                if ($isMatch) {
+                    ++$wildcardMatcherCount;
                 }
             }
         }
 
-        $renderedMatchers = [];
-        $requiredArgumentCount = 0;
+        $matcherRows = [];
 
-        foreach ($matchers as $positionOrName => $matcher) {
-            $isWildcard  = $matcher instanceof WildcardMatcher;
+        foreach ($matcherSet->declaredMatchers as $position => $matcher) {
+            $key = $matcherSet->parameterNames[$position];
+            $matcherMatchCount = $declaredMatcherCounts[$position] ?? 0;
 
-            if ($isWildcard) {
-                $requiredArgumentCount += $matcher->minimumArguments();
-            } else {
-                ++$requiredArgumentCount;
-            }
-
-            $count = $matcherMatchCounts[$positionOrName] ?? 0;
-
-            if ($cardinality->matches($count, $totalCount)) {
-                $resultText = self::PASS;
-                $resultStart = $this->passStart;
-            } else {
-                $resultText = self::FAIL;
-                $resultStart = $this->failStart;
-            }
-
-            if ($isCall) {
-                $matcherMatchCount = '';
-            } else {
-                $matchOrMatches = 1 === $count ? 'match' : 'matches';
-                $matcherMatchCount =
-                    ' ' . $resultStart .
-                    $this->faint .
-                    '(' . $count .
-                    ' ' . $matchOrMatches .
-                    ')' . $this->reset;
-            }
-
-            $paddedName = str_pad(
-                $isWildcard ? '...' : (string) $positionOrName,
-                $namePadLength,
-                ' ',
-                STR_PAD_LEFT
-            );
-            $renderedMatchers[] =
-                '    ' .
-                $paddedName . ': ' .
-                $resultStart . $resultText . $this->reset . ' ' .
-                $matcher->describe($this->exporter) .
-                $matcherMatchCount;
+            $matcherRows[] = [$key, $matcherMatchCount, $matcher];
         }
 
-        if (empty($renderedMatchers)) {
+        foreach ($matcherSet->variadicMatchers as $positionOrName => $matcher) {
+            $key = (string) $positionOrName;
+            $matcherMatchCount = $variadicMatcherCounts[$positionOrName] ?? 0;
+
+            $matcherRows[] = [$key, $matcherMatchCount, $matcher];
+        }
+
+        if ($matcherSet->wildcardMatcher) {
+            $matcherRows[] =
+                ['...', $wildcardMatcherCount, $matcherSet->wildcardMatcher];
+        }
+
+        if (empty($matcherRows)) {
             $renderedCriteria = 'no arguments.';
         } else {
-            $renderedCriteria =
-                'arguments:' . PHP_EOL . implode(PHP_EOL, $renderedMatchers);
+            $renderedCriteria = 'arguments:';
+
+            foreach ($matcherRows as list($key, $matcherMatchCount, $matcher)) {
+                $paddedKey =
+                    str_pad($key, $maxKeyLength + 4, ' ', STR_PAD_LEFT);
+
+                if (
+                    $cardinality->matches($matcherMatchCount, $totalCount)
+                ) {
+                    $result = self::PASS;
+                    $resultStart = $this->passStart;
+                } else {
+                    $result = self::FAIL;
+                    $resultStart = $this->failStart;
+                }
+
+                $renderedResult = $resultStart . $result . $this->reset;
+
+                if ($subject instanceof Call) {
+                    $renderedMatchCount = '';
+                } else {
+                    $matchOrMatches = 1 ===
+                        $matcherMatchCount ? 'match' : 'matches';
+                    $renderedMatchCount =
+                        " $resultStart" .
+                        $this->faint .
+                        "($matcherMatchCount $matchOrMatches)" .
+                        $this->reset;
+                }
+
+                $renderedMatcher = $matcher
+                    ? $matcher->describe($this->exporter)
+                    : '<omitted>';
+
+                $renderedCriteria .= PHP_EOL .
+                    "$paddedKey: $renderedResult " .
+                    "$renderedMatcher$renderedMatchCount";
+            }
         }
 
-        $minimum = $cardinality->minimum();
-        $maximum = $cardinality->maximum();
-        $isNever = 0 === $maximum;
-
-        if ($isCall) {
-            /** @var Call $subject */
-
+        if ($subject instanceof Call) {
             if ($isNever) {
                 $expected =
                     'Expected ' . $renderedSubject .
@@ -438,8 +420,6 @@ class AssertionRenderer
                     ' to have ' . $renderedCriteria;
             }
         } else {
-            /** @var Spy $subject */
-
             if ($isNever) {
                 $expected =
                     'Expected no ' . $renderedSubject .
@@ -455,98 +435,7 @@ class AssertionRenderer
             }
         }
 
-        if ($totalCount) {
-            $renderedCalls = [];
-
-            foreach ($calls as $callIndex => $call) {
-                $callResult = $callResults[$callIndex];
-                $arguments = $normalizedArguments[$callIndex];
-                $renderedArguments = [];
-
-                if (count($arguments)) {
-                    $argumentPosition = 0;
-
-                    foreach (
-                        $callResult->argumentMatches as
-                            $positionOrName => $isMatch
-                    ) {
-                        if ($isMatch xor $isNever) {
-                            $renderedResult = $this->pass;
-                        } else {
-                            $renderedResult = $this->fail;
-                        }
-
-                        $exists = array_key_exists($positionOrName, $arguments);
-
-                        if ($exists) {
-                            $argument = $arguments[$positionOrName];
-                            $value = $this->exporter->export($argument);
-
-                            if (
-                                !$isMatch &&
-                                isset($matchers[$positionOrName]) &&
-                                $matchers[$positionOrName] instanceof
-                                    EqualToMatcher
-                            ) {
-                                $value = $this->differenceEngine->difference(
-                                    $matchers[$positionOrName]
-                                        ->describe($this->exporter),
-                                    $value
-                                );
-                            }
-                        } else {
-                            $value =
-                                '<' .
-                                ($requiredArgumentCount - $argumentPosition) .
-                                ' missing>';
-                        }
-
-                        $paddedName = str_pad(
-                            $exists ? (string) $positionOrName : '...',
-                            $namePadLength,
-                            ' ',
-                            STR_PAD_LEFT
-                        );
-                        $renderedArguments[] =
-                            '    ' .
-                            $paddedName . ': ' .
-                            $renderedResult . ' ' .
-                            $value;
-
-                        if (!$exists) {
-                            break;
-                        }
-
-                        ++$argumentPosition;
-                    }
-                }
-
-                if ($callResult->isMatch xor $isNever) {
-                    $renderedResult = $this->pass;
-                } else {
-                    $renderedResult = $this->fail;
-                }
-
-                if (empty($renderedArguments)) {
-                    $renderedArgumentList = ' (no arguments)';
-                } else {
-                    $renderedArgumentList =
-                        ':' . PHP_EOL . implode(PHP_EOL, $renderedArguments);
-                }
-
-                $renderedCalls[] =
-                    $renderedResult .
-                    ' Call #' .
-                    $call->index() .
-                    $renderedArgumentList;
-            }
-
-            $actual = PHP_EOL . implode(PHP_EOL, $renderedCalls);
-        } else {
-            $actual = '';
-        }
-
-        if ($isCall) {
+        if ($subject instanceof Call) {
             $cardinality = '';
         } else {
             $cardinality = $this->renderCardinality(
@@ -557,6 +446,114 @@ class AssertionRenderer
                 $totalCount,
                 false
             );
+        }
+
+        $actual = '';
+
+        foreach ($calls as $callIndex => $call) {
+            $actual .= PHP_EOL;
+
+            $arguments = $callArguments[$callIndex];
+            $callResult = $callResults[$callIndex];
+
+            $actual .= ($callResult->isMatch xor $isNever)
+                ? $this->pass
+                : $this->fail;
+            $actual .= ' Call #' . $call->index();
+
+            if (
+                $callResult->declaredResults ||
+                $callResult->variadicResults ||
+                $callResult->wildcardResult
+            ) {
+                $actual .= ':';
+            } else {
+                $actual .= ' (no arguments)';
+            }
+
+            $argumentRows = [];
+
+            foreach ($callResult->declaredResults as $position => $result) {
+                $isSingularMatch = $result->isMatch;
+                $isWildMatch = $result->isWildMatch;
+
+                $key = $matcherSet->parameterNames[$position];
+                $isMatch = $isSingularMatch || $isWildMatch;
+
+                if (array_key_exists($position, $arguments)) {
+                    $hasArgument = true;
+                    $argument = $arguments[$position];
+                } elseif (array_key_exists($key, $arguments)) {
+                    $hasArgument = true;
+                    $argument = $arguments[$key];
+                } else {
+                    $hasArgument = false;
+                    $argument = null;
+                }
+
+                $matcher = $matcherSet->declaredMatchers[$position] ?? null;
+
+                $argumentRows[] =
+                    [$key, $isMatch, $hasArgument, $argument, $matcher];
+            }
+
+            foreach ($callResult->variadicResults as $result) {
+                $matcherKey = $result->matcherKey;
+                $argumentKey = $result->argumentKey;
+                $isSingularMatch = $result->isMatch;
+                $isWildMatch = $result->isWildMatch;
+
+                $key = (string) ($argumentKey ?? $matcherKey);
+                $isMatch = $isSingularMatch || $isWildMatch;
+                $hasArgument = null !== $argumentKey;
+                $argument = $hasArgument ? $arguments[$argumentKey] : null;
+                $matcher = null === $matcherKey
+                    ? null
+                    : $matcherSet->variadicMatchers[$matcherKey];
+
+                $argumentRows[] =
+                    [$key, $isMatch, $hasArgument, $argument, $matcher];
+            }
+
+            foreach ($argumentRows as $argumentRow) {
+                list($key, $isMatch, $hasArgument, $argument, $matcher) =
+                    $argumentRow;
+
+                $paddedKey =
+                    str_pad($key, $maxKeyLength + 4, ' ', STR_PAD_LEFT);
+                $result = ($isMatch xor $isNever) ? $this->pass : $this->fail;
+
+                if ($hasArgument) {
+                    $value = $this->exporter->export($argument);
+
+                    if (!$isMatch && $matcher instanceof EqualToMatcher) {
+                        $value = $this->differenceEngine->difference(
+                            $matcher->describe($this->exporter),
+                            $value
+                        );
+                    }
+                } else {
+                    $value = '<omitted>';
+                }
+
+                $actual .= PHP_EOL . "$paddedKey: $result $value";
+            }
+
+            if (
+                $callResult->wildcardResult &&
+                !$callResult->wildcardResult->isMatch
+            ) {
+                $paddedKey = str_pad(
+                    (string) '...',
+                    $maxKeyLength + 4,
+                    ' ',
+                    STR_PAD_LEFT
+                );
+                $result = $isNever ? $this->pass : $this->fail;
+                $missing = -$callResult->wildcardResult->delta;
+
+                $actual .= PHP_EOL . "$paddedKey: $result <$missing missing>";
+            }
         }
 
         return $this->reset . $expected . $cardinality . $actual;
@@ -3910,25 +3907,41 @@ class AssertionRenderer
     }
 
     /**
-     * Render a sequence of matchers.
+     * Render a matcher set.
      *
-     * @param array<int|string,Matcher> $matchers The matchers.
+     * @param MatcherSet $matcherSet The matcher set.
      *
-     * @return string The rendered matchers.
+     * @return string The rendered matcher set.
      */
-    public function renderMatchers(array $matchers): string
+    public function renderMatcherSet(MatcherSet $matcherSet): string
     {
-        if (count($matchers) < 1) {
-            return '<none>';
+        $matchers = [];
+
+        foreach ($matcherSet->parameterNames as $position => $name) {
+            $matcher = $matcherSet->declaredMatchers[$position];
+
+            if ($matcher) {
+                $matchers[] = "$name: " . $matcher->describe($this->exporter);
+            } else {
+                $matchers[] = "$name: <omitted>";
+            }
         }
 
-        $rendered = [];
-
-        foreach ($matchers as $matcher) {
-            $rendered[] = $matcher->describe($this->exporter);
+        foreach ($matcherSet->variadicMatchers as $positionOrName => $matcher) {
+            $matchers[] =
+                "$positionOrName: " . $matcher->describe($this->exporter);
         }
 
-        return implode(', ', $rendered);
+        if ($matcherSet->wildcardMatcher) {
+            $matchers[] =
+                $matcherSet->wildcardMatcher->describe($this->exporter);
+        }
+
+        if ($matchers) {
+            return join(', ', $matchers);
+        }
+
+        return '<none>';
     }
 
     /**
@@ -4141,4 +4154,44 @@ class AssertionRenderer
      * @var string
      */
     private $removeEnd;
+
+    private static function maxMatcherSetKeyLength(MatcherSet $matcherSet): int
+    {
+        $max = $matcherSet->wildcardMatcher ? 3 : 0;
+
+        foreach ($matcherSet->declaredMatchers as $position => $matcher) {
+            if ($matcher) {
+                $length = strlen($matcherSet->parameterNames[$position]);
+
+                if ($length > $max) {
+                    $max = $length;
+                }
+            }
+        }
+
+        foreach ($matcherSet->variadicMatchers as $positionOrName => $matcher) {
+            $length = strlen((string) $positionOrName);
+
+            if ($length > $max) {
+                $max = $length;
+            }
+        }
+
+        return $max;
+    }
+
+    private static function maxArgumentKeyLength(Arguments $arguments): int
+    {
+        $max = 0;
+
+        foreach ($arguments->all() as $positionOrName => $argument) {
+            $length = strlen((string) $positionOrName);
+
+            if ($length > $max) {
+                $max = $length;
+            }
+        }
+
+        return $max;
+    }
 }

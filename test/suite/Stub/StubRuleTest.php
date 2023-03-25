@@ -18,7 +18,9 @@ class StubRuleTest extends TestCase
     protected function setUp(): void
     {
         $container = new FacadeContainer();
-        $this->criteria = [$container->matcherFactory->equalTo('a'), $container->matcherFactory->equalTo('b')];
+        $matcherFactory = $container->matcherFactory;
+
+        $this->criteria = $matcherFactory->adaptSet([], [$matcherFactory->equalTo('a'), $matcherFactory->equalTo('b')]);
         $this->answerA = new Answer(new CallRequest('implode', Arguments::create(), false, false, false), []);
         $this->answerB = new Answer(new CallRequest('implode', Arguments::create(), false, false, false), []);
         $this->answers = [$this->answerA, $this->answerB];
