@@ -21,7 +21,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $a;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -48,7 +47,6 @@ implements Mock
         if ($¤argumentCount > 0) {
             $¤arguments[] = $a;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }

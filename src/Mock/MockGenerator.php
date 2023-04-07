@@ -392,6 +392,8 @@ EOD;
 
         $arguments = self::VAR_PREFIX . 'arguments';
         $argumentCount = self::VAR_PREFIX . 'argumentCount';
+        $argumentName = self::VAR_PREFIX . 'argumentName';
+        $argumentValue = self::VAR_PREFIX . 'argumentValue';
         $result = self::VAR_PREFIX . 'result';
         $i = self::VAR_PREFIX . 'i';
         $source = '';
@@ -428,11 +430,9 @@ EOD;
             $variadicPosition = -1;
             $variadicReference = '';
             $variadicName = '';
+            $argumentPacking = "\n";
 
-            if (empty($parameters)) {
-                $argumentPacking = '';
-            } else {
-                $argumentPacking = "\n";
+            if (!empty($parameters)) {
                 $position = -1;
 
                 foreach ($parameters as $parameterName => $parameter) {
@@ -452,6 +452,22 @@ EOD;
                             ";\n        }";
                     }
                 }
+            }
+
+            if ($variadicPosition > -1) {
+                $argumentPacking .=
+                    "\n        foreach (\$$variadicName as " .
+                    "$argumentName => $variadicReference$argumentValue) {\n" .
+                    "            {$arguments}[$argumentName] = " .
+                    "$variadicReference$argumentValue;\n" .
+                    '        }';
+            } else {
+                $argumentPacking .=
+                    "\n        for ($i = " .
+                    $parameterCount .
+                    "; $i < $argumentCount; ++$i) {\n" .
+                    "            {$arguments}[] = \\func_get_arg($i);\n" .
+                    '        }';
             }
 
             if ($returnType) {
@@ -477,20 +493,8 @@ EOD;
             $body =
                 "        $argumentCount = \\func_num_args();\n" .
                 "        $arguments = [];" .
-                $argumentPacking .
-                "\n\n        for ($i = " .
-                $parameterCount .
-                "; $i < $argumentCount; ++$i) {\n";
-
-            if ($variadicPosition > -1) {
-                $body .= "            {$arguments}[] = $variadicReference\$" .
-                    "{$variadicName}[$i - $variadicPosition];\n";
-            } else {
-                $body .= "            {$arguments}[] = \\func_get_arg($i);\n";
-            }
-
-            $body .=
-                "        }\n\n        if (isset({$handle})) {\n";
+                $argumentPacking . "\n\n" .
+                "        if (isset({$handle})) {\n";
 
             if ($canReturn) {
                 $body .=

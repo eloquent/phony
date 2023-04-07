@@ -30,7 +30,6 @@ implements Mock,
         if ($¤argumentCount > 3) {
             $¤arguments[] = $d;
         }
-
         for ($¤i = 4; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }
@@ -57,7 +56,6 @@ implements Mock,
         if ($¤argumentCount > 0) {
             $¤arguments[] = $int;
         }
-
         for ($¤i = 1; $¤i < $¤argumentCount; ++$¤i) {
             $¤arguments[] = \func_get_arg($¤i);
         }

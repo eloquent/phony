@@ -16,9 +16,8 @@ implements Mock
         $¤argumentCount = \func_num_args();
         $¤arguments = [];
 
-
-        for ($¤i = 0; $¤i < $¤argumentCount; ++$¤i) {
-            $¤arguments[] = $arguments[$¤i - 0];
+        foreach ($arguments as $¤argumentName => $¤argumentValue) {
+            $¤arguments[$¤argumentName] = $¤argumentValue;
         }
 
         if (isset($this->_handle)) {

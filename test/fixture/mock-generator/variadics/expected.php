@@ -24,9 +24,8 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $b;
         }
-
-        for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
-            $¤arguments[] = $c[$¤i - 2];
+        foreach ($c as $¤argumentName => $¤argumentValue) {
+            $¤arguments[$¤argumentName] = $¤argumentValue;
         }
 
         if (isset($this->_handle)) {
@@ -56,9 +55,8 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $b;
         }
-
-        for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
-            $¤arguments[] = $c[$¤i - 2];
+        foreach ($c as $¤argumentName => $¤argumentValue) {
+            $¤arguments[$¤argumentName] = $¤argumentValue;
         }
 
         if (isset($this->_handle)) {
@@ -88,9 +86,8 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $b;
         }
-
-        for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
-            $¤arguments[] = &$c[$¤i - 2];
+        foreach ($c as $¤argumentName => &$¤argumentValue) {
+            $¤arguments[$¤argumentName] = &$¤argumentValue;
         }
 
         if (isset($this->_handle)) {
@@ -120,9 +117,8 @@ implements Mock
         if ($¤argumentCount > 1) {
             $¤arguments[] = $b;
         }
-
-        for ($¤i = 2; $¤i < $¤argumentCount; ++$¤i) {
-            $¤arguments[] = $c[$¤i - 2];
+        foreach ($c as $¤argumentName => $¤argumentValue) {
+            $¤arguments[$¤argumentName] = $¤argumentValue;
         }
 
         if (isset($this->_handle)) {
