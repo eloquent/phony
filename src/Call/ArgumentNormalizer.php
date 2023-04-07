@@ -5,28 +5,27 @@ declare(strict_types=1);
 namespace Eloquent\Phony\Call;
 
 /**
- * Normalizes the keys of arrays where the keys represent argument positions
- * and/or names.
+ * Normalizes argument lists.
  */
 class ArgumentNormalizer
 {
     /**
-     * Normalize the supplied array using the supplied parameter names.
+     * Normalize the supplied arguments using the supplied parameter names.
      *
-     * References in the original array will be maintained in the normalized
-     * array.
+     * References in the original arguments will be maintained in the normalized
+     * arguments.
      *
      * @param array<int,string>       $parameterNames The parameter names.
-     * @param array<int|string,mixed> $array          The array.
+     * @param array<int|string,mixed> $arguments      The arguments.
      *
-     * @return array<int|string,mixed> The normalized array.
+     * @return array<int|string,mixed> The normalized arguments.
      */
-    public function normalize(array $parameterNames, array $array)
+    public function normalize(array $parameterNames, array $arguments)
     {
         $normalized = [];
         $positions = [];
 
-        foreach ($array as $positionOrName => &$value) {
+        foreach ($arguments as $positionOrName => &$value) {
             if (is_string($positionOrName)) {
                 $name = $positionOrName;
                 $position = array_search($positionOrName, $parameterNames);
