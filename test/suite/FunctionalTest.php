@@ -1492,6 +1492,34 @@ class FunctionalTest extends TestCase
         $this->assertSame($id1, $id5);
     }
 
+    public function testCallArgumentReferencePreservation()
+    {
+        $spy = spy();
+        $array = ['a'];
+        $spy($array);
+        $argumentsObj = $spy->firstCall()->arguments();
+        $argumentsA = $argumentsObj->all();
+        $argumentsB = $argumentsObj->all();
+        $argumentsA[0][] = 'b';
+
+        $this->assertSame(['a', 'b'], $argumentsB[0]);
+    }
+
+    public function testExporterExamplesIdentifierPersistenceCallArguments()
+    {
+        $spy = spy();
+        $spy([]);
+        $argumentsObj = $spy->firstCall()->arguments();
+        $argumentsA = $argumentsObj->all();
+        $argumentsB = $argumentsObj->all();
+        $actualA = $this->exporter->export($argumentsA, -1);
+        $actualB = $this->exporter->export($argumentsB, -1);
+        $innerA = preg_replace('/^#\d+\[(.*)]$/', '$1', $actualA);
+        $innerB = preg_replace('/^#\d+\[(.*)]$/', '$1', $actualB);
+
+        $this->assertSame($innerA, $innerB);
+    }
+
     public function testExporterExamplesRecursiveValues()
     {
         $recursiveArray = [];

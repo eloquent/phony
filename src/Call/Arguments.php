@@ -41,7 +41,6 @@ class Arguments implements Countable, IteratorAggregate
      */
     public function __construct(array $arguments)
     {
-        $this->arguments = $arguments;
         $this->count = count($arguments);
         $this->positionalCount = 0;
         $this->positional = [];
@@ -65,6 +64,10 @@ class Arguments implements Countable, IteratorAggregate
         }
 
         $this->firstPositionOrName = $firstPositionOrName;
+
+        // do not move this above other assignments
+        // PHP does extremely weird things with references if you do
+        $this->arguments = $arguments;
     }
 
     /**
