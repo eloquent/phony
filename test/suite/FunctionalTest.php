@@ -1424,16 +1424,37 @@ class FunctionalTest extends TestCase
         $c = mock();
         $valueA = [$a, $b, $c, $a];
         $valueB = [$b, $a, $b, $c];
+        $actualA = $this->exporter->export($valueA, -1);
+        $actualB = $this->exporter->export($valueB, -1);
         $this->exporter->reset();
 
-        $this->assertStringMatchesFormat(
-            '#%d[#%d{}, #%d{}, handle#%d(PhonyMock_%d#%d{}[%d]), &%d]',
-            $this->exporter->export($valueA, -1)
-        );
-        $this->assertStringMatchesFormat(
-            '#%d[#%d{}, #%d{}, &%d, handle#%d(PhonyMock_%d#%d{}[%d])]',
-            $this->exporter->export($valueB, -1)
-        );
+        $pattern = '/^#\d+\[#(\d+)\{}, #(\d+)\{}, (handle#\d+\(PhonyMock_\d+#\d+\{}\[\d+]\)), &(\d+)]$/';
+        $isMatch = preg_match($pattern, $actualA, $matches);
+
+        $this->assertSame(1, $isMatch);
+        $this->assertSame(5, count($matches));
+
+        list(, $id1, $id2, $id3, $id4) = $matches;
+
+        $this->assertSame($id1, $id4);
+        $this->assertNotSame($id1, $id2);
+        $this->assertNotSame($id1, $id3);
+
+        $pattern = '/^#\d+\[#(\d+)\{}, #(\d+)\{}, &(\d+), (handle#\d+\(PhonyMock_\d+#\d+\{}\[\d+]\))]$/';
+        $isMatch = preg_match($pattern, $actualB, $matches);
+
+        $this->assertSame(1, $isMatch);
+        $this->assertSame(5, count($matches));
+
+        list(, $id5, $id6, $id7, $id8) = $matches;
+
+        $this->assertSame($id5, $id7);
+        $this->assertNotSame($id5, $id6);
+        $this->assertNotSame($id5, $id8);
+
+        $this->assertSame($id1, $id6);
+        $this->assertSame($id2, $id5);
+        $this->assertSame($id3, $id8);
     }
 
     public function testExporterExamplesIdentifierPersistenceArrays()
@@ -1442,10 +1463,33 @@ class FunctionalTest extends TestCase
         $b = [];
         $valueA = [&$a, &$b, &$a];
         $valueB = [&$b, &$a, &$b];
+        $actualA = $this->exporter->export($valueA, -1);
+        $actualB = $this->exporter->export($valueB, -1);
         $this->exporter->reset();
 
-        $this->assertStringMatchesFormat('#%d[#%d[], #%d[], &%d]', $this->exporter->export($valueA, -1));
-        $this->assertStringMatchesFormat('#%d[#%d[], #%d[], &%d]', $this->exporter->export($valueB, -1));
+        $pattern = '/^#\d+\[#(\d+)\[], #(\d+)\[], &(\d+)]$/';
+        $isMatch = preg_match($pattern, $actualA, $matches);
+
+        $this->assertSame(1, $isMatch);
+        $this->assertSame(4, count($matches));
+
+        list(, $id1, $id2, $id3) = $matches;
+
+        $this->assertSame($id1, $id3);
+        $this->assertNotSame($id1, $id2);
+
+        $isMatch = preg_match($pattern, $actualB, $matches);
+
+        $this->assertSame(1, $isMatch);
+        $this->assertSame(4, count($matches));
+
+        list(, $id4, $id5, $id6) = $matches;
+
+        $this->assertSame($id4, $id6);
+        $this->assertNotSame($id4, $id5);
+
+        $this->assertSame($id2, $id4);
+        $this->assertSame($id1, $id5);
     }
 
     public function testExporterExamplesRecursiveValues()
