@@ -1,7 +1,7 @@
 %RESET%Expected %BOLD%Closure#0{}[verification.php:7][label]%RESET% to behave like:
     %RED%✗%RESET% Returned "CHAMELEON"
 Matched 0 of 2:
-%RED%✗%RESET% Call #0 - Closure#0{}[verification.php:7][label]("aardvark"):
+%RED%✗%RESET% Call #0 - Closure#0{}[verification.php:7][label](animal: "aardvark"):
     %RED%✗%RESET% Returned "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%CHAMELEON%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%AARDVARK%RESET%%YELLOW%%FAINT%+}%RESET%"
-%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:7][label]("bonobo"):
+%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:7][label](animal: "bonobo"):
     %RED%✗%RESET% Returned "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%CHAMELEON%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%BONOBO%RESET%%YELLOW%%FAINT%+}%RESET%"

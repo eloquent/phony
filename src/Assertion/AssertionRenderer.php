@@ -581,7 +581,6 @@ class AssertionRenderer
             $renderedCallee = $this->exporter->exportCallable($callback);
         } else {
             /** @var Spy $subject */
-
             $calls = $subject->allCalls();
             $renderedCallee = $this->exporter->exportCallable($subject);
         }
@@ -636,12 +635,8 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                $renderedArguments = [];
-
-                foreach ($call->arguments()->positional() as $argument) {
-                    $renderedArguments[] =
-                        $this->exporter->export($argument, 0);
-                }
+                $renderedArguments =
+                    $this->renderCompactCallArguments($call, 0);
 
                 if ($responseEvent instanceof ReturnedEvent) {
                     $returnValue = $responseEvent->value();
@@ -659,7 +654,7 @@ class AssertionRenderer
                     $renderedResult .
                     ' Call #' . $call->index() .
                     ' - ' . $renderedCallee .
-                    '(' . implode(', ', $renderedArguments) . '):' .
+                    "($renderedArguments):" .
                     PHP_EOL . '    ' . $renderedResult .
                     ' ' . $renderedResponse;
             }
@@ -764,13 +759,8 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                $renderedArguments = [];
-
-                foreach ($call->arguments()->positional() as $argument) {
-                    $renderedArguments[] =
-                        $this->exporter->export($argument, 0);
-                }
-
+                $renderedArguments =
+                    $this->renderCompactCallArguments($call, 0);
                 $responseEvent = $call->responseEvent();
 
                 if ($responseEvent instanceof ReturnedEvent) {
@@ -861,7 +851,7 @@ class AssertionRenderer
                     $renderedResult .
                     ' Call #' . $call->index() .
                     ' - ' . $renderedCallee .
-                    '(' . implode(', ', $renderedArguments) . '):' .
+                    "($renderedArguments):" .
                     PHP_EOL . '    ' . $renderedResult .
                     ' ' . $renderedResponse;
             }
@@ -999,12 +989,8 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                $renderedArguments = [];
-
-                foreach ($call->arguments()->positional() as $argument) {
-                    $renderedArguments[] =
-                        $this->exporter->export($argument, 0);
-                }
+                $renderedArguments =
+                    $this->renderCompactCallArguments($call, 0);
 
                 if ($responseEvent instanceof ReturnedEvent) {
                     $renderedReturnValue =
@@ -1026,7 +1012,7 @@ class AssertionRenderer
                 $renderedCalls[] =
                     $renderedResult . ' Call #' . $call->index() .
                     ' - ' . $renderedCallee .
-                    '(' . implode(', ', $renderedArguments) . '):' .
+                    "($renderedArguments):" .
                     PHP_EOL . '    ' . $renderedResult .
                     ' ' . $renderedResponse;
             }
@@ -1171,12 +1157,8 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                $renderedArguments = [];
-
-                foreach ($call->arguments()->positional() as $argument) {
-                    $renderedArguments[] =
-                        $this->exporter->export($argument, 0);
-                }
+                $renderedArguments =
+                    $this->renderCompactCallArguments($call, 0);
 
                 if ($responseEvent instanceof ReturnedEvent) {
                     $renderedResponse =
@@ -1197,7 +1179,7 @@ class AssertionRenderer
                 $renderedCalls[] =
                     $renderedResult . ' Call #' . $call->index() .
                     ' - ' . $renderedCallee .
-                    '(' . implode(', ', $renderedArguments) . '):' .
+                    "($renderedArguments):" .
                     PHP_EOL . '    ' . $renderedResult .
                     ' ' . $renderedResponse;
             }
@@ -1320,12 +1302,8 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                $renderedArguments = [];
-
-                foreach ($call->arguments()->positional() as $argument) {
-                    $renderedArguments[] =
-                        $this->exporter->export($argument, 0);
-                }
+                $renderedArguments =
+                    $this->renderCompactCallArguments($call, 0);
 
                 if ($responseEvent instanceof ReturnedEvent) {
                     $renderedResponse =
@@ -1340,7 +1318,7 @@ class AssertionRenderer
                 $renderedCalls[] =
                     $renderedResult . ' Call #' . $call->index() .
                     ' - ' . $renderedCallee .
-                    '(' . implode(', ', $renderedArguments) . '):' .
+                    "($renderedArguments):" .
                     PHP_EOL . '    ' . $renderedResult .
                     ' ' . $renderedResponse;
             }
@@ -1464,12 +1442,8 @@ class AssertionRenderer
                     $renderedResult = $this->fail;
                 }
 
-                $renderedArguments = [];
-
-                foreach ($call->arguments()->positional() as $argument) {
-                    $renderedArguments[] =
-                        $this->exporter->export($argument, 0);
-                }
+                $renderedArguments =
+                    $this->renderCompactCallArguments($call, 0);
 
                 if ($responseEvent instanceof ReturnedEvent) {
                     $renderedResponse =
@@ -1484,7 +1458,7 @@ class AssertionRenderer
                 $renderedCalls[] =
                     $renderedResult . ' Call #' . $call->index() .
                     ' - ' . $renderedCallee .
-                    '(' . implode(', ', $renderedArguments) . '):' .
+                    "($renderedArguments):" .
                     PHP_EOL . '    ' . $renderedResult .
                     ' ' . $renderedResponse;
             }
@@ -1668,11 +1642,7 @@ class AssertionRenderer
             }
 
             $isMatch = false;
-            $renderedArguments = [];
-
-            foreach ($call->arguments()->positional() as $argument) {
-                $renderedArguments[] = $this->exporter->export($argument, 0);
-            }
+            $renderedArguments = $this->renderCompactCallArguments($call, 0);
 
             $responseEvent = $call->responseEvent();
 
@@ -1801,7 +1771,7 @@ class AssertionRenderer
             $renderedCalls[] =
                 $callStart . $renderedResult . ' Call #' . $call->index() .
                 ' - ' . $renderedCallee .
-                '(' . implode(', ', $renderedArguments) . '):' .
+                "($renderedArguments):" .
                 $callEnd . PHP_EOL .
                 $callStart . '    ' . $renderedResult . ' ' .
                 $renderedResponse . $callEnd;
@@ -2003,11 +1973,7 @@ class AssertionRenderer
             }
 
             $isMatchingCall = false;
-            $renderedArguments = [];
-
-            foreach ($call->arguments()->positional() as $argument) {
-                $renderedArguments[] = $this->exporter->export($argument, 0);
-            }
+            $renderedArguments = $this->renderCompactCallArguments($call, 0);
 
             $responseEvent = $call->responseEvent();
 
@@ -2172,7 +2138,7 @@ class AssertionRenderer
             $renderedCalls[] =
                 $callStart . $renderedResult . ' Call #' . $call->index() .
                 ' - ' . $renderedCallee .
-                '(' . implode(', ', $renderedArguments) . '):' .
+                "($renderedArguments):" .
                 $callEnd . PHP_EOL .
                 $callStart . '    ' . $renderedResult . ' ' .
                 $renderedResponse . $callEnd;
@@ -2349,11 +2315,7 @@ class AssertionRenderer
             }
 
             $isMatch = false;
-            $renderedArguments = [];
-
-            foreach ($call->arguments()->positional() as $argument) {
-                $renderedArguments[] = $this->exporter->export($argument, 0);
-            }
+            $renderedArguments = $this->renderCompactCallArguments($call, 0);
 
             $responseEvent = $call->responseEvent();
 
@@ -2507,7 +2469,7 @@ class AssertionRenderer
             $renderedCalls[] =
                 $callStart . $renderedResult . ' Call #' . $call->index() .
                 ' - ' . $renderedCallee .
-                '(' . implode(', ', $renderedArguments) . '):' .
+                "($renderedArguments):" .
                 $callEnd . PHP_EOL .
                 $callStart . '    ' . $renderedResult . ' ' .
                 $renderedResponse . $callEnd;
@@ -2670,11 +2632,7 @@ class AssertionRenderer
             }
 
             $isMatchingCall = false;
-            $renderedArguments = [];
-
-            foreach ($call->arguments()->positional() as $argument) {
-                $renderedArguments[] = $this->exporter->export($argument, 0);
-            }
+            $renderedArguments = $this->renderCompactCallArguments($call, 0);
 
             $responseEvent = $call->responseEvent();
 
@@ -2818,7 +2776,7 @@ class AssertionRenderer
             $renderedCalls[] =
                 $callStart . $renderedResult . ' Call #' . $call->index() .
                 ' - ' . $renderedCallee .
-                '(' . implode(', ', $renderedArguments) . '):' .
+                "($renderedArguments):" .
                 $callEnd . PHP_EOL .
                 $callStart . '    ' . $renderedResult . ' ' .
                 $renderedResponse . $callEnd;
@@ -2978,11 +2936,7 @@ class AssertionRenderer
             }
 
             $isMatchingCall = false;
-            $renderedArguments = [];
-
-            foreach ($call->arguments()->positional() as $argument) {
-                $renderedArguments[] = $this->exporter->export($argument, 0);
-            }
+            $renderedArguments = $this->renderCompactCallArguments($call, 0);
 
             $responseEvent = $call->responseEvent();
 
@@ -3131,7 +3085,7 @@ class AssertionRenderer
             $renderedCalls[] =
                 $callStart . $renderedResult . ' Call #' . $call->index() .
                 ' - ' . $renderedCallee .
-                '(' . implode(', ', $renderedArguments) . '):' .
+                "($renderedArguments):" .
                 $callEnd . PHP_EOL .
                 $callStart . '    ' . $renderedResult . ' ' .
                 $renderedResponse . $callEnd;
@@ -3283,11 +3237,7 @@ class AssertionRenderer
             }
 
             $isMatchingCall = false;
-            $renderedArguments = [];
-
-            foreach ($call->arguments()->positional() as $argument) {
-                $renderedArguments[] = $this->exporter->export($argument, 0);
-            }
+            $renderedArguments = $this->renderCompactCallArguments($call, 0);
 
             $responseEvent = $call->responseEvent();
 
@@ -3438,7 +3388,7 @@ class AssertionRenderer
             $renderedCalls[] =
                 $callStart . $renderedResult . ' Call #' . $call->index() .
                 ' - ' . $renderedCallee .
-                '(' . implode(', ', $renderedArguments) . '):' .
+                "($renderedArguments):" .
                 $callEnd . PHP_EOL .
                 $callStart . '    ' . $renderedResult . ' ' .
                 $renderedResponse . $callEnd;
@@ -3593,11 +3543,7 @@ class AssertionRenderer
             }
 
             $isMatchingCall = false;
-            $renderedArguments = [];
-
-            foreach ($call->arguments()->positional() as $argument) {
-                $renderedArguments[] = $this->exporter->export($argument, 0);
-            }
+            $renderedArguments = $this->renderCompactCallArguments($call, 0);
 
             $responseEvent = $call->responseEvent();
 
@@ -3754,7 +3700,7 @@ class AssertionRenderer
             $renderedCalls[] =
                 $callStart . $renderedResult . ' Call #' . $call->index() .
                 ' - ' . $renderedCallee .
-                '(' . implode(', ', $renderedArguments) . '):' .
+                "($renderedArguments):" .
                 $callEnd . PHP_EOL .
                 $callStart . '    ' . $renderedResult . ' ' .
                 $renderedResponse . $callEnd;
@@ -3811,16 +3757,12 @@ class AssertionRenderer
         $renderedCalls = [];
 
         foreach ($calls as $call) {
-            $renderedArguments = [];
-
-            foreach ($call->arguments()->positional() as $argument) {
-                $renderedArguments[] = $this->exporter->export($argument);
-            }
+            $renderedArguments = $this->renderCompactCallArguments($call);
 
             $renderedCalls[] =
                 '    ' . $this->fail .
                 ' ' . $this->exporter->exportCallable($call->callback()) .
-                '(' . implode(', ', $renderedArguments) . ')';
+                "($renderedArguments)";
         }
 
         return $this->reset . 'Expected no interaction with ' .
@@ -3957,31 +3899,22 @@ class AssertionRenderer
             if ($event instanceof CallEvent) {
                 /** @var Call */
                 $call = $event->call();
-                $renderedArguments = [];
-
-                foreach ($call->arguments()->positional() as $argument) {
-                    $renderedArguments[] =
-                        $this->exporter->export($argument);
-                }
+                $renderedArguments = $this->renderCompactCallArguments($call);
 
                 $call =
                     $this->exporter->exportCallable($call->callback()) .
-                    '(' . implode(', ', $renderedArguments) . ')';
+                    "($renderedArguments)";
             } else {
                 $call = null;
             }
 
             if ($event instanceof Call) {
-                $renderedArguments = [];
-
-                foreach ($event->arguments()->positional() as $argument) {
-                    $renderedArguments[] = $this->exporter->export($argument);
-                }
+                $renderedArguments = $this->renderCompactCallArguments($event);
 
                 $rendered[] =
                     'Called ' .
                     $this->exporter->exportCallable($event->callback()) .
-                    '(' . implode(', ', $renderedArguments) . ')';
+                    "($renderedArguments)";
             } elseif ($event instanceof CalledEvent) {
                 $rendered[] = 'Called ' . $call;
             } elseif ($event instanceof ReturnedEvent) {
@@ -4070,6 +4003,37 @@ class AssertionRenderer
         }
 
         return PHP_EOL . $expected . $actual;
+    }
+
+    private function renderCompactCallArguments(
+        Call $call,
+        int $depth = null
+    ): string {
+        $parameterNames = [];
+
+        foreach ($call->parameters() as $parameter) {
+            if (!$parameter->isVariadic()) {
+                $parameterNames[] = $parameter->getName();
+            }
+        }
+
+        $arguments = $this->argumentNormalizer
+            ->normalize($parameterNames, $call->arguments()->all());
+        $rendered = [];
+        $hasNamed = false;
+
+        foreach ($arguments as $positionOrName => &$value) {
+            if ($hasNamed || is_string($positionOrName)) {
+                $hasNamed = true;
+                $key = "$positionOrName: ";
+            } else {
+                $key = '';
+            }
+
+            $rendered[] = $key . $this->exporter->export($value, $depth);
+        }
+
+        return join(', ', $rendered);
     }
 
     const PASS = "\u{2713}";

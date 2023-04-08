@@ -1,4 +1,4 @@
 %RESET%Expected %BOLD%Closure#0{}[verification.php:7][label]%RESET% call #1 to behave like:
     %RED%✗%RESET% Threw RuntimeException#1{message: "CHAMELEON"}
-%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:7][label]("bonobo"):
+%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:7][label](animal: "bonobo"):
     %RED%✗%RESET% Threw RuntimeException#%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%1%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%2%RESET%%YELLOW%%FAINT%+}%RESET%{message: "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%CHAMELEON%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%BONOBO%RESET%%YELLOW%%FAINT%+}%RESET%"}

@@ -1,3 +1,3 @@
 %RESET%Expected %BOLD%Closure#0{}[verification.php:8][label]%RESET% call #0 to respond.
-%RED%✗%RESET% Call #0 - Closure#0{}[verification.php:8][label](Closure#1{}[verification.php:15]):
+%RED%✗%RESET% Call #0 - Closure#0{}[verification.php:8][label](verify: Closure#1{}[verification.php:15]):
     %RED%✗%RESET% Never responded

@@ -5,22 +5,22 @@
 %RED%✗%RESET% Call #0 - stub#0[label](#1[~2]):
     %RED%✗%RESET% Returned Generator#2{}, then:
         %RED%✗%RESET% Never started iterating
-%GREEN%✓%RESET% Call #1 - stub#0[label](#1[~2]):
-    %GREEN%✓%RESET% Returned Generator#3{}, then:
+%GREEN%✓%RESET% Call #1 - stub#0[label](#3[~2]):
+    %GREEN%✓%RESET% Returned Generator#4{}, then:
         - Started iterating
         - Produced 0 => "aardvark"
         - Received "AARDVARK"
         - Produced 1 => "bonobo"
         - Received "BONOBO"
         %GREEN%✓%RESET% Returned 2
-%GREEN%✓%RESET% Call #2 - stub#0[label](#1[~1]):
-    %GREEN%✓%RESET% Returned Generator#5{}, then:
+%GREEN%✓%RESET% Call #2 - stub#0[label](#5[~1]):
+    %GREEN%✓%RESET% Returned Generator#7{}, then:
         - Started iterating
         - Produced 0 => "aardvark"
-        - Received exception RuntimeException#4{message: "AARDVARK"}
-        %GREEN%✓%RESET% Threw RuntimeException#4{message: "AARDVARK"}
-%RED%✗%RESET% Call #3 - stub#0[label](#1[~2]):
-    %RED%✗%RESET% Returned Generator#6{}, then:
+        - Received exception RuntimeException#6{message: "AARDVARK"}
+        %GREEN%✓%RESET% Threw RuntimeException#6{message: "AARDVARK"}
+%RED%✗%RESET% Call #3 - stub#0[label](#8[~2]):
+    %RED%✗%RESET% Returned Generator#9{}, then:
         - Started iterating
         - Produced 0 => "aardvark"
         %RED%✗%RESET% Never finished iterating

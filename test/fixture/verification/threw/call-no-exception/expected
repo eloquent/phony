@@ -1,4 +1,4 @@
 %RESET%Expected %BOLD%Closure#0{}[verification.php:7][label]%RESET% call #1 to behave like:
     %RED%✗%RESET% Threw <any>
-%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:7][label]("bonobo"):
+%RED%✗%RESET% Call #1 - Closure#0{}[verification.php:7][label](animal: "bonobo"):
     %RED%✗%RESET% Returned "BONOBO"

@@ -1,7 +1,7 @@
 %RESET%Expected %BOLD%Closure#0{}[verification.php:7][label]%RESET% to behave like:
     %RED%✗%RESET% Returned Generator
 %RED%Between 3 and 4 allowed. Matched 2 of 2:%RESET%
-%GREEN%✓%RESET% Call #0 - Closure#0{}[verification.php:7][label]("aardvark"):
+%GREEN%✓%RESET% Call #0 - Closure#0{}[verification.php:7][label](animal: "aardvark"):
     %GREEN%✓%RESET% Returned Generator#1{}
-%GREEN%✓%RESET% Call #1 - Closure#0{}[verification.php:7][label]("bonobo"):
+%GREEN%✓%RESET% Call #1 - Closure#0{}[verification.php:7][label](animal: "bonobo"):
     %GREEN%✓%RESET% Returned Generator#2{}

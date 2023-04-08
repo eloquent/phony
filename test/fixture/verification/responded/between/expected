@@ -1,6 +1,6 @@
 %RESET%Expected %BOLD%Closure#0{}[verification.php:8][label]%RESET% to respond.
 %RED%Between 3 and 4 allowed. Matched 2 of 2:%RESET%
-%GREEN%✓%RESET% Call #0 - Closure#0{}[verification.php:8][label](null, "aardvark"):
+%GREEN%✓%RESET% Call #0 - Closure#0{}[verification.php:8][label](exception: null, value: "aardvark"):
     %GREEN%✓%RESET% Returned "aardvark"
-%GREEN%✓%RESET% Call #1 - Closure#0{}[verification.php:8][label](RuntimeException#1{~1}, null):
+%GREEN%✓%RESET% Call #1 - Closure#0{}[verification.php:8][label](exception: RuntimeException#1{~1}, value: null):
     %GREEN%✓%RESET% Threw RuntimeException#1{message: "bonobo"}
