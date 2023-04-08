@@ -15,6 +15,7 @@ use Eloquent\Phony\Test\TestException;
 use Eloquent\Phony\Test\TestInterfaceA;
 use Eloquent\Phony\Test\TestTraitA;
 use PHPUnit\Framework\TestCase;
+use ReflectionReference;
 use TestClass;
 use WeakReference;
 
@@ -353,6 +354,15 @@ class InlineExporterTest extends TestCase
         $d = (object) [];
         $valueA = [&$a, &$b, $c, $d, &$a, &$b, $c, $d];
         $valueB = [$d, $c, &$b, &$a];
+
+        $this->assertSame(
+            ReflectionReference::fromArrayElement($valueA, 0)->getId(),
+            ReflectionReference::fromArrayElement($valueA, 4)->getId(),
+        );
+        $this->assertSame(
+            ReflectionReference::fromArrayElement($valueA, 0)->getId(),
+            ReflectionReference::fromArrayElement($valueB, 3)->getId(),
+        );
 
         $this->assertSame(
             '#0[#1[], #2[], #3{}, #4{}, &1, &2, &3, &4]',
