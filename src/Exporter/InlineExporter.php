@@ -147,7 +147,7 @@ class InlineExporter implements Exporter
                     /** @var array $value */
                     /** @var ReflectionReference $reference */
                     $reference =
-                        ReflectionReference::fromArrayElement([&$value], 0);
+                        ReflectionReference::fromArrayElement($entry, 0);
                     $referenceId = $reference->getId();
 
                     if (isset($this->arrayIds[$referenceId])) {
