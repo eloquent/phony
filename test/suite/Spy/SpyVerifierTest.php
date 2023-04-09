@@ -75,7 +75,6 @@ class SpyVerifierTest extends TestCase
         $this->thisValueA = new TestClassA();
         $this->thisValueB = new TestClassA();
         $this->arguments = Arguments::create('a', 'b', 'c');
-        $this->matchers = $this->matcherFactory->adaptAll($this->arguments->all());
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
             $this->callEventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], [], $this->arguments),
@@ -767,27 +766,17 @@ class SpyVerifierTest extends TestCase
     public function testCheckCalledWith(array $arguments, $calledWith, $calledWithWildcard)
     {
         $this->subject->setCalls($this->calls);
-        $matchers = $this->matcherFactory->adaptAll($arguments);
 
         $this->assertSame(
             $calledWith,
             (bool) call_user_func_array([$this->subject, 'checkCalledWith'], $arguments)
-        );
-        $this->assertSame(
-            $calledWith,
-            (bool) call_user_func_array([$this->subject, 'checkCalledWith'], $matchers)
         );
 
         $arguments[] = $this->matcherFactory->wildcard();
-        $matchers[] = $this->matcherFactory->wildcard();
 
         $this->assertSame(
             $calledWithWildcard,
             (bool) call_user_func_array([$this->subject, 'checkCalledWith'], $arguments)
-        );
-        $this->assertSame(
-            $calledWithWildcard,
-            (bool) call_user_func_array([$this->subject, 'checkCalledWith'], $matchers)
         );
     }
 
@@ -816,11 +805,9 @@ class SpyVerifierTest extends TestCase
             $responseEvent
         );
         $this->subject->setCalls([$call]);
-        $positionalMatchers = $this->matcherFactory->adaptAll([',', ['a', 'b']]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['array' => ['a', 'b'], 'separator' => ',']);
 
-        $this->assertTrue((bool) $this->subject->checkCalledWith(...$positionalMatchers));
-        $this->assertTrue((bool) $this->subject->checkCalledWith(...$namedMatchers));
+        $this->assertTrue((bool) $this->subject->checkCalledWith(',', ['a', 'b']));
+        $this->assertTrue((bool) $this->subject->checkCalledWith(array: ['a', 'b'], separator: ','));
     }
 
     public function testCheckCalledWithWithPositionalArguments()
@@ -836,11 +823,9 @@ class SpyVerifierTest extends TestCase
             $responseEvent
         );
         $this->subject->setCalls([$call]);
-        $positionalMatchers = $this->matcherFactory->adaptAll([',', ['a', 'b']]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['array' => ['a', 'b'], 'separator' => ',']);
 
-        $this->assertTrue((bool) $this->subject->checkCalledWith(...$positionalMatchers));
-        $this->assertTrue((bool) $this->subject->checkCalledWith(...$namedMatchers));
+        $this->assertTrue((bool) $this->subject->checkCalledWith(',', ['a', 'b']));
+        $this->assertTrue((bool) $this->subject->checkCalledWith(array: ['a', 'b'], separator: ','));
     }
 
     public function testCheckCalledWithWithPositionalVariadicArguments()
@@ -876,11 +861,9 @@ class SpyVerifierTest extends TestCase
             $responseEvent
         );
         $subject->setCalls([$call]);
-        $positionalMatchers = $this->matcherFactory->adaptAll([1, 2, 'x' => 3, 'y' => 4]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]);
 
-        $this->assertTrue((bool) $subject->checkCalledWith(...$positionalMatchers));
-        $this->assertTrue((bool) $subject->checkCalledWith(...$namedMatchers));
+        $this->assertTrue((bool) $subject->checkCalledWith(1, 2, x: 3, y: 4));
+        $this->assertTrue((bool) $subject->checkCalledWith(a: 1, b: 2, x: 3, y: 4));
     }
 
     public function testCheckCalledWithWithNamedVariadicArguments()
@@ -916,11 +899,9 @@ class SpyVerifierTest extends TestCase
             $responseEvent
         );
         $subject->setCalls([$call]);
-        $positionalMatchers = $this->matcherFactory->adaptAll([1, 2, 'x' => 3, 'y' => 4]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]);
 
-        $this->assertTrue((bool) $subject->checkCalledWith(...$positionalMatchers));
-        $this->assertTrue((bool) $subject->checkCalledWith(...$namedMatchers));
+        $this->assertTrue((bool) $subject->checkCalledWith(1, 2, x: 3, y: 4));
+        $this->assertTrue((bool) $subject->checkCalledWith(a: 1, b: 2, x: 3, y: 4));
     }
 
     public function testCalledWith()
@@ -929,20 +910,8 @@ class SpyVerifierTest extends TestCase
         $expected = new EventSequence([$this->callA, $this->callC], $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->calledWith('a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->calledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
         $this->assertEquals($expected, $this->subject->calledWith('a', 'b', $this->matcherFactory->wildcard()));
-        $this->assertEquals(
-            $expected,
-            $this->subject->calledWith($this->matchers[0], $this->matchers[1], $this->matcherFactory->wildcard())
-        );
         $this->assertEquals($expected, $this->subject->calledWith('a', $this->matcherFactory->wildcard()));
-        $this->assertEquals(
-            $expected,
-            $this->subject->calledWith($this->matchers[0], $this->matcherFactory->wildcard())
-        );
         $this->assertEquals(
             new EventSequence($this->calls, $this->callVerifierFactory),
             $this->subject->calledWith($this->matcherFactory->wildcard())
@@ -963,11 +932,9 @@ class SpyVerifierTest extends TestCase
         );
         $this->subject->setCalls([$call]);
         $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
-        $positionalMatchers = $this->matcherFactory->adaptAll([',', ['a', 'b']]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['array' => ['a', 'b'], 'separator' => ',']);
 
-        $this->assertEquals($assertionResult, $this->subject->calledWith(...$positionalMatchers));
-        $this->assertEquals($assertionResult, $this->subject->calledWith(...$namedMatchers));
+        $this->assertEquals($assertionResult, $this->subject->calledWith(',', ['a', 'b']));
+        $this->assertEquals($assertionResult, $this->subject->calledWith(array: ['a', 'b'], separator: ','));
     }
 
     public function testCalledWithWithPositionalArguments()
@@ -984,11 +951,9 @@ class SpyVerifierTest extends TestCase
         );
         $this->subject->setCalls([$call]);
         $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
-        $positionalMatchers = $this->matcherFactory->adaptAll([',', ['a', 'b']]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['array' => ['a', 'b'], 'separator' => ',']);
 
-        $this->assertEquals($assertionResult, $this->subject->calledWith(...$positionalMatchers));
-        $this->assertEquals($assertionResult, $this->subject->calledWith(...$namedMatchers));
+        $this->assertEquals($assertionResult, $this->subject->calledWith(',', ['a', 'b']));
+        $this->assertEquals($assertionResult, $this->subject->calledWith(array: ['a', 'b'], separator: ','));
     }
 
     public function testCalledWithWithPositionalVariadicArguments()
@@ -1025,11 +990,9 @@ class SpyVerifierTest extends TestCase
         );
         $subject->setCalls([$call]);
         $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
-        $positionalMatchers = $this->matcherFactory->adaptAll([1, 2, 'x' => 3, 'y' => 4]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]);
 
-        $this->assertEquals($assertionResult, $subject->calledWith(...$positionalMatchers));
-        $this->assertEquals($assertionResult, $subject->calledWith(...$namedMatchers));
+        $this->assertEquals($assertionResult, $subject->calledWith(1, 2, x: 3, y: 4));
+        $this->assertEquals($assertionResult, $subject->calledWith(a: 1, b: 2, x: 3, y: 4));
     }
 
     public function testCalledWithWithNamedVariadicArguments()
@@ -1066,11 +1029,9 @@ class SpyVerifierTest extends TestCase
         );
         $subject->setCalls([$call]);
         $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
-        $positionalMatchers = $this->matcherFactory->adaptAll([1, 2, 'x' => 3, 'y' => 4]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]);
 
-        $this->assertEquals($assertionResult, $subject->calledWith(...$positionalMatchers));
-        $this->assertEquals($assertionResult, $subject->calledWith(...$namedMatchers));
+        $this->assertEquals($assertionResult, $subject->calledWith(1, 2, x: 3, y: 4));
+        $this->assertEquals($assertionResult, $subject->calledWith(a: 1, b: 2, x: 3, y: 4));
     }
 
     public function testCalledWithFailure()
@@ -1116,10 +1077,6 @@ class SpyVerifierTest extends TestCase
         $this->subject->setCalls([$this->callA, $this->callB]);
 
         $this->assertTrue((bool) $this->subject->once()->checkCalledWith('a', 'b', 'c'));
-        $this->assertTrue(
-            (bool) $this->subject->once()
-                ->checkCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
         $this->assertFalse((bool) $this->subject->once()->checkCalledWith($this->matcherFactory->wildcard()));
         $this->assertFalse((bool) $this->subject->once()->checkCalledWith($this->matcherFactory->wildcard()));
     }
@@ -1130,10 +1087,6 @@ class SpyVerifierTest extends TestCase
         $expected = new EventSequence([$this->callA], $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->once()->calledWith('a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->once()->calledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
     }
 
     public function testCalledOnceWithFailure()
@@ -1155,22 +1108,10 @@ class SpyVerifierTest extends TestCase
         $this->subject->setCalls($this->calls);
 
         $this->assertTrue((bool) $this->subject->times(2)->checkCalledWith('a', 'b', 'c'));
-        $this->assertTrue(
-            (bool) $this->subject->times(2)
-                ->checkCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
         $this->assertTrue((bool) $this->subject->times(2)->checkCalledWith('a', $this->matcherFactory->wildcard()));
-        $this->assertTrue(
-            (bool) $this->subject->times(2)->checkCalledWith($this->matchers[0], $this->matcherFactory->wildcard())
-        );
         $this->assertTrue((bool) $this->subject->times(5)->checkCalledWith($this->matcherFactory->wildcard()));
         $this->assertFalse((bool) $this->subject->times(1)->checkCalledWith('a', 'b', 'c'));
-        $this->assertFalse(
-            (bool) $this->subject->times(1)
-                ->checkCalledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
         $this->assertFalse((bool) $this->subject->times(1)->checkCalledWith('a'));
-        $this->assertFalse((bool) $this->subject->times(1)->checkCalledWith($this->matchers[0]));
         $this->assertFalse((bool) $this->subject->times(1)->checkCalledWith($this->matcherFactory->wildcard()));
         $this->assertFalse((bool) $this->subject->times(1)->checkCalledWith($this->matcherFactory->wildcard()));
     }
@@ -1181,15 +1122,7 @@ class SpyVerifierTest extends TestCase
         $expected = new EventSequence([$this->callA, $this->callC], $this->callVerifierFactory);
 
         $this->assertEquals($expected, $this->subject->times(2)->calledWith('a', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->times(2)->calledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
         $this->assertEquals($expected, $this->subject->times(2)->calledWith('a', $this->matcherFactory->wildcard()));
-        $this->assertEquals(
-            $expected,
-            $this->subject->times(2)->calledWith($this->matchers[0], $this->matcherFactory->wildcard())
-        );
 
         $expected = new EventSequence($this->calls, $this->callVerifierFactory);
 
@@ -1225,27 +1158,17 @@ class SpyVerifierTest extends TestCase
     public function testCheckAlwaysCalledWith(array $arguments, $calledWith, $calledWithWildcard)
     {
         $this->subject->setCalls([$this->callA, $this->callA]);
-        $matchers = $this->matcherFactory->adaptAll($arguments);
 
         $this->assertSame(
             $calledWith,
             (bool) call_user_func_array([$this->subject->always(), 'checkCalledWith'], $arguments)
-        );
-        $this->assertSame(
-            $calledWith,
-            (bool) call_user_func_array([$this->subject->always(), 'checkCalledWith'], $matchers)
         );
 
         $arguments[] = $this->matcherFactory->wildcard();
-        $matchers[] = $this->matcherFactory->wildcard();
 
         $this->assertSame(
             $calledWithWildcard,
             (bool) call_user_func_array([$this->subject->always(), 'checkCalledWith'], $arguments)
-        );
-        $this->assertSame(
-            $calledWithWildcard,
-            (bool) call_user_func_array([$this->subject->always(), 'checkCalledWith'], $matchers)
         );
     }
 
@@ -1255,15 +1178,10 @@ class SpyVerifierTest extends TestCase
     public function testCheckAlwaysCalledWithWithDifferingCalls(array $arguments, $calledWith, $calledWithWildcard)
     {
         $this->subject->setCalls([$this->callA, $this->callB]);
-        $matchers = $this->matcherFactory->adaptAll($arguments);
         $arguments[] = $this->matcherFactory->wildcard();
-        $matchers[] = $this->matcherFactory->wildcard();
 
         $this->assertFalse(
             (bool) call_user_func_array([$this->subject->always(), 'checkCalledWith'], $arguments)
-        );
-        $this->assertFalse(
-            (bool) call_user_func_array([$this->subject->always(), 'checkCalledWith'], $matchers)
         );
     }
 
@@ -1287,22 +1205,9 @@ class SpyVerifierTest extends TestCase
         $this->assertEquals($expected, $this->subject->always()->calledWith('a', 'b', 'c'));
         $this->assertEquals(
             $expected,
-            $this->subject->always()->calledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertEquals(
-            $expected,
             $this->subject->always()->calledWith('a', 'b', $this->matcherFactory->wildcard())
         );
-        $this->assertEquals(
-            $expected,
-            $this->subject->always()
-                ->calledWith($this->matchers[0], $this->matchers[1], $this->matcherFactory->wildcard())
-        );
         $this->assertEquals($expected, $this->subject->always()->calledWith('a', $this->matcherFactory->wildcard()));
-        $this->assertEquals(
-            $expected,
-            $this->subject->always()->calledWith($this->matchers[0], $this->matcherFactory->wildcard())
-        );
         $this->assertEquals($expected, $this->subject->always()->calledWith($this->matcherFactory->wildcard()));
     }
 
@@ -1334,15 +1239,10 @@ class SpyVerifierTest extends TestCase
     public function testCheckNeverCalledWith(array $arguments, $calledWith, $calledWithWildcard)
     {
         $this->subject->setCalls($this->calls);
-        $matchers = $this->matcherFactory->adaptAll($arguments);
 
         $this->assertSame(
             !$calledWith,
             (bool) call_user_func_array([$this->subject->never(), 'checkCalledWith'], $arguments)
-        );
-        $this->assertSame(
-            !$calledWith,
-            (bool) call_user_func_array([$this->subject->never(), 'checkCalledWith'], $matchers)
         );
     }
 
@@ -1367,25 +1267,10 @@ class SpyVerifierTest extends TestCase
         $this->subject->setCalls($this->calls);
 
         $this->assertEquals($expected, $this->subject->never()->calledWith('b', 'c'));
-        $this->assertEquals($expected, $this->subject->never()->calledWith($this->matchers[1], $this->matchers[2]));
         $this->assertEquals($expected, $this->subject->never()->calledWith('c'));
-        $this->assertEquals($expected, $this->subject->never()->calledWith($this->matchers[2]));
         $this->assertEquals($expected, $this->subject->never()->calledWith('a', 'b', 'c', 'd'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->never()
-                ->calledWith($this->matchers[0], $this->matchers[1], $this->matchers[2], $this->otherMatcher)
-        );
         $this->assertEquals($expected, $this->subject->never()->calledWith('d', 'b', 'c'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->never()->calledWith($this->otherMatcher, $this->matchers[1], $this->matchers[2])
-        );
         $this->assertEquals($expected, $this->subject->never()->calledWith('a', 'b', 'd'));
-        $this->assertEquals(
-            $expected,
-            $this->subject->never()->calledWith($this->matchers[0], $this->matchers[1], $this->otherMatcher)
-        );
         $this->assertEquals($expected, $this->subject->never()->calledWith('d'));
         $this->assertEquals($expected, $this->subject->never()->calledWith($this->otherMatcher));
     }

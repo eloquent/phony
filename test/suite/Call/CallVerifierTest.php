@@ -64,7 +64,6 @@ class CallVerifierTest extends TestCase
 
         $this->duration = $this->returnedEvent->time() - $this->calledEvent->time();
         $this->argumentCount = count($this->arguments);
-        $this->matchers = $this->matcherFactory->adaptAll($this->arguments->all());
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->events = [$this->calledEvent, $this->returnedEvent];
 
@@ -308,43 +307,24 @@ class CallVerifierTest extends TestCase
      */
     public function testCheckCalledWith(array $arguments, $calledWith, $calledWithWildcard)
     {
-        $matchers = $this->matcherFactory->adaptAll($arguments);
-
         $this->assertSame(
             $calledWith,
             (bool) call_user_func_array([$this->subject, 'checkCalledWith'], $arguments)
         );
         $this->assertSame(
-            $calledWith,
-            (bool) call_user_func_array([$this->subject, 'checkCalledWith'], $matchers)
-        );
-        $this->assertSame(
             !$calledWith,
             (bool) call_user_func_array([$this->subject->never(), 'checkCalledWith'], $arguments)
-        );
-        $this->assertSame(
-            !$calledWith,
-            (bool) call_user_func_array([$this->subject->never(), 'checkCalledWith'], $matchers)
         );
 
         $arguments[] = $this->matcherFactory->wildcard();
-        $matchers[] = $this->matcherFactory->wildcard();
 
         $this->assertSame(
             $calledWithWildcard,
             (bool) call_user_func_array([$this->subject, 'checkCalledWith'], $arguments)
         );
         $this->assertSame(
-            $calledWithWildcard,
-            (bool) call_user_func_array([$this->subject, 'checkCalledWith'], $matchers)
-        );
-        $this->assertSame(
             !$calledWithWildcard,
             (bool) call_user_func_array([$this->subject->never(), 'checkCalledWith'], $arguments)
-        );
-        $this->assertSame(
-            !$calledWithWildcard,
-            (bool) call_user_func_array([$this->subject->never(), 'checkCalledWith'], $matchers)
         );
     }
 
@@ -366,11 +346,9 @@ class CallVerifierTest extends TestCase
             $responseEvent
         );
         $subject = call_user_func($this->createCallVerifier, $call);
-        $positionalMatchers = $this->matcherFactory->adaptAll([',', ['a', 'b']]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['array' => ['a', 'b'], 'separator' => ',']);
 
-        $this->assertTrue((bool) $subject->checkCalledWith(...$positionalMatchers));
-        $this->assertTrue((bool) $subject->checkCalledWith(...$namedMatchers));
+        $this->assertTrue((bool) $subject->checkCalledWith(',', ['a', 'b']));
+        $this->assertTrue((bool) $subject->checkCalledWith(array: ['a', 'b'], separator: ','));
     }
 
     public function testCheckCalledWithWithPositionalArguments()
@@ -386,11 +364,9 @@ class CallVerifierTest extends TestCase
             $responseEvent
         );
         $subject = call_user_func($this->createCallVerifier, $call);
-        $positionalMatchers = $this->matcherFactory->adaptAll([',', ['a', 'b']]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['array' => ['a', 'b'], 'separator' => ',']);
 
-        $this->assertTrue((bool) $subject->checkCalledWith(...$positionalMatchers));
-        $this->assertTrue((bool) $subject->checkCalledWith(...$namedMatchers));
+        $this->assertTrue((bool) $subject->checkCalledWith(',', ['a', 'b']));
+        $this->assertTrue((bool) $subject->checkCalledWith(array: ['a', 'b'], separator: ','));
     }
 
     public function testCheckCalledWithWithPositionalVariadicArguments()
@@ -407,11 +383,9 @@ class CallVerifierTest extends TestCase
             $responseEvent
         );
         $subject = call_user_func($this->createCallVerifier, $call);
-        $positionalMatchers = $this->matcherFactory->adaptAll([1, 2, 'x' => 3, 'y' => 4]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]);
 
-        $this->assertTrue((bool) $subject->checkCalledWith(...$positionalMatchers));
-        $this->assertTrue((bool) $subject->checkCalledWith(...$namedMatchers));
+        $this->assertTrue((bool) $subject->checkCalledWith(1, 2, x: 3, y: 4));
+        $this->assertTrue((bool) $subject->checkCalledWith(a: 1, b: 2, x: 3, y: 4));
     }
 
     public function testCheckCalledWithWithNamedVariadicArguments()
@@ -428,11 +402,9 @@ class CallVerifierTest extends TestCase
             $responseEvent
         );
         $subject = call_user_func($this->createCallVerifier, $call);
-        $positionalMatchers = $this->matcherFactory->adaptAll([1, 2, 'x' => 3, 'y' => 4]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]);
 
-        $this->assertTrue((bool) $subject->checkCalledWith(...$positionalMatchers));
-        $this->assertTrue((bool) $subject->checkCalledWith(...$namedMatchers));
+        $this->assertTrue((bool) $subject->checkCalledWith(1, 2, x: 3, y: 4));
+        $this->assertTrue((bool) $subject->checkCalledWith(a: 1, b: 2, x: 3, y: 4));
     }
 
     public function testCalledWith()
@@ -440,21 +412,9 @@ class CallVerifierTest extends TestCase
         $this->assertEquals($this->assertionResult, $this->subject->calledWith('a', 'b', 'c'));
         $this->assertEquals(
             $this->assertionResult,
-            $this->subject->calledWith($this->matchers[0], $this->matchers[1], $this->matchers[2])
-        );
-        $this->assertEquals(
-            $this->assertionResult,
             $this->subject->calledWith('a', 'b', $this->matcherFactory->wildcard())
         );
-        $this->assertEquals(
-            $this->assertionResult,
-            $this->subject->calledWith($this->matchers[0], $this->matchers[1], $this->matcherFactory->wildcard())
-        );
         $this->assertEquals($this->assertionResult, $this->subject->calledWith('a', $this->matcherFactory->wildcard()));
-        $this->assertEquals(
-            $this->assertionResult,
-            $this->subject->calledWith($this->matchers[0], $this->matcherFactory->wildcard())
-        );
         $this->assertEquals($this->assertionResult, $this->subject->calledWith($this->matcherFactory->wildcard()));
 
         $this->assertEquals($this->emptyAssertionResult, $this->subject->never()->calledWith('b', 'c'));
@@ -474,11 +434,9 @@ class CallVerifierTest extends TestCase
         );
         $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
         $subject = call_user_func($this->createCallVerifier, $call);
-        $positionalMatchers = $this->matcherFactory->adaptAll([',', ['a', 'b']]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['array' => ['a', 'b'], 'separator' => ',']);
 
-        $this->assertEquals($assertionResult, $subject->calledWith(...$positionalMatchers));
-        $this->assertEquals($assertionResult, $subject->calledWith(...$namedMatchers));
+        $this->assertEquals($assertionResult, $subject->calledWith(',', ['a', 'b']));
+        $this->assertEquals($assertionResult, $subject->calledWith(array: ['a', 'b'], separator: ','));
     }
 
     public function testCalledWithWithPositionalArguments()
@@ -495,11 +453,9 @@ class CallVerifierTest extends TestCase
         );
         $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
         $subject = call_user_func($this->createCallVerifier, $call);
-        $positionalMatchers = $this->matcherFactory->adaptAll([',', ['a', 'b']]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['array' => ['a', 'b'], 'separator' => ',']);
 
-        $this->assertEquals($assertionResult, $subject->calledWith(...$positionalMatchers));
-        $this->assertEquals($assertionResult, $subject->calledWith(...$namedMatchers));
+        $this->assertEquals($assertionResult, $subject->calledWith(',', ['a', 'b']));
+        $this->assertEquals($assertionResult, $subject->calledWith(array: ['a', 'b'], separator: ','));
     }
 
     public function testCalledWithWithPositionalVariadicArguments()
@@ -517,11 +473,9 @@ class CallVerifierTest extends TestCase
         );
         $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
         $subject = call_user_func($this->createCallVerifier, $call);
-        $positionalMatchers = $this->matcherFactory->adaptAll([1, 2, 'x' => 3, 'y' => 4]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]);
 
-        $this->assertEquals($assertionResult, $subject->calledWith(...$positionalMatchers));
-        $this->assertEquals($assertionResult, $subject->calledWith(...$namedMatchers));
+        $this->assertEquals($assertionResult, $subject->calledWith(1, 2, x: 3, y: 4));
+        $this->assertEquals($assertionResult, $subject->calledWith(a: 1, b: 2, x: 3, y: 4));
     }
 
     public function testCalledWithWithNamedVariadicArguments()
@@ -539,11 +493,9 @@ class CallVerifierTest extends TestCase
         );
         $assertionResult = new EventSequence([$call], $this->callVerifierFactory);
         $subject = call_user_func($this->createCallVerifier, $call);
-        $positionalMatchers = $this->matcherFactory->adaptAll([1, 2, 'x' => 3, 'y' => 4]);
-        $namedMatchers = $this->matcherFactory->adaptAll(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]);
 
-        $this->assertEquals($assertionResult, $subject->calledWith(...$positionalMatchers));
-        $this->assertEquals($assertionResult, $subject->calledWith(...$namedMatchers));
+        $this->assertEquals($assertionResult, $subject->calledWith(1, 2, x: 3, y: 4));
+        $this->assertEquals($assertionResult, $subject->calledWith(a: 1, b: 2, x: 3, y: 4));
     }
 
     public function testCalledWithWithParameterNames()

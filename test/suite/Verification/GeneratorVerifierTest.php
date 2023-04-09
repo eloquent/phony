@@ -90,7 +90,6 @@ class GeneratorVerifierTest extends TestCase
         $this->thisValueA = new TestClassA();
         $this->thisValueB = new TestClassA();
         $this->arguments = Arguments::create('a', 'b', 'c');
-        $this->matchers = $this->matcherFactory->adaptAll($this->arguments->all());
         $this->otherMatcher = $this->matcherFactory->adapt('d');
         $this->callA = $this->callFactory->create(
             $this->eventFactory->createCalled([$this->thisValueA, 'testClassAMethodA'], [], $this->arguments),
