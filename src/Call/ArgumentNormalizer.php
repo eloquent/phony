@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Call;
 
+use InvalidArgumentException;
+
 /**
  * Normalizes argument lists.
  */
@@ -18,24 +20,52 @@ class ArgumentNormalizer
      * @param array<int,string>       $parameterNames The parameter names.
      * @param array<int|string,mixed> $arguments      The arguments.
      *
-     * @return array<int|string,mixed> The normalized arguments.
+     * @return array<int|string,mixed>  The normalized arguments.
+     * @throws InvalidArgumentException If the supplied arguments are invalid.
      */
     public function normalize(array $parameterNames, array $arguments)
     {
+        $keyMap = [];
+
+        foreach ($parameterNames as $position => $name) {
+            $keyMap[$position] = $name;
+            $keyMap[$name] = $position;
+        }
+
         $normalized = [];
         $positions = [];
+        $hasNamedArgument = false;
+        $seenPositions = [];
+        $truePosition = -1;
 
         foreach ($arguments as $positionOrName => &$value) {
-            if (is_string($positionOrName)) {
-                $name = $positionOrName;
-                $position = array_search($positionOrName, $parameterNames);
+            ++$truePosition;
 
-                if (false === $position) {
-                    $position = null;
+            if (is_string($positionOrName)) {
+                $hasNamedArgument = true;
+
+                $name = $positionOrName;
+                $position = $keyMap[$name] ?? null;
+
+                if (null !== $position && isset($seenPositions[$position])) {
+                    throw new InvalidArgumentException(
+                        "Named argument $$name overwrites previous argument."
+                    );
                 }
             } else {
-                $position = $positionOrName;
-                $name = $parameterNames[$positionOrName] ?? null;
+                if ($hasNamedArgument) {
+                    throw new InvalidArgumentException(
+                        'Cannot use a positional argument ' .
+                        'after a named argument.'
+                    );
+                }
+
+                $position = $truePosition;
+                $name = $parameterNames[$truePosition] ?? null;
+            }
+
+            if (null !== $position) {
+                $seenPositions[$position] = true;
             }
 
             if (null === $name) {
