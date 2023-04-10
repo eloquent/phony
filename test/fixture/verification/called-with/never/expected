@@ -7,4 +7,4 @@ Matched 1 of 2:
     animals: %GREEN%✓%RESET% #%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%1%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%2%RESET%%YELLOW%%FAINT%+}%RESET%["bonobo", "%CYAN%%FAINT%[-%RESET%%CYAN%%UNDERLINE%chameleon%RESET%%CYAN%%FAINT%-]%RESET%%YELLOW%%FAINT%{+%RESET%%YELLOW%%UNDERLINE%capybara%RESET%%YELLOW%%FAINT%+}%RESET%", "dugong"]
 %RED%✗%RESET% Call #1:
      animal: %RED%✗%RESET% "aardvark"
-    animals: %RED%✗%RESET% #2["bonobo", "chameleon", "dugong"]
+    animals: %RED%✗%RESET% #3["bonobo", "chameleon", "dugong"]

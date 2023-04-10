@@ -5,4 +5,4 @@
     animals: %RED%✗%RESET% #1["bonobo", "capybara", "dugong"]
 %RED%✗%RESET% Call #1:
      animal: %RED%✗%RESET% "armadillo"
-    animals: %RED%✗%RESET% #1["bonobo", "chameleon", "dormouse"]
+    animals: %RED%✗%RESET% #2["bonobo", "chameleon", "dormouse"]

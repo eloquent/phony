@@ -195,7 +195,7 @@ class AssertionRenderer
                 $arguments = $normalizedArguments[$callIndex];
                 $renderedArguments = [];
 
-                foreach ($arguments as $positionOrName => $argument) {
+                foreach ($arguments as $positionOrName => &$argument) {
                     $paddedName = str_pad(
                         (string) $positionOrName,
                         $namePadLength,
@@ -482,10 +482,10 @@ class AssertionRenderer
 
                 if (array_key_exists($position, $arguments)) {
                     $hasArgument = true;
-                    $argument = $arguments[$position];
+                    $argument = &$arguments[$position];
                 } elseif (array_key_exists($key, $arguments)) {
                     $hasArgument = true;
-                    $argument = $arguments[$key];
+                    $argument = &$arguments[$key];
                 } else {
                     $hasArgument = false;
                     $argument = null;
@@ -506,7 +506,13 @@ class AssertionRenderer
                 $key = (string) ($argumentKey ?? $matcherKey);
                 $isMatch = $isSingularMatch || $isWildMatch;
                 $hasArgument = null !== $argumentKey;
-                $argument = $hasArgument ? $arguments[$argumentKey] : null;
+
+                if ($hasArgument) {
+                    $argument = &$arguments[$argumentKey];
+                } else {
+                    $argument = null;
+                }
+
                 $matcher = null === $matcherKey
                     ? null
                     : $matcherSet->variadicMatchers[$matcherKey];
@@ -516,8 +522,8 @@ class AssertionRenderer
             }
 
             foreach ($argumentRows as $argumentRow) {
-                list($key, $isMatch, $hasArgument, $argument, $matcher) =
-                    $argumentRow;
+                list($key, $isMatch, $hasArgument, , $matcher) = $argumentRow;
+                $argument = &$argumentRow[3];
 
                 $paddedKey =
                     str_pad($key, $maxKeyLength + 4, ' ', STR_PAD_LEFT);
