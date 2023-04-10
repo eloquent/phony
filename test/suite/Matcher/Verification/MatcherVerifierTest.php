@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Matcher\Verification;
 
+use Eloquent\Phony\Call\ArgumentNormalizer;
 use Eloquent\Phony\Matcher\MatcherFactory;
 use Eloquent\Phony\Matcher\MatcherSet;
 use Eloquent\Phony\Test\Facade\FacadeContainer;
@@ -277,7 +278,7 @@ class MatcherVerifierTest extends TestCase
             }
         }
 
-        uksort($variadicMatcherCounts, [__CLASS__, 'compareVariadicKeys']);
+        uksort($variadicMatcherCounts, [ArgumentNormalizer::class, 'compareVariadicKeys']);
 
         $matcherLines = ['# matchers'];
         $lineNumber = 0;
@@ -304,20 +305,5 @@ class MatcherVerifierTest extends TestCase
         }
 
         return join("\n", [...$matcherLines, ...$resultLines]) . "\n";
-    }
-
-    private static function compareVariadicKeys(int|string $a, int|string $b): int
-    {
-        $aIsPositional = is_int($a);
-        $bIsPositional = is_int($b);
-
-        if ($aIsPositional && !$bIsPositional) {
-            return -1;
-        }
-        if (!$aIsPositional && $bIsPositional) {
-            return 1;
-        }
-
-        return $a < $b ? -1 : 1;
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Matcher;
 
+use Eloquent\Phony\Call\ArgumentNormalizer;
 use Eloquent\Phony\Exporter\Exporter;
 use InvalidArgumentException;
 
@@ -226,7 +227,10 @@ class MatcherFactory
             }
         }
 
-        uksort($variadicMatchers, [__CLASS__, 'compareVariadicKeys']);
+        uksort(
+            $variadicMatchers,
+            [ArgumentNormalizer::class, 'compareVariadicKeys'],
+        );
 
         return new MatcherSet(
             parameterNames: $parameterNames,
@@ -364,21 +368,4 @@ class MatcherFactory
      * @var Exporter
      */
     private $exporter;
-
-    private static function compareVariadicKeys(
-        int|string $a,
-        int|string $b,
-    ): int {
-        $aIsPositional = is_int($a);
-        $bIsPositional = is_int($b);
-
-        if ($aIsPositional && !$bIsPositional) {
-            return -1;
-        }
-        if (!$aIsPositional && $bIsPositional) {
-            return 1;
-        }
-
-        return $a < $b ? -1 : 1;
-    }
 }

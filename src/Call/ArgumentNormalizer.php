@@ -12,6 +12,26 @@ use InvalidArgumentException;
 class ArgumentNormalizer
 {
     /**
+     * Comparator for sorting variadic argument keys.
+     */
+    public static function compareVariadicKeys(
+        int|string $a,
+        int|string $b,
+    ): int {
+        $aIsPositional = is_int($a);
+        $bIsPositional = is_int($b);
+
+        if ($aIsPositional && !$bIsPositional) {
+            return -1;
+        }
+        if (!$aIsPositional && $bIsPositional) {
+            return 1;
+        }
+
+        return $a < $b ? -1 : 1;
+    }
+
+    /**
      * Normalize the supplied arguments using the supplied parameter names.
      *
      * References in the original arguments will be maintained in the normalized

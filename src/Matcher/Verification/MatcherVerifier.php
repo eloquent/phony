@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eloquent\Phony\Matcher\Verification;
 
+use Eloquent\Phony\Call\ArgumentNormalizer;
 use Eloquent\Phony\Matcher\Matcher;
 use Eloquent\Phony\Matcher\MatcherSet;
 use InvalidArgumentException;
@@ -153,7 +154,10 @@ class MatcherVerifier
             $isMatch = $isMatch && $isSingularMatch;
         }
 
-        uksort($variadicArguments, [__CLASS__, 'compareVariadicKeys']);
+        uksort(
+            $variadicArguments,
+            [ArgumentNormalizer::class, 'compareVariadicKeys'],
+        );
 
         foreach ($variadicArguments as $argumentKey => $argument) {
             $canUseWildcard = !$isWildcardExhausted &&
@@ -365,23 +369,6 @@ class MatcherVerifier
         }
 
         return true;
-    }
-
-    private static function compareVariadicKeys(
-        int|string $a,
-        int|string $b,
-    ): int {
-        $aIsPositional = is_int($a);
-        $bIsPositional = is_int($b);
-
-        if ($aIsPositional && !$bIsPositional) {
-            return -1;
-        }
-        if (!$aIsPositional && $bIsPositional) {
-            return 1;
-        }
-
-        return $a < $b ? -1 : 1;
     }
 
     private static function compareVariadicResults(
