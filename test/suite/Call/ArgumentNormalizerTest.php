@@ -223,4 +223,13 @@ class ArgumentNormalizerTest extends TestCase
         $this->assertSame(555, $actual['a']);
         $this->assertSame(666, $actual['b']);
     }
+
+    public function testCompareVariadicKeys()
+    {
+        $actual = [1, 'b', 2, 'c', 0, 'a'];
+        $expected = [0, 1, 2, 'a', 'b', 'c'];
+        usort($actual, [ArgumentNormalizer::class, 'compareVariadicKeys']);
+
+        $this->assertSame($expected, $actual);
+    }
 }
