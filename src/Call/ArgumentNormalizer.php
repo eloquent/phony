@@ -52,27 +52,17 @@ class ArgumentNormalizer
             $keyMap[$name] = $position;
         }
 
-        $normalized = [];
-        $positions = [];
+        $declaredCount = count($parameterNames);
+        $declaredArguments = [];
+        $variadicArguments = [];
+        $seenArguments = [];
         $hasNamedArgument = false;
-        $seenPositions = [];
-        $truePosition = -1;
+        $position = -1;
 
-        foreach ($arguments as $positionOrName => &$value) {
-            ++$truePosition;
+        foreach ($arguments as $key => &$value) {
+            ++$position;
 
-            if (is_string($positionOrName)) {
-                $hasNamedArgument = true;
-
-                $name = $positionOrName;
-                $position = $keyMap[$name] ?? null;
-
-                if (null !== $position && isset($seenPositions[$position])) {
-                    throw new InvalidArgumentException(
-                        "Named argument $$name overwrites previous argument."
-                    );
-                }
-            } else {
+            if (is_int($key)) {
                 if ($hasNamedArgument) {
                     throw new InvalidArgumentException(
                         'Cannot use a positional argument ' .
@@ -80,54 +70,47 @@ class ArgumentNormalizer
                     );
                 }
 
-                $position = $truePosition;
-                $name = $parameterNames[$truePosition] ?? null;
-            }
-
-            if (null !== $position) {
-                $seenPositions[$position] = true;
-            }
-
-            if (null === $name) {
-                $key = $position;
+                if ($position < $declaredCount) {
+                    $declaredArguments[$position] = &$value;
+                    $seenArguments[$position] = true;
+                } else {
+                    $variadicArguments[$position] = &$value;
+                    $seenArguments[$position] = true;
+                }
             } else {
-                $key = $name;
-            }
+                $hasNamedArgument = true;
 
-            $normalized[$key] = &$value;
-            $positions[$key] = $position;
+                if (isset($keyMap[$key])) {
+                    $position = $keyMap[$key];
+
+                    if (isset($seenArguments[$position])) {
+                        throw new InvalidArgumentException(
+                            "Named argument $$key overwrites previous argument."
+                        );
+                    }
+
+                    $declaredArguments[$position] = &$value;
+                    $seenArguments[$position] = true;
+                } else {
+                    $variadicArguments[$key] = &$value;
+                    $seenArguments[$key] = true;
+                }
+            }
         }
 
-        uksort(
-            $normalized,
-            function (
-                string|int $a,
-                string|int $b
-            ) use ($positions) {
-                $aPosition = $positions[$a] ?? null;
-                $bPosition = $positions[$b] ?? null;
-                $aIsExplicit = null !== $aPosition;
-                $bIsExplicit = null !== $bPosition;
+        $normalized = [];
 
-                if ($aIsExplicit && $bIsExplicit) {
-                    if ($aPosition < $bPosition) {
-                        return -1;
-                    }
-                    if ($aPosition > $bPosition) {
-                        return 1;
-                    }
-                }
-
-                if ($aIsExplicit && !$bIsExplicit) {
-                    return -1;
-                }
-                if (!$aIsExplicit && $bIsExplicit) {
-                    return 1;
-                }
-
-                return $a < $b ? -1 : 1;
+        foreach ($parameterNames as $position => $name) {
+            if (array_key_exists($position, $declaredArguments)) {
+                $normalized[$name] = &$declaredArguments[$position];
             }
-        );
+        }
+
+        uksort($variadicArguments, [__CLASS__, 'compareVariadicKeys']);
+
+        foreach ($variadicArguments as $key => &$value) {
+            $normalized[$key] = &$value;
+        }
 
         return $normalized;
     }
