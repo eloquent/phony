@@ -470,6 +470,16 @@ class CallData implements Call
     }
 
     /**
+     * Get the parameter names.
+     *
+     * @return array<int,string> The parameter names.
+     */
+    public function parameterNames(): array
+    {
+        return $this->calledEvent->parameterNames();
+    }
+
+    /**
      * Get the received arguments.
      *
      * @return Arguments The received arguments.

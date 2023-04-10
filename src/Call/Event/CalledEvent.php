@@ -58,6 +58,26 @@ class CalledEvent implements CallEvent
     }
 
     /**
+     * Get the parameter names.
+     *
+     * @return array<int,string> The parameter names.
+     */
+    public function parameterNames(): array
+    {
+        $names = [];
+
+        foreach ($this->parameters as $parameter) {
+            if ($parameter->isVariadic()) {
+                break;
+            }
+
+            $names[] = $parameter->getName();
+        }
+
+        return $names;
+    }
+
+    /**
      * Get the received arguments.
      *
      * @return Arguments The received arguments.

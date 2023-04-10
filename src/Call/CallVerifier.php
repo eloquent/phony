@@ -72,15 +72,7 @@ class CallVerifier implements Call, CardinalityVerifier
         $this->cardinality = new Cardinality();
 
         $this->argumentCount = count($call->arguments());
-        $this->parameterNames = [];
-
-        foreach ($call->parameters() as $parameter) {
-            if ($parameter->isVariadic()) {
-                break;
-            }
-
-            $this->parameterNames[] = $parameter->getName();
-        }
+        $this->parameterNames = $call->parameterNames();
     }
 
     /**
@@ -427,6 +419,16 @@ class CallVerifier implements Call, CardinalityVerifier
     public function parameters(): array
     {
         return $this->call->parameters();
+    }
+
+    /**
+     * Get the parameter names.
+     *
+     * @return array<int,string> The parameter names.
+     */
+    public function parameterNames(): array
+    {
+        return $this->parameterNames;
     }
 
     /**

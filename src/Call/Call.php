@@ -84,6 +84,13 @@ interface Call extends Event, EventCollection
     public function parameters(): array;
 
     /**
+     * Get the parameter names.
+     *
+     * @return array<int,string> The parameter names.
+     */
+    public function parameterNames(): array;
+
+    /**
      * Get the arguments.
      *
      * @return Arguments The arguments.

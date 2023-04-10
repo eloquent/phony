@@ -4015,16 +4015,8 @@ class AssertionRenderer
         Call $call,
         int $depth = null
     ): string {
-        $parameterNames = [];
-
-        foreach ($call->parameters() as $parameter) {
-            if (!$parameter->isVariadic()) {
-                $parameterNames[] = $parameter->getName();
-            }
-        }
-
         $arguments = $this->argumentNormalizer
-            ->normalize($parameterNames, $call->arguments()->all());
+            ->normalize($call->parameterNames(), $call->arguments()->all());
         $rendered = [];
         $hasNamed = false;
 
