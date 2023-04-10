@@ -38,6 +38,7 @@ class TestCallEventFactory extends CallEventFactory
     public function createCalled(
         $callback = null,
         array $parameters = null,
+        array $parameterNames = null,
         Arguments $arguments = null
     ): CalledEvent {
         if (!$callback) {
@@ -46,11 +47,19 @@ class TestCallEventFactory extends CallEventFactory
         if (!$parameters) {
             $parameters = [];
         }
+        if (!$parameters) {
+            $parameterNames = [];
+        }
         if (!$arguments) {
             $arguments = new Arguments([]);
         }
 
-        return parent::createCalled($callback, $parameters, $arguments);
+        return parent::createCalled(
+            $callback,
+            $parameters,
+            $parameterNames,
+            $arguments
+        );
     }
 
     private $sequencer;

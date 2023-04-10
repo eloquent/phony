@@ -21,6 +21,7 @@ class CalledEvent implements CallEvent
      * @param float                          $time           The time at which the event occurred, in seconds since the Unix epoch.
      * @param callable                       $callback       The callback.
      * @param array<int,ReflectionParameter> $parameters     The parameters.
+     * @param array<int,string>              $parameterNames The parameter names.
      * @param Arguments                      $arguments      The arguments.
      */
     public function __construct(
@@ -28,12 +29,14 @@ class CalledEvent implements CallEvent
         float $time,
         $callback,
         array $parameters,
+        array $parameterNames,
         Arguments $arguments
     ) {
         $this->sequenceNumber = $sequenceNumber;
         $this->time = $time;
         $this->callback = $callback;
         $this->parameters = $parameters;
+        $this->parameterNames = $parameterNames;
         $this->arguments = $arguments;
     }
 
@@ -64,17 +67,7 @@ class CalledEvent implements CallEvent
      */
     public function parameterNames(): array
     {
-        $names = [];
-
-        foreach ($this->parameters as $parameter) {
-            if ($parameter->isVariadic()) {
-                break;
-            }
-
-            $names[] = $parameter->getName();
-        }
-
-        return $names;
+        return $this->parameterNames;
     }
 
     /**
@@ -96,6 +89,11 @@ class CalledEvent implements CallEvent
      * @var array<int,ReflectionParameter>
      */
     private $parameters;
+
+    /**
+     * @var array<int,string>
+     */
+    private $parameterNames;
 
     /**
      * @var Arguments

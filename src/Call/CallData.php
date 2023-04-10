@@ -13,6 +13,7 @@ use Eloquent\Phony\Call\Event\ReturnedEvent;
 use Eloquent\Phony\Call\Event\ThrewEvent;
 use Eloquent\Phony\Call\Exception\UndefinedArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Call\Exception\UndefinedPositionalArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Collection\NormalizesIndices;
 use Eloquent\Phony\Event\Event;
@@ -58,6 +59,15 @@ class CallData implements Call
 
         $calledEvent->setCall($this);
         $this->calledEvent = $calledEvent;
+        $this->parameterNames = $calledEvent->parameterNames();
+        $this->argumentKeyMap = [];
+        $this->definedParameterCount = 0;
+
+        foreach ($this->parameterNames as $position => $name) {
+            $this->argumentKeyMap[$position] = $name;
+            $this->argumentKeyMap[$name] = $position;
+            ++$this->definedParameterCount;
+        }
 
         $this->iterableEvents = [];
     }
@@ -476,7 +486,7 @@ class CallData implements Call
      */
     public function parameterNames(): array
     {
-        return $this->calledEvent->parameterNames();
+        return $this->parameterNames;
     }
 
     /**
@@ -492,9 +502,9 @@ class CallData implements Call
     /**
      * Get an argument by position or name.
      *
-     * Negative positions are offset from the end of the positional arguments.
-     * That is, `-1` indicates the last positional argument, and `-2` indicates
-     * the second-to-last positional argument.
+     * Negative positions are offset from the end of the declared arguments.
+     * That is, `-1` indicates the last declared argument, and `-2` indicates
+     * the second-to-last declared argument.
      *
      * @param int|string $positionOrName The position or name.
      *
@@ -503,7 +513,36 @@ class CallData implements Call
      */
     public function argument(int|string $positionOrName = 0)
     {
-        return $this->calledEvent->arguments()->get($positionOrName);
+        if (is_int($positionOrName) && $positionOrName < 0) {
+            if (
+                !$this->normalizeIndex(
+                    $this->definedParameterCount,
+                    $positionOrName,
+                    $normalized
+                )
+            ) {
+                throw new UndefinedPositionalArgumentException($positionOrName);
+            }
+
+            $positionOrName = $normalized;
+        }
+
+        $arguments = $this->calledEvent->arguments();
+
+        try {
+            return $arguments->get($positionOrName);
+        } catch (UndefinedArgumentException $e) {
+            $mappedKey = $this->argumentKeyMap[$positionOrName] ?? null;
+
+            if (null !== $mappedKey) {
+                try {
+                    return $arguments->get($mappedKey);
+                } catch (UndefinedArgumentException) {
+                }
+            }
+
+            throw $e;
+        }
     }
 
     /**
@@ -661,6 +700,21 @@ class CallData implements Call
      * @var CalledEvent
      */
     private $calledEvent;
+
+    /**
+     * @var array<int,string>
+     */
+    private $parameterNames;
+
+    /**
+     * @var array<int|string,int|string>
+     */
+    private $argumentKeyMap;
+
+    /**
+     * @var int
+     */
+    private $definedParameterCount;
 
     /**
      * @var ?ResponseEvent

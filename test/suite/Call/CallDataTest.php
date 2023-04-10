@@ -7,6 +7,7 @@ namespace Eloquent\Phony\Call;
 use AllowDynamicProperties;
 use ArrayIterator;
 use Eloquent\Phony\Call\Exception\UndefinedCallException;
+use Eloquent\Phony\Call\Exception\UndefinedPositionalArgumentException;
 use Eloquent\Phony\Call\Exception\UndefinedResponseException;
 use Eloquent\Phony\Event\Exception\UndefinedEventException;
 use Eloquent\Phony\Test\GeneratorFactory;
@@ -28,8 +29,10 @@ class CallDataTest extends TestCase
         $this->eventFactory = $this->callFactory->eventFactory();
         $this->callback = 'implode';
         $this->parameters = (new ReflectionFunction('implode'))->getParameters();
+        $this->parameterNames = ['separator', 'array'];
         $this->arguments = new Arguments(['a', 'b']);
-        $this->calledEvent = $this->eventFactory->createCalled($this->callback, $this->parameters, $this->arguments);
+        $this->calledEvent = $this->eventFactory
+            ->createCalled($this->callback, $this->parameters, $this->parameterNames, $this->arguments);
         $this->subject = new CallData($this->index, $this->calledEvent);
 
         $this->events = [$this->calledEvent];
@@ -68,13 +71,42 @@ class CallDataTest extends TestCase
         $this->assertSame($this->arguments, $this->subject->arguments());
         $this->assertSame('a', $this->subject->argument());
         $this->assertSame('a', $this->subject->argument(0));
+        $this->assertSame('a', $this->subject->argument('separator'));
         $this->assertSame('b', $this->subject->argument(1));
+        $this->assertSame('b', $this->subject->argument('array'));
         $this->assertSame('b', $this->subject->argument(-1));
         $this->assertSame('a', $this->subject->argument(-2));
         $this->assertSame($this->calledEvent->sequenceNumber(), $this->subject->sequenceNumber());
         $this->assertEquals($this->calledEvent->time(), $this->subject->time());
         $this->assertNull($this->subject->responseTime());
         $this->assertNull($this->subject->endTime());
+    }
+
+    public function testArgumentWithParameterNames()
+    {
+        $arguments = new Arguments(['separator' => ',', 'array' => ['a', 'b']]);
+        $calledEvent = $this->eventFactory
+            ->createCalled($this->callback, $this->parameters, $this->parameterNames, $arguments);
+        $subject = new CallData($this->index, $calledEvent);
+
+        $this->assertSame(',', $subject->argument());
+        $this->assertSame(',', $subject->argument(0));
+        $this->assertSame(',', $subject->argument('separator'));
+        $this->assertSame(['a', 'b'], $subject->argument(1));
+        $this->assertSame(['a', 'b'], $subject->argument('array'));
+        $this->assertSame(['a', 'b'], $subject->argument(-1));
+        $this->assertSame(',', $subject->argument(-2));
+    }
+
+    public function testArgumentFailureWithUndefinedNegativeIndex()
+    {
+        $callback = function () {};
+        $arguments = new Arguments([1, 2]);
+        $calledEvent = $this->eventFactory->createCalled($callback, [], [], $arguments);
+        $subject = new CallData($this->index, $calledEvent);
+
+        $this->expectException(UndefinedPositionalArgumentException::class);
+        $subject->argument(-1);
     }
 
     public function testReturnValueFailureThrew()
@@ -307,8 +339,10 @@ class CallDataTest extends TestCase
 
     public function testCompareSequential()
     {
-        $calledEventA = $this->eventFactory->createCalled($this->callback, $this->parameters, $this->arguments);
-        $calledEventB = $this->eventFactory->createCalled($this->callback, $this->parameters, $this->arguments);
+        $calledEventA = $this->eventFactory
+            ->createCalled($this->callback, $this->parameters, $this->parameterNames, $this->arguments);
+        $calledEventB = $this->eventFactory
+            ->createCalled($this->callback, $this->parameters, $this->parameterNames, $this->arguments);
         $callA = new CallData(111, $calledEventA);
         $callB = new CallData(222, $calledEventB);
 

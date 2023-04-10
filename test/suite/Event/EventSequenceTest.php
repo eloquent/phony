@@ -22,11 +22,11 @@ class EventSequenceTest extends TestCase
         $this->callVerifierFactory = $container->callVerifierFactory;
 
         $this->eventA = $this->eventFactory->createReturned(null);
-        $this->eventB =
-            $this->callFactory->create($this->eventFactory->createCalled(null, null, Arguments::create('a', 'b')));
-        $this->eventC = $this->eventFactory->createCalled(null, null, Arguments::create('c', 'd'));
-        $this->eventD =
-            $this->callFactory->create($this->eventFactory->createCalled(null, null, Arguments::create('e', 'f')));
+        $this->eventB = $this->callFactory
+            ->create($this->eventFactory->createCalled(null, null, null, Arguments::create('a', 'b')));
+        $this->eventC = $this->eventFactory->createCalled(null, null, null, Arguments::create('c', 'd'));
+        $this->eventD = $this->callFactory
+            ->create($this->eventFactory->createCalled(null, null, null, Arguments::create('e', 'f')));
         $this->events = [$this->eventA, $this->eventB, $this->eventC, $this->eventD];
         $this->subject = new EventSequence($this->events, $this->callVerifierFactory);
 

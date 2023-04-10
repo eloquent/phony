@@ -30,15 +30,17 @@ class CallEventFactory
     /**
      * Create a new 'called' event.
      *
-     * @param callable                       $callback   The callback.
-     * @param array<int,ReflectionParameter> $parameters The parameters.
-     * @param Arguments                      $arguments  The arguments.
+     * @param callable                       $callback       The callback.
+     * @param array<int,ReflectionParameter> $parameters     The parameters.
+     * @param array<int,string>              $parameterNames The parameter names.
+     * @param Arguments                      $arguments      The arguments.
      *
      * @return CalledEvent The newly created event.
      */
     public function createCalled(
         callable $callback,
         array $parameters,
+        array $parameterNames,
         Arguments $arguments
     ): CalledEvent {
         return new CalledEvent(
@@ -46,6 +48,7 @@ class CallEventFactory
             $this->clock->time(),
             $callback,
             $parameters,
+            $parameterNames,
             $arguments
         );
     }

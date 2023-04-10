@@ -32,16 +32,18 @@ class CallFactory
     /**
      * Record call details by invoking a callback.
      *
-     * @param callable                       $callback   The callback.
-     * @param array<int,ReflectionParameter> $parameters The parameters.
-     * @param Arguments                      $arguments  The arguments.
-     * @param SpyData                        $spy        The spy to record the call to.
+     * @param callable                       $callback       The callback.
+     * @param array<int,ReflectionParameter> $parameters     The parameters.
+     * @param array<int,string>              $parameterNames The parameter names.
+     * @param Arguments                      $arguments      The arguments.
+     * @param SpyData                        $spy            The spy to record the call to.
      *
      * @return CallData The newly created call.
      */
     public function record(
         callable $callback,
         array $parameters,
+        array $parameterNames,
         Arguments $arguments,
         SpyData $spy
     ): CallData {
@@ -49,8 +51,12 @@ class CallFactory
 
         $call = new CallData(
             $spy->nextIndex(),
-            $this->eventFactory
-                ->createCalled($spy, $parameters, $originalArguments)
+            $this->eventFactory->createCalled(
+                $spy,
+                $parameters,
+                $parameterNames,
+                $originalArguments
+            )
         );
         $spy->addCall($call);
 

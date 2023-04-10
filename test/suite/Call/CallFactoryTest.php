@@ -30,13 +30,14 @@ class CallFactoryTest extends TestCase
     {
         $callback = 'implode';
         $parameters = (new ReflectionFunction('implode'))->getParameters();
+        $parameterNames = ['separator', 'array'];
         $arguments = Arguments::create(['a', 'b']);
         $returnValue = 'ab';
         $spy = $this->spyFactory->create(null);
-        $expected = new CallData(0, $this->eventFactory->createCalled($spy, $parameters, $arguments));
+        $expected = new CallData(0, $this->eventFactory->createCalled($spy, $parameters, $parameterNames, $arguments));
         $expected->setResponseEvent($this->eventFactory->createReturned($returnValue));
         $this->eventFactory->reset();
-        $actual = $this->subject->record($callback, $parameters, $arguments, $spy);
+        $actual = $this->subject->record($callback, $parameters, $parameterNames, $arguments, $spy);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals([$expected], $spy->allCalls());
@@ -49,12 +50,13 @@ class CallFactoryTest extends TestCase
             throw $exception;
         };
         $parameters = [];
+        $parameterNames = [];
         $arguments = Arguments::create(['a', 'b']);
         $spy = $this->spyFactory->create(null);
-        $expected = new CallData(0, $this->eventFactory->createCalled($spy, $parameters, $arguments));
+        $expected = new CallData(0, $this->eventFactory->createCalled($spy, $parameters, $parameterNames, $arguments));
         $expected->setResponseEvent($this->eventFactory->createThrew($exception));
         $this->eventFactory->reset();
-        $actual = $this->subject->record($callback, $parameters, $arguments, $spy);
+        $actual = $this->subject->record($callback, $parameters, $parameterNames, $arguments, $spy);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals([$expected], $spy->allCalls());
@@ -67,12 +69,13 @@ class CallFactoryTest extends TestCase
             throw $exception;
         };
         $parameters = [];
+        $parameterNames = [];
         $arguments = Arguments::create(['a', 'b']);
         $spy = $this->spyFactory->create(null);
-        $expected = new CallData(0, $this->eventFactory->createCalled($spy, $parameters, $arguments));
+        $expected = new CallData(0, $this->eventFactory->createCalled($spy, $parameters, $parameterNames, $arguments));
         $expected->setResponseEvent($this->eventFactory->createThrew($exception));
         $this->eventFactory->reset();
-        $actual = $this->subject->record($callback, $parameters, $arguments, $spy);
+        $actual = $this->subject->record($callback, $parameters, $parameterNames, $arguments, $spy);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals([$expected], $spy->allCalls());
@@ -85,13 +88,14 @@ class CallFactoryTest extends TestCase
             yield null;
         };
         $parameters = [];
+        $parameterNames = [];
         $arguments = Arguments::create(['a', 'b']);
         $generator = call_user_func($callback);
         $spy = $this->spyFactory->create(null);
-        $expected = new CallData(0, $this->eventFactory->createCalled($spy, $parameters, $arguments));
+        $expected = new CallData(0, $this->eventFactory->createCalled($spy, $parameters, $parameterNames, $arguments));
         $expected->setResponseEvent($this->eventFactory->createReturned($generator));
         $this->eventFactory->reset();
-        $actual = $this->subject->record($callback, $parameters, $arguments, $spy);
+        $actual = $this->subject->record($callback, $parameters, $parameterNames, $arguments, $spy);
 
         $this->assertEquals($expected, $actual);
         $this->assertEquals([$expected], $spy->allCalls());

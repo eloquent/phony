@@ -43,7 +43,7 @@ class TestCallFactory extends CallFactory
     ) {
         if (!$calledEvent) {
             $calledEvent = $this->eventFactory
-                ->createCalled(function () {}, [], new Arguments([]));
+                ->createCalled(function () {}, [], [], new Arguments([]));
         }
 
         $call = new CallData($this->index++, $calledEvent);

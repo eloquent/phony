@@ -55,9 +55,11 @@ class CallVerifierTest extends TestCase
         $this->thisValue = new TestClassA();
         $this->callback = [$this->thisValue, 'testClassAMethodA'];
         $this->parameters = [];
+        $this->parameterNames = [];
         $this->arguments = new Arguments(['a', 'b', 'c']);
         $this->returnValue = 'abc';
-        $this->calledEvent = $this->eventFactory->createCalled($this->callback, $this->parameters, $this->arguments);
+        $this->calledEvent = $this->eventFactory
+            ->createCalled($this->callback, $this->parameters, $this->parameterNames, $this->arguments);
         $this->returnedEvent = $this->eventFactory->createReturned($this->returnValue);
         $this->call = $this->callFactory->create($this->calledEvent, $this->returnedEvent, null, $this->returnedEvent);
         $this->subject = call_user_func($this->createCallVerifier, $this->call);
@@ -197,8 +199,6 @@ class CallVerifierTest extends TestCase
         $this->assertSame('a', $this->subject->argument());
         $this->assertSame('a', $this->subject->argument(0));
         $this->assertSame('b', $this->subject->argument(1));
-        $this->assertSame('c', $this->subject->argument(-1));
-        $this->assertSame('b', $this->subject->argument(-2));
         $this->assertSame($this->returnValue, $this->subject->returnValue());
         $this->assertSame($this->exception, $this->subjectWithException->exception());
         $this->assertSame([null, $this->returnValue], $this->subject->response());
@@ -208,6 +208,30 @@ class CallVerifierTest extends TestCase
         $this->assertSame($this->calledEvent->time(), $this->subject->time());
         $this->assertSame($this->returnedEvent->time(), $this->subject->responseTime());
         $this->assertSame($this->returnedEvent->time(), $this->subject->endTime());
+    }
+
+    public function testArgumentWithParameterNames()
+    {
+        $call = $this->callFactory->create(
+            $this->eventFactory->createCalled(
+                'implode',
+                (new ReflectionFunction('implode'))->getParameters(),
+                ['separator', 'array'],
+                new Arguments(['separator' => ',', 'array' => ['a', 'b']])
+            ),
+            ($responseEvent = $this->eventFactory->createReturned('a,b')),
+            null,
+            $responseEvent
+        );
+        $subject = call_user_func($this->createCallVerifier, $call);
+
+        $this->assertSame(',', $subject->argument());
+        $this->assertSame(',', $subject->argument(0));
+        $this->assertSame(',', $subject->argument('separator'));
+        $this->assertSame(['a', 'b'], $subject->argument(1));
+        $this->assertSame(['a', 'b'], $subject->argument('array'));
+        $this->assertSame(['a', 'b'], $subject->argument(-1));
+        $this->assertSame(',', $subject->argument(-2));
     }
 
     public function testFirstCall()
@@ -339,6 +363,7 @@ class CallVerifierTest extends TestCase
             $this->eventFactory->createCalled(
                 'implode',
                 (new ReflectionFunction('implode'))->getParameters(),
+                ['separator', 'array'],
                 new Arguments(['separator' => ',', 'array' => ['a', 'b']])
             ),
             ($responseEvent = $this->eventFactory->createReturned('a,b')),
@@ -357,6 +382,7 @@ class CallVerifierTest extends TestCase
             $this->eventFactory->createCalled(
                 'implode',
                 (new ReflectionFunction('implode'))->getParameters(),
+                ['separator', 'array'],
                 new Arguments([',', ['a', 'b']])
             ),
             ($responseEvent = $this->eventFactory->createReturned('a,b')),
@@ -376,6 +402,7 @@ class CallVerifierTest extends TestCase
                 [TestClassWithVariadicNamedArguments::class, 'setStaticArguments'],
                 (new ReflectionMethod(TestClassWithVariadicNamedArguments::class, 'setStaticArguments'))
                     ->getParameters(),
+                ['a', 'b'],
                 new Arguments([1, 2, 'x' => 3, 'y' => 4]),
             ),
             ($responseEvent = $this->eventFactory->createReturned(null)),
@@ -395,6 +422,7 @@ class CallVerifierTest extends TestCase
                 [TestClassWithVariadicNamedArguments::class, 'setStaticArguments'],
                 (new ReflectionMethod(TestClassWithVariadicNamedArguments::class, 'setStaticArguments'))
                     ->getParameters(),
+                ['a', 'b'],
                 new Arguments(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]),
             ),
             ($responseEvent = $this->eventFactory->createReturned(null)),
@@ -426,6 +454,7 @@ class CallVerifierTest extends TestCase
             $this->eventFactory->createCalled(
                 'implode',
                 (new ReflectionFunction('implode'))->getParameters(),
+                ['separator', 'array'],
                 new Arguments(['separator' => ',', 'array' => ['a', 'b']])
             ),
             ($responseEvent = $this->eventFactory->createReturned('a,b')),
@@ -445,6 +474,7 @@ class CallVerifierTest extends TestCase
             $this->eventFactory->createCalled(
                 'implode',
                 (new ReflectionFunction('implode'))->getParameters(),
+                ['separator', 'array'],
                 new Arguments([',', ['a', 'b']])
             ),
             ($responseEvent = $this->eventFactory->createReturned('a,b')),
@@ -465,6 +495,7 @@ class CallVerifierTest extends TestCase
                 [TestClassWithVariadicNamedArguments::class, 'setStaticArguments'],
                 (new ReflectionMethod(TestClassWithVariadicNamedArguments::class, 'setStaticArguments'))
                     ->getParameters(),
+                ['a', 'b'],
                 new Arguments([1, 2, 'x' => 3, 'y' => 4]),
             ),
             ($responseEvent = $this->eventFactory->createReturned(null)),
@@ -485,6 +516,7 @@ class CallVerifierTest extends TestCase
                 [TestClassWithVariadicNamedArguments::class, 'setStaticArguments'],
                 (new ReflectionMethod(TestClassWithVariadicNamedArguments::class, 'setStaticArguments'))
                     ->getParameters(),
+                ['a', 'b'],
                 new Arguments(['a' => 1, 'b' => 2, 'x' => 3, 'y' => 4]),
             ),
             ($responseEvent = $this->eventFactory->createReturned(null)),
@@ -503,9 +535,10 @@ class CallVerifierTest extends TestCase
         $thisValue = new TestClassA();
         $callback = [$thisValue, 'testClassAMethodB'];
         $parameters = (new ReflectionMethod(TestClassA::class, 'testClassAMethodB'))->getParameters();
+        $parameterNames = ['first', 'second'];
         $arguments = new Arguments(['a', 'b', 'c']);
         $returnValue = 'abc';
-        $calledEvent = $this->eventFactory->createCalled($callback, $parameters, $arguments);
+        $calledEvent = $this->eventFactory->createCalled($callback, $parameters, $parameterNames, $arguments);
         $returnedEvent = $this->eventFactory->createReturned($returnValue);
         $call = $this->callFactory->create($calledEvent, $returnedEvent, null, $returnedEvent);
         $assertionResult = new EventSequence([$call], $this->callVerifierFactory);

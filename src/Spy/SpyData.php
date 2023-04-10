@@ -65,6 +65,16 @@ class SpyData implements Spy
         $this->generatorSpyFactory = $generatorSpyFactory;
         $this->iterableSpyFactory = $iterableSpyFactory;
 
+        $this->parameterNames = [];
+
+        foreach ($parameters as $parameter) {
+            if ($parameter->isVariadic()) {
+                break;
+            }
+
+            $this->parameterNames[] = $parameter->getName();
+        }
+
         $this->calls = [];
         $this->useGeneratorSpies = true;
         $this->useIterableSpies = false;
@@ -386,8 +396,13 @@ class SpyData implements Spy
             return $this->invoker->callWith($callback, $arguments);
         }
 
-        $call = $this->callFactory
-            ->record($callback, $this->parameters, $arguments, $this);
+        $call = $this->callFactory->record(
+            $callback,
+            $this->parameters,
+            $this->parameterNames,
+            $arguments,
+            $this
+        );
         $responseEvent = $call->responseEvent();
 
         if ($responseEvent instanceof ThrewEvent) {
@@ -430,6 +445,11 @@ class SpyData implements Spy
      * @var array<int,ReflectionParameter>
      */
     private $parameters;
+
+    /**
+     * @var array<int,string>
+     */
+    private $parameterNames;
 
     /**
      * @var CallFactory

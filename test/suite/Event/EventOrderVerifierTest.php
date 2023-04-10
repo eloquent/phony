@@ -28,11 +28,15 @@ class EventOrderVerifierTest extends TestCase
         $this->callVerifierFactory = $this->container->callVerifierFactory;
 
         $implodeParameters = (new ReflectionFunction('implode'))->getParameters();
+        $implodeParameterNames = ['separator', 'array'];
 
-        $this->callACalled = $this->eventFactory->createCalled('implode', $implodeParameters, Arguments::create('a'));
+        $this->callACalled = $this->eventFactory
+            ->createCalled('implode', $implodeParameters, $implodeParameterNames, Arguments::create('a'));
         $this->callAResponse = $this->eventFactory->createReturned(null);
-        $this->callBCalled = $this->eventFactory->createCalled('implode', $implodeParameters, Arguments::create('b'));
-        $this->callCCalled = $this->eventFactory->createCalled('implode', $implodeParameters, Arguments::create('c'));
+        $this->callBCalled = $this->eventFactory
+            ->createCalled('implode', $implodeParameters, $implodeParameterNames, Arguments::create('b'));
+        $this->callCCalled = $this->eventFactory
+            ->createCalled('implode', $implodeParameters, $implodeParameterNames, Arguments::create('c'));
         $this->callCResponse = $this->eventFactory->createReturned(null);
         $this->callBResponse = $this->eventFactory->createReturned(null);
         $this->callA = $this->callFactory->create($this->callACalled, $this->callAResponse);

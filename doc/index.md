@@ -6647,9 +6647,9 @@ _See [Verifying that a spy was called with specific arguments],
 
 Get an argument by position or name.
 
-_Negative positions are offset from the end of the positional arguments. That
-is, `-1` indicates the last positional argument, and `-2` indicates the
-second-to-last positional argument._
+_Negative positions are offset from the end of the declared arguments. That is,
+`-1` indicates the last declared argument, and `-2` indicates the second-to-last
+declared argument._
 
 _See [Verifying that a spy was called with specific arguments],
 [Verifying that a call was made with specific arguments]._

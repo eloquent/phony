@@ -19,9 +19,16 @@ class CalledEventTest extends TestCase
         $this->time = 1.11;
         $this->callback = 'implode';
         $this->parameters = (new ReflectionFunction('implode'))->getParameters();
+        $this->parameterNames = ['separator', 'array'];
         $this->arguments = new Arguments(['a', 'b']);
-        $this->subject =
-            new CalledEvent($this->sequenceNumber, $this->time, $this->callback, $this->parameters, $this->arguments);
+        $this->subject = new CalledEvent(
+            $this->sequenceNumber,
+            $this->time,
+            $this->callback,
+            $this->parameters,
+            $this->parameterNames,
+            $this->arguments
+        );
 
         $this->callFactory = new TestCallFactory();
     }

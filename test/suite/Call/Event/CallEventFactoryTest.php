@@ -27,9 +27,10 @@ class CallEventFactoryTest extends TestCase
     {
         $callback = 'implode';
         $parameters = (new ReflectionFunction('implode'))->getParameters();
+        $parameterNames = ['separator', 'array'];
         $arguments = Arguments::create('a', 'b');
-        $expected = new CalledEvent(0, 0.0, $callback, $parameters, $arguments);
-        $actual = $this->subject->createCalled($callback, $parameters, $arguments);
+        $expected = new CalledEvent(0, 0.0, $callback, $parameters, $parameterNames, $arguments);
+        $actual = $this->subject->createCalled($callback, $parameters, $parameterNames, $arguments);
 
         $this->assertEquals($expected, $actual);
     }
