@@ -25,12 +25,12 @@ class MatcherVerifierTest extends TestCase
     public function invalidInputData(): array
     {
         return [
-            'positional after named argument' => [
+            'positional after named' => [
                 'Cannot use a positional argument after a named argument.',
                 [],
                 ['a' => 1, 2],
             ],
-            'named argument overwrites previous' => [
+            'named overwrites previous' => [
                 'Named argument $a overwrites previous argument.',
                 ['a'],
                 [1, 'a' => 2],

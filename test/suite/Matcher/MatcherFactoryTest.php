@@ -11,6 +11,7 @@ use Eloquent\Phony\Test\TestMatcherA;
 use Eloquent\Phony\Test\TestMatcherB;
 use Eloquent\Phony\Test\TestMatcherDriverA;
 use Eloquent\Phony\Test\TestMatcherDriverB;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 #[AllowDynamicProperties]
@@ -88,7 +89,7 @@ class MatcherFactoryTest extends TestCase
         $this->assertSame($this->anyMatcher, $this->subject->adapt('~'));
     }
 
-    public function testAdaptAll()
+    public function testAdaptSet()
     {
         $this->subject->addMatcherDriver($this->driverA);
         $this->subject->addMatcherDriver($this->driverB);
@@ -104,24 +105,39 @@ class MatcherFactoryTest extends TestCase
             $valueC,
             $valueD,
             new TestMatcherA(),
-            '*',
             '~',
+            '*',
         ];
-        $actual = $this->subject->adaptAll($values);
-        $expected = [
-            new EqualToMatcher('a', true, $this->exporter),
-            $valueB,
-            new EqualToMatcher($valueC, true, $this->exporter),
-            new EqualToMatcher($valueD, true, $this->exporter),
-            new EqualToMatcher('a', false, $this->exporter),
-            $this->wildcardMatcher,
-            $this->anyMatcher,
-        ];
+        $actual = $this->subject->adaptSet(['a', 'b'], $values);
+        $expected = new MatcherSet(
+            parameterNames: ['a', 'b'],
+            keyMap: [
+                'a' => 0,
+                0 => 'a',
+                'b' => 1,
+                1 => 'b',
+            ],
+            declaredCount: 2,
+            declaredMatchers: [
+                new EqualToMatcher('a', true, $this->exporter),
+                $valueB,
+            ],
+            variadicMatchers: [
+                2 => new EqualToMatcher($valueC, true, $this->exporter),
+                3 => new EqualToMatcher($valueD, true, $this->exporter),
+                4 => new EqualToMatcher('a', false, $this->exporter),
+                5 => $this->anyMatcher,
+            ],
+            wildcardMatcher: $this->wildcardMatcher,
+            wildcardInnerMatcher: $this->anyMatcher,
+            wildcardMinimum: 0,
+            wildcardMaximum: -1,
+        );
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testAdaptAllWithNamedMatchers()
+    public function testAdaptSetWithNamedMatchers()
     {
         $this->subject->addMatcherDriver($this->driverA);
         $this->subject->addMatcherDriver($this->driverB);
@@ -132,26 +148,88 @@ class MatcherFactoryTest extends TestCase
             $this->container->mockBuilderFactory->create()->full()
         );
         $values = [
+            '*',
             'a' => 'a',
             'b' => $valueB,
             'c' => $valueC,
             'd' => $valueD,
             'e' => new TestMatcherA(),
-            'f' => '*',
-            'g' => '~',
+            'f' => '~',
         ];
-        $actual = $this->subject->adaptAll($values);
-        $expected = [
-            'a' => new EqualToMatcher('a', true, $this->exporter),
-            'b' => $valueB,
-            'c' => new EqualToMatcher($valueC, true, $this->exporter),
-            'd' => new EqualToMatcher($valueD, true, $this->exporter),
-            'e' => new EqualToMatcher('a', false, $this->exporter),
-            'f' => $this->wildcardMatcher,
-            'g' => $this->anyMatcher,
-        ];
+        $actual = $this->subject->adaptSet(['a', 'b'], $values);
+        $expected = new MatcherSet(
+            parameterNames: ['a', 'b'],
+            keyMap: [
+                'a' => 0,
+                0 => 'a',
+                'b' => 1,
+                1 => 'b',
+            ],
+            declaredCount: 2,
+            declaredMatchers: [
+                new EqualToMatcher('a', true, $this->exporter),
+                $valueB,
+            ],
+            variadicMatchers: [
+                'c' => new EqualToMatcher($valueC, true, $this->exporter),
+                'd' => new EqualToMatcher($valueD, true, $this->exporter),
+                'e' => new EqualToMatcher('a', false, $this->exporter),
+                'f' => $this->anyMatcher,
+            ],
+            wildcardMatcher: $this->wildcardMatcher,
+            wildcardInnerMatcher: $this->anyMatcher,
+            wildcardMinimum: 0,
+            wildcardMaximum: -1,
+        );
 
         $this->assertEquals($expected, $actual);
+    }
+
+    public function adaptSetInvalidInputData(): array
+    {
+        return [
+            'positional after named' => [
+                'Cannot use a positional matcher after a named matcher.',
+                [],
+                ['a' => 1, 2],
+            ],
+            'positional after wildcard' => [
+                'Cannot use a positional matcher after a wildcard matcher.',
+                [],
+                ['*', 2],
+            ],
+            'wildcard after named' => [
+                'Cannot use a wildcard matcher after a named matcher.',
+                [],
+                ['a' => 1, '*'],
+            ],
+            'wildcard after wildcard' => [
+                'Cannot use a wildcard matcher after a wildcard matcher.',
+                [],
+                ['*', '*'],
+            ],
+            'named overwrites previous' => [
+                'Named matcher a overwrites previous matcher.',
+                ['a'],
+                [1, 'a' => 2],
+            ],
+            'named wildcard' => [
+                'Cannot use a named wildcard matcher.',
+                ['a'],
+                ['a' => '*'],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider adaptSetInvalidInputData
+     */
+    public function testAdaptSetWithInvalidInput(string $expected, array $parameterNames, array $values)
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($expected);
+
+        $this->subject->adaptSet($parameterNames, $values);
     }
 
     public function testEqualTo()

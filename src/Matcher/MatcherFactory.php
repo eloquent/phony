@@ -112,47 +112,6 @@ class MatcherFactory
     }
 
     /**
-     * Create new matchers for all supplied values.
-     *
-     * @param array<int|string,mixed> $values The values to create matchers for.
-     *
-     * @return array<int|string,Matcher> The newly created matchers.
-     */
-    public function adaptAll(array $values): array
-    {
-        $matchers = [];
-
-        foreach ($values as $key => $value) {
-            if ($value instanceof Matcher) {
-                $matchers[$key] = $value;
-
-                continue;
-            }
-
-            if (is_object($value)) {
-                foreach ($this->driverIndex as $className => $driver) {
-                    if (is_a($value, $className)) {
-                        $matchers[$key] = $driver->wrapMatcher($value);
-
-                        continue 2;
-                    }
-                }
-            }
-
-            if ('*' === $value) {
-                $matchers[$key] = $this->wildcardAnyMatcher;
-            } elseif ('~' === $value) {
-                $matchers[$key] = $this->anyMatcher;
-            } else {
-                $matchers[$key] =
-                    new EqualToMatcher($value, true, $this->exporter);
-            }
-        }
-
-        return $matchers;
-    }
-
-    /**
      * Create a new matcher set for the supplied values.
      *
      * @param array<int,string>       $parameterNames The parameter names.
@@ -256,7 +215,7 @@ class MatcherFactory
 
                     if (isset($declaredMatchers[$mappedKey])) {
                         throw new InvalidArgumentException(
-                            "Named matcher $$key overwrites previous matcher."
+                            "Named matcher $key overwrites previous matcher."
                         );
                     }
 
