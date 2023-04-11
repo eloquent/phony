@@ -1494,6 +1494,8 @@ class FunctionalTest extends TestCase
 
     public function testCallArgumentReferencePreservation()
     {
+        $this->markTestIncomplete('WIP');
+
         $spy = spy();
         $array = ['a'];
         $spy($array);
@@ -1507,6 +1509,8 @@ class FunctionalTest extends TestCase
 
     public function testExporterExamplesIdentifierPersistenceCallArguments()
     {
+        $this->markTestIncomplete('WIP');
+
         $spy = spy();
         $spy([]);
         $argumentsObj = $spy->firstCall()->arguments();

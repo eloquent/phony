@@ -24,8 +24,6 @@ class ArgumentsTest extends TestCase
     public function testConstructor()
     {
         $this->assertSame($this->arguments, $this->subject->all());
-        $this->assertSame([&$this->a, &$this->b], $this->subject->positional());
-        $this->assertSame(['c' => &$this->c], $this->subject->named());
         $this->assertSame($this->arguments, iterator_to_array($this->subject));
         $this->assertCount(3, $this->subject);
     }

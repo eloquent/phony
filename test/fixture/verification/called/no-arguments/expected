@@ -7,5 +7,5 @@
 %RED%✗%RESET% Call #2 (no arguments)
 %RED%✗%RESET% Call #3:
      animal: %RED%✗%RESET% "armadillo"
-    animals: %RED%✗%RESET% #2["bonobo", "chameleon", "dormouse"]
+    animals: %RED%✗%RESET% #1["bonobo", "chameleon", "dormouse"]
 %RED%✗%RESET% Call #4 (no arguments)

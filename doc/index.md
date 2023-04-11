@@ -7245,8 +7245,6 @@ When [verifying that a spy was called with specific arguments], or
 methods:
 
 - [`$arguments->all()`](#arguments.all)
-- [`$arguments->positional()`](#arguments.positional)
-- [`$arguments->named()`](#arguments.named)
 - [`count($arguments)`](#arguments.count)
 - [`$arguments->count()`](#arguments.count)
 - [`foreach ($arguments as $positionOrName => $argument)`](#arguments.implements.Traversable)
@@ -7272,32 +7270,6 @@ See also:
 > _array\<string|int,mixed>_ $arguments->[**all**](#arguments.all)()
 
 Get the arguments as an array.
-
-_Arguments passed by reference will be references in the returned array._
-
-_See [Verifying that a spy was called with specific arguments],
-[Verifying that a call was made with specific arguments]._
-
-<a name="arguments.positional" />
-
----
-
-> _array\<int,mixed>_ $arguments->[**positional**](#arguments.positional)()
-
-Get the positional arguments as an array.
-
-_Arguments passed by reference will be references in the returned array._
-
-_See [Verifying that a spy was called with specific arguments],
-[Verifying that a call was made with specific arguments]._
-
-<a name="arguments.named" />
-
----
-
-> _array\<string,mixed>_ $arguments->[**named**](#arguments.named)()
-
-Get the named arguments as an array.
 
 _Arguments passed by reference will be references in the returned array._
 

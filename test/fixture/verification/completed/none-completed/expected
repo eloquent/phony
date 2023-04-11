@@ -1,10 +1,10 @@
 %RESET%Expected %BOLD%stub#0[label]%RESET% to complete.
 Matched 0 of 2:
 %RED%✗%RESET% Call #0 - stub#0[label](#1[~3]):
-    %RED%✗%RESET% Returned #2[~3], then:
+    %RED%✗%RESET% Returned #1[~3], then:
         %RED%✗%RESET% Never started iterating
-%RED%✗%RESET% Call #1 - stub#0[label](#3[~3]):
-    %RED%✗%RESET% Returned #2[~3], then:
+%RED%✗%RESET% Call #1 - stub#0[label](#2[~3]):
+    %RED%✗%RESET% Returned #1[~3], then:
         - Started iterating
         - Produced 0 => "aardvark"
         - Produced 1 => "bonobo"

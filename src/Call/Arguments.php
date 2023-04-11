@@ -41,9 +41,9 @@ class Arguments implements Countable, IteratorAggregate
      */
     public function __construct(array $arguments)
     {
+        $this->arguments = $arguments;
         $this->count = count($arguments);
         $this->positionalCount = 0;
-        $this->positional = [];
         $this->named = [];
 
         $firstPositionOrName = 0;
@@ -59,15 +59,10 @@ class Arguments implements Countable, IteratorAggregate
                 $this->named[$positionOrName] = &$value;
             } else {
                 ++$this->positionalCount;
-                $this->positional[] = &$value;
             }
         }
 
         $this->firstPositionOrName = $firstPositionOrName;
-
-        // do not move this above other assignments
-        // PHP does extremely weird things with references if you do
-        $this->arguments = $arguments;
     }
 
     /**
@@ -96,30 +91,6 @@ class Arguments implements Countable, IteratorAggregate
     public function all(): array
     {
         return $this->arguments;
-    }
-
-    /**
-     * Get the positional arguments.
-     *
-     * This method supports reference parameters.
-     *
-     * @return array<int,mixed> The positional arguments.
-     */
-    public function positional(): array
-    {
-        return $this->positional;
-    }
-
-    /**
-     * Get the named arguments.
-     *
-     * This method supports reference parameters.
-     *
-     * @return array<string,mixed> The named arguments.
-     */
-    public function named(): array
-    {
-        return $this->named;
     }
 
     /**
@@ -267,11 +238,6 @@ class Arguments implements Countable, IteratorAggregate
      * @var array<int|string,mixed>
      */
     private $arguments;
-
-    /**
-     * @var array<int,mixed>
-     */
-    private $positional;
 
     /**
      * @var array<string,mixed>
