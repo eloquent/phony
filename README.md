@@ -1,3 +1,9 @@
+> # No longer maintained
+>
+> This package is no longer maintained. See [this statement] for more info.
+>
+> [this statement]: https://gist.github.com/ezzatron/713a548735febe3d76f8ca831bc895c0
+
 <p align="center"><img alt="Phony" src="assets/readme/phony-logo-with-text.svg" width="400" /></p>
 
 _Mocks, stubs, and spies for PHP._
